@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/OWE/OWE.iml" filepath="$PROJECT_DIR$/OWE/OWE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RTCW4A/RTCW4A.iml" filepath="$PROJECT_DIR$/RTCW4A/RTCW4A.iml" />
+    </modules>
+  </component>
+</project>
