@@ -269,7 +269,7 @@ BotPointAreaNum
 */
 int BotPointAreaNum( vec3_t origin )
 {
-    int areanum, numareas, areas[1];
+    int areanum, numareas, areas[10];
     vec3_t end, ofs;
 #define BOTAREA_JIGGLE_DIST     32
     
@@ -280,7 +280,7 @@ int BotPointAreaNum( vec3_t origin )
     }
     VectorCopy( origin, end );
     end[2] += 10;
-    numareas = trap_AAS_TraceAreas( origin, end, areas, NULL, 1 );
+    numareas = trap_AAS_TraceAreas( origin, end, areas, NULL, 10 );
     if( numareas > 0 )
     {
         return areas[0];
@@ -293,7 +293,7 @@ int BotPointAreaNum( vec3_t origin )
         for( ofs[1] = -BOTAREA_JIGGLE_DIST; ofs[1] <= BOTAREA_JIGGLE_DIST; ofs[1] += BOTAREA_JIGGLE_DIST * 2 )
         {
             VectorAdd( origin, ofs, end );
-            numareas = trap_AAS_TraceAreas( origin, end, areas, NULL, 1 );
+            numareas = trap_AAS_TraceAreas( origin, end, areas, NULL, 10 );
             if( numareas > 0 )
             {
                 return areas[0];
