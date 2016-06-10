@@ -463,9 +463,6 @@ int AAS_IsEntityInArea( int entnumIgnore, int entnumIgnore2, int areanum )
     aas_entity_t* ent;
 //	int i;
 
-    // RF, not functional (doesnt work with multiple areas)
-    return qfalse;
-    
     for( link = ( *aasworld ).arealinkedentities[areanum]; link; link = link->next_ent )
     {
         //ignore the pass entity
@@ -525,7 +522,7 @@ void AAS_SetAASBlockingEntity( vec3_t absmin, vec3_t absmax, qboolean blocking )
     int numareas, i, w;
     //
     // check for resetting AAS blocking
-    if( VectorCompare( absmin, absmax ) && blocking < 0 )
+    if( VectorCompare( absmin, absmax ) && !blocking )
     {
         for( w = 0; w < MAX_AAS_WORLDS; w++ )
         {
