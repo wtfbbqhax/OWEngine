@@ -241,10 +241,12 @@ bot_character_t* BotLoadCharacterFromFile( char* charfile, int skill )
     
     foundcharacter = qfalse;
     //a bot character is parsed in two phases
+    PS_SetBaseFolder( "botfiles" );
     source = LoadSourceFile( charfile );
+    PS_SetBaseFolder( "" );
     if( !source )
     {
-        botimport.Print( PRT_ERROR, "counldn't load %s\n", charfile );
+        botimport.Print( PRT_ERROR, "couldn't load %s\n", charfile );
         return NULL;
     } //end if
     ch = ( bot_character_t* ) GetClearedMemory( sizeof( bot_character_t ) +

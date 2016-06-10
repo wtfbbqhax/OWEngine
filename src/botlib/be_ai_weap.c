@@ -237,7 +237,7 @@ weaponconfig_t* LoadWeaponConfig( char* filename )
     source = LoadSourceFile( path );
     if( !source )
     {
-        botimport.Print( PRT_ERROR, "counldn't load %s\n", path );
+        botimport.Print( PRT_ERROR, "couldn't load %s\n", path );
         return NULL;
     } //end if
     //initialize weapon config
@@ -400,7 +400,9 @@ int BotLoadWeaponWeights( int weaponstate, char* filename )
     }
     BotFreeWeaponWeights( weaponstate );
     //
+    PS_SetBaseFolder( "botfiles" );
     ws->weaponweightconfig = ReadWeightConfig( filename );
+    PS_SetBaseFolder( "" );
     if( !ws->weaponweightconfig )
     {
         botimport.Print( PRT_FATAL, "couldn't load weapon config %s\n", filename );
@@ -565,9 +567,10 @@ void BotFreeWeaponState( int handle )
 int BotSetupWeaponAI( void )
 {
     char* file;
-    
+    PS_SetBaseFolder( "botfiles" );
     file = LibVarString( "weaponconfig", "weapons.c" );
     weaponconfig = LoadWeaponConfig( file );
+    PS_SetBaseFolder( "" );
     if( !weaponconfig )
     {
         botimport.Print( PRT_FATAL, "couldn't load the weapon config\n" );

@@ -193,12 +193,12 @@ int Export_BotLibSetup( void )
     {
         return errnum;
     }
-//	errnum = BotSetupWeaponAI();	//be_ai_weap.c
-//	if (errnum != BLERR_NOERROR)return errnum;
-//	errnum = BotSetupGoalAI();		//be_ai_goal.c
-//	if (errnum != BLERR_NOERROR) return errnum;
-//	errnum = BotSetupChatAI();		//be_ai_chat.c
-//	if (errnum != BLERR_NOERROR) return errnum;
+    errnum = BotSetupWeaponAI();	//be_ai_weap.c
+    if( errnum != BLERR_NOERROR )return errnum;
+    errnum = BotSetupGoalAI();		//be_ai_goal.c
+    if( errnum != BLERR_NOERROR ) return errnum;
+    errnum = BotSetupChatAI();		//be_ai_chat.c
+    if( errnum != BLERR_NOERROR ) return errnum;
     errnum = BotSetupMoveAI();      //be_ai_move.c
     if( errnum != BLERR_NOERROR )
     {
@@ -706,46 +706,44 @@ int BotExportTest( int parm0, char* parm1, vec3_t parm2, vec3_t parm3 )
     	botimport.Print(PRT_MESSAGE, "id %lu clocks, %lu CLOCKS_PER_SEC\n", end_time - start_time, CLOCKS_PER_SEC);
     */
     
-    /*
     AAS_ClearShownDebugLines();
     //bsptrace = AAS_Trace(eye, NULL, NULL, end, 1, MASK_PLAYERSOLID);
-    bsptrace = AAS_Trace(eye, mins, maxs, end, 1, MASK_PLAYERSOLID);
-    if (!line[0]) line[0] = botimport.DebugLineCreate();
-    botimport.DebugLineShow(line[0], eye, bsptrace.endpos, LINECOLOR_YELLOW);
-    if (bsptrace.fraction < 1.0)
+    bsptrace = AAS_Trace( eye, mins, maxs, end, 1, MASK_PLAYERSOLID );
+    if( !line[0] ) line[0] = botimport.DebugLineCreate();
+    botimport.DebugLineShow( line[0], eye, bsptrace.endpos, LINECOLOR_YELLOW );
+    if( bsptrace.fraction < 1.0 )
     {
-    	face = AAS_TraceEndFace(&trace);
-    	if (face)
-    	{
-    		AAS_ShowFace(face - (*aasworld).faces);
-    	} //end if
-    	AAS_DrawPlaneCross(bsptrace.endpos,
-    								bsptrace.plane.normal,
-    								bsptrace.plane.dist + bsptrace.exp_dist,
-    								bsptrace.plane.type, LINECOLOR_GREEN);
-    	if (trace.ent)
-    	{
-    		ent = &(*aasworld).entities[trace.ent];
-    		AAS_ShowBoundingBox(ent->origin, ent->mins, ent->maxs);
-    	} //end if
+        face = AAS_TraceEndFace( &trace );
+        if( face )
+        {
+            AAS_ShowFace( face - ( *aasworld ).faces );
+        } //end if
+        AAS_DrawPlaneCross( bsptrace.endpos,
+                            bsptrace.plane.normal,
+                            bsptrace.plane.dist + bsptrace.exp_dist,
+                            bsptrace.plane.type, LINECOLOR_GREEN );
+        if( trace.ent )
+        {
+            ent = &( *aasworld ).entities[trace.ent];
+            AAS_ShowBoundingBox( ent->origin, ent->mins, ent->maxs );
+        } //end if
     } //end if*/
-    /*/
+    * /
     //bsptrace = AAS_Trace2(eye, NULL, NULL, end, 1, MASK_PLAYERSOLID);
-    bsptrace = AAS_Trace2(eye, mins, maxs, end, 1, MASK_PLAYERSOLID);
-    botimport.DebugLineShow(line[1], eye, bsptrace.endpos, LINECOLOR_BLUE);
-    if (bsptrace.fraction < 1.0)
+    bsptrace = AAS_Trace2( eye, mins, maxs, end, 1, MASK_PLAYERSOLID );
+    botimport.DebugLineShow( line[1], eye, bsptrace.endpos, LINECOLOR_BLUE );
+    if( bsptrace.fraction < 1.0 )
     {
-    	AAS_DrawPlaneCross(bsptrace.endpos,
-    								bsptrace.plane.normal,
-    								bsptrace.plane.dist,// + bsptrace.exp_dist,
-    								bsptrace.plane.type, LINECOLOR_RED);
-    	if (bsptrace.ent)
-    	{
-    		ent = &(*aasworld).entities[bsptrace.ent];
-    		AAS_ShowBoundingBox(ent->origin, ent->mins, ent->maxs);
-    	} //end if
+        AAS_DrawPlaneCross( bsptrace.endpos,
+                            bsptrace.plane.normal,
+                            bsptrace.plane.dist,// + bsptrace.exp_dist,
+                            bsptrace.plane.type, LINECOLOR_RED );
+        if( bsptrace.ent )
+        {
+            ent = &( *aasworld ).entities[bsptrace.ent];
+            AAS_ShowBoundingBox( ent->origin, ent->mins, ent->maxs );
+        } //end if
     } //end if
-    */
 #endif
     return 0;
 } //end of the function BotExportTest

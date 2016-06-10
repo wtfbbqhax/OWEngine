@@ -111,8 +111,8 @@ typedef enum
 {
     GSKILL_EASY,
     GSKILL_MEDIUM,
-    GSKILL_HARD, // normal default level
-    GSKILL_MAX
+    GSKILL_MEDIUMHARD, // normal default level
+    GSKILL_HARD
 } gameskill_t;
 
 typedef struct levelitem_s
@@ -297,7 +297,7 @@ itemconfig_t* LoadItemConfig( char* filename )
     source = LoadSourceFile( path );
     if( !source )
     {
-        botimport.Print( PRT_ERROR, "counldn't load %s\n", path );
+        botimport.Print( PRT_ERROR, "couldn't load %s\n", path );
         return NULL;
     } //end if
     //initialize item config
@@ -1694,7 +1694,9 @@ int BotLoadItemWeights( int goalstate, char* filename )
         return BLERR_CANNOTLOADITEMWEIGHTS;
     }
     //load the weight configuration
+    PS_SetBaseFolder( "botfiles" );
     gs->itemweightconfig = ReadWeightConfig( filename );
+    PS_SetBaseFolder( "" );
     if( !gs->itemweightconfig )
     {
         botimport.Print( PRT_FATAL, "couldn't load weights\n" );
@@ -1790,9 +1792,11 @@ int BotSetupGoalAI( void )
     //check if teamplay is on
     g_gametype = LibVarValue( "g_gametype", "0" );
     //item configuration file
+    PS_SetBaseFolder( "botfiles" );
     filename = LibVarString( "itemconfig", "items.c" );
     //load the item configuration
     itemconfig = LoadItemConfig( filename );
+    PS_SetBaseFolder( "" );
     if( !itemconfig )
     {
         botimport.Print( PRT_FATAL, "couldn't load item config\n" );
