@@ -1365,9 +1365,6 @@ void BotCheckBlocked( bot_movestate_t* ms, vec3_t dir, int checkbottom, bot_move
     vec3_t mins, maxs, end, up = {0, 0, 1};
     bsp_trace_t trace;
     
-    // RF, not required for Wolf AI
-    return;
-    
     //test for entities obstructing the bot's path
     AAS_PresenceTypeBoundingBox( ms->presencetype, mins, maxs );
     //
@@ -2225,8 +2222,10 @@ bot_moveresult_t BotTravel_Ladder( bot_movestate_t* ms, aas_reachability_t* reac
         {
             VectorInverse( viewdir );
         }
-        viewdir[2] = 0; // straight forward goes up
-        VectorNormalize( viewdir );
+        else
+        {
+            viewdir[2] = 0; // straight forward goes up
+        }
         Vector2Angles( viewdir, result.ideal_viewangles );
         //elemantary action
         EA_Move( ms->client, origin, 0 );
@@ -2280,7 +2279,7 @@ bot_moveresult_t BotTravel_Ladder( bot_movestate_t* ms, aas_reachability_t* reac
         VectorCopy( dir, hordir );
         hordir[2] = 0;
         dist = VectorNormalize( hordir );
-        if( dist < 8 )    // within range, go for the end
+        if( dist < 32 )    // within range, go for the end
         {
             //botimport.Print(PRT_MESSAGE, "found base, moving towards ladder top\n");
             VectorSubtract( reach->end, ms->origin, dir );
@@ -3269,7 +3268,8 @@ bot_moveresult_t BotTravel_RocketJump( bot_movestate_t* ms, aas_reachability_t* 
     		if (dist2 > 80) dist2 = 80;
     		speed = 400 - (400 - 5 * dist2);
     		EA_Move(ms->client, hordir, speed);
-    	} //end else*/
+    	} //end else
+      */
     //look in the movement direction
     Vector2Angles( hordir, result.ideal_viewangles );
     //look straight down
