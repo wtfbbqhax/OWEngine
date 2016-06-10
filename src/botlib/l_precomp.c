@@ -717,7 +717,7 @@ void PC_AddBuiltinDefines( source_t* source )
         { "__FILE__",    BUILTIN_FILE },
         { "__DATE__",    BUILTIN_DATE },
         { "__TIME__",    BUILTIN_TIME },
-//		"__STDC__", BUILTIN_STDC,
+//		{ "__STDC__", BUILTIN_STDC },
         { NULL, 0 }
     };
     

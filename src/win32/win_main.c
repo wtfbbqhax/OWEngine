@@ -815,7 +815,7 @@ typedef struct
 
 static streamState_t stream;
 
-int FS_ReadDirect( void* buffer, int len, fileHandle_t f );
+int FS_Read2( void* buffer, int len, fileHandle_t f );
 
 void Sys_MusicThread( void )
 {
@@ -826,7 +826,7 @@ void Sys_MusicThread( void )
     }
 }
 
-#if 1
+#if 0
 
 void Sys_InitStreamThread( void )
 {
@@ -891,7 +891,7 @@ void Sys_StreamFillBuffer( int i )
         buffer = stream.sIO[i].bufferSize - bufferPoint;
         readCount = buffer < count ? buffer : count;
 
-        r = FS_ReadDirect( stream.sIO[i].buffer + bufferPoint, readCount, stream.sIO[i].file );
+        r = FS_Read2( stream.sIO[i].buffer + bufferPoint, readCount, stream.sIO[i].file );
         if( r != readCount )
         {
             stream.sIO[i].eof = qtrue;
@@ -927,7 +927,6 @@ void Sys_StreamThread( void )
 /*
 ===============
 Sys_InitStreamThread
-
 ================
 */
 void Sys_InitStreamThread( void )
@@ -940,8 +939,8 @@ void Sys_InitStreamThread( void )
                               NULL,   // LPSECURITY_ATTRIBUTES lpsa,
                               0,      // DWORD cbStack,
                               ( LPTHREAD_START_ROUTINE )Sys_StreamThread, // LPTHREAD_START_ROUTINE lpStartAddr,
-                              0,          // LPVOID lpvThreadParm,
-                              0,          //   DWORD fdwCreate,
+                              0,      // LPVOID lpvThreadParm,
+                              0,      //   DWORD fdwCreate,
                               &stream.threadId );
 
     for( i = 0; i < 64; i++ )
@@ -956,13 +955,11 @@ void Sys_InitStreamThread( void )
                                    0,          // LPVOID lpvThreadParm,
                                    0,          //   DWORD fdwCreate,
                                    &stream.musicThreadId );
-
 }
 
 /*
 ===============
 Sys_ShutdownStreamThread
-
 ================
 */
 void Sys_ShutdownStreamThread( void )
@@ -973,7 +970,6 @@ void Sys_ShutdownStreamThread( void )
 /*
 ===============
 Sys_BeginStreamedFile
-
 ================
 */
 void Sys_BeginStreamedFile( fileHandle_t f, int readAhead )
