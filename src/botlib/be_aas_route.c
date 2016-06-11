@@ -772,10 +772,10 @@ void AAS_InitClusterAreaCache( void )
     //two dimensional array with pointers for every cluster to routing cache
     //for every area in that cluster
     ptr = ( char* ) AAS_RoutingGetMemory(
-              ( *aasworld ).numclusters * sizeof( aas_routingcache_t ** ) +
+              ( *aasworld ).numclusters * sizeof( aas_routingcache_t** ) +
               size * sizeof( aas_routingcache_t* ) );
     ( *aasworld ).clusterareacache = ( aas_routingcache_t*** ) ptr;
-    ptr += ( *aasworld ).numclusters * sizeof( aas_routingcache_t ** );
+    ptr += ( *aasworld ).numclusters * sizeof( aas_routingcache_t** );
     for( i = 0; i < ( *aasworld ).numclusters; i++ )
     {
         ( *aasworld ).clusterareacache[i] = ( aas_routingcache_t** ) ptr;
