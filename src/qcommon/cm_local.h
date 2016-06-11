@@ -222,7 +222,7 @@ void CM_BoxLeafnums_r( leafList_t* ll, int nodenum );
 
 cmodel_t*    CM_ClipHandleToModel( clipHandle_t handle );
 
-void CM_ClearMap(void);
+void CM_ClearMap( void );
 
 // cm_patch.c
 

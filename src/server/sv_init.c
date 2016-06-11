@@ -804,9 +804,9 @@ void SV_SpawnServer( char* server, qboolean killBots )
     // clear the whole hunk because we're (re)loading the server
     Hunk_Clear();
     
-	// clear collision map data		// (SA) NOTE: TODO: used in missionpack
-	CM_ClearMap();
-
+    // clear collision map data		// (SA) NOTE: TODO: used in missionpack
+    CM_ClearMap();
+    
     // wipe the entire per-level structure
     SV_ClearServer();
     

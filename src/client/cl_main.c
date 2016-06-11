@@ -694,8 +694,8 @@ void CL_FlushMemory( void )
     {
         // clear the whole hunk
         Hunk_Clear();
-		// clear collision map data
-		CM_ClearMap();
+        // clear collision map data
+        CM_ClearMap();
     }
     else
     {

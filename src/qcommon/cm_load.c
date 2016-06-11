@@ -775,9 +775,10 @@ void CM_LoadMap( const char* name, qboolean clientload, int* checksum )
 CM_ClearMap
 ==================
 */
-void CM_ClearMap(void) {
-	Com_Memset(&cm, 0, sizeof(cm));
-	CM_ClearLevelPatches();
+void CM_ClearMap( void )
+{
+    Com_Memset( &cm, 0, sizeof( cm ) );
+    CM_ClearLevelPatches();
 }
 
 /*
