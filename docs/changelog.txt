@@ -1,0 +1,19 @@
+Changelog
+
+06-11-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Implemented clearing collision map data
+	- reformatted code with AStyle to match global indenting and formatting
+
+06-10-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Re-enabled BotCheckBlocked
+	- Re-eanbled AAS_IsEntityInArea
+	- Fixed loading BotSetupWeaponAI, BotSetupGoalAI and BotSetupChatAI
+	- Fixed typo errors
+	- Added botfiles folder inside main folder
+	- reformatted code with AStyle to match global indenting and formatting
+
+06-09-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Increased BotPointAreNum areas to 10
+
+06-08-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Initial import to GitLab
