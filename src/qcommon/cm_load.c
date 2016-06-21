@@ -929,6 +929,11 @@ clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule 
     VectorCopy( mins, box_model.mins );
     VectorCopy( maxs, box_model.maxs );
     
+    if( capsule )
+    {
+        return CAPSULE_MODEL_HANDLE;
+    }
+    
     box_planes[0].dist = maxs[0];
     box_planes[1].dist = -maxs[0];
     box_planes[2].dist = mins[0];
@@ -945,12 +950,17 @@ clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule 
     VectorCopy( mins, box_brush->bounds[0] );
     VectorCopy( maxs, box_brush->bounds[1] );
     
-    if( capsule )
-    {
-        return CAPSULE_MODEL_HANDLE;
-    }
-    
     return BOX_MODEL_HANDLE;
+}
+
+/*
+===================
+CM_SetTempBoxModelContents
+===================
+*/
+void CM_SetTempBoxModelContents( int contents )
+{
+    box_brush->contents = contents;
 }
 
 /*

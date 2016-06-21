@@ -607,10 +607,12 @@ void SV_ClipToEntity( trace_t* trace, const vec3_t start, const vec3_t mins, con
 }
 
 
+// FIXME: Copied from cm_local.h
+#define BOX_MODEL_HANDLE 511
+
 /*
 ====================
 SV_ClipMoveToEntities
-
 ====================
 */
 void SV_ClipMoveToEntities( moveclip_t* clip )
@@ -679,6 +681,12 @@ void SV_ClipMoveToEntities( moveclip_t* clip )
         // might intersect, so do an exact clip
         clipHandle = SV_ClipHandleForEntity( touch );
         
+        // DHM - Nerve :: If clipping against BBOX, set to correct contents
+        if( clipHandle == BOX_MODEL_HANDLE )
+        {
+            CM_SetTempBoxModelContents( touch->r.contents );
+        }
+        
         origin = touch->r.currentOrigin;
         angles = touch->r.currentAngles;
         
@@ -719,6 +727,12 @@ void SV_ClipMoveToEntities( moveclip_t* clip )
             trace.entityNum = touch->s.number;
             clip->trace = trace;
             clip->trace.startsolid |= oldStart;
+        }
+        
+        // DHM - Nerve :: Reset contents to default
+        if( clipHandle == BOX_MODEL_HANDLE )
+        {
+            CM_SetTempBoxModelContents( CONTENTS_BODY );
         }
     }
 }
