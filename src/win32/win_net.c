@@ -1184,8 +1184,6 @@ void NET_Init( void )
 {
     int r;
     
-    return; //----(SA)	disabled networking for SP
-    
     r = WSAStartup( MAKEWORD( 1, 1 ), &winsockdata );
     if( r )
     {
