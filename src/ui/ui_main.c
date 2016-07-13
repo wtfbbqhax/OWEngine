@@ -204,7 +204,7 @@ qboolean _UI_IsFullscreen( void );
 #if defined( __MACOS__ )
 #pragma export on
 #endif
-int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11 )
+intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11 )
 {
 #if defined( __MACOS__ )
 #pragma export off
@@ -3185,12 +3185,12 @@ static void UI_OwnerDraw( float x, float y, float w, float h, float text_x, floa
         case UI_KEYBINDSTATUS:
             UI_DrawKeyBindStatus( &rect, font, scale, color, textStyle );
             break;
-            // NERVE - SMF
+        // NERVE - SMF
         case UI_LIMBOCHAT:
             UI_DrawLimboChat( &rect, font, scale, color, textStyle );
             break;
-            // -NERVE - SMF
-            
+        // -NERVE - SMF
+        
         default:
             break;
     }
@@ -7961,6 +7961,36 @@ static void UI_BuildQ3Model_List( void )
     
 }
 
+static void UI_ParseGLConfig( void )
+{
+    char* eptr;
+    
+    uiInfo.numGlInfoLines = 0;
+    
+    eptr = uiInfo.uiDC.glconfig.extensions_string;
+    
+    while( *eptr )
+    {
+        while( *eptr && *eptr == ' ' )
+            *eptr++ = '\0';
+            
+        // track start of valid string
+        if( *eptr && *eptr != ' ' )
+        {
+            uiInfo.glInfoLines[uiInfo.numGlInfoLines++] = eptr;
+        }
+        
+        if( uiInfo.numGlInfoLines == GLINFO_LINES )
+        {
+            break;  // Arnout: failsafe
+        }
+        
+        while( *eptr && *eptr != ' ' )
+            eptr++;
+    }
+    
+    uiInfo.numGlInfoLines += 4; // vendor, version and pixelformat + a whiteline
+}
 
 /*
 =================
@@ -7979,6 +8009,8 @@ void _UI_Init( qboolean inGameLoad )
     
     // cache redundant calulations
     trap_GetGlconfig( &uiInfo.uiDC.glconfig );
+    
+    UI_ParseGLConfig();
     
     // for 640x480 virtualized screen
     uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * ( 1.0 / 480.0 );
@@ -8383,7 +8415,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu )
                 Menus_ActivateByName( "briefing" );
                 return;
                 
-                // NERVE - SMF
+            // NERVE - SMF
             case UIMENU_WM_PICKTEAM:
                 trap_Cvar_Set( "cl_paused", "1" );
                 trap_Key_SetCatcher( KEYCATCH_UI );
@@ -8413,7 +8445,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu )
                 Menus_OpenByName( "wm_limboOptions" );
                 Menus_OpenByName( "wm_limboButtonBar" );
                 return;
-                // -NERVE - SMF
+            // -NERVE - SMF
             default:
                 break;
         }

@@ -910,9 +910,8 @@ static int FloatAsInt( float f )
     return temp;
 }
 
-void* VM_ArgPtr( int intValue );
-#define VMA( x ) VM_ArgPtr( args[x] )
-#define VMF( x )  ( (float *)args )[x]
+#define VMA( x ) ( (void *) args[x] )
+#define VMF( x )  ( *(float *)&args[x] )
 
 /*
 ====================
@@ -921,7 +920,7 @@ CL_UISystemCalls
 The ui module is making a system call
 ====================
 */
-int CL_UISystemCalls( int* args )
+intptr_t CL_UISystemCalls( intptr_t* args )
 {
     switch( args[0] )
     {
@@ -1030,12 +1029,12 @@ int CL_UISystemCalls( int* args )
             re.AddPolyToScene( args[1], args[2], VMA( 3 ) );
             return 0;
             
-            // Ridah
+        // Ridah
         case UI_R_ADDPOLYSTOSCENE:
             re.AddPolysToScene( args[1], args[2], VMA( 3 ), args[4] );
             return 0;
-            // done.
-            
+        // done.
+        
         case UI_R_ADDLIGHTTOSCENE:
             re.AddLightToScene( VMA( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), args[6] );
             return 0;
@@ -1216,13 +1215,13 @@ int CL_UISystemCalls( int* args )
             return 0;
             
         case UI_MEMSET:
-            return ( int )memset( VMA( 1 ), args[2], args[3] );
+            return ( intptr_t )memset( VMA( 1 ), args[2], args[3] );
             
         case UI_MEMCPY:
-            return ( int )memcpy( VMA( 1 ), VMA( 2 ), args[3] );
+            return ( intptr_t )memcpy( VMA( 1 ), VMA( 2 ), args[3] );
             
         case UI_STRNCPY:
-            return ( int )strncpy( VMA( 1 ), VMA( 2 ), args[3] );
+            return ( intptr_t )strncpy( VMA( 1 ), VMA( 2 ), args[3] );
             
         case UI_SIN:
             return FloatAsInt( sin( VMF( 1 ) ) );
@@ -1288,11 +1287,11 @@ int CL_UISystemCalls( int* args )
         case UI_VERIFY_CDKEY:
             return CL_CDKeyValidate( VMA( 1 ), VMA( 2 ) );
             
-            // NERVE - SMF
+        // NERVE - SMF
         case UI_CL_GETLIMBOSTRING:
             return CL_GetLimboString( args[1], VMA( 2 ) );
-            // -NERVE - SMF
-            
+        // -NERVE - SMF
+        
         default:
             Com_Error( ERR_DROP, "Bad UI system trap: %i", args[0] );
             

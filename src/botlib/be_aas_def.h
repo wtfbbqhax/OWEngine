@@ -133,6 +133,8 @@ typedef struct aas_settings_s
 //routing cache
 typedef struct aas_routingcache_s
 {
+    struct aas_routingcache_s* prev, *next;
+    unsigned char* reachabilities;
     int size;                                   //size of the routing cache
     float time;                                 //last time accessed or updated
     int cluster;                                //cluster the cache is for
@@ -140,8 +142,7 @@ typedef struct aas_routingcache_s
     vec3_t origin;                              //origin within the area
     float starttraveltime;                      //travel time to start with
     int travelflags;                            //combinations of the travel flags
-    struct aas_routingcache_s* prev, *next;
-    unsigned char* reachabilities;              //reachabilities used for routing
+    int dummypointers32bit[3];
     unsigned short int traveltimes[1];          //travel time for every area (variable sized)
 } aas_routingcache_t;
 

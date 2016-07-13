@@ -306,8 +306,8 @@ static void CG_Obituary( entityState_t* ent )
         switch( mod )
         {
         
-                // TODO: put real text here.  these are just placeholders
-                
+            // TODO: put real text here.  these are just placeholders
+            
             case MOD_KNIFE_STEALTH:
             case MOD_KNIFE:
             case MOD_KNIFE2:
@@ -655,10 +655,10 @@ typedef struct
 {
     char* tag;
     int refEntOfs;
-    int anim;
+    intptr_t anim;
 } painAnimForTag_t;
 
-#define PEFOFS( x ) ( (int)&( ( (playerEntity_t *)0 )->x ) )
+#define PEFOFS( x ) ( (intptr_t)&( ( (playerEntity_t *)0 )->x ) )
 
 void CG_PainEvent( centity_t* cent, int health, qboolean crouching )
 {
@@ -1804,12 +1804,12 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
     
     switch( event )
     {
-            //
-            // movement generated events
-            //
-            
-            // TODO: change all this to sound scripts
-            
+        //
+        // movement generated events
+        //
+        
+        // TODO: change all this to sound scripts
+        
         case EV_FOOTSTEP:
             DEBUGNAME( "EV_FOOTSTEP" );
             if( cg_footsteps.integer )
@@ -2286,9 +2286,9 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             }
             break;
             
-            //
-            // weapon events
-            //
+        //
+        // weapon events
+        //
         case EV_VENOM:
             DEBUGNAME( "EV_VENOM" );
             CG_VenomFire( es, qfalse );
@@ -2514,11 +2514,11 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             CG_UseItem( cent );
             break;
             
-            //=================================================================
-            
-            //
-            // other events
-            //
+        //=================================================================
+        
+        //
+        // other events
+        //
         case EV_PLAYER_TELEPORT_IN:
             DEBUGNAME( "EV_PLAYER_TELEPORT_IN" );
             trap_S_StartSound( NULL, es->number, CHAN_AUTO, cgs.media.teleInSound );
@@ -2623,9 +2623,9 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             // ev_railtrail is now sent standalone rather than by a player entity
             CG_RailTrail( &cgs.clientinfo[ es->otherEntityNum2 ], es->origin2, es->pos.trBase, es->dmgFlags );   //----(SA)	added 'type' field
             break;
-            //
-            // missile impacts
-            //
+        //
+        // missile impacts
+        //
         case EV_MISSILE_HIT:
             DEBUGNAME( "EV_MISSILE_HIT" );
             ByteToDir( es->eventParm, dir );
@@ -2845,9 +2845,9 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             CG_Obituary( es );
             break;
             
-            //
-            // powerup events
-            //
+        //
+        // powerup events
+        //
         case EV_POWERUP_QUAD:
             DEBUGNAME( "EV_POWERUP_QUAD" );
             if( es->number == cg.snap->ps.clientNum )
@@ -2932,7 +2932,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             CG_Beam( cent );
             break;
             
-            // Rafael particles
+        // Rafael particles
         case EV_SMOKE:
             DEBUGNAME( "EV_SMOKE" );
             if( cent->currentState.density == 3 )             // cannon
@@ -2953,8 +2953,8 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
                 CG_ParticleSmoke( cgs.media.smokePuffShader, cent );
             }
             break;
-            // done.
-            
+        // done.
+        
         case EV_FLAMETHROWER_EFFECT:
         {
             int old;
@@ -3117,7 +3117,7 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             CG_BatDeath( cent );
             break;
             
-            // Rafael snow pvs check
+        // Rafael snow pvs check
         case EV_SNOW_ON:
             CG_SnowLink( cent, qtrue );
             break;
@@ -3131,24 +3131,24 @@ void CG_EntityEvent( centity_t* cent, vec3_t position )
             CG_ParticleSnowFlurry( cgs.media.snowShader, cent );
             break;
             
-            //----(SA)
-            
-            // for func_exploding
+        //----(SA)
+        
+        // for func_exploding
         case EV_EXPLODE:
             DEBUGNAME( "EV_EXPLODE" );
             ByteToDir( es->eventParm, dir );
             CG_Explode( cent, position, dir, 0 );
             break;
             
-            // for target_effect
+        // for target_effect
         case EV_EFFECT:
             DEBUGNAME( "EV_EFFECT" );
 //		ByteToDir( es->eventParm, dir );
             CG_Effect( cent, position, dir );
             break;
             
-            //----(SA) done
-            
+        //----(SA) done
+        
         case EV_MORTAREFX:  // mortar firing
             DEBUGNAME( "EV_MORTAREFX" );
             CG_MortarEFX( cent );

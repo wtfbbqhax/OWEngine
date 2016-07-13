@@ -43,12 +43,12 @@
 
 #include "ui_local.h"
 
-static int ( QDECL* syscall )( int arg, ... ) = ( int ( QDECL* )( int, ... ) ) - 1;
+static intptr_t ( QDECL* syscall )( intptr_t arg, ... ) = ( intptr_t ( QDECL* )( intptr_t, ... ) ) - 1;
 
 #if defined( __MACOS__ )
 #pragma export on
 #endif
-void dllEntry( int ( QDECL* syscallptr )( int arg, ... ) )
+void dllEntry( intptr_t ( QDECL* syscallptr )( intptr_t arg, ... ) )
 {
 #if defined( __MACOS__ )
 #pragma export off
@@ -151,7 +151,7 @@ void trap_FS_Read( void* buffer, int len, fileHandle_t f )
 }
 
 //----(SA)	added
-void trap_FS_Seek( fileHandle_t f, long offset, int origin )
+void trap_FS_Seek( fileHandle_t f, int offset, int origin )
 {
     syscall( UI_FS_SEEK, f, offset, origin );
 }

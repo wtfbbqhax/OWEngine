@@ -95,9 +95,9 @@ itemDef_t* Menu_SetNextCursorItem( menuDef_t* menu );
 static qboolean Menu_OverActiveItem( menuDef_t* menu, float x, float y );
 
 #ifdef CGAME
-#define MEM_POOL_SIZE  128 * 1024
+#define MEM_POOL_SIZE  2 * 128 * 1024
 #else
-#define MEM_POOL_SIZE  1024 * 1024
+#define MEM_POOL_SIZE  2 * 1024 * 1024
 #endif
 
 static char memoryPool[MEM_POOL_SIZE];
@@ -3324,9 +3324,9 @@ qboolean Item_HandleKey( itemDef_t* item, int key, qboolean down )
         case ITEM_TYPE_SLIDER:
             return Item_Slider_HandleKey( item, key, down );
             break;
-            //case ITEM_TYPE_IMAGE:
-            //  Item_Image_Paint(item);
-            //  break;
+        //case ITEM_TYPE_IMAGE:
+        //  Item_Image_Paint(item);
+        //  break;
         default:
             return qfalse;
             break;

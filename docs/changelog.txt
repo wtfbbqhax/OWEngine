@@ -1,5 +1,15 @@
 Changelog
 
+07-13-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed initializing joystick device under Linux
+	- reformatted code with AStyle to match global indenting and formatting
+
+07-12-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Reorganized platform structure
+	- Fixed compiling on Linux
+	- Misc fixes
+	- Fixed sound system under Linux using ALSA
+
 06-11-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Implemented clearing collision map data
 	- reformatted code with AStyle to match global indenting and formatting

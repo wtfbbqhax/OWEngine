@@ -645,7 +645,7 @@ float AICast_WeaponRange( cast_state_t* cs, int weaponnum )
             }
             break;
             
-            // Rafael added these changes as per Mikes request
+        // Rafael added these changes as per Mikes request
         case WP_MAUSER:
         case WP_GARAND:
         case WP_SNIPERRIFLE:
@@ -1099,8 +1099,8 @@ qboolean AICast_WeaponUsable( cast_state_t* cs, int weaponNum )
     // just return qfalse if this weapon isn't ready for use
     switch( weaponNum )
     {
-            // don't attempt to lob a grenade more than this often, since we will abort a grenade
-            // throw if it's not safe, we shouldn't keep switching back too quickly
+        // don't attempt to lob a grenade more than this often, since we will abort a grenade
+        // throw if it's not safe, we shouldn't keep switching back too quickly
         case WP_DYNAMITE:
         case WP_GRENADE_LAUNCHER:
         case WP_GRENADE_PINEAPPLE:
@@ -1162,7 +1162,7 @@ qboolean AICast_WeaponUsable( cast_state_t* cs, int weaponNum )
                     //}
                     break;
                     
-                    // melee attacks are always available
+                // melee attacks are always available
                 case AICHAR_LOPER:
                 case AICHAR_WARZOMBIE:
                     return qtrue;   // always usable
@@ -1893,7 +1893,7 @@ qboolean AICast_CanMoveWhileFiringWeapon( int weaponnum )
         case WP_GARAND:
         case WP_SNIPERRIFLE:    //----(SA)	added
         case WP_SNOOPERSCOPE:   //----(SA)	added
-            //case WP_FG42SCOPE:		//----(SA)	added
+        //case WP_FG42SCOPE:		//----(SA)	added
         case WP_PANZERFAUST:
             return qfalse;
         default:
@@ -2256,7 +2256,7 @@ qboolean AICast_StopAndAttack( cast_state_t* cs )
     switch( cs->weaponNum )
     {
     
-            // if they are using Venom, and are too far away to be effective, then keep chasing
+        // if they are using Venom, and are too far away to be effective, then keep chasing
         case WP_VENOM:
             if( dist > 300 )
             {
@@ -2272,7 +2272,7 @@ qboolean AICast_StopAndAttack( cast_state_t* cs )
                 }
             }
             break;
-            // if they are using tesla (SUPERSOLDIER / BOSS2) try and get close
+        // if they are using tesla (SUPERSOLDIER / BOSS2) try and get close
         case WP_TESLA:
             if( dist > 128 /*&& (level.time%10000 < 8000)*/ )
             {

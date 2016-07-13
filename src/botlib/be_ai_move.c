@@ -3420,7 +3420,7 @@ int BotReachabilityTime( aas_reachability_t* reach )
             return 8;
         case TRAVEL_ROCKETJUMP:
             return 6;
-            //case TRAVEL_BFGJUMP: return 6;
+        //case TRAVEL_BFGJUMP: return 6;
         case TRAVEL_JUMPPAD:
             return 10;
         case TRAVEL_FUNCBOB:
@@ -3837,7 +3837,7 @@ void BotMoveToGoal( bot_moveresult_t* result, int movestate, bot_goal_t* goal, i
                 case TRAVEL_ROCKETJUMP:
                     *result = BotTravel_RocketJump( ms, &reach );
                     break;
-                    //case TRAVEL_BFGJUMP:
+                //case TRAVEL_BFGJUMP:
                 case TRAVEL_JUMPPAD:
                     *result = BotTravel_JumpPad( ms, &reach );
                     break;
@@ -3972,7 +3972,7 @@ void BotMoveToGoal( bot_moveresult_t* result, int movestate, bot_goal_t* goal, i
                 case TRAVEL_ROCKETJUMP:
                     *result = BotFinishTravel_WeaponJump( ms, &reach );
                     break;
-                    //case TRAVEL_BFGJUMP:
+                //case TRAVEL_BFGJUMP:
                 case TRAVEL_JUMPPAD:
                     *result = BotFinishTravel_JumpPad( ms, &reach );
                     break;

@@ -755,7 +755,7 @@ qboolean IsHeadShotWeapon( int mod, gentity_t* targ, gentity_t* attacker )
     
     switch( targ->aiCharacter )
     {
-            // get out quick for ai's that don't take headshots
+        // get out quick for ai's that don't take headshots
         case AICHAR_ZOMBIE:
         case AICHAR_WARZOMBIE:
         case AICHAR_HELGA:      // boss1 (beast)
@@ -768,7 +768,7 @@ qboolean IsHeadShotWeapon( int mod, gentity_t* targ, gentity_t* attacker )
     
     switch( mod )
     {
-            // players are allowed headshots from these weapons
+        // players are allowed headshots from these weapons
         case MOD_LUGER:
         case MOD_COLT:
         case MOD_AKIMBO:

@@ -1570,19 +1570,19 @@ void RB_SurfaceFlare( srfFlare_t* surf )
 #if 0
     vec3_t left, up;
     byte color[4];
-
+    
     color[0] = surf->color[0] * 255;
     color[1] = surf->color[1] * 255;
     color[2] = surf->color[2] * 255;
     color[3] = 255;
-
+    
     VectorClear( left );
     VectorClear( up );
-
+    
     left[0] = r_ignore->value;
-
+    
     up[1] = r_ignore->value;
-
+    
     RB_AddQuadStampExt( surf->origin, left, up, color, 0, 0, 1, 1 );
 #endif
 }
@@ -1605,16 +1605,16 @@ void RB_SurfaceSkip( void* surf )
 
 void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] )( void* ) =
 {
-    ( void(* )( void* ) )RB_SurfaceBad,            // SF_BAD,
-    ( void(* )( void* ) )RB_SurfaceSkip,           // SF_SKIP,
-    ( void(* )( void* ) )RB_SurfaceFace,           // SF_FACE,
-    ( void(* )( void* ) )RB_SurfaceGrid,           // SF_GRID,
-    ( void(* )( void* ) )RB_SurfaceTriangles,      // SF_TRIANGLES,
-    ( void(* )( void* ) )RB_SurfacePolychain,      // SF_POLY,
-    ( void(* )( void* ) )RB_SurfaceMesh,           // SF_MD3,
-    ( void(* )( void* ) )RB_SurfaceCMesh,          // SF_MDC,
-    ( void(* )( void* ) )RB_SurfaceAnim,           // SF_MDS,
-    ( void(* )( void* ) )RB_SurfaceFlare,          // SF_FLARE,
-    ( void(* )( void* ) )RB_SurfaceEntity,         // SF_ENTITY
-    ( void(* )( void* ) )RB_SurfaceDisplayList     // SF_DISPLAY_LIST
+    ( void( * )( void* ) )RB_SurfaceBad,           // SF_BAD,
+    ( void( * )( void* ) )RB_SurfaceSkip,          // SF_SKIP,
+    ( void( * )( void* ) )RB_SurfaceFace,          // SF_FACE,
+    ( void( * )( void* ) )RB_SurfaceGrid,          // SF_GRID,
+    ( void( * )( void* ) )RB_SurfaceTriangles,     // SF_TRIANGLES,
+    ( void( * )( void* ) )RB_SurfacePolychain,     // SF_POLY,
+    ( void( * )( void* ) )RB_SurfaceMesh,          // SF_MD3,
+    ( void( * )( void* ) )RB_SurfaceCMesh,         // SF_MDC,
+    ( void( * )( void* ) )RB_SurfaceAnim,          // SF_MDS,
+    ( void( * )( void* ) )RB_SurfaceFlare,         // SF_FLARE,
+    ( void( * )( void* ) )RB_SurfaceEntity,        // SF_ENTITY
+    ( void( * )( void* ) )RB_SurfaceDisplayList    // SF_DISPLAY_LIST
 };

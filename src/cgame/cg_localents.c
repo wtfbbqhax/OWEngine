@@ -1239,7 +1239,7 @@ void CG_AddClientCritter( localEntity_t* le )
             localEntity_t* fb;
             
             // if dead, ignore
-            if( !( le->ownerNum != cg.snap->ps.clientNum ? cg_entities[le->ownerNum].currentState.eFlags & EF_DEAD : cg.snap->ps.pm_type == PM_DEAD ) )
+            if( !( le->ownerNum != cg.snap->ps.clientNum ? cg_entities[le->ownerNum].currentState.eFlags& EF_DEAD : cg.snap->ps.pm_type == PM_DEAD ) )
             {
                 // inflict the damage!
                 CG_ClientDamage( cg_entities[le->ownerNum].currentState.otherEntityNum2, le->ownerNum, CLDMG_SPIRIT );
@@ -1939,7 +1939,7 @@ void CG_AddLocalEntities( void )
                 CG_Error( "Bad leType: %i", le->leType );
                 break;
                 
-                // Ridah
+            // Ridah
             case LE_MOVING_TRACER:
                 CG_AddMovingTracer( le );
                 break;
@@ -1962,8 +1962,8 @@ void CG_AddLocalEntities( void )
                 break;
             case LE_SPIRIT_VIEWFLASH:
                 CG_AddSpiritViewflash( le );
-                // done.
-                
+            // done.
+            
             case LE_MARK:
                 break;
                 

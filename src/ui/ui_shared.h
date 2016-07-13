@@ -48,7 +48,7 @@
 #include "../cgame/tr_types.h"
 #include "keycodes.h"
 
-#include "../../main/ui/menudef.h"
+#include "menudef.h"
 
 #define MAX_MENUNAME 32
 #define MAX_ITEMTEXT 64

@@ -198,7 +198,7 @@ string will be returned if the next token is
 a newline.
 ==============
 */
-static char* Com_ParseExt( const char * ( *data_p ), qboolean allowLineBreaks )
+static char* Com_ParseExt( const char* ( *data_p ), qboolean allowLineBreaks )
 {
     int c = 0, len;
     qboolean hasNewLines = qfalse;
@@ -434,7 +434,7 @@ static char* Com_ParseExt( const char * ( *data_p ), qboolean allowLineBreaks )
 Com_Parse
 ===================
 */
-const char* Com_Parse( const char * ( *data_p ) )
+const char* Com_Parse( const char* ( *data_p ) )
 {
     if( pi->ungetToken )
     {
@@ -449,7 +449,7 @@ const char* Com_Parse( const char * ( *data_p ) )
 Com_ParseOnLine
 ===================
 */
-const char* Com_ParseOnLine( const char * ( *data_p ) )
+const char* Com_ParseOnLine( const char* ( *data_p ) )
 {
     if( pi->ungetToken )
     {
@@ -466,7 +466,7 @@ const char* Com_ParseOnLine( const char * ( *data_p ) )
 Com_MatchToken
 ==================
 */
-void Com_MatchToken( const char * ( *buf_p ), const char* match, qboolean warning )
+void Com_MatchToken( const char* ( *buf_p ), const char* match, qboolean warning )
 {
     const char*  token;
     
@@ -494,7 +494,7 @@ Skips until a matching close brace is found.
 Internal brace depths are properly skipped.
 =================
 */
-void Com_SkipBracedSection( const char * ( *program ) )
+void Com_SkipBracedSection( const char* ( *program ) )
 {
     const char*          token;
     int depth;
@@ -523,7 +523,7 @@ void Com_SkipBracedSection( const char * ( *program ) )
 Com_SkipRestOfLine
 =================
 */
-void Com_SkipRestOfLine( const char * ( *data ) )
+void Com_SkipRestOfLine( const char* ( *data ) )
 {
     const char*  p;
     int c;
@@ -546,7 +546,7 @@ void Com_SkipRestOfLine( const char * ( *data ) )
 Com_ParseRestOfLine
 ====================
 */
-const char* Com_ParseRestOfLine( const char * ( *data_p ) )
+const char* Com_ParseRestOfLine( const char* ( *data_p ) )
 {
     static char line[MAX_TOKEN_CHARS];
     const char* token;
@@ -570,7 +570,7 @@ const char* Com_ParseRestOfLine( const char * ( *data_p ) )
 }
 
 
-float Com_ParseFloat( const char * ( *buf_p ) )
+float Com_ParseFloat( const char* ( *buf_p ) )
 {
     const char*      token;
     
@@ -582,7 +582,7 @@ float Com_ParseFloat( const char * ( *buf_p ) )
     return atof( token );
 }
 
-int Com_ParseInt( const char * ( *buf_p ) )
+int Com_ParseInt( const char* ( *buf_p ) )
 {
     const char*      token;
     
@@ -596,7 +596,7 @@ int Com_ParseInt( const char * ( *buf_p ) )
 
 
 
-void Com_Parse1DMatrix( const char * ( *buf_p ), int x, float* m )
+void Com_Parse1DMatrix( const char* ( *buf_p ), int x, float* m )
 {
     const char*  token;
     int i;
@@ -612,7 +612,7 @@ void Com_Parse1DMatrix( const char * ( *buf_p ), int x, float* m )
     Com_MatchToken( buf_p, ")" );
 }
 
-void Com_Parse2DMatrix( const char * ( *buf_p ), int y, int x, float* m )
+void Com_Parse2DMatrix( const char* ( *buf_p ), int y, int x, float* m )
 {
     int i;
     
@@ -626,7 +626,7 @@ void Com_Parse2DMatrix( const char * ( *buf_p ), int y, int x, float* m )
     Com_MatchToken( buf_p, ")" );
 }
 
-void Com_Parse3DMatrix( const char * ( *buf_p ), int z, int y, int x, float* m )
+void Com_Parse3DMatrix( const char* ( *buf_p ), int z, int y, int x, float* m )
 {
     int i;
     

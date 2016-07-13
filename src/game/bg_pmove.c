@@ -2417,7 +2417,7 @@ static void PM_BeginWeaponReload( int weapon )
         case WP_GRENADE_PINEAPPLE:
             break;
             
-            // no reloading
+        // no reloading
         case WP_KNIFE:
         case WP_TESLA:
             return;
@@ -2627,8 +2627,8 @@ static void PM_FinishWeaponChange( void )
     
     switch( newweapon )
     {
-            // don't really care about anim since these weapons don't show in view.
-            // However, need to set the animspreadscale so they are initally at worst accuracy
+        // don't really care about anim since these weapons don't show in view.
+        // However, need to set the animspreadscale so they are initally at worst accuracy
         case WP_SNOOPERSCOPE:
         case WP_SNIPERRIFLE:
         case WP_FG42SCOPE:
@@ -3722,7 +3722,7 @@ static void PM_Weapon( void )
                         BG_AnimScriptEvent( pm->ps, ANIM_ET_FIREWEAPON, qfalse, qtrue );
                     }
                     break;
-                    // machineguns should continue the anim, rather than start each fire
+                // machineguns should continue the anim, rather than start each fire
                 case WP_MP40:
                 case WP_THOMPSON:
                 case WP_STEN:
@@ -3845,7 +3845,7 @@ static void PM_Weapon( void )
                     
                     switch( pm->ps->weapon )
                     {
-                            // Ridah, only play if using a triggered weapon
+                        // Ridah, only play if using a triggered weapon
                         case WP_GAUNTLET:
                         case WP_MONSTER_ATTACK1:
                         case WP_DYNAMITE:
@@ -3854,7 +3854,7 @@ static void PM_Weapon( void )
                             playswitchsound = qfalse;
                             break;
                             
-                            // some weapons not allowed to reload.  must switch back to primary first
+                        // some weapons not allowed to reload.  must switch back to primary first
                         case WP_SNOOPERSCOPE:
                         case WP_SNIPERRIFLE:
                         case WP_FG42SCOPE:
@@ -4279,7 +4279,7 @@ static void PM_Weapon( void )
                     
                     ==============
                     */
-                    void PM_UpdateLean( playerState_t * ps, usercmd_t * cmd, pmove_t * tpm )
+                    void PM_UpdateLean( playerState_t* ps, usercmd_t* cmd, pmove_t* tpm )
                     {
                         vec3_t start, end, tmins, tmaxs, right;
                         int leaning = 0;            // -1 left, 1 right
@@ -4417,7 +4417,7 @@ static void PM_Weapon( void )
                     are being updated isntead of a full move
                     ================
                     */
-                    void PM_UpdateViewAngles( playerState_t * ps, usercmd_t * cmd, void( trace )( trace_t * results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask ) )   //----(SA)	modified
+                    void PM_UpdateViewAngles( playerState_t* ps, usercmd_t* cmd, void( trace )( trace_t* results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask ) )      //----(SA)	modified
                     {
                         short temp;
                         int i;
@@ -4807,7 +4807,7 @@ static void PM_Weapon( void )
                     */
                     void trap_SnapVector( float * v );
                     
-                    void PmoveSingle( pmove_t * pmove )
+                    void PmoveSingle( pmove_t* pmove )
                     {
                         // Ridah
                         qboolean isDummy;
@@ -5121,7 +5121,7 @@ static void PM_Weapon( void )
                     Can be called by either the server or the client
                     ================
                     */
-                    int Pmove( pmove_t * pmove )
+                    int Pmove( pmove_t* pmove )
                     {
                         int finalTime;
                         

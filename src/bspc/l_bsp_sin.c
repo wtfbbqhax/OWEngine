@@ -854,17 +854,17 @@ int Sin_CopyLump( int lump, void* dest, int size, int maxsize )
 int Sin_CopyLump( int lump, void* dest, int size )
 {
     int length, ofs;
-
+    
     length = header->lumps[lump].filelen;
     ofs = header->lumps[lump].fileofs;
-
+    
     if( length % size )
     {
         Error( "Sin_LoadBSPFile: odd lump size" );
     }
-
+    
     memcpy( dest, ( byte* )header + ofs, length );
-
+    
     return length / size;
 }
 #endif
@@ -1026,9 +1026,9 @@ void Sin_AddLump( int lumpnum, void* data, int len, int size, int maxsize )
 void Sin_AddLump( int lumpnum, void* data, int len )
 {
     sin_lump_t* lump;
-
+    
     lump = &header->lumps[lumpnum];
-
+    
     lump->fileofs = LittleLong( ftell( wadfile ) );
     lump->filelen = LittleLong( len );
     SafeWrite( wadfile, data, ( len + 3 ) & ~3 );

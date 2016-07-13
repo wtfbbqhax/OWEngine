@@ -1119,7 +1119,7 @@ void G_Say( gentity_t* ent, gentity_t* target, int mode, const char* chatText )
             }
             color = COLOR_MAGENTA;
             break;
-            // NERVE - SMF
+        // NERVE - SMF
         case SAY_LIMBO:
             G_LogPrintf( "sayteam: %s: %s\n", ent->client->pers.netname, chatText );
             if( Team_GetLocationMsg( ent, location, sizeof( location ) ) )

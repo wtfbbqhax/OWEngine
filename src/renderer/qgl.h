@@ -274,7 +274,7 @@ extern void ( APIENTRY* qglGetMaterialiv )( GLenum face, GLenum pname, GLint* pa
 extern void ( APIENTRY* qglGetPixelMapfv )( GLenum map, GLfloat* values );
 extern void ( APIENTRY* qglGetPixelMapuiv )( GLenum map, GLuint* values );
 extern void ( APIENTRY* qglGetPixelMapusv )( GLenum map, GLushort* values );
-extern void ( APIENTRY* qglGetPointerv )( GLenum pname, GLvoid* *params );
+extern void ( APIENTRY* qglGetPointerv )( GLenum pname, GLvoid * *params );
 extern void ( APIENTRY* qglGetPolygonStipple )( GLubyte* mask );
 extern const GLubyte* ( APIENTRY* qglGetString )( GLenum name );
 extern void ( APIENTRY* qglGetTexEnvfv )( GLenum target, GLenum pname, GLfloat* params );
@@ -532,6 +532,11 @@ extern BOOL( WINAPI* qwglSwapLayerBuffers )( HDC, UINT );
 
 extern BOOL( WINAPI* qwglSwapIntervalEXT )( int interval );
 
+extern int ( *qglXSwapIntervalSGI )( int interval );
+extern int ( *qglXGetVideoSyncSGI )( unsigned int* count );
+extern int ( *qglXWaitVideoSyncSGI )( int divisor, int remainder, unsigned int* count );
+extern const char* ( *qglXQueryExtensionsString )( Display* dpy, int screen );
+
 #endif  // _WIN32
 
 #if ( ( defined __linux__ )  || ( defined __FreeBSD__ ) ) // rb010123
@@ -548,12 +553,18 @@ extern void( *qfxMesaSwapBuffers )( void );
 #endif
 
 //GLX Functions
+extern void* ( *qwglGetProcAddress )( const char* symbol );
 extern XVisualInfo* ( *qglXChooseVisual )( Display* dpy, int screen, int* attribList );
 extern GLXContext( *qglXCreateContext )( Display* dpy, XVisualInfo* vis, GLXContext shareList, Bool direct );
 extern void( *qglXDestroyContext )( Display* dpy, GLXContext ctx );
 extern Bool( *qglXMakeCurrent )( Display* dpy, GLXDrawable drawable, GLXContext ctx );
 extern void( *qglXCopyContext )( Display* dpy, GLXContext src, GLXContext dst, GLuint mask );
 extern void( *qglXSwapBuffers )( Display* dpy, GLXDrawable drawable );
+
+extern int ( *qglXSwapIntervalSGI )( int interval );
+extern int ( *qglXGetVideoSyncSGI )( unsigned int* count );
+extern int ( *qglXWaitVideoSyncSGI )( int divisor, int remainder, unsigned int* count );
+extern const char* ( *qglXQueryExtensionsString )( Display* dpy, int screen );
 
 #endif // __linux__ || __FreeBSD__
 

@@ -57,7 +57,7 @@
 #define DEFAULT_CIN_WIDTH   512
 #define DEFAULT_CIN_HEIGHT  512
 
-#define LETTERBOX_OFFSET 105
+#define LETTERBOX_OFFSET 90
 
 
 #define ROQ_QUAD            0x1000
@@ -101,11 +101,11 @@ static unsigned short vq8[256 * 256 * 4];
 
 typedef struct
 {
-    byte linbuf[DEFAULT_CIN_WIDTH* DEFAULT_CIN_HEIGHT * 4 * 2];
+    byte linbuf[DEFAULT_CIN_WIDTH * DEFAULT_CIN_HEIGHT * 4 * 2];
     byte file[65536];
     short sqrTable[256];
     
-    unsigned int mcomp[256];
+    int mcomp[256];
     byte*                qStatus[2][32768];
     
     long oldXOff, oldYOff, oldysize, oldxsize;
@@ -842,11 +842,11 @@ static inline unsigned int yuv_to_rgb24( long y, long u, long v )
 static unsigned int yuv_to_rgb24( long y, long u, long v )
 {
     long r, g, b, YY = ( long )( ROQ_YY_tab[( y )] );
-
+    
     r = ( YY + ROQ_VR_tab[v] ) >> 6;
     g = ( YY + ROQ_UG_tab[u] + ROQ_VG_tab[v] ) >> 6;
     b = ( YY + ROQ_UB_tab[u] ) >> 6;
-
+    
     if( r < 0 )
     {
         r = 0;
@@ -871,7 +871,7 @@ static unsigned int yuv_to_rgb24( long y, long u, long v )
     {
         b = 255;
     }
-
+    
     return LittleLong( ( r ) | ( g << 8 ) | ( b << 16 ) | ( 255 << 24 ) );
 }
 #endif
@@ -1321,8 +1321,8 @@ static void readQuadInfo( byte* qData )
     cinTable[currentHandle].VQ0 = cinTable[currentHandle].VQNormal;
     cinTable[currentHandle].VQ1 = cinTable[currentHandle].VQBuffer;
     
-    cinTable[currentHandle].t[0] = ( 0 - ( unsigned int )cin.linbuf ) + ( unsigned int )cin.linbuf + cinTable[currentHandle].screenDelta;
-    cinTable[currentHandle].t[1] = ( 0 - ( ( unsigned int )cin.linbuf + cinTable[currentHandle].screenDelta ) ) + ( unsigned int )cin.linbuf;
+    cinTable[currentHandle].t[0] = cinTable[currentHandle].screenDelta;
+    cinTable[currentHandle].t[1] = ( 0 - cinTable[currentHandle].screenDelta );
     
     cinTable[currentHandle].drawX = cinTable[currentHandle].CIN_WIDTH;
     cinTable[currentHandle].drawY = cinTable[currentHandle].CIN_HEIGHT;
@@ -1395,8 +1395,8 @@ static void initRoQ()
         return;
     }
     
-    cinTable[currentHandle].VQNormal = ( void(* )( byte*, void* ) )blitVQQuad32fs;
-    cinTable[currentHandle].VQBuffer = ( void(* )( byte*, void* ) )blitVQQuad32fs;
+    cinTable[currentHandle].VQNormal = ( void( * )( byte*, void* ) )blitVQQuad32fs;
+    cinTable[currentHandle].VQBuffer = ( void( * )( byte*, void* ) )blitVQQuad32fs;
     cinTable[currentHandle].samplesPerPixel = 4;
     ROQ_GenYUVTables();
     RllSetupTable();
@@ -1460,7 +1460,7 @@ static void RoQInterrupt( void )
 {
     byte*                framedata;
     short sbuf[32768];
-    int ssize;
+    intptr_t ssize;
     
     if( currentHandle < 0 )
     {

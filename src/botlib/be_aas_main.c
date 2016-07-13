@@ -391,7 +391,7 @@ int AAS_LoadMap( const char* mapname )
 {
     int errnum;
     int i;
-    char this_mapname[256], intstr[4];
+    char this_mapname[260], intstr[4];
     qboolean loaded = qfalse;
     int missingErrNum = 0;     // TTimo: init
     

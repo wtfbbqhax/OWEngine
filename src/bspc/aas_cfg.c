@@ -182,7 +182,7 @@ void DefaultCfg( void )
 void DefaultCfg( void )
 {
     int i;
-
+    
     // default all float values to infinite
     for( i = 0; cfg_fields[i].name; i++ )
     {
@@ -217,7 +217,7 @@ void DefaultCfg( void )
     cfg.phys_gravitydirection[1]    = 0;
     cfg.phys_gravitydirection[2]    = -1;
     cfg.phys_maxsteepness           = 0.7;
-
+    
 //	cfg.phys_maxbarrier			= -999;//32;	// RIDAH: this is calculated at run-time now, from the gravity and jump velocity settings
 } //end of the function DefaultCfg
 #endif

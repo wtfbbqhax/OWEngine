@@ -101,7 +101,7 @@ typedef struct centFlameInfo_s
     vec3_t lastAngles;              // angles at last firing
     vec3_t lastOrigin;              // origin at last firing
     flameChunk_t
-    *lastFlameChunk;                // flame chunk we last spawned
+    * lastFlameChunk;               // flame chunk we last spawned
     int lastSoundUpdate;
     
     qboolean lastFiring;

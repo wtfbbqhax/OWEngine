@@ -200,15 +200,15 @@ void Error( char* error, ... )
 {
     va_list argptr;
     char text[1024];
-
+    
     va_start( argptr, error );
     vsprintf( text, error, argptr );
     va_end( argptr );
     printf( "ERROR: %s\n", text );
-
+    
     Log_Write( text );
     Log_Close();
-
+    
     exit( 1 );
 } //end of the function Error
 
@@ -216,12 +216,12 @@ void Warning( char* warning, ... )
 {
     va_list argptr;
     char text[1024];
-
+    
     va_start( argptr, warning );
     vsprintf( text, warning, argptr );
     va_end( argptr );
     printf( "WARNING: %s\n", text );
-
+    
     Log_Write( text );
 } //end of the function Warning
 
@@ -1113,10 +1113,10 @@ unsigned    BigUnsigned( unsigned l )
 short   BigShort( short l )
 {
     byte b1, b2;
-
+    
     b1 = l & 255;
     b2 = ( l >> 8 ) & 255;
-
+    
     return ( b1 << 8 ) + b2;
 }
 
@@ -1129,12 +1129,12 @@ short   LittleShort( short l )
 int    BigLong( int l )
 {
     byte b1, b2, b3, b4;
-
+    
     b1 = l & 255;
     b2 = ( l >> 8 ) & 255;
     b3 = ( l >> 16 ) & 255;
     b4 = ( l >> 24 ) & 255;
-
+    
     return ( ( int )b1 << 24 ) + ( ( int )b2 << 16 ) + ( ( int )b3 << 8 ) + b4;
 }
 
@@ -1150,13 +1150,13 @@ float   BigFloat( float l )
         byte b[4];
         float f;
     } in, out;
-
+    
     in.f = l;
     out.b[0] = in.b[3];
     out.b[1] = in.b[2];
     out.b[2] = in.b[1];
     out.b[3] = in.b[0];
-
+    
     return out.f;
 }
 
@@ -1169,10 +1169,10 @@ float   LittleFloat( float l )
 unsigned short   BigUnsignedShort( unsigned short l )
 {
     byte b1, b2;
-
+    
     b1 = l & 255;
     b2 = ( l >> 8 ) & 255;
-
+    
     return ( b1 << 8 ) + b2;
 }
 
@@ -1185,12 +1185,12 @@ unsigned short   LittleUnsignedShort( unsigned short l )
 unsigned    BigUnsigned( unsigned l )
 {
     byte b1, b2, b3, b4;
-
+    
     b1 = l & 255;
     b2 = ( l >> 8 ) & 255;
     b3 = ( l >> 16 ) & 255;
     b4 = ( l >> 24 ) & 255;
-
+    
     return ( ( unsigned )b1 << 24 ) + ( ( unsigned )b2 << 16 ) + ( ( unsigned )b3 << 8 ) + b4;
 }
 

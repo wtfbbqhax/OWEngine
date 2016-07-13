@@ -252,7 +252,7 @@ public:
         splinePoints.Clear();
     }
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     void write( fileHandle_t file, const char* name );
     
     void clear()
@@ -549,9 +549,9 @@ public:
     
     virtual void draw( bool editMode ) {};
     
-    virtual void parse( const char * ( *text ) ) {};
+    virtual void parse( const char* ( *text ) ) {};
     virtual void write( fileHandle_t file, const char* name );
-    virtual bool parseToken( const char* key, const char * ( *text ) );
+    virtual bool parseToken( const char* key, const char* ( *text ) );
     
     const char* getName()
     {
@@ -640,7 +640,7 @@ public:
         return &pos;
     }
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     void write( fileHandle_t file, const char* name );
     
     virtual int numPoints()
@@ -697,7 +697,7 @@ public:
     
     virtual const idVec3* getPosition( long t );
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     void write( fileHandle_t file, const char* name );
     
     virtual int numPoints()
@@ -810,7 +810,7 @@ public:
         target.addPoint( v );
     }
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     void write( fileHandle_t file, const char* name );
     
     virtual int numPoints()
@@ -923,7 +923,7 @@ public:
         length = len * 1000;
     }
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     void write( fileHandle_t file, const char* name );
     
 protected:
@@ -1005,7 +1005,7 @@ public:                     // parameters
         time = n;
     }
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     void write( fileHandle_t file, const char* name );
     
     void setTriggered( bool b )
@@ -1100,7 +1100,7 @@ public:
         return events[index];
     }
     
-    void parse( const char * ( *text ) );
+    void parse( const char* ( *text ) );
     bool load( const char* filename );
     void save( const char* filename );
     

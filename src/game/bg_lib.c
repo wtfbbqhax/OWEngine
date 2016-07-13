@@ -84,9 +84,9 @@ static char sccsid[] = "@(#)qsort.c	8.1 (Berkeley) 6/4/93";
 #endif
 static const char rcsid[] =
 #endif /* LIBC_SCCS and not lint */
-
+    
 #include <stdlib.h>
-
+    
     typedef int cmp_t( const void*, const void* );
 static char* med3( char*, char*, char*, cmp_t* );
 static void  swapfunc( char*, char*, int, int );
@@ -99,7 +99,7 @@ static void  swapfunc( char*, char*, int, int );
  * Qsort routine from Bentley & McIlroy's "Engineering a Sort Function".
  */
 #define swapcode( TYPE, parmi, parmj, n ) {		  \
-		long i = ( n ) / sizeof( TYPE );		   \
+		int i = ( n ) / sizeof( TYPE );		   \
 		register TYPE *pi = (TYPE *) ( parmi );		  \
 		register TYPE *pj = (TYPE *) ( parmj );		  \
 		do {						\
@@ -109,8 +109,8 @@ static void  swapfunc( char*, char*, int, int );
 		} while ( --i > 0 );			  \
 }
 
-#define SWAPINIT( a, es ) swaptype = ( (char *)a - (char *)0 ) % sizeof( long ) || \
-									 es % sizeof( long ) ? 2 : es == sizeof( long ) ? 0 : 1;
+#define SWAPINIT( a, es ) swaptype = ( (char *)a - (char *)0 ) % sizeof( int ) || \
+									 es % sizeof( int ) ? 2 : es == sizeof( int ) ? 0 : 1;
 
 static void
 swapfunc( a, b, n, swaptype )
@@ -119,7 +119,7 @@ int n, swaptype;
 {
     if( swaptype <= 1 )
     {
-        swapcode( long, a, b, n )
+        swapcode( int, a, b, n )
     }
     else
     {
@@ -129,9 +129,9 @@ int n, swaptype;
 
 #define swap( a, b )				  \
 	if ( swaptype == 0 ) {				  \
-		long t = *(long *)( a );		  \
-		*(long *)( a ) = *(long *)( b );		\
-		*(long *)( b ) = t;			  \
+		long t = *(int *)( a );		  \
+		*(int *)( a ) = *(int *)( b );		\
+		*(int *)( b ) = t;			  \
 	} else \
 		swapfunc( a, b, es, swaptype )
 
@@ -144,7 +144,7 @@ cmp_t* cmp;
 {
     return cmp( a, b ) < 0 ?
            ( cmp( b, c ) < 0 ? b : ( cmp( a, c ) < 0 ? c : a ) )
-               : ( cmp( b, c ) > 0 ? b : ( cmp( a, c ) < 0 ? a : c ) );
+           : ( cmp( b, c ) > 0 ? b : ( cmp( a, c ) < 0 ? a : c ) );
 }
 
 void

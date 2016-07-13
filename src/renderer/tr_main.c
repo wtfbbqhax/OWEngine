@@ -1530,7 +1530,7 @@ qsort replacement
 
 =================
 */
-#define SWAP_DRAW_SURF( a,b ) temp = ( (int *)a )[0]; ( (int *)a )[0] = ( (int *)b )[0]; ( (int *)b )[0] = temp; temp = ( (int *)a )[1]; ( (int *)a )[1] = ( (int *)b )[1]; ( (int *)b )[1] = temp;
+#define SWAP_DRAW_SURF(a,b) temp=*((drawSurf_t*)a),*((drawSurf_t*)a)=*((drawSurf_t*)b),*((drawSurf_t*)b)=temp
 
 /* this parameter defines the cutoff between using quick sort and
    insertion sort for arrays; arrays with lengths shorter or equal to the
@@ -1541,7 +1541,7 @@ qsort replacement
 static void shortsort( drawSurf_t* lo, drawSurf_t* hi )
 {
     drawSurf_t*  p, *max;
-    int temp;
+    drawSurf_t temp;
     
     while( hi > lo )
     {
@@ -1575,12 +1575,8 @@ void qsortFast(
     unsigned size;              /* size of the sub-array */
     char* lostk[30], *histk[30];
     int stkptr;                 /* stack for saving sub-array to be processed */
-    int temp;
     
-    if( sizeof( drawSurf_t ) != 8 )
-    {
-        ri.Error( ERR_DROP, "change SWAP_DRAW_SURF macro" );
-    }
+    drawSurf_t temp;
     
     /* Note: the number of stack entries required is no more than
        1 + log2(size), so 30 is sufficient for any array */
@@ -1929,11 +1925,11 @@ void R_AddEntitySurfaces( void )
                         case MOD_MESH:
                             R_AddMD3Surfaces( ent );
                             break;
-                            // Ridah
+                        // Ridah
                         case MOD_MDC:
                             R_AddMDCSurfaces( ent );
                             break;
-                            // done.
+                        // done.
                         case MOD_MDS:
                             R_AddAnimSurfaces( ent );
                             break;

@@ -101,7 +101,7 @@ __declspec( naked ) void S_WriteLinearBlastStereo16( void )
 {
     __asm
     {
-
+    
         push edi
         push ebx
         mov ecx, ds : dword ptr[snd_linear_count]
@@ -156,7 +156,7 @@ void S_WriteLinearBlastStereo16( void );
 S_TransferStereo16
 ===================
 */
-void S_TransferStereo16( unsigned long* pbuf, int endtime )
+void S_TransferStereo16( unsigned int* pbuf, int endtime )
 {
     int lpos;
     int ls_paintedtime;
@@ -200,9 +200,9 @@ void S_TransferPaintBuffer( int endtime )
     int*     p;
     int step;
     int val;
-    unsigned long* pbuf;
+    unsigned int* pbuf;
     
-    pbuf = ( unsigned long* )dma.buffer;
+    pbuf = ( unsigned int* )dma.buffer;
     if( !pbuf )
     {
         return;

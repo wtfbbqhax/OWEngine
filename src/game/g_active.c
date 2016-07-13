@@ -1515,7 +1515,7 @@ void ClientThink_real( gentity_t* ent )
     // DHM - Nerve :: Don't do this in multiplayer
     if( g_gametype.integer == GT_SINGLE_PLAYER )
     {
-        extern void AICast_EvaluatePmove( int clientnum, pmove_t * pm );
+        extern void AICast_EvaluatePmove( int clientnum, pmove_t* pm );
         AICast_EvaluatePmove( ent->s.number, &pm );
     }
     // done.

@@ -291,7 +291,7 @@ This must be the very first function compiled into the .q3vm file
 #if defined( __MACOS__ )
 #pragma export on
 #endif
-int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6 )
+intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6 )
 {
 #if defined( __MACOS__ )
 #pragma export off
@@ -305,7 +305,7 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
             G_ShutdownGame( arg0 );
             return 0;
         case GAME_CLIENT_CONNECT:
-            return ( int )ClientConnect( arg0, arg1, arg2 );
+            return ( intptr_t )ClientConnect( arg0, arg1, arg2 );
         case GAME_CLIENT_THINK:
             ClientThink( arg0 );
             return 0;
@@ -328,13 +328,13 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
             return ConsoleCommand();
         case BOTAI_START_FRAME:
             return BotAIStartFrame( arg0 );
-            // Ridah, Cast AI
+        // Ridah, Cast AI
         case AICAST_VISIBLEFROMPOS:
             return AICast_VisibleFromPos( ( float* )arg0, arg1, ( float* )arg2, arg3, arg4 );
         case AICAST_CHECKATTACKATPOS:
             return AICast_CheckAttackAtPos( arg0, arg1, ( float* )arg2, arg3, arg4 );
-            // done.
-            
+        // done.
+        
         case GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT:
             G_RetrieveMoveSpeedsFromClient( arg0, ( char* )arg1 );
             return 0;
@@ -943,7 +943,7 @@ void G_CheckForCursorHints( gentity_t* ent )
         switch( hintType )
         {
         
-                // allow while zooming
+            // allow while zooming
             case HINT_MG42:
             case HINT_PLAYER:
             case HINT_TREASURE:

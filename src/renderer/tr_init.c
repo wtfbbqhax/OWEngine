@@ -886,6 +886,27 @@ void GL_SetDefaultState( void )
 //----(SA)	end
 }
 
+/*
+================
+R_PrintLongString
+Workaround for ri.Printf's 1024 characters buffer limit.
+================
+*/
+void R_PrintLongString( const char* string )
+{
+    char buffer[1024];
+    const char* p;
+    int size = strlen( string );
+    
+    p = string;
+    while( size > 0 )
+    {
+        Q_strncpyz( buffer, p, sizeof( buffer ) );
+        ri.Printf( PRINT_ALL, "%s", buffer );
+        p += 1023;
+        size -= 1023;
+    }
+}
 
 /*
 ================
@@ -909,7 +930,8 @@ void GfxInfo_f( void )
     ri.Printf( PRINT_ALL, "\nGL_VENDOR: %s\n", glConfig.vendor_string );
     ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
     ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
-    ri.Printf( PRINT_ALL, "GL_EXTENSIONS: %s\n", glConfig.extensions_string );
+    ri.Printf( PRINT_ALL, "GL_EXTENSIONS: %s\n" );//, glConfig.extensions_string );
+    R_PrintLongString( glConfig.extensions_string );
     ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize );
     ri.Printf( PRINT_ALL, "GL_MAX_ACTIVE_TEXTURES_ARB: %d\n", glConfig.maxActiveTextures );
     ri.Printf( PRINT_ALL, "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
@@ -1263,10 +1285,6 @@ void R_Init( void )
     
     Swap_Init();
     
-    if( ( int )tess.xyz & 15 )
-    {
-        Com_Printf( "WARNING: tess.xyz not 16 byte aligned\n" );
-    }
     memset( tess.constantColor255, 255, sizeof( tess.constantColor255 ) );
     
     //
@@ -1305,25 +1323,16 @@ void R_Init( void )
     // Ridah, init the virtual memory
     R_Hunk_Begin();
     
-    max_polys = r_maxpolys->integer;
-    if( max_polys < MAX_POLYS )
-    {
-        max_polys = MAX_POLYS;
-    }
+    max_polys = MAX_POLYS;
+    max_polyverts = MAX_POLYVERTS;
     
-    max_polyverts = r_maxpolyverts->integer;
-    if( max_polyverts < MAX_POLYVERTS )
-    {
-        max_polyverts = MAX_POLYVERTS;
-    }
-    
-//	backEndData[0] = ri.Hunk_Alloc( sizeof( *backEndData[0] ), h_low );
-    backEndData[0] = ri.Hunk_Alloc( sizeof( *backEndData[0] ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
-    
+    backEndData[0] = ri.Hunk_Alloc( sizeof( backEndData_t ), h_low );
+//	backEndData[0] = ri.Hunk_Alloc( sizeof( *backEndData[0] ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
+
     if( r_smp->integer )
     {
-//		backEndData[1] = ri.Hunk_Alloc( sizeof( *backEndData[1] ), h_low );
-        backEndData[1] = ri.Hunk_Alloc( sizeof( *backEndData[1] ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
+        backEndData[1] = ri.Hunk_Alloc( sizeof( *backEndData[1] ), h_low );
+//        backEndData[1] = ri.Hunk_Alloc( sizeof( *backEndData[1] ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
     }
     else
     {

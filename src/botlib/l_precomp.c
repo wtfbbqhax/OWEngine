@@ -1016,7 +1016,7 @@ void PC_ConvertPath( char* path )
         if( ( *ptr == '\\' || *ptr == '/' ) &&
                 ( *( ptr + 1 ) == '\\' || *( ptr + 1 ) == '/' ) )
         {
-            strcpy( ptr, ptr + 1 );
+            memmove( ptr, ptr + 1, strlen( ptr ) );
         } //end if
         else
         {
@@ -1089,7 +1089,7 @@ int PC_Directive_include( source_t* source )
             {
                 break;
             }
-            strncat( path, token.string, _MAX_PATH );
+            strncat( path, token.string, _MAX_PATH - 1 );
         } //end while
         if( *token.string != '>' )
         {
@@ -1767,7 +1767,7 @@ typedef struct operator_s
 
 typedef struct value_s
 {
-    signed long int intvalue;
+    int intvalue;
     double floatvalue;
     int parentheses;
     struct value_s* prev, *next;
@@ -1857,7 +1857,7 @@ int PC_OperatorPriority( int op )
 		op = &operator_heap[numoperators++];}
 #define FreeOperator( op )
 
-int PC_EvaluateTokens( source_t* source, token_t* tokens, signed long int* intvalue,
+int PC_EvaluateTokens( source_t* source, token_t* tokens, int* intvalue,
                        double* floatvalue, int integer )
 {
     operator_t* o, *firstoperator, *lastoperator;
@@ -2447,7 +2447,7 @@ int PC_EvaluateTokens( source_t* source, token_t* tokens, signed long int* intva
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PC_Evaluate( source_t* source, signed long int* intvalue,
+int PC_Evaluate( source_t* source, int* intvalue,
                  double* floatvalue, int integer )
 {
     token_t token, *firsttoken, *lasttoken;
@@ -2583,7 +2583,7 @@ int PC_Evaluate( source_t* source, signed long int* intvalue,
 // Returns:					-
 // Changes Globals:		-
 //============================================================================
-int PC_DollarEvaluate( source_t* source, signed long int* intvalue,
+int PC_DollarEvaluate( source_t* source, int* intvalue,
                        double* floatvalue, int integer )
 {
     int indent, defined = qfalse;
@@ -2739,7 +2739,7 @@ int PC_DollarEvaluate( source_t* source, signed long int* intvalue,
 //============================================================================
 int PC_Directive_elif( source_t* source )
 {
-    signed long int value;
+    int value;
     int type, skip;
     
     PC_PopIndent( source, &type, &skip );
@@ -2764,7 +2764,7 @@ int PC_Directive_elif( source_t* source )
 //============================================================================
 int PC_Directive_if( source_t* source )
 {
-    signed long int value;
+    int value;
     int skip;
     
     if( !PC_Evaluate( source, &value, NULL, qtrue ) )
@@ -2842,7 +2842,7 @@ void UnreadSignToken( source_t* source )
 //============================================================================
 int PC_Directive_eval( source_t* source )
 {
-    signed long int value;
+    int value;
     token_t token;
     
     if( !PC_Evaluate( source, &value, NULL, qtrue ) )
@@ -2959,7 +2959,7 @@ int PC_ReadDirective( source_t* source )
 //============================================================================
 int PC_DollarDirective_evalint( source_t* source )
 {
-    signed long int value;
+    int value;
     token_t token;
     
     if( !PC_DollarEvaluate( source, &value, NULL, qtrue ) )

@@ -1274,7 +1274,7 @@ void Com_InitHunkMemory( void )
         Com_Error( ERR_FATAL, "Hunk data failed to allocate %i megs", s_hunkTotal / ( 1024 * 1024 ) );
     }
     // cacheline align
-    s_hunkData = ( byte* )( ( ( int )s_hunkData + 31 ) & ~31 );
+    s_hunkData = ( byte* )( ( ( intptr_t )s_hunkData + 31 ) & ~31 );
     Hunk_Clear();
     
     Cmd_AddCommand( "meminfo", Com_Meminfo_f );
@@ -1919,41 +1919,41 @@ int Com_EventLoop( void )
         switch( ev.evType )
         {
             default:
-                    // bk001129 - was ev.evTime
-                    Com_Error( ERR_FATAL, "Com_EventLoop: bad event type %i", ev.evType );
+                // bk001129 - was ev.evTime
+                Com_Error( ERR_FATAL, "Com_EventLoop: bad event type %i", ev.evType );
                 break;
             case SE_NONE:
-                    break;
+                break;
             case SE_KEY:
-                    CL_KeyEvent( ev.evValue, ev.evValue2, ev.evTime );
+                CL_KeyEvent( ev.evValue, ev.evValue2, ev.evTime );
                 break;
             case SE_CHAR:
-                    CL_CharEvent( ev.evValue );
+                CL_CharEvent( ev.evValue );
                 break;
             case SE_MOUSE:
-                    CL_MouseEvent( ev.evValue, ev.evValue2, ev.evTime );
+                CL_MouseEvent( ev.evValue, ev.evValue2, ev.evTime );
                 break;
             case SE_JOYSTICK_AXIS:
-                    CL_JoystickEvent( ev.evValue, ev.evValue2, ev.evTime );
+                CL_JoystickEvent( ev.evValue, ev.evValue2, ev.evTime );
                 break;
             case SE_CONSOLE:
-                    Cbuf_AddText( ( char* )ev.evPtr );
+                Cbuf_AddText( ( char* )ev.evPtr );
                 Cbuf_AddText( "\n" );
                 break;
             case SE_PACKET:
-                    // this cvar allows simulation of connections that
-                    // drop a lot of packets.  Note that loopback connections
-                    // don't go through here at all.
-                    if( com_dropsim->value > 0 )
-                    {
-                        static int seed;
-                        
-                        if( Q_random( &seed ) < com_dropsim->value )
-                        {
-                            break;      // drop this packet
-                        }
-                    }
+                // this cvar allows simulation of connections that
+                // drop a lot of packets.  Note that loopback connections
+                // don't go through here at all.
+                if( com_dropsim->value > 0 )
+                {
+                    static int seed;
                     
+                    if( Q_random( &seed ) < com_dropsim->value )
+                    {
+                        break;      // drop this packet
+                    }
+                }
+                
                 evFrom = *( netadr_t* )ev.evPtr;
                 buf.cursize = ev.evPtrLength - sizeof( evFrom );
                 
@@ -2890,11 +2890,11 @@ void Com_Memcpy( void* dest, const void* src, const size_t count )
         mov ebx, src
         cmp ecx, 32                         // padding only?
         jl padding
-
+        
         mov edi, ecx
         and     edi, ~31                // edi = count&~31
         sub edi, 32
-
+        
         align 16
         loopMisAligned:
         mov eax, [ebx + edi + 0 + 0 * 8]
@@ -2915,14 +2915,14 @@ void Com_Memcpy( void* dest, const void* src, const size_t count )
         mov     [edx + edi + 4 + 3 * 8], esi
         sub edi, 32
         jge loopMisAligned
-
+        
         mov edi, ecx
         and     edi, ~31
         add ebx, edi                    // increase src pointer
         add edx, edi                    // increase dst pointer
         and     ecx, 31                 // new count
         jz outta                        // if count = 0, get outta here
-
+        
         padding:
         cmp ecx, 16
         jl skip16
@@ -2979,7 +2979,7 @@ void Com_Memcpy( void* dest, const void* src, const size_t count )
 void Com_Memset( void* dest, const int val, const size_t count )
 {
     unsigned int fillval;
-
+    
     if( count < 8 )
     {
         __asm
@@ -3009,14 +3009,14 @@ void Com_Memset( void* dest, const int val, const size_t count )
         }
         return;
     }
-
+    
     fillval = val;
-
+    
     fillval = fillval | ( fillval << 8 );
     fillval = fillval | ( fillval << 16 );        // fill dword with 8-bit pattern
-
+    
     _copyDWord( ( unsigned int* )( dest ), fillval, count / 4 );
-
+    
     __asm                                   // padding of 0-3 bytes
     {
         mov ecx, count
@@ -3034,11 +3034,11 @@ void Com_Memset( void* dest, const int val, const size_t count )
         je skipA
         mov byte ptr [ebx + 2], al
         jmp skipA
-        skipB:
+skipB:
         cmp ecx, 0
         je skipA
         mov byte ptr [ebx], al
-        skipA:
+skipA:
     }
 }
 
@@ -3046,12 +3046,12 @@ qboolean Com_Memcmp( const void* src0, const void* src1, const unsigned int coun
 {
     unsigned int i;
     // MMX version anyone?
-
+    
     if( count >= 16 )
     {
         unsigned int* dw = ( unsigned int* )( src0 );
         unsigned int* sw = ( unsigned int* )( src1 );
-
+        
         unsigned int nm2 = count / 16;
         for( i = 0; i < nm2; i += 4 )
         {
@@ -3073,7 +3073,7 @@ qboolean Com_Memcmp( const void* src0, const void* src1, const unsigned int coun
                 return qfalse;
             }
     }
-
+    
     return qtrue;
 }
 
@@ -3082,35 +3082,35 @@ void Com_Prefetch( const void* s, const unsigned int bytes, e_prefetch type )
     // write buffer prefetching is performed only if
     // the processor benefits from it. Read and read/write
     // prefetching is always performed.
-
+    
     switch( type )
     {
         case PRE_WRITE:
-                break;
+            break;
         case PRE_READ:
-            case PRE_READ_WRITE:
-
-                    __asm
-                {
-                    mov ebx, s
-                    mov ecx, bytes
-                    cmp ecx, 4096                   // clamp to 4kB
-                    jle skipClamp
-                    mov ecx, 4096
-                    skipClamp:
-                    add ecx, 0x1f
-                    shr ecx, 5                      // number of cache lines
-                    jz skip
-                    jmp loopie
-
-                    align 16
-                    loopie: test byte ptr [ebx], al
-                    add ebx, 32
-                    dec ecx
-                    jnz loopie
-                    skip:
-                }
-
+        case PRE_READ_WRITE:
+        
+            __asm
+            {
+                mov ebx, s
+                mov ecx, bytes
+                cmp ecx, 4096                   // clamp to 4kB
+                jle skipClamp
+                mov ecx, 4096
+                skipClamp:
+                add ecx, 0x1f
+                shr ecx, 5                      // number of cache lines
+                jz skip
+                jmp loopie
+                
+                align 16
+                loopie: test byte ptr [ebx], al
+                add ebx, 32
+                dec ecx
+                jnz loopie
+                skip:
+            }
+            
             break;
     }
 }

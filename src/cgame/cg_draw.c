@@ -2559,7 +2559,7 @@ static void CG_DrawCrosshair( void )
     switch( weapnum )
     {
     
-            // weapons that get no reticle
+        // weapons that get no reticle
         case WP_NONE:       // no weapon, no crosshair
         case WP_GARAND:
             if( cg.zoomedBinoc )
@@ -2569,7 +2569,7 @@ static void CG_DrawCrosshair( void )
             return;
             break;
             
-            // special reticle for weapon
+        // special reticle for weapon
         case WP_KNIFE:
             if( cg.zoomedBinoc )
             {

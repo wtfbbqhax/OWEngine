@@ -117,6 +117,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <limits.h>
+#include <stdint.h>
 
 #endif
 
@@ -126,13 +127,7 @@
 
 #endif
 
-
-// this is the define for determining if we have an asm version of a C function
-#if ( defined _M_IX86 || defined __i386__ ) && !defined __sun__  && !defined __LCC__
-#define id386   1
-#else
 #define id386   0
-#endif
 
 // for windows fastcall option
 
@@ -223,8 +218,10 @@ void Sys_PumpEvents( void );
 #define CPUSTRING   "linux-i386"
 #elif defined __axp__
 #define CPUSTRING   "linux-alpha"
-#else
+#elif defined __android__
 #define CPUSTRING   "android-arm"
+#elif defined __x86_64__
+#define CPUSTRING   "linux-amd64"
 #endif
 
 #define PATH_SEP '/'

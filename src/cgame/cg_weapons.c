@@ -1980,13 +1980,13 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles )
                 leanscale = 2.0f;
                 break;
                 
-                // never adjust
+            // never adjust
             case WP_KNIFE:
             case WP_GRENADE_LAUNCHER:
             case WP_GRENADE_PINEAPPLE:
                 break;
                 
-                // adjust when leaning right (in case of reload)
+            // adjust when leaning right (in case of reload)
             default:
                 if( cg.predictedPlayerState.leanf > 0 )
                 {
@@ -4260,7 +4260,7 @@ int getEquivWeapon( int weapnum )
     
     switch( weapnum )
     {
-            // going from german to american
+        // going from german to american
         case WP_LUGER:
             num = WP_COLT;
             break;
@@ -4274,7 +4274,7 @@ int getEquivWeapon( int weapnum )
             num = WP_GRENADE_PINEAPPLE;
             break;
             
-            // going from american to german
+        // going from american to german
         case WP_COLT:
             num = WP_LUGER;
             break;
@@ -6610,7 +6610,7 @@ void CG_MissileHitPlayer( centity_t* cent, int weapon, vec3_t origin, vec3_t dir
     // others will just make the blood
     switch( weapon )
     {
-            // knives just make the flesh hit sound.  no other effects
+        // knives just make the flesh hit sound.  no other effects
         case WP_KNIFE:
             i = rand() % 4;
             if( cgs.media.sfx_knifehit[i] )

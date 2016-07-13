@@ -243,7 +243,7 @@ void* GetMemory( unsigned long size )
 {
     void* ptr;
     memoryblock_t* block;
-
+    
     ptr = malloc( size + sizeof( memoryblock_t ) );
     block = ( memoryblock_t* ) ptr;
     block->id = MEM_ID;
@@ -309,7 +309,7 @@ void* GetHunkMemory( unsigned long size )
 memoryblock_t* BlockFromPointer( void* ptr, char* str )
 {
     memoryblock_t* block;
-
+    
     if( !ptr )
     {
 #ifdef MEMDEBUG
@@ -326,7 +326,7 @@ memoryblock_t* BlockFromPointer( void* ptr, char* str )
     } //end if
     if( block->ptr != ptr )
     {
-
+    
         Error( "%s: memory block pointer invalid\n", str );
     } //end if
     return block;
@@ -340,7 +340,7 @@ memoryblock_t* BlockFromPointer( void* ptr, char* str )
 void FreeMemory( void* ptr )
 {
     memoryblock_t* block;
-
+    
     block = BlockFromPointer( ptr, "FreeMemory" );
     if( !block )
     {
@@ -361,7 +361,7 @@ void FreeMemory( void* ptr )
 int MemoryByteSize( void* ptr )
 {
     memoryblock_t* block;
-
+    
     block = BlockFromPointer( ptr, "MemoryByteSize" );
     if( !block )
     {
@@ -400,7 +400,7 @@ void PrintMemoryLabels( void )
 {
     memoryblock_t* block;
     int i;
-
+    
     PrintUsedMemorySize();
     i = 0;
     for( block = memory; block; block = block->next )
@@ -420,7 +420,7 @@ void PrintMemoryLabels( void )
 void DumpMemory( void )
 {
     memoryblock_t* block;
-
+    
     for( block = memory; block; block = memory )
     {
         FreeMemory( block->ptr );

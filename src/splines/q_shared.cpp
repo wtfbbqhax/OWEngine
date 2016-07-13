@@ -982,7 +982,7 @@ Info_NextPair
 Used to itterate through all the key/value pairs in an info string
 ===================
 */
-void Info_NextPair( const char * ( *head ), char key[MAX_INFO_KEY], char value[MAX_INFO_VALUE] )
+void Info_NextPair( const char* ( *head ), char key[MAX_INFO_KEY], char value[MAX_INFO_VALUE] )
 {
     char*    o;
     const char*  s;
