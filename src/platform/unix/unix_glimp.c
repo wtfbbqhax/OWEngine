@@ -140,9 +140,9 @@ static int win_x, win_y;
 
 static XF86VidModeModeInfo** vidmodes;
 static int vidmode_GammaRampSize;
-static unsigned short *vidmode_GammaRampRed;
-static unsigned short *vidmode_GammaRampGreen;
-static unsigned short *vidmode_GammaRampBlue
+static unsigned short* vidmode_GammaRampRed;
+static unsigned short* vidmode_GammaRampGreen;
+static unsigned short* vidmode_GammaRampBlue
 
 //static int default_dotclock_vidmode; // bk001204 - unused
 static int num_vidmodes;
@@ -1608,11 +1608,11 @@ static void GLW_InitGamma( void )
         }
         XF86VidModeGetGamma( dpy, scrnum, &vidmode_InitialGamma );
         XF86VidModeGetGammaRampSize( dpy, scrnum, &vidmode_GammaRampSize );
-        vidmode_GammaRampRed = (unsigned short *)calloc( vidmode_GammaRampSize, sizeof(unsigned short) );
-        vidmode_GammaRampGreen = (unsigned short *)calloc( vidmode_GammaRampSize, sizeof(unsigned short) );
-        vidmode_GammaRampBlue = (unsigned short *)calloc( vidmode_GammaRampSize, sizeof(unsigned short) );
+        vidmode_GammaRampRed = ( unsigned short* )calloc( vidmode_GammaRampSize, sizeof( unsigned short ) );
+        vidmode_GammaRampGreen = ( unsigned short* )calloc( vidmode_GammaRampSize, sizeof( unsigned short ) );
+        vidmode_GammaRampBlue = ( unsigned short* )calloc( vidmode_GammaRampSize, sizeof( unsigned short ) );
         XF86VidModeGetGammaRamp( dpy, scrnum, vidmode_GammaRampSize, vidmode_GammaRampRed, vidmode_GammaRampGreen, vidmode_GammaRampBlue );
- 		
+        
         ri.Printf( PRINT_ALL, "XF86 Gamma extension initialized\n" );
         glConfig.deviceSupportsGamma = qtrue;
     }

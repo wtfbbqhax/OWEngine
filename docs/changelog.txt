@@ -4,6 +4,7 @@ Changelog
 	- Reformatted code with AStyle to match global indenting and formatting
 	- Fixed initializing joystick device under Linux
 	- Restore X11 gamma ramps on GLX shutdown
+	- Added missing platform sources
 
 07-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Reorganized platform structure
