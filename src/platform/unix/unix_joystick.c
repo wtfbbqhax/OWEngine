@@ -148,97 +148,97 @@ void IN_StartupJoystick( void )
         }
         
     }
+}
+
+void IN_JoyMove( void )
+{
+    /* Store instantaneous joystick state. Hack to get around
+     * event model used in Linux joystick driver.
+       */
+    static int axes_state[16];
+    /* Old bits for Quake-style input compares. */
+    static unsigned int old_axes = 0;
+    /* Our current goodies. */
+    unsigned int axes = 0;
+    int i = 0;
     
-    void IN_JoyMove( void )
+    if( joy_fd == -1 )
     {
-        /* Store instantaneous joystick state. Hack to get around
-         * event model used in Linux joystick driver.
-           */
-        static int axes_state[16];
-        /* Old bits for Quake-style input compares. */
-        static unsigned int old_axes = 0;
-        /* Our current goodies. */
-        unsigned int axes = 0;
-        int i = 0;
-        
-        if( joy_fd == -1 )
-        {
-            return;
-        }
-        
-        /* Empty the queue, dispatching button presses immediately
-           * and updating the instantaneous state for the axes.
-           */
-        do
-        {
-            int n = -1;
-            struct js_event event;
-            
-            n = read( joy_fd, &event, sizeof( event ) );
-            
-            if( n == -1 )
-            {
-                /* No error, we're non-blocking. */
-                break;
-            }
-            
-            if( event.type & JS_EVENT_BUTTON )
-            {
-                Sys_QueEvent( 0, SE_KEY, K_JOY1 + event.number, event.value, 0, NULL );
-            }
-            else if( event.type & JS_EVENT_AXIS )
-            {
-            
-                if( event.number >= 16 )
-                {
-                    continue;
-                }
-                
-                axes_state[event.number] = event.value;
-            }
-            else
-            {
-                Com_Printf( "Unknown joystick event type\n" );
-            }
-            
-        }
-        while( 1 );
-        
-        
-        /* Translate our instantaneous state to bits. */
-        for( i = 0; i < 16; i++ )
-        {
-            float f = ( ( float ) axes_state[i] ) / 32767.0f;
-            
-            if( f < -joy_threshold->value )
-            {
-                axes |= ( 1 << ( i * 2 ) );
-            }
-            else if( f > joy_threshold->value )
-            {
-                axes |= ( 1 << ( ( i * 2 ) + 1 ) );
-            }
-            
-        }
-        
-        /* Time to update axes state based on old vs. new. */
-        for( i = 0; i < 16; i++ )
-        {
-        
-            if( ( axes & ( 1 << i ) ) && !( old_axes & ( 1 << i ) ) )
-            {
-                Sys_QueEvent( 0, SE_KEY, joy_keys[i], qtrue, 0, NULL );
-            }
-            
-            if( !( axes & ( 1 << i ) ) && ( old_axes & ( 1 << i ) ) )
-            {
-                Sys_QueEvent( 0, SE_KEY, joy_keys[i], qfalse, 0, NULL );
-            }
-        }
-        
-        /* Save for future generations. */
-        old_axes = axes;
+        return;
     }
     
+    /* Empty the queue, dispatching button presses immediately
+       * and updating the instantaneous state for the axes.
+       */
+    do
+    {
+        int n = -1;
+        struct js_event event;
+        
+        n = read( joy_fd, &event, sizeof( event ) );
+        
+        if( n == -1 )
+        {
+            /* No error, we're non-blocking. */
+            break;
+        }
+        
+        if( event.type & JS_EVENT_BUTTON )
+        {
+            Sys_QueEvent( 0, SE_KEY, K_JOY1 + event.number, event.value, 0, NULL );
+        }
+        else if( event.type & JS_EVENT_AXIS )
+        {
+        
+            if( event.number >= 16 )
+            {
+                continue;
+            }
+            
+            axes_state[event.number] = event.value;
+        }
+        else
+        {
+            Com_Printf( "Unknown joystick event type\n" );
+        }
+        
+    }
+    while( 1 );
     
     
+    /* Translate our instantaneous state to bits. */
+    for( i = 0; i < 16; i++ )
+    {
+        float f = ( ( float ) axes_state[i] ) / 32767.0f;
+        
+        if( f < -joy_threshold->value )
+        {
+            axes |= ( 1 << ( i * 2 ) );
+        }
+        else if( f > joy_threshold->value )
+        {
+            axes |= ( 1 << ( ( i * 2 ) + 1 ) );
+        }
+        
+    }
+    
+    /* Time to update axes state based on old vs. new. */
+    for( i = 0; i < 16; i++ )
+    {
+    
+        if( ( axes & ( 1 << i ) ) && !( old_axes & ( 1 << i ) ) )
+        {
+            Sys_QueEvent( 0, SE_KEY, joy_keys[i], qtrue, 0, NULL );
+        }
+        
+        if( !( axes & ( 1 << i ) ) && ( old_axes & ( 1 << i ) ) )
+        {
+            Sys_QueEvent( 0, SE_KEY, joy_keys[i], qfalse, 0, NULL );
+        }
+    }
+    
+    /* Save for future generations. */
+    old_axes = axes;
+}
+
+

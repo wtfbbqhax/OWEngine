@@ -142,7 +142,7 @@ static XF86VidModeModeInfo** vidmodes;
 static int vidmode_GammaRampSize;
 static unsigned short* vidmode_GammaRampRed;
 static unsigned short* vidmode_GammaRampGreen;
-static unsigned short* vidmode_GammaRampBlue
+static unsigned short* vidmode_GammaRampBlue;
 
 //static int default_dotclock_vidmode; // bk001204 - unused
 static int num_vidmodes;

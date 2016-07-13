@@ -5,6 +5,7 @@ Changelog
 	- Fixed initializing joystick device under Linux
 	- Restore X11 gamma ramps on GLX shutdown
 	- Added missing platform sources
+	- Fixed compiling on Linux
 
 07-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Reorganized platform structure
