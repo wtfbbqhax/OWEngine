@@ -1,8 +1,9 @@
 Changelog
 
 07-13-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Reformatted code with AStyle to match global indenting and formatting
 	- Fixed initializing joystick device under Linux
-	- reformatted code with AStyle to match global indenting and formatting
+	- Restore X11 gamma ramps on GLX shutdown
 
 07-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Reorganized platform structure
