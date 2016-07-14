@@ -269,7 +269,13 @@ void CG_AddParticleToScene( cparticle_t* p, vec3_t org, float alpha )
                     
                     while( p->org[2] < p->end )
                     {
-                        p->org[2] += ( p->start - p->end );
+                        float add;
+                        add = ( p->start - p->end );
+                        if( add == 0.f )
+                        {
+                            break;
+                        }
+                        p->org[2] += add;
                     }
                     
                     

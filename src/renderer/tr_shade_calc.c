@@ -992,6 +992,11 @@ void RB_CalcFogTexCoords( float* st )
     else
     {
         eyeT = 1;   // non-surface fog always has eye inside
+        
+        for( i = 0; i < 4; i++ )
+        {
+            fogDepthVector[i] = 0;
+        }
     }
     
     // see if the viewpoint is outside

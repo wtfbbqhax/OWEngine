@@ -2906,7 +2906,7 @@ static void UI_DrawGLInfo( rectDef_t* rect, int font, float scale, vec4_t color,
 {
     char* eptr;
     char buff[4096];
-    const char* lines[64];
+    const char* lines[512];
     int y, numLines, i;
     
     Text_Paint( rect->x + 2, rect->y, font, scale, color, va( "VENDOR: %s", uiInfo.uiDC.glconfig.vendor_string ), 0, 30, textStyle );

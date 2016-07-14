@@ -1,5 +1,8 @@
 Changelog
 
+07-14-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Misc fixes
+
 07-13-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Reformatted code with AStyle to match global indenting and formatting
 	- Fixed initializing joystick device under Linux
