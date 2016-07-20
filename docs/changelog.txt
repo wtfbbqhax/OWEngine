@@ -1,5 +1,9 @@
 Changelog
 
+07-20-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed couple of memory leaks
+	- Increased number of cast's to think between each aicast frame
+
 07-14-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Misc fixes
 	- Fixed some "may be used uninitialized" warnings

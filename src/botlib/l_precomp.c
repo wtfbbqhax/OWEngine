@@ -313,6 +313,16 @@ void PC_FreeToken( token_t* token )
 //	freetokens = token;
     numtokens--;
 } //end of the function PC_FreeToken
+
+static void PC_FreeTokens(token_t *firsttoken)
+{
+    token_t *t, *nexttoken;
+    for ( t = firsttoken; t; t = nexttoken )
+    {
+        nexttoken = t->next;
+        PC_FreeToken( t );
+}
+}
 //============================================================================
 //
 // Parameter:				-
@@ -2516,11 +2526,13 @@ int PC_Evaluate( source_t* source, int* intvalue,
 #endif //DEFINEHASHING
                 if( !define )
                 {
+                    PC_FreeTokens( firsttoken );
                     SourceError( source, "can't evaluate %s, not defined", token.string );
                     return qfalse;
                 } //end if
                 if( !PC_ExpandDefineIntoSource( source, &token, define ) )
                 {
+                    PC_FreeTokens( firsttoken );
                     return qfalse;
                 }
             } //end else
@@ -2542,6 +2554,7 @@ int PC_Evaluate( source_t* source, int* intvalue,
         } //end else
         else //can't evaluate the token
         {
+            PC_FreeTokens( firsttoken );
             SourceError( source, "can't evaluate %s", token.string );
             return qfalse;
         } //end else
@@ -2550,20 +2563,14 @@ int PC_Evaluate( source_t* source, int* intvalue,
     //
     if( !PC_EvaluateTokens( source, firsttoken, intvalue, floatvalue, integer ) )
     {
+        PC_FreeTokens( firsttoken );
         return qfalse;
     }
     //
 #ifdef DEBUG_EVAL
     Log_Write( "eval:" );
 #endif //DEBUG_EVAL
-    for( t = firsttoken; t; t = nexttoken )
-    {
-#ifdef DEBUG_EVAL
-        Log_Write( " %s", t->string );
-#endif //DEBUG_EVAL
-        nexttoken = t->next;
-        PC_FreeToken( t );
-    } //end for
+    PC_FreeTokens( firsttoken );
 #ifdef DEBUG_EVAL
     if( integer )
     {
@@ -2658,11 +2665,13 @@ int PC_DollarEvaluate( source_t* source, int* intvalue,
 #endif //DEFINEHASHING
                 if( !define )
                 {
+                    PC_FreeTokens( firsttoken );
                     SourceError( source, "can't evaluate %s, not defined", token.string );
                     return qfalse;
                 } //end if
                 if( !PC_ExpandDefineIntoSource( source, &token, define ) )
                 {
+                    PC_FreeTokens( firsttoken );
                     return qfalse;
                 }
             } //end else
@@ -2696,6 +2705,7 @@ int PC_DollarEvaluate( source_t* source, int* intvalue,
         } //end else
         else //can't evaluate the token
         {
+            PC_FreeTokens( firsttoken );
             SourceError( source, "can't evaluate %s", token.string );
             return qfalse;
         } //end else
@@ -2704,20 +2714,14 @@ int PC_DollarEvaluate( source_t* source, int* intvalue,
     //
     if( !PC_EvaluateTokens( source, firsttoken, intvalue, floatvalue, integer ) )
     {
+        PC_FreeTokens( firsttoken );
         return qfalse;
     }
     //
 #ifdef DEBUG_EVAL
     Log_Write( "$eval:" );
 #endif //DEBUG_EVAL
-    for( t = firsttoken; t; t = nexttoken )
-    {
-#ifdef DEBUG_EVAL
-        Log_Write( " %s", t->string );
-#endif //DEBUG_EVAL
-        nexttoken = t->next;
-        PC_FreeToken( t );
-    } //end for
+    PC_FreeTokens( firsttoken );
 #ifdef DEBUG_EVAL
     if( integer )
     {

@@ -440,6 +440,7 @@ gentity_t* AICast_CreateCharacter( gentity_t* ent, float* attributes, cast_weapo
     cs->enemyNum = -1;
     cs->leaderNum = -1;
     cs->castScriptStatus.scriptGotoEnt = -1;
+    cs->aiCharacter = ent->aiCharacter;
     //
     newent->aiName = ent->aiName;
     newent->aiTeam = ent->aiTeam;
@@ -536,7 +537,7 @@ void AICast_Init( void )
     trap_Cvar_Register( &cvar, "aicast_thinktime", "50", 0 );
     aicast_thinktime = trap_Cvar_VariableIntegerValue( "aicast_thinktime" );
     
-    trap_Cvar_Register( &cvar, "aicast_maxthink", "4", 0 );
+    trap_Cvar_Register( &cvar, "aicast_maxthink", "12", 0 );
     aicast_maxthink = trap_Cvar_VariableIntegerValue( "aicast_maxthink" );
     
     aicast_maxclients = trap_Cvar_VariableIntegerValue( "sv_maxclients" );
