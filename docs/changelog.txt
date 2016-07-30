@@ -2,6 +2,7 @@ Changelog
 
 07-30-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed compiling on Windows platform
+	- Fixed undefined 'CM_ClearMap'
 
 07-20-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed couple of memory leaks
