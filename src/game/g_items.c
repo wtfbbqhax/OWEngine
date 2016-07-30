@@ -374,8 +374,8 @@ void Add_Ammo( gentity_t* ent, int weapon, int count, qboolean fillClip )
     
     switch( ammoweap )
     {
-        // some weaps load straight into the 'clip' since they have no storage outside the clip
-        
+            // some weaps load straight into the 'clip' since they have no storage outside the clip
+            
         case WP_GRENADE_LAUNCHER:       // make sure if he picks up a grenade that he get's the "launcher" too
         case WP_GRENADE_PINEAPPLE:
         case WP_DYNAMITE:

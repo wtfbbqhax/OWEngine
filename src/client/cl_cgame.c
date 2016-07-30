@@ -665,13 +665,13 @@ intptr_t CL_CgameSystemCalls( intptr_t* args )
         case CG_R_REGISTERSKIN:
             return re.RegisterSkin( VMA( 1 ) );
             
-        //----(SA)	added
+            //----(SA)	added
         case CG_R_GETSKINMODEL:
             return re.GetSkinModel( args[1], VMA( 2 ), VMA( 3 ) );
         case CG_R_GETMODELSHADER:
             return re.GetShaderFromModel( args[1], args[2], args[3] );
-        //----(SA)	end
-        
+            //----(SA)	end
+            
         case CG_R_REGISTERSHADER:
             return re.RegisterShader( VMA( 1 ) );
         case CG_R_REGISTERFONT:
@@ -687,14 +687,14 @@ intptr_t CL_CgameSystemCalls( intptr_t* args )
         case CG_R_ADDPOLYTOSCENE:
             re.AddPolyToScene( args[1], args[2], VMA( 3 ) );
             return 0;
-        // Ridah
+            // Ridah
         case CG_R_ADDPOLYSTOSCENE:
             re.AddPolysToScene( args[1], args[2], VMA( 3 ), args[4] );
             return 0;
         case CG_RB_ZOMBIEFXADDNEWHIT:
             re.ZombieFXAddNewHit( args[1], VMA( 2 ), VMA( 3 ) );
             return 0;
-        // done.
+            // done.
 //	case CG_R_LIGHTFORPOINT:
 //		return re.LightForPoint( VMA(1), VMA(2), VMA(3), VMA(4) );
         case CG_R_ADDLIGHTTOSCENE:
@@ -911,7 +911,7 @@ intptr_t CL_CgameSystemCalls( intptr_t* args )
             }
             return 0;
             
-        // NERVE - SMF
+            // NERVE - SMF
         case CG_INGAME_CLOSEPOPUP:
             VM_Call( uivm, UI_KEY_EVENT, K_ESCAPE, qtrue );
             return 0;
@@ -922,8 +922,8 @@ intptr_t CL_CgameSystemCalls( intptr_t* args )
                 CL_AddToLimboChat( VMA( 1 ) );
             }
             return 0;
-        // - NERVE - SMF
-        
+            // - NERVE - SMF
+            
         case CG_GETMODELINFO:
             return SV_GetModelInfo( args[1], VMA( 2 ), VMA( 3 ) );
             

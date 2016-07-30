@@ -41,8 +41,8 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include "../renderer/tr_local.h"
-#include "../qcommon/qcommon.h"
+#include "../../renderer/tr_local.h"
+#include "../../qcommon/qcommon.h"
 #include "glw_win.h"
 #include "win_local.h"
 

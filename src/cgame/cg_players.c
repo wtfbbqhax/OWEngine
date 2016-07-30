@@ -6163,8 +6163,8 @@ void CG_Player( centity_t* cent )
                 CG_PositionEntityOnTag( &acc,   &head,  "tag_mouth", 0, NULL );
                 break;
                 
-            // weapon and weapon2
-            // these are used by characters who have permanent weapons attached to their character in the skin
+                // weapon and weapon2
+                // these are used by characters who have permanent weapons attached to their character in the skin
             case ACC_WEAPON:        // weap
                 CG_PositionEntityOnTag( &acc,   &torso, "tag_weapon", 0, NULL );
                 break;

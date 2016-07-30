@@ -81,21 +81,21 @@ void _copyDWord( unsigned int* dest, const unsigned int constant, const unsigned
                           //mov			ecx,count
                           movd		%%eax, %%mm0
                           punpckldq	%%mm0, %%mm0
-                          
+
                           // ensure that destination is qword aligned
-                          
+
                           testl		$7, %%edx				// qword padding?
                           jz		0f
                           movl		%%eax, (%%edx)
                           decl		%%ecx
                           addl		$4, %%edx
-                          
+
                           0:			movl		%%ecx, %%ebx
                           andl		$0xfffffff0, %%ecx
                           jz		2f
                           jmp		1f
                           .align      16
-                          
+
                           // funny ordering here to avoid commands
                           // that cross 32-byte boundaries (the
                           // [edx+0] version has a special 3-byte opcode...
@@ -117,7 +117,7 @@ void _copyDWord( unsigned int* dest, const unsigned int constant, const unsigned
                           jz		6f
                           cmpl		$8, %%ebx
                           jl		3f
-                          
+
                           movq		%%mm0, (%%edx)
                           movq		%%mm0, 8(%%edx)
                           movq		%%mm0, 16(%%edx)
@@ -125,21 +125,21 @@ void _copyDWord( unsigned int* dest, const unsigned int constant, const unsigned
                           addl		$32, %%edx
                           subl		$8, %%ebx
                           jz		6f
-                          
+
                           3:			cmpl		$4, %%ebx
                           jl		4f
-                          
+
                           movq		%%mm0, (%%edx)
                           movq		%%mm0, 8(%%edx)
                           addl		$16, %%edx
                           subl		$4, %%ebx
-                          
+
                           4:			cmpl		$2, %%ebx
                           jl		5f
                           movq		%%mm0, (%%edx)
                           addl		$8, %%edx
                           subl		$2, %%ebx
-                          
+
                           5:			cmpl		$1, %%ebx
                           jl		6f
                           movl		%%eax, (%%edx)
@@ -165,11 +165,11 @@ void Com_Memcpy( void* dest, const void* src, const size_t count )
                           movl		%0, %%ebx
                           cmpl		$32, %%ecx						// padding only?
                           jl		1f
-                          
+
                           movl		%%ecx, %%edi
                           andl		$0xfffffe00, %%edi					// edi = count&~31
                           subl		$32, %%edi
-                          
+
                           .align 16
                           0:
                           movl		(%%ebx, %%edi, 1), %%eax
@@ -190,14 +190,14 @@ void Com_Memcpy( void* dest, const void* src, const size_t count )
                           movl		%%esi, 28(%%edx, %%edi, 1)
                           subl		$32, %%edi
                           jge		0b
-                          
+
                           movl		%%ecx, %%edi
                           andl		$0xfffffe00, %%edi
                           addl		%%edi, %%ebx					// increase src pointer
                           addl		%%edi, %%edx					// increase dst pointer
                           andl		$31, %%ecx					// new count
                           jz		6f					// if count = 0, get outta here
-                          
+
                           1:
                           cmpl		$16, %%ecx
                           jl		2f
@@ -256,7 +256,7 @@ void Com_Memcpy( void* dest, const void* src, const size_t count )
 void Com_Memset( void* dest, const int val, const size_t count )
 {
     unsigned int fillval;
-    
+
     if( count < 8 )
     {
         __asm__ __volatile__( "
@@ -285,17 +285,17 @@ void Com_Memset( void* dest, const int val, const size_t count )
                               "
                               : : "d"( dest ), "a"( val ), "c"( count )
                               : "%ebx", "%edi", "%esi", "cc", "memory" );
-                              
+
         return;
     }
-    
+
     fillval = val;
-    
+
     fillval = fillval | ( fillval << 8 );
     fillval = fillval | ( fillval << 16 );        // fill dword with 8-bit pattern
-    
+
     _copyDWord( ( unsigned int* )( dest ), fillval, count / 4 );
-    
+
     __asm__ __volatile__( "            // padding of 0-3 bytes
                           //mov		ecx,count
                           movl		%%ecx, %%eax
@@ -327,14 +327,14 @@ void Com_Prefetch( const void* s, const unsigned int bytes, e_prefetch type )
     // write buffer prefetching is performed only if
     // the processor benefits from it. Read and read/write
     // prefetching is always performed.
-    
+
     switch( type )
     {
         case PRE_WRITE:
             break;
         case PRE_READ:
         case PRE_READ_WRITE:
-        
+
             __asm__ __volatile__( "
                                   //mov		ebx,s
                                   //mov		ecx,bytes
@@ -346,7 +346,7 @@ void Com_Prefetch( const void* s, const unsigned int bytes, e_prefetch type )
                                   shrl		$5, %%ecx					// number of cache lines
                                   jz		2f
                                   jmp		1f
-                                  
+
                                   .align 16
                                   1:		testb		%%al, (%%edx)
                                   addl		$32, %%edx
@@ -356,7 +356,7 @@ void Com_Prefetch( const void* s, const unsigned int bytes, e_prefetch type )
                                   "
                                   : : "d"( s ), "c"( bytes )
                                   : "%eax", "%ebx", "%edi", "%esi", "memory", "cc" );
-                                  
+
             break;
     }
 }

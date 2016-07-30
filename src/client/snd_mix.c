@@ -101,7 +101,7 @@ __declspec( naked ) void S_WriteLinearBlastStereo16( void )
 {
     __asm
     {
-    
+
         push edi
         push ebx
         mov ecx, ds : dword ptr[snd_linear_count]

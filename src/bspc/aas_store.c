@@ -79,7 +79,7 @@ aas_t( *aasworld );
 
 //vertex hash
 int* aas_vertexchain;                       // the next vertex in a hash chain
-int aas_hashverts[VERTEX_HASH_SIZE * VERTEX_HASH_SIZE];   // a vertex number, or 0 for no verts
+int aas_hashverts[VERTEX_HASH_SIZE* VERTEX_HASH_SIZE];    // a vertex number, or 0 for no verts
 //plane hash
 int* aas_planechain;
 int aas_hashplanes[PLANE_HASH_SIZE];

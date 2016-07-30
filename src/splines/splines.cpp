@@ -507,7 +507,7 @@ const idVec3* idSplineList::getPosition( long t )
     return splinePoints[count - 1];
 }
 
-void idSplineList::parse( const char* ( *text ) )
+void idSplineList::parse( const char * ( *text ) )
 {
     const char* token;
     //Com_MatchToken( text, "{" );
@@ -835,36 +835,36 @@ void idCameraDef::buildCamera()
             }
             case idCameraEvent::EVENT_SPEED:
             {
-            /*
-            				// take the average delay between up to the next five segments
-            				float adjust = atof(events[i]->getParam());
-            				int index = events[i]->getSegment();
-            				total = 0;
-            				count = 0;
-            
-            				// get total amount of time over the remainder of the segment
-            				for (j = index; j < cameraSpline.numSegments() - 1; j++) {
-            					total += cameraSpline.getSegmentTime(j + 1) - cameraSpline.getSegmentTime(j);
-            					count++;
-            				}
-            
-            				// multiply that by the adjustment
-            				double newTotal = total * adjust;
-            				// what is the difference..
-            				newTotal -= total;
-            				totalTime += newTotal / 1000;
-            
-            				// per segment difference
-            				newTotal /= count;
-            				int additive = newTotal;
-            
-            				// now propogate that difference out to each segment
-            				for (j = index; j < cameraSpline.numSegments(); j++) {
-            					cameraSpline.addSegmentTime(j, additive);
-            					additive += newTotal;
-            				}
-            				break;
-            */
+                /*
+                				// take the average delay between up to the next five segments
+                				float adjust = atof(events[i]->getParam());
+                				int index = events[i]->getSegment();
+                				total = 0;
+                				count = 0;
+                
+                				// get total amount of time over the remainder of the segment
+                				for (j = index; j < cameraSpline.numSegments() - 1; j++) {
+                					total += cameraSpline.getSegmentTime(j + 1) - cameraSpline.getSegmentTime(j);
+                					count++;
+                				}
+                
+                				// multiply that by the adjustment
+                				double newTotal = total * adjust;
+                				// what is the difference..
+                				newTotal -= total;
+                				totalTime += newTotal / 1000;
+                
+                				// per segment difference
+                				newTotal /= count;
+                				int additive = newTotal;
+                
+                				// now propogate that difference out to each segment
+                				for (j = index; j < cameraSpline.numSegments(); j++) {
+                					cameraSpline.addSegmentTime(j, additive);
+                					additive += newTotal;
+                				}
+                				break;
+                */
                 default:
                     break;
                 }
@@ -915,7 +915,7 @@ void idCameraDef::startCamera( long t )
 }
 
 
-void idCameraDef::parse( const char* ( *text ) )
+void idCameraDef::parse( const char * ( *text ) )
 {
 
     const char*  token;
@@ -1095,7 +1095,7 @@ const char* idCameraEvent::eventStr[] =
     "FEATHER"
 };
 
-void idCameraEvent::parse( const char* ( *text ) )
+void idCameraEvent::parse( const char * ( *text ) )
 {
     const char* token;
     Com_MatchToken( text, "{" );
@@ -1226,7 +1226,7 @@ const idVec3* idInterpolatedPosition::getPosition( long t )
 }
 
 
-void idCameraFOV::parse( const char* ( *text ) )
+void idCameraFOV::parse( const char * ( *text ) )
 {
     const char* token;
     Com_MatchToken( text, "{" );
@@ -1288,7 +1288,7 @@ void idCameraFOV::parse( const char* ( *text ) )
     Com_MatchToken( text, "}" );
 }
 
-bool idCameraPosition::parseToken( const char* key, const char* ( *text ) )
+bool idCameraPosition::parseToken( const char* key, const char * ( *text ) )
 {
     const char* token = Com_Parse( text );
     if( Q_stricmp( key, "time" ) == 0 )
@@ -1332,7 +1332,7 @@ bool idCameraPosition::parseToken( const char* key, const char* ( *text ) )
 
 
 
-void idFixedPosition::parse( const char* ( *text ) )
+void idFixedPosition::parse( const char * ( *text ) )
 {
     const char* token;
     Com_MatchToken( text, "{" );
@@ -1389,7 +1389,7 @@ void idFixedPosition::parse( const char* ( *text ) )
     Com_MatchToken( text, "}" );
 }
 
-void idInterpolatedPosition::parse( const char* ( *text ) )
+void idInterpolatedPosition::parse( const char * ( *text ) )
 {
     const char* token;
     Com_MatchToken( text, "{" );
@@ -1452,7 +1452,7 @@ void idInterpolatedPosition::parse( const char* ( *text ) )
 }
 
 
-void idSplinePosition::parse( const char* ( *text ) )
+void idSplinePosition::parse( const char * ( *text ) )
 {
     const char* token;
     Com_MatchToken( text, "{" );

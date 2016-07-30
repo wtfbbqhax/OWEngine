@@ -496,30 +496,30 @@ void NET_GetLocalAddress( void )
     char*                p;
     int ip;
     int n;
-    
+
     if( gethostname( hostname, 256 ) == -1 )
     {
         return;
     }
-    
+
     hostInfo = gethostbyname( hostname );
     if( !hostInfo )
     {
         return;
     }
-    
+
     Com_Printf( "Hostname: %s\n", hostInfo->h_name );
     n = 0;
     while( ( p = hostInfo->h_aliases[n++] ) != NULL )
     {
         Com_Printf( "Alias: %s\n", p );
     }
-    
+
     if( hostInfo->h_addrtype != AF_INET )
     {
         return;
     }
-    
+
     numIP = 0;
     while( ( p = hostInfo->h_addr_list[numIP++] ) != NULL && numIP < MAX_IPS )
     {

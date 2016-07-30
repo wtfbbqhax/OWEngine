@@ -708,12 +708,12 @@ int main( int argc, char* argv[] )
 {
     int i;
     int argbase = 1;
-    
+
     if( argc < 2 )
     {
         Usage();
     } //end if
-    
+
     if( !Q_stricmp( argv[1], "-o" ) )
     {
         if( argc < 5 )
@@ -724,7 +724,7 @@ int main( int argc, char* argv[] )
         func_filedesc = argv[3];
         argbase = 4;
     }
-    
+
     for( i = argbase; i < argc; i++ )
     {
         printf( "%d: %s\n", i, argv[i] );

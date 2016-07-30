@@ -953,7 +953,7 @@ void Sys_StreamThread( void )
     int readCount;
     int bufferPoint;
     int r;
-    
+
     // if there is any space left in the buffer, fill it up
     if( !stream.eof )
     {
@@ -965,7 +965,7 @@ void Sys_StreamThread( void )
             readCount = buffer < count ? buffer : count;
             r = FS_Read( stream.buffer + bufferPoint, readCount, stream.file );
             stream.threadPosition += r;
-            
+
             if( r != readCount )
             {
                 stream.eof = qtrue;
@@ -1007,7 +1007,7 @@ void Sys_BeginStreamedFile( fileHandle_t f, int readAhead )
     {
         Com_Error( ERR_FATAL, "Sys_BeginStreamedFile: unclosed stream" );
     }
-    
+
     stream.file = f;
     stream.buffer = Z_Malloc( readAhead );
     stream.bufferSize = readAhead;
@@ -1028,7 +1028,7 @@ void Sys_EndStreamedFile( fileHandle_t f )
     {
         Com_Error( ERR_FATAL, "Sys_EndStreamedFile: wrong file" );
     }
-    
+
     stream.file = 0;
     Z_Free( stream.buffer );
 }
@@ -1049,15 +1049,15 @@ int Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f )
     int bufferCount;
     int bufferPoint;
     byte*  dest;
-    
+
     dest = ( byte* )buffer;
     remaining = size * count;
-    
+
     if( remaining <= 0 )
     {
         Com_Error( ERR_FATAL, "Streamed read with non-positive size" );
     }
-    
+
     sleepCount = 0;
     while( remaining > 0 )
     {
@@ -1071,10 +1071,10 @@ int Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f )
             Sys_StreamThread();
             continue;
         }
-        
+
         bufferPoint = stream.streamPosition % stream.bufferSize;
         bufferCount = stream.bufferSize - bufferPoint;
-        
+
         copy = available < bufferCount ? available : bufferCount;
         if( copy > remaining )
         {
@@ -1085,7 +1085,7 @@ int Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f )
         dest += copy;
         remaining -= copy;
     }
-    
+
     return ( count * size - remaining ) / size;
 }
 
@@ -1447,7 +1447,7 @@ int main( int argc, char* argv[] )
     // int  oldtime, newtime; // bk001204 - unused
     int len, i;
     char*  cmdline;
-    void Sys_SetDefaultCDPath( const char* path );
+    void Sys_SetDefaultCDPath( const char * path );
     
     // go back to real user for config loads
     saved_euid = geteuid();

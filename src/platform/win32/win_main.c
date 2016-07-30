@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../client/client.h"
-#include "../qcommon/qcommon.h"
+#include "../../client/client.h"
+#include "../../qcommon/qcommon.h"
 #include "win_local.h"
 #include "resource.h"
 #include <errno.h>
@@ -877,7 +877,7 @@ void Sys_StreamFillBuffer( int i )
     int buffer;
     int readCount;
     int bufferPoint;
-    
+
     // if there is any space left in the buffer, fill it up
     if( stream.sIO[i].active  && !stream.sIO[i].eof )
     {
@@ -886,11 +886,11 @@ void Sys_StreamFillBuffer( int i )
         {
             return;
         }
-        
+
         bufferPoint = stream.sIO[i].threadPosition % stream.sIO[i].bufferSize;
         buffer = stream.sIO[i].bufferSize - bufferPoint;
         readCount = buffer < count ? buffer : count;
-        
+
         r = FS_Read2( stream.sIO[i].buffer + bufferPoint, readCount, stream.sIO[i].file );
         if( r != readCount )
         {
@@ -910,7 +910,7 @@ A thread will be sitting in this loop forever
 void Sys_StreamThread( void )
 {
     int i;
-    
+
     while( 1 )
     {
         Sleep( 10 );
@@ -932,9 +932,9 @@ Sys_InitStreamThread
 void Sys_InitStreamThread( void )
 {
     int i;
-    
+
     InitializeCriticalSection( &stream.crit );
-    
+
     stream.threadHandle = CreateThread(
                               NULL,   // LPSECURITY_ATTRIBUTES lpsa,
                               0,      // DWORD cbStack,
@@ -942,12 +942,12 @@ void Sys_InitStreamThread( void )
                               0,      // LPVOID lpvThreadParm,
                               0,      //   DWORD fdwCreate,
                               &stream.threadId );
-                              
+
     for( i = 0; i < 64; i++ )
     {
         stream.sIO[i].active = qfalse;
     }
-    
+
     stream.musicThreadHandle = CreateThread(
                                    NULL,   // LPSECURITY_ATTRIBUTES lpsa,
                                    0,      // DWORD cbStack,
@@ -978,7 +978,7 @@ void Sys_BeginStreamedFile( fileHandle_t f, int readAhead )
     {
         Sys_EndStreamedFile( stream.sIO[f].file );
     }
-    
+
     stream.sIO[f].buffer = Z_Malloc( readAhead );
     stream.sIO[f].bufferSize = readAhead;
     stream.sIO[f].streamPosition = 0;
@@ -986,11 +986,11 @@ void Sys_BeginStreamedFile( fileHandle_t f, int readAhead )
     stream.sIO[f].eof = qfalse;
     stream.sIO[f].file = f;
     stream.sIO[f].active = qtrue;
-    
+
     EnterCriticalSection( &stream.crit );
-    
+
     Sys_StreamFillBuffer( f );
-    
+
     LeaveCriticalSection( &stream.crit );
 }
 
@@ -1006,16 +1006,16 @@ void Sys_EndStreamedFile( fileHandle_t f )
     {
         Com_Error( ERR_FATAL, "Sys_EndStreamedFile: wrong file" );
     }
-    
+
     EnterCriticalSection( &stream.crit );
-    
+
     stream.sIO[f].active = qfalse;
     stream.sIO[f].file = 0;
-    
+
     Z_Free( stream.sIO[f].buffer );
-    
+
     stream.sIO[f].buffer = NULL;
-    
+
     LeaveCriticalSection( &stream.crit );
 }
 
@@ -1035,20 +1035,20 @@ int Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f )
     int bufferCount;
     int bufferPoint;
     byte*    dest;
-    
+
     if( stream.sIO[f].active == qfalse )
     {
         Com_Error( ERR_FATAL, "Streamed read with non-streaming file" );
     }
-    
+
     dest = ( byte* )buffer;
     remaining = size * count;
-    
+
     if( remaining <= 0 )
     {
         Com_Error( ERR_FATAL, "Streamed read with non-positive size" );
     }
-    
+
     sleepCount = 0;
     while( remaining > 0 )
     {
@@ -1070,10 +1070,10 @@ int Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f )
             Sleep( 10 );
             continue;
         }
-        
+
         bufferPoint = stream.sIO[f].streamPosition % stream.sIO[f].bufferSize;
         bufferCount = stream.sIO[f].bufferSize - bufferPoint;
-        
+
         copy = available < bufferCount ? available : bufferCount;
         if( copy > remaining )
         {
@@ -1084,7 +1084,7 @@ int Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f )
         dest += copy;
         remaining -= copy;
     }
-    
+
     return ( count * size - remaining ) / size;
 }
 
@@ -1099,13 +1099,13 @@ void Sys_StreamSeek( fileHandle_t f, int offset, int origin )
 
     // halt the thread
     EnterCriticalSection( &stream.crit );
-    
+
     // clear to that point
     FS_Seek( f, offset, origin );
     stream.sIO[f].streamPosition = 0;
     stream.sIO[f].threadPosition = 0;
     stream.sIO[f].eof = qfalse;
-    
+
     // let the thread start running at the new position
     LeaveCriticalSection( &stream.crit );
 }
@@ -1113,7 +1113,7 @@ void Sys_StreamSeek( fileHandle_t f, int offset, int origin )
 void* Sys_InitializeCriticalSection()
 {
     LPCRITICAL_SECTION crit;
-    
+
     crit = malloc( sizeof( CRITICAL_SECTION ) );
     InitializeCriticalSection( crit );
     return crit;

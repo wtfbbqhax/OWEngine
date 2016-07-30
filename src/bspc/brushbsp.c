@@ -656,7 +656,7 @@ int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, plane_t* p )
 {
     float dist1, dist2;
     int sides;
-    
+
     // axial planes are easy
     if( p->type < 3 )
     {
@@ -671,7 +671,7 @@ int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, plane_t* p )
         }
         return sides;
     } //end if
-    
+
 // general case
     switch( p->signbits )
     {
@@ -712,7 +712,7 @@ int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, plane_t* p )
 //		assert( 0 );
             break;
     }
-    
+
     sides = 0;
     if( dist1 - p->dist >= PLANESIDE_EPSILON )
     {
@@ -722,7 +722,7 @@ int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, plane_t* p )
     {
         sides |= PSIDE_BACK;
     }
-    
+
 //	assert(sides != 0);
 
     return sides;

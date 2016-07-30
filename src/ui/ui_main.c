@@ -3185,12 +3185,12 @@ static void UI_OwnerDraw( float x, float y, float w, float h, float text_x, floa
         case UI_KEYBINDSTATUS:
             UI_DrawKeyBindStatus( &rect, font, scale, color, textStyle );
             break;
-        // NERVE - SMF
+            // NERVE - SMF
         case UI_LIMBOCHAT:
             UI_DrawLimboChat( &rect, font, scale, color, textStyle );
             break;
-        // -NERVE - SMF
-        
+            // -NERVE - SMF
+            
         default:
             break;
     }
@@ -8415,7 +8415,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu )
                 Menus_ActivateByName( "briefing" );
                 return;
                 
-            // NERVE - SMF
+                // NERVE - SMF
             case UIMENU_WM_PICKTEAM:
                 trap_Cvar_Set( "cl_paused", "1" );
                 trap_Key_SetCatcher( KEYCATCH_UI );
@@ -8445,7 +8445,7 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu )
                 Menus_OpenByName( "wm_limboOptions" );
                 Menus_OpenByName( "wm_limboButtonBar" );
                 return;
-            // -NERVE - SMF
+                // -NERVE - SMF
             default:
                 break;
         }

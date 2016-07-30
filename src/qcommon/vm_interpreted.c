@@ -593,7 +593,7 @@ nextInstruction2:
                 }
                 goto nextInstruction;
                 
-            // push and pop are only needed for discarded or bad function return values
+                // push and pop are only needed for discarded or bad function return values
             case OP_PUSH:
                 opStack++;
                 goto nextInstruction;
@@ -650,12 +650,12 @@ nextInstruction2:
                 }
                 goto nextInstruction;
                 
-            /*
-            ===================================================================
-            BRANCHES
-            ===================================================================
-            */
-            
+                /*
+                ===================================================================
+                BRANCHES
+                ===================================================================
+                */
+                
             case OP_JUMP:
                 programCounter = r0;
                 programCounter = vm->instructionPointers[ programCounter ];
@@ -877,8 +877,8 @@ nextInstruction2:
                 }
                 
                 
-            //===================================================================
-            
+                //===================================================================
+                
             case OP_NEGI:
                 *opStack = -r0;
                 goto nextInstruction;

@@ -510,8 +510,8 @@ intptr_t SV_GameSystemCalls( intptr_t* args )
         case G_GETTAG:
             return SV_GetTag( args[1], VMA( 2 ), VMA( 3 ) );
             
-        //====================================
-        
+            //====================================
+            
         case BOTLIB_SETUP:
             return SV_BotLibSetup();
         case BOTLIB_SHUTDOWN:
@@ -561,12 +561,12 @@ intptr_t SV_GameSystemCalls( intptr_t* args )
         case BOTLIB_AAS_TIME:
             return FloatAsInt( botlib_export->aas.AAS_Time() );
             
-        // Ridah
+            // Ridah
         case BOTLIB_AAS_SETCURRENTWORLD:
             botlib_export->aas.AAS_SetCurrentWorld( args[1] );
             return 0;
-        // done.
-        
+            // done.
+            
         case BOTLIB_AAS_POINT_AREA_NUM:
             return botlib_export->aas.AAS_PointAreaNum( VMA( 1 ) );
         case BOTLIB_AAS_TRACE_AREAS:
@@ -597,7 +597,7 @@ intptr_t SV_GameSystemCalls( intptr_t* args )
             return botlib_export->aas.AAS_PredictClientMovement( VMA( 1 ), args[2], VMA( 3 ), args[4], args[5],
                     VMA( 6 ), VMA( 7 ), args[8], args[9], VMF( 10 ), args[11], args[12], args[13] );
                     
-        // Ridah, route-tables
+            // Ridah, route-tables
         case BOTLIB_AAS_RT_SHOWROUTE:
             botlib_export->aas.AAS_RT_ShowRoute( VMA( 1 ), args[2], args[3] );
             return 0;
@@ -614,8 +614,8 @@ intptr_t SV_GameSystemCalls( intptr_t* args )
         case BOTLIB_AAS_SETAASBLOCKINGENTITY:
             botlib_export->aas.AAS_SetAASBlockingEntity( VMA( 1 ), VMA( 2 ), args[3] );
             return 0;
-        // done.
-        
+            // done.
+            
         case BOTLIB_EA_SAY:
             botlib_export->ea.EA_Say( args[1], VMA( 2 ) );
             return 0;
@@ -873,12 +873,12 @@ intptr_t SV_GameSystemCalls( intptr_t* args )
         case BOTLIB_AI_INIT_MOVE_STATE:
             botlib_export->ai.BotInitMoveState( args[1], VMA( 2 ) );
             return 0;
-        // Ridah
+            // Ridah
         case BOTLIB_AI_INIT_AVOID_REACH:
             botlib_export->ai.BotInitAvoidReach( args[1] );
             return 0;
-        // done.
-        
+            // done.
+            
         case BOTLIB_AI_CHOOSE_BEST_FIGHT_WEAPON:
             return botlib_export->ai.BotChooseBestFightWeapon( args[1], VMA( 2 ) );
         case BOTLIB_AI_GET_WEAPON_INFO:

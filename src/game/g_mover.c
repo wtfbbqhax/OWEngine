@@ -829,7 +829,7 @@ void SetMoverState( gentity_t* ent, moverState_t moverState, int time )
             ent->s.pos.trType = TR_STATIONARY;
             break;
             
-        // JOSEPH 1-26-00
+            // JOSEPH 1-26-00
         case MOVER_POS3:
             VectorCopy( ent->pos3, ent->s.pos.trBase );
             ent->s.pos.trType = TR_STATIONARY;
@@ -849,8 +849,8 @@ void SetMoverState( gentity_t* ent, moverState_t moverState, int time )
             VectorScale( delta, f, ent->s.pos.trDelta );
             ent->s.pos.trType = TR_LINEAR_STOP;
             break;
-        // END JOSEPH
-        
+            // END JOSEPH
+            
         case MOVER_1TO2:        // opening
             VectorCopy( ent->pos1, ent->s.pos.trBase );
             VectorSubtract( ent->pos2, ent->pos1, delta );

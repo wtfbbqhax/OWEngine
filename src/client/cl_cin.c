@@ -101,7 +101,7 @@ static unsigned short vq8[256 * 256 * 4];
 
 typedef struct
 {
-    byte linbuf[DEFAULT_CIN_WIDTH * DEFAULT_CIN_HEIGHT * 4 * 2];
+    byte linbuf[DEFAULT_CIN_WIDTH* DEFAULT_CIN_HEIGHT * 4 * 2];
     byte file[65536];
     short sqrTable[256];
     
@@ -842,11 +842,11 @@ static inline unsigned int yuv_to_rgb24( long y, long u, long v )
 static unsigned int yuv_to_rgb24( long y, long u, long v )
 {
     long r, g, b, YY = ( long )( ROQ_YY_tab[( y )] );
-    
+
     r = ( YY + ROQ_VR_tab[v] ) >> 6;
     g = ( YY + ROQ_UG_tab[u] + ROQ_VG_tab[v] ) >> 6;
     b = ( YY + ROQ_UB_tab[u] ) >> 6;
-    
+
     if( r < 0 )
     {
         r = 0;
@@ -871,7 +871,7 @@ static unsigned int yuv_to_rgb24( long y, long u, long v )
     {
         b = 255;
     }
-    
+
     return LittleLong( ( r ) | ( g << 8 ) | ( b << 16 ) | ( 255 << 24 ) );
 }
 #endif
@@ -1395,8 +1395,8 @@ static void initRoQ()
         return;
     }
     
-    cinTable[currentHandle].VQNormal = ( void( * )( byte*, void* ) )blitVQQuad32fs;
-    cinTable[currentHandle].VQBuffer = ( void( * )( byte*, void* ) )blitVQQuad32fs;
+    cinTable[currentHandle].VQNormal = ( void(* )( byte*, void* ) )blitVQQuad32fs;
+    cinTable[currentHandle].VQBuffer = ( void(* )( byte*, void* ) )blitVQQuad32fs;
     cinTable[currentHandle].samplesPerPixel = 4;
     ROQ_GenYUVTables();
     RllSetupTable();

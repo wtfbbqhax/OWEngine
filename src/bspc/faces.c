@@ -112,7 +112,7 @@ typedef struct hashvert_s
 
 
 int vertexchain[MAX_MAP_VERTS];     // the next vertex in a hash chain
-int hashverts[HASH_SIZE * HASH_SIZE]; // a vertex number, or 0 for no verts
+int hashverts[HASH_SIZE* HASH_SIZE];  // a vertex number, or 0 for no verts
 
 face_t*      edgefaces[MAX_MAP_EDGES][2];
 
@@ -209,9 +209,9 @@ int GetVertexnum( vec3_t v )
     int i, j;
     dvertex_t*   dv;
     vec_t d;
-    
+
     c_totalverts++;
-    
+
     // make really close values exactly integral
     for( i = 0 ; i < 3 ; i++ )
     {
@@ -224,7 +224,7 @@ int GetVertexnum( vec3_t v )
             Error( "GetVertexnum: outside +/- 4096" );
         }
     }
-    
+
     // search for an existing vertex match
     for( i = 0, dv = dvertexes ; i < numvertexes ; i++, dv++ )
     {
@@ -241,7 +241,7 @@ int GetVertexnum( vec3_t v )
             return i;       // a match
         }
     }
-    
+
     // new point
     if( numvertexes == MAX_MAP_VERTS )
     {
@@ -250,7 +250,7 @@ int GetVertexnum( vec3_t v )
     VectorCopy( v, dv->point );
     numvertexes++;
     c_uniqueverts++;
-    
+
     return numvertexes - 1;
 }
 #endif
@@ -460,7 +460,7 @@ Forced a dumb check of everything
 void FindEdgeVerts( vec3_t v1, vec3_t v2 )
 {
     int i;
-    
+
     num_edge_verts = numvertexes - 1;
     for( i = 0 ; i < num_edge_verts ; i++ )
         edge_verts[i] = i + 1;

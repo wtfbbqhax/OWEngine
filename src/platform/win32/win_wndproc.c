@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../client/client.h"
+#include "../../client/client.h"
 #include "win_local.h"
 
 WinVars_t g_wv;
@@ -534,7 +534,7 @@ LONG WINAPI MainWndProc(
                 }
                 return 0;
             }
-        // fall through
+            // fall through
         case WM_KEYDOWN:
             Sys_QueEvent( g_wv.sysMsgTime, SE_KEY, MapKey( lParam ), qtrue, 0, NULL );
             break;

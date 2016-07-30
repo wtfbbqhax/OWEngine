@@ -895,12 +895,12 @@ void Use_Shooter( gentity_t* ent, gentity_t* other, gentity_t* activator )
             fire_zombiespit( ent, ent->s.origin, dir );
             break;
             
-        // Rafael sniper
+            // Rafael sniper
         case WP_SNIPER:
             fire_lead( ent, ent->s.origin, dir, ent->damage );
             break;
-        // done
-        
+            // done
+            
         case WP_MORTAR:
             AimAtTarget( ent );   // store in ent->s.origin2 the direction/force needed to pass through the target
             VectorScale( dir, VectorLength( ent->s.origin2 ), dir );

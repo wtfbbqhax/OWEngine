@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
-#include "../qcommon/qcommon.h"
+#include "../../game/q_shared.h"
+#include "../../qcommon/qcommon.h"
 #include "win_local.h"
 #include <lmerr.h>
 #include <lmcons.h>
@@ -174,9 +174,9 @@ static int IsPentium( void )
         jmp err
     }
     
-err:
+    err:
     return qfalse;
-good:
+    good:
     return qtrue;
 }
 

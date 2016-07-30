@@ -367,7 +367,7 @@ int HL_SolidTree_r( int nodenum )
             case HL_CONTENTS_SLIME:
             case HL_CONTENTS_LAVA:
 #ifdef HLCONTENTS
-            //these contents should not be found in the BSP
+                //these contents should not be found in the BSP
             case HL_CONTENTS_ORIGIN:
             case HL_CONTENTS_CURRENT_0:
             case HL_CONTENTS_CURRENT_90:

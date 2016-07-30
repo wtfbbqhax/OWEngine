@@ -45,7 +45,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <float.h>
-#include "../renderer/tr_local.h"
+#include "../../renderer/tr_local.h"
 #include "glw_win.h"
 
 void QGL_EnableLogging( qboolean enable );

@@ -11,17 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9FC6663B-403B-4429-90C3-4CE12E5D0619}</ProjectGuid>
+    <ProjectGuid>{0FC559FD-6DCD-4A81-B286-688F79286AEF}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
@@ -42,83 +43,74 @@
     <_ProjectFileVersion>14.0.25123.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug\</OutDir>
-    <IntDir>.\Debug\</IntDir>
+    <OutDir>..\..\..\compiled\</OutDir>
+    <IntDir>..\..\..\compiled\intermediate\extractfuncs\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>extractfuncs</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release\</OutDir>
-    <IntDir>.\Release\</IntDir>
+    <OutDir>..\..\..\compiled\</OutDir>
+    <IntDir>..\..\..\compiled\intermate\extractfuncs\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>extractfuncs</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Debug/ui.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug/extractfuncs.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;UI_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;SCREWUP;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Debug/ui.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(intDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(intDir)$(TargetName)\</AssemblerListingLocation>
+      <ObjectFileName>$(intDir)$(TargetName)\</ObjectFileName>
+      <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../Debug/uix86.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>.\ui.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>../Debug/ui.pdb</ProgramDatabaseFile>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>.\Debug/uix86.map</MapFileName>
-      <BaseAddress>0x40000000</BaseAddress>
+      <MapFileName>$(intDir)$(TargetName).map</MapFileName>
+      <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
-      <ImportLibrary>.\Debug/uix86.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <MapExports>true</MapExports>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/ui.bsc</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Release/ui.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release/extractfuncs.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;UI_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;SCREWUP;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/ui.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(intDir)$(TargetName)\</AssemblerListingLocation>
+      <ObjectFileName>$(intDir)$(TargetName)\</ObjectFileName>
+      <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -127,51 +119,57 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../Release/uix86.dll</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>.\ui.def</ModuleDefinitionFile>
-      <ProgramDatabaseFile>.\Release/uix86.pdb</ProgramDatabaseFile>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>.\Release/uix86.map</MapFileName>
-      <BaseAddress>0x40000000</BaseAddress>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
-      <ImportLibrary>.\Release/uix86.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
     </Link>
     <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/ui.bsc</OutputFile>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName).bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\game\bg_lib.c">
+    <ClCompile Include="..\..\extractfuncs\extractfuncs.c" />
+    <ClCompile Include="..\..\extractfuncs\l_log.c" />
+    <ClCompile Include="..\..\extractfuncs\l_memory.c" />
+    <ClCompile Include="..\..\extractfuncs\l_precomp.c" />
+    <ClCompile Include="..\..\extractfuncs\l_script.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\botlib\be_interface.h" />
+    <ClInclude Include="..\..\botlib\l_script.h" />
+    <ClInclude Include="..\..\bspc\l_bsp_ent.h" />
+    <ClInclude Include="..\..\bspc\l_bsp_q2.h" />
+    <ClInclude Include="..\..\bspc\l_cmd.h" />
+    <ClInclude Include="..\..\bspc\l_log.h" />
+    <ClInclude Include="..\..\bspc\l_math.h" />
+    <ClInclude Include="..\..\bspc\l_mem.h" />
+    <ClInclude Include="..\..\bspc\l_poly.h" />
+    <ClInclude Include="..\..\bspc\l_qfiles.h" />
+    <ClInclude Include="..\..\bspc\l_threads.h" />
+    <ClInclude Include="..\..\bspc\l_utils.h" />
+    <ClInclude Include="..\..\bspc\q2files.h" />
+    <ClInclude Include="..\..\bspc\qbsp.h" />
+    <ClInclude Include="..\..\bspc\qfiles.h" />
+    <ClInclude Include="..\..\game\botlib.h" />
+    <ClInclude Include="..\..\game\q_shared.h" />
+    <ClInclude Include="..\..\game\surfaceflags.h" />
+    <ClInclude Include="..\..\qcommon\unzip.h" />
+    <ClInclude Include="..\..\extractfuncs\l_log.h" />
+    <ClInclude Include="..\..\extractfuncs\l_memory.h" />
+    <ClInclude Include="..\..\extractfuncs\l_precomp.h" />
+    <ClInclude Include="..\..\extractfuncs\l_script.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="extractfuncs.bat">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\game\bg_misc.c" />
-    <ClCompile Include="..\game\q_math.c" />
-    <ClCompile Include="..\game\q_shared.c" />
-    <ClCompile Include="ui_atoms.c" />
-    <ClCompile Include="ui_gameinfo.c" />
-    <ClCompile Include="ui_main.c" />
-    <ClCompile Include="ui_players.c" />
-    <ClCompile Include="ui_shared.c" />
-    <ClCompile Include="ui_syscalls.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ui.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\main\ui\menudef.h" />
-    <ClInclude Include="..\cgame\tr_types.h" />
-    <ClInclude Include="..\game\bg_public.h" />
-    <ClInclude Include="..\game\q_shared.h" />
-    <ClInclude Include="..\game\surfaceflags.h" />
-    <ClInclude Include="keycodes.h" />
-    <ClInclude Include="ui_local.h" />
-    <ClInclude Include="ui_public.h" />
-    <ClInclude Include="ui_shared.h" />
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

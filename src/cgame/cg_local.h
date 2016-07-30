@@ -431,11 +431,11 @@ typedef enum
 typedef enum
 {
     LEF_PUFF_DONT_SCALE  = 0x0001           // do not scale size over time
-    , LEF_TUMBLE          = 0x0002          // tumble over time, used for ejecting shells
-    , LEF_NOFADEALPHA     = 0x0004          // Ridah, sparks
-    , LEF_SMOKING         = 0x0008          // (SA) smoking
-    , LEF_NOTOUCHPARENT   = 0x0010          // (SA) when tracing to eval trajectory, ignore parent cent
-    , LEF_PLAYER_DAMAGE   = 0x0020          // hurt the player on impact
+                           , LEF_TUMBLE          = 0x0002          // tumble over time, used for ejecting shells
+                                   , LEF_NOFADEALPHA     = 0x0004          // Ridah, sparks
+                                           , LEF_SMOKING         = 0x0008          // (SA) smoking
+                                                   , LEF_NOTOUCHPARENT   = 0x0010          // (SA) when tracing to eval trajectory, ignore parent cent
+                                                           , LEF_PLAYER_DAMAGE   = 0x0020          // hurt the player on impact
 } leFlag_t;
 
 typedef enum

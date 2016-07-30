@@ -165,9 +165,9 @@
 extern "C" {
 #endif
 
-void* osxAllocateMemory( long size );
-void osxFreeMemory( void* pointer );
-
+    void* osxAllocateMemory( long size );
+    void osxFreeMemory( void* pointer );
+    
 #ifdef __cplusplus
 }
 #endif
@@ -593,95 +593,95 @@ int Com_GetCurrentParseLine( void );
 // ParseOnLine will return empty if there isn't another token on this line
 
 // this funny typedef just means a moving pointer into a const char * buffer
-const char* Com_Parse( const char* ( *data_p ) );
-const char* Com_ParseOnLine( const char* ( *data_p ) );
-const char* Com_ParseRestOfLine( const char* ( *data_p ) );
+const char* Com_Parse( const char * ( *data_p ) );
+const char* Com_ParseOnLine( const char * ( *data_p ) );
+const char* Com_ParseRestOfLine( const char * ( *data_p ) );
 
 void Com_UngetToken( void );
 
 #ifdef __cplusplus
-void Com_MatchToken( const char* ( *buf_p ), const char* match, qboolean warning = qfalse );
+void Com_MatchToken( const char * ( *buf_p ), const char* match, qboolean warning = qfalse );
 #else
-void Com_MatchToken( const char* ( *buf_p ), const char* match, qboolean warning );
+void Com_MatchToken( const char * ( *buf_p ), const char* match, qboolean warning );
 #endif
 
 void Com_ScriptError( const char* msg, ... );
 void Com_ScriptWarning( const char* msg, ... );
 
-void Com_SkipBracedSection( const char* ( *program ) );
-void Com_SkipRestOfLine( const char* ( *data ) );
+void Com_SkipBracedSection( const char * ( *program ) );
+void Com_SkipRestOfLine( const char * ( *data ) );
 
-float Com_ParseFloat( const char* ( *buf_p ) );
-int Com_ParseInt( const char* ( *buf_p ) );
+float Com_ParseFloat( const char * ( *buf_p ) );
+int Com_ParseInt( const char * ( *buf_p ) );
 
-void Com_Parse1DMatrix( const char* ( *buf_p ), int x, float* m );
-void Com_Parse2DMatrix( const char* ( *buf_p ), int y, int x, float* m );
-void Com_Parse3DMatrix( const char* ( *buf_p ), int z, int y, int x, float* m );
+void Com_Parse1DMatrix( const char * ( *buf_p ), int x, float* m );
+void Com_Parse2DMatrix( const char * ( *buf_p ), int y, int x, float* m );
+void Com_Parse3DMatrix( const char * ( *buf_p ), int z, int y, int x, float* m );
 
 //=====================================================================================
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void QDECL Com_sprintf( char* dest, int size, const char* fmt, ... );
-
-
+    void QDECL Com_sprintf( char* dest, int size, const char* fmt, ... );
+    
+    
 // mode parm for FS_FOpenFile
-typedef enum
-{
-    FS_READ,
-    FS_WRITE,
-    FS_APPEND,
-    FS_APPEND_SYNC
-} fsMode_t;
-
-typedef enum
-{
-    FS_SEEK_CUR,
-    FS_SEEK_END,
-    FS_SEEK_SET
-} fsOrigin_t;
-
+    typedef enum
+    {
+        FS_READ,
+        FS_WRITE,
+        FS_APPEND,
+        FS_APPEND_SYNC
+    } fsMode_t;
+    
+    typedef enum
+    {
+        FS_SEEK_CUR,
+        FS_SEEK_END,
+        FS_SEEK_SET
+    } fsOrigin_t;
+    
 //=============================================
 
-int Q_isprint( int c );
-int Q_islower( int c );
-int Q_isupper( int c );
-int Q_isalpha( int c );
-
+    int Q_isprint( int c );
+    int Q_islower( int c );
+    int Q_isupper( int c );
+    int Q_isalpha( int c );
+    
 // portable case insensitive compare
-int     Q_stricmp( const char* s1, const char* s2 );
-int     Q_strncmp( const char* s1, const char* s2, int n );
-int     Q_stricmpn( const char* s1, const char* s2, int n );
-char*    Q_strlwr( char* s1 );
-char*    Q_strupr( char* s1 );
-char*    Q_strrchr( const char* string, int c );
-
+    int     Q_stricmp( const char* s1, const char* s2 );
+    int     Q_strncmp( const char* s1, const char* s2, int n );
+    int     Q_stricmpn( const char* s1, const char* s2, int n );
+    char*    Q_strlwr( char* s1 );
+    char*    Q_strupr( char* s1 );
+    char*    Q_strrchr( const char* string, int c );
+    
 // buffer size safe library replacements
-void    Q_strncpyz( char* dest, const char* src, int destsize );
-void    Q_strcat( char* dest, int size, const char* src );
-
+    void    Q_strncpyz( char* dest, const char* src, int destsize );
+    void    Q_strcat( char* dest, int size, const char* src );
+    
 // strlen that discounts Quake color sequences
-int Q_PrintStrlen( const char* string );
+    int Q_PrintStrlen( const char* string );
 // removes color sequences from string
-char* Q_CleanStr( char* string );
-
-int         Com_Filter( const char* filter, const char* name, int casesensitive );
-const char* Com_StringContains( const char* str1, const char* str2, int casesensitive );
-
-
+    char* Q_CleanStr( char* string );
+    
+    int         Com_Filter( const char* filter, const char* name, int casesensitive );
+    const char* Com_StringContains( const char* str1, const char* str2, int casesensitive );
+    
+    
 //=============================================
 
-short   BigShort( short l );
-short   LittleShort( short l );
-int     BigLong( int l );
-int     LittleLong( int l );
-float   BigFloat( float l );
-float   LittleFloat( float l );
-
-void    Swap_Init( void );
-char*     QDECL va( char* format, ... );
-
+    short   BigShort( short l );
+    short   LittleShort( short l );
+    int     BigLong( int l );
+    int     LittleLong( int l );
+    float   BigFloat( float l );
+    float   LittleFloat( float l );
+    
+    void    Swap_Init( void );
+    char*     QDECL va( char* format, ... );
+    
 #ifdef __cplusplus
 }
 #endif
@@ -794,10 +794,10 @@ drawVertMesh_t* SubdivideMapPatch( const mapPatch_t* patch, float maxError );
 extern "C" {
 #endif
 
-void QDECL Com_Error( int level, const char* error, ... );
-void QDECL Com_Printf( const char* msg, ... );
-void QDECL Com_DPrintf( const char* msg, ... );
-
+    void QDECL Com_Error( int level, const char* error, ... );
+    void QDECL Com_Printf( const char* msg, ... );
+    void QDECL Com_DPrintf( const char* msg, ... );
+    
 #ifdef __cplusplus
 }
 #endif
@@ -826,7 +826,7 @@ char* Info_ValueForKey( const char* s, const char* key );
 void Info_RemoveKey( char* s, const char* key );
 void Info_SetValueForKey( char* s, const char* key, const char* value );
 qboolean Info_Validate( const char* s );
-void Info_NextPair( const char* ( *s ), char key[MAX_INFO_KEY], char value[MAX_INFO_VALUE] );
+void Info_NextPair( const char * ( *s ), char key[MAX_INFO_KEY], char value[MAX_INFO_VALUE] );
 
 // get cvar defs, collision defs, etc
 //#include "../shared/interface.h"

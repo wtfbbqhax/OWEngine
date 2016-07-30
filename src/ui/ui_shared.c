@@ -3324,9 +3324,9 @@ qboolean Item_HandleKey( itemDef_t* item, int key, qboolean down )
         case ITEM_TYPE_SLIDER:
             return Item_Slider_HandleKey( item, key, down );
             break;
-        //case ITEM_TYPE_IMAGE:
-        //  Item_Image_Paint(item);
-        //  break;
+            //case ITEM_TYPE_IMAGE:
+            //  Item_Image_Paint(item);
+            //  break;
         default:
             return qfalse;
             break;

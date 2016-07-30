@@ -362,7 +362,7 @@ void* GetMemory( unsigned long size )
 {
     void* ptr;
     unsigned long int* memid;
-    
+
     ptr = malloc( size + sizeof( unsigned long int ) );
     if( !ptr )
     {
@@ -407,7 +407,7 @@ void* GetHunkMemory( unsigned long size )
 {
     void* ptr;
     unsigned long int* memid;
-    
+
     ptr = malloc( size + sizeof( unsigned long int ) );
     if( !ptr )
     {
@@ -447,9 +447,9 @@ void* GetClearedHunkMemory( unsigned long size )
 void FreeMemory( void* ptr )
 {
     unsigned long int* memid;
-    
+
     memid = ( unsigned long int* )( ( char* ) ptr - sizeof( unsigned long int ) );
-    
+
     if( *memid == MEM_ID )
     {
         free( memid );

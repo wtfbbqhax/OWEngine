@@ -349,7 +349,7 @@ int Q1_SolidTree_r( int nodenum )
             case Q1_CONTENTS_SLIME:
             case Q1_CONTENTS_LAVA:
 #ifdef HLCONTENTS
-            //these contents should not be found in the BSP
+                //these contents should not be found in the BSP
             case Q1_CONTENTS_ORIGIN:
             case Q1_CONTENTS_CURRENT_0:
             case Q1_CONTENTS_CURRENT_90:

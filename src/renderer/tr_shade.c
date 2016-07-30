@@ -939,7 +939,7 @@ static void ComputeColors( shaderStage_t* pStage )
         case AGEN_ONE_MINUS_ENTITY:
             RB_CalcAlphaFromOneMinusEntity( ( unsigned char* ) tess.svars.colors );
             break;
-        // Ridah
+            // Ridah
         case AGEN_NORMALZFADE:
         {
             float alpha, range, lowest, highest, dot;

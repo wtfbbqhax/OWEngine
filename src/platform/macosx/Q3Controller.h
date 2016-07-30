@@ -44,16 +44,16 @@
 #import <AppKit/AppKit.h>
 
 @interface Q3Controller :
-    NSObject
+NSObject
 {
     IBOutlet NSPanel* bannerPanel;
 }
 
 #ifndef DEDICATED
 -( IBAction )paste :
-    ( id )sender;
+( id )sender;
 -( IBAction )requestTerminate :
-    ( id )sender;
+( id )sender;
 
 -( void ) showBanner;
 #endif

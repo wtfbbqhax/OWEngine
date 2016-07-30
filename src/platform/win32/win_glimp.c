@@ -49,9 +49,9 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <assert.h>
-#include "../glew/include/GL/glew.h"
-#include "../renderer/tr_local.h"
-#include "../qcommon/qcommon.h"
+#include "../../glew/include/GL/glew.h"
+#include "../../renderer/tr_local.h"
+#include "../../qcommon/qcommon.h"
 #include "resource.h"
 #include "glw_win.h"
 #include "win_local.h"

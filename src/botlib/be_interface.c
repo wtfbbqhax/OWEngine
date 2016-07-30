@@ -705,7 +705,7 @@ int BotExportTest( int parm0, char* parm1, vec3_t parm2, vec3_t parm3 )
     	end_time = clock();
     	botimport.Print(PRT_MESSAGE, "id %lu clocks, %lu CLOCKS_PER_SEC\n", end_time - start_time, CLOCKS_PER_SEC);
     */
-    
+#if 0
     AAS_ClearShownDebugLines();
     //bsptrace = AAS_Trace(eye, NULL, NULL, end, 1, MASK_PLAYERSOLID);
     bsptrace = AAS_Trace( eye, mins, maxs, end, 1, MASK_PLAYERSOLID );
@@ -744,6 +744,7 @@ int BotExportTest( int parm0, char* parm1, vec3_t parm2, vec3_t parm3 )
             AAS_ShowBoundingBox( ent->origin, ent->mins, ent->maxs );
         } //end if
     } //end if
+#endif
 #endif
     return 0;
 } //end of the function BotExportTest

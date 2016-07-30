@@ -1925,11 +1925,11 @@ void R_AddEntitySurfaces( void )
                         case MOD_MESH:
                             R_AddMD3Surfaces( ent );
                             break;
-                        // Ridah
+                            // Ridah
                         case MOD_MDC:
                             R_AddMDCSurfaces( ent );
                             break;
-                        // done.
+                            // done.
                         case MOD_MDS:
                             R_AddAnimSurfaces( ent );
                             break;

@@ -314,14 +314,14 @@ void PC_FreeToken( token_t* token )
     numtokens--;
 } //end of the function PC_FreeToken
 
-static void PC_FreeTokens(token_t *firsttoken)
+static void PC_FreeTokens( token_t* firsttoken )
 {
-    token_t *t, *nexttoken;
-    for ( t = firsttoken; t; t = nexttoken )
+    token_t* t, *nexttoken;
+    for( t = firsttoken; t; t = nexttoken )
     {
         nexttoken = t->next;
         PC_FreeToken( t );
-}
+    }
 }
 //============================================================================
 //

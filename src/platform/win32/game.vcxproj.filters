@@ -2,259 +2,271 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{36b3c03f-5c74-4217-8034-c58927015850}</UniqueIdentifier>
+      <UniqueIdentifier>{9e854989-7d06-469d-8fe1-a61a3b245ac5}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{f5e5f0e2-53e5-48d1-ab5f-16bb475cc024}</UniqueIdentifier>
+      <UniqueIdentifier>{0dc9bac0-ed06-46bb-8890-3c91ad419169}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;fi;fd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{24d5e6d6-d7ca-4cb2-b408-76408209e0ce}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="client\cl_cgame.c">
+    <ClCompile Include="..\..\game\ai_cast.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_cin.c">
+    <ClCompile Include="..\..\game\ai_cast_characters.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_console.c">
+    <ClCompile Include="..\..\game\ai_cast_debug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_input.c">
+    <ClCompile Include="..\..\game\ai_cast_events.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_keys.c">
+    <ClCompile Include="..\..\game\ai_cast_fight.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_main.c">
+    <ClCompile Include="..\..\game\ai_cast_func_attack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_net_chan.c">
+    <ClCompile Include="..\..\game\ai_cast_func_boss1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_parse.c">
+    <ClCompile Include="..\..\game\ai_cast_funcs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_scrn.c">
+    <ClCompile Include="..\..\game\ai_cast_script_actions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\cl_ui.c">
+    <ClCompile Include="..\..\game\ai_cast_script.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cm_load.c">
+    <ClCompile Include="..\..\game\ai_cast_script_ents.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cm_patch.c">
+    <ClCompile Include="..\..\game\ai_cast_think.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cm_polylib.c">
+    <ClCompile Include="..\..\game\ai_cast_sight.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cm_test.c">
+    <ClCompile Include="..\..\botai\ai_chat.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cm_trace.c">
+    <ClCompile Include="..\..\botai\ai_cmd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cmd.c">
+    <ClCompile Include="..\..\botai\ai_dmnet.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\common.c">
+    <ClCompile Include="..\..\botai\ai_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cvar.c">
+    <ClCompile Include="..\..\botai\ai_dmq3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\files.c">
+    <ClCompile Include="..\..\botai\ai_team.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\huffman.c">
+    <ClCompile Include="..\..\game\bg_animation.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\md4.c">
+    <ClCompile Include="..\..\game\bg_lib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\msg.c">
+    <ClCompile Include="..\..\game\bg_misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\net_chan.c">
+    <ClCompile Include="..\..\game\bg_pmove.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game\q_math.c">
+    <ClCompile Include="..\..\game\bg_slidemove.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game\q_shared.c">
+    <ClCompile Include="..\..\game\g_active.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\snd_adpcm.c">
+    <ClCompile Include="..\..\game\g_alarm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\snd_dma.c">
+    <ClCompile Include="..\..\game\g_bot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\snd_mem.c">
+    <ClCompile Include="..\..\game\g_client.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\snd_mix.c">
+    <ClCompile Include="..\..\game\g_cmds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="client\snd_wavelet.c">
+    <ClCompile Include="..\..\game\g_combat.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_bot.c">
+    <ClCompile Include="..\..\game\g_items.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_ccmds.c">
+    <ClCompile Include="..\..\game\g_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_client.c">
+    <ClCompile Include="..\..\game\g_mem.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_game.c">
+    <ClCompile Include="..\..\game\g_misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_init.c">
+    <ClCompile Include="..\..\game\g_missile.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_main.c">
+    <ClCompile Include="..\..\game\g_mover.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_net_chan.c">
+    <ClCompile Include="..\..\game\g_props.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_snapshot.c">
+    <ClCompile Include="..\..\game\g_save.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="server\sv_world.c">
+    <ClCompile Include="..\..\game\g_script.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\unzip.c">
+    <ClCompile Include="..\..\game\g_script_actions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\vm.c">
+    <ClCompile Include="..\..\game\g_session.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\vm_interpreted.c">
+    <ClCompile Include="..\..\game\g_spawn.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\vm_x86.c">
+    <ClCompile Include="..\..\game\g_svcmds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_input.c">
+    <ClCompile Include="..\..\game\g_syscalls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_main.c">
+    <ClCompile Include="..\..\game\g_target.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_net.c">
+    <ClCompile Include="..\..\game\g_team.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_shared.c">
+    <ClCompile Include="..\..\game\g_tramcar.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_snd.c">
+    <ClCompile Include="..\..\game\g_trigger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_syscon.c">
+    <ClCompile Include="..\..\game\g_utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="win32\win_wndproc.c">
+    <ClCompile Include="..\..\game\g_weapon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="A3D\a3dWrapperdp.h">
+    <ClInclude Include="..\..\game\ai_cast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\bg_public.h">
+    <ClInclude Include="..\..\game\ai_cast_fight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="botai\botai.h">
+    <ClInclude Include="..\..\game\ai_cast_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\botlib.h">
+    <ClInclude Include="..\..\botai\ai_chat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cgame\cg_public.h">
+    <ClInclude Include="..\..\botai\ai_cmd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\client.h">
+    <ClInclude Include="..\..\botai\ai_dmnet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\cm_local.h">
+    <ClInclude Include="..\..\botai\ai_dmq3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\cm_patch.h">
+    <ClInclude Include="..\..\botai\ai_main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\cm_polylib.h">
+    <ClInclude Include="..\..\botai\ai_team.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\cm_public.h">
+    <ClInclude Include="..\..\game\be_aas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\g_public.h">
+    <ClInclude Include="..\..\game\be_ai_char.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="A3D\ia3dapi.h">
+    <ClInclude Include="..\..\game\be_ai_chat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ui\keycodes.h">
+    <ClInclude Include="..\..\game\be_ai_gen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\keys.h">
+    <ClInclude Include="..\..\game\be_ai_goal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\q_shared.h">
+    <ClInclude Include="..\..\game\be_ai_move.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\qcommon.h">
+    <ClInclude Include="..\..\game\be_ai_weap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\qfiles.h">
+    <ClInclude Include="..\..\game\be_ea.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\qgl.h">
+    <ClInclude Include="..\..\game\bg_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="server\server.h">
+    <ClInclude Include="..\..\botai\botai.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="A3D\snd_A3D.h">
+    <ClInclude Include="..\..\game\bg_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="A3D\snd_a3dg.h">
+    <ClInclude Include="..\..\game\botlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\snd_local.h">
+    <ClInclude Include="..\..\botai\chars.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="client\snd_public.h">
+    <ClInclude Include="..\..\game\g_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\surfaceflags.h">
+    <ClInclude Include="..\..\game\g_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\tr_local.h">
+    <ClInclude Include="..\..\game\g_team.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\tr_public.h">
+    <ClInclude Include="..\..\botai\inv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cgame\tr_types.h">
+    <ClInclude Include="..\..\botai\match.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_public.h">
+    <ClInclude Include="..\..\game\q_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\unzip.h">
+    <ClInclude Include="..\..\game\surfaceflags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\vm_local.h">
+    <ClInclude Include="..\..\botai\syn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="win32\win_local.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\game\game.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

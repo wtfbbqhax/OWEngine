@@ -415,9 +415,9 @@ void WriteField1( saveField_t* field, byte* base )
             *( int* )p = index;
             break;
             
-        //	match this with a function address in the function list, which is built using the
-        //	"extractfuncs.bat" in the utils folder. We then save the string equivalent
-        //	of the function. This effectively gives us cross-version save games.
+            //	match this with a function address in the function list, which is built using the
+            //	"extractfuncs.bat" in the utils folder. We then save the string equivalent
+            //	of the function. This effectively gives us cross-version save games.
         case F_FUNCTION:
             if( *( byte** )p == NULL )
             {
@@ -544,7 +544,7 @@ void ReadField( fileHandle_t f, saveField_t* field, byte* base )
             }
             break;
             
-        //relative to code segment
+            //relative to code segment
         case F_FUNCTION:
             len = *( int* )p;
             if( !len )

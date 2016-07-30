@@ -532,11 +532,6 @@ extern BOOL( WINAPI* qwglSwapLayerBuffers )( HDC, UINT );
 
 extern BOOL( WINAPI* qwglSwapIntervalEXT )( int interval );
 
-extern int ( *qglXSwapIntervalSGI )( int interval );
-extern int ( *qglXGetVideoSyncSGI )( unsigned int* count );
-extern int ( *qglXWaitVideoSyncSGI )( int divisor, int remainder, unsigned int* count );
-extern const char* ( *qglXQueryExtensionsString )( Display* dpy, int screen );
-
 #endif  // _WIN32
 
 #if ( ( defined __linux__ )  || ( defined __FreeBSD__ ) ) // rb010123

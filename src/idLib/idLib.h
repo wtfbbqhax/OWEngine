@@ -63,31 +63,31 @@ typedef unsigned long ulong;
 extern "C" {
 #endif
 
-typedef float vec_t;
-typedef vec_t vec2_t[2];
-typedef vec_t vec3_t[3];
-
+    typedef float vec_t;
+    typedef vec_t vec2_t[2];
+    typedef vec_t vec3_t[3];
+    
 #include "../client/snd_public.h"
-
-int     FS_FOpenFileRead( const char* qpath, fileHandle_t* file, qboolean uniqueFILE );
+    
+    int     FS_FOpenFileRead( const char* qpath, fileHandle_t* file, qboolean uniqueFILE );
 // if uniqueFILE is true, then a new FILE will be fopened even if the file
 // is found in an already open pak file.  If uniqueFILE is false, you must call
 // FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
 // It is generally safe to always set uniqueFILE to true, because the majority of
 // file IO goes through FS_ReadFile, which Does The Right Thing already.
 
-int     FS_FileIsInPAK( const char* filename, int* pChecksum );
+    int     FS_FileIsInPAK( const char* filename, int* pChecksum );
 // returns 1 if a file is in the PAK file, otherwise -1
 
-int     FS_Write( const void* buffer, int len, fileHandle_t f );
-
-int     FS_Read( void* buffer, int len, fileHandle_t f );
+    int     FS_Write( const void* buffer, int len, fileHandle_t f );
+    
+    int     FS_Read( void* buffer, int len, fileHandle_t f );
 // properly handles partial reads and reads from other dlls
 
-void    FS_FCloseFile( fileHandle_t f );
+    void    FS_FCloseFile( fileHandle_t f );
 // note: you can't just fclose from another DLL, due to MS libc issues
 
-int     FS_ReadFile( const char* qpath, void** buffer );
+    int     FS_ReadFile( const char* qpath, void** buffer );
 // returns the length of the file
 // a null buffer will just return the file length without loading
 // as a quick check for existance. -1 length == not present
@@ -95,57 +95,57 @@ int     FS_ReadFile( const char* qpath, void** buffer );
 // the buffer should be considered read-only, because it may be cached
 // for other uses.
 
-void    FS_ForceFlush( fileHandle_t f );
+    void    FS_ForceFlush( fileHandle_t f );
 // forces flush on files we're writing to.
 
-void    FS_FreeFile( void* buffer );
+    void    FS_FreeFile( void* buffer );
 // frees the memory returned by FS_ReadFile
 
-void    FS_WriteFile( const char* qpath, const void* buffer, int size );
+    void    FS_WriteFile( const char* qpath, const void* buffer, int size );
 // writes a complete file, creating any subdirectories needed
 
-int     FS_filelength( fileHandle_t f );
+    int     FS_filelength( fileHandle_t f );
 // doesn't work for files that are opened from a pack file
 
-int     FS_FTell( fileHandle_t f );
+    int     FS_FTell( fileHandle_t f );
 // where are we?
 
-void    FS_Flush( fileHandle_t f );
-
-void QDECL FS_Printf( fileHandle_t f, const char* fmt, ... );
+    void    FS_Flush( fileHandle_t f );
+    
+    void QDECL FS_Printf( fileHandle_t f, const char* fmt, ... );
 // like fprintf
 
-int     FS_FOpenFileByMode( const char* qpath, fileHandle_t* f, fsMode_t mode );
+    int     FS_FOpenFileByMode( const char* qpath, fileHandle_t* f, fsMode_t mode );
 // opens a file for reading, writing, or appending depending on the value of mode
 
-int     FS_Seek( fileHandle_t f, long offset, int origin );
+    int     FS_Seek( fileHandle_t f, long offset, int origin );
 // seek on a file (doesn't work for zip files!!!!!!!!)
 
-int Com_Milliseconds( void );
-void Com_Memset( void* dest, const int val, const size_t count );
-
+    int Com_Milliseconds( void );
+    void Com_Memset( void* dest, const int val, const size_t count );
+    
 // Sys_Milliseconds should only be used for profiling purposes,
 // any game related timing information should come from event timestamps
-int     Sys_Milliseconds( void );
-
-
+    int     Sys_Milliseconds( void );
+    
+    
 // nothing outside the Cvar_*() functions should modify these fields!
-typedef struct cvar_s
-{
-    char*        name;
-    char*        string;
-    char*        resetString;       // cvar_restart will reset to this value
-    char*        latchedString;     // for CVAR_LATCH vars
-    int flags;
-    qboolean modified;              // set each time the cvar is changed
-    int modificationCount;          // incremented each time the cvar is changed
-    float value;                    // atof( string )
-    int integer;                    // atoi( string )
-    struct cvar_s* next;
-    struct cvar_s* hashNext;
-} cvar_t;
-
-cvar_t* Cvar_Get( const char* var_name, const char* value, int flags );
+    typedef struct cvar_s
+    {
+        char*        name;
+        char*        string;
+        char*        resetString;       // cvar_restart will reset to this value
+        char*        latchedString;     // for CVAR_LATCH vars
+        int flags;
+        qboolean modified;              // set each time the cvar is changed
+        int modificationCount;          // incremented each time the cvar is changed
+        float value;                    // atof( string )
+        int integer;                    // atoi( string )
+        struct cvar_s* next;
+        struct cvar_s* hashNext;
+    } cvar_t;
+    
+    cvar_t* Cvar_Get( const char* var_name, const char* value, int flags );
 // creates the variable if it doesn't exist, or returns the existing one
 // if it exists, the value will not be changed, but flags will be ORed in
 // that allows variables to be unarchived without needing bitflags
@@ -600,25 +600,25 @@ inline unsigned idHashTable<Type>::Num( void ) const
 extern "C" {
 #endif
 
-typedef struct
-{
-
-    HINSTANCE reflib_library;           // Handle to refresh DLL
-    qboolean reflib_active;
+    typedef struct
+    {
     
-    HWND hWnd;
-    HINSTANCE hInstance;
-    qboolean activeApp;
-    qboolean isMinimized;
-    OSVERSIONINFO osversion;
+        HINSTANCE reflib_library;           // Handle to refresh DLL
+        qboolean reflib_active;
+        
+        HWND hWnd;
+        HINSTANCE hInstance;
+        qboolean activeApp;
+        qboolean isMinimized;
+        OSVERSIONINFO osversion;
+        
+        // when we get a windows message, we store the time off so keyboard processing
+        // can know the exact time of an event
+        unsigned sysMsgTime;
+    } WinVars_t;
     
-    // when we get a windows message, we store the time off so keyboard processing
-    // can know the exact time of an event
-    unsigned sysMsgTime;
-} WinVars_t;
-
-extern WinVars_t g_wv;
-
+    extern WinVars_t g_wv;
+    
 //#define	SND_NORMAL			0x000	// (default) Allow sound to be cut off only by the same sound on this channel
 #define     SND_OKTOCUT         0x001   // Allow sound to be cut off by any following sounds on this channel
 #define     SND_REQUESTCUT      0x002   // Allow sound to be cut off by following sounds on this channel only for sounds who request cutoff

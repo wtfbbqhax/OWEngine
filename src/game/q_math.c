@@ -826,16 +826,16 @@ __declspec( naked ) int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, struct cplan
 {
     static int bops_initialized;
     static int Ljmptab[8];
-    
+
     __asm
     {
-    
+
         push ebx
-        
+
         cmp bops_initialized, 1
         je initialized
         mov bops_initialized, 1
-        
+
         mov Ljmptab[0 * 4], offset Lcase0
         mov Ljmptab[1 * 4], offset Lcase1
         mov Ljmptab[2 * 4], offset Lcase2
@@ -844,9 +844,9 @@ __declspec( naked ) int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, struct cplan
         mov Ljmptab[5 * 4], offset Lcase5
         mov Ljmptab[6 * 4], offset Lcase6
         mov Ljmptab[7 * 4], offset Lcase7
-        
+
         initialized:
-        
+
         mov edx, dword ptr[4 + 12 + esp]
         mov ecx, dword ptr[4 + 4 + esp]
         xor eax, eax

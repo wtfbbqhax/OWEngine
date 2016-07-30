@@ -1,5 +1,8 @@
 Changelog
 
+07-30-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed compiling on Windows platform
+
 07-20-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed couple of memory leaks
 	- Increased number of cast's to think between each aicast frame

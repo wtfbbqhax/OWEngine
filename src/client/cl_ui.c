@@ -1029,12 +1029,12 @@ intptr_t CL_UISystemCalls( intptr_t* args )
             re.AddPolyToScene( args[1], args[2], VMA( 3 ) );
             return 0;
             
-        // Ridah
+            // Ridah
         case UI_R_ADDPOLYSTOSCENE:
             re.AddPolysToScene( args[1], args[2], VMA( 3 ), args[4] );
             return 0;
-        // done.
-        
+            // done.
+            
         case UI_R_ADDLIGHTTOSCENE:
             re.AddLightToScene( VMA( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), args[6] );
             return 0;
@@ -1287,11 +1287,11 @@ intptr_t CL_UISystemCalls( intptr_t* args )
         case UI_VERIFY_CDKEY:
             return CL_CDKeyValidate( VMA( 1 ), VMA( 2 ) );
             
-        // NERVE - SMF
+            // NERVE - SMF
         case UI_CL_GETLIMBOSTRING:
             return CL_GetLimboString( args[1], VMA( 2 ) );
-        // -NERVE - SMF
-        
+            // -NERVE - SMF
+            
         default:
             Com_Error( ERR_DROP, "Bad UI system trap: %i", args[0] );
             

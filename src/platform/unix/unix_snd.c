@@ -67,7 +67,7 @@ static int ( *_pthread_mutex_destroy )( pthread_mutex_t* mutex );
 static int ( *_pthread_mutex_lock )( pthread_mutex_t* mutex );
 static int ( *_pthread_mutex_unlock )( pthread_mutex_t* mutex );
 static int ( *_pthread_join )( pthread_t __th, void** __thread_return );
-static int ( *_pthread_create )( pthread_t* thread, const pthread_attr_t* attr, void* ( *func )( void* ), void* arg );
+static int ( *_pthread_create )( pthread_t* thread, const pthread_attr_t* attr, void * ( *func )( void* ), void* arg );
 static void ( *_pthread_exit )( void* retval );
 
 /* alsa private variables */

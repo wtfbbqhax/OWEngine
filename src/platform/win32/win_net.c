@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
-#include "../qcommon/qcommon.h"
+#include "../../game/q_shared.h"
+#include "../../qcommon/qcommon.h"
 #include "win_local.h"
 
 static WSADATA winsockdata;
