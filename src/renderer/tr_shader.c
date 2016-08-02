@@ -176,7 +176,7 @@ static qboolean ParseVector( char** text, int count, float* v )
         return qfalse;
     }
     
-    for( i = 0 ; i < count ; i++ )
+    for( i = 0; i < count; i++ )
     {
         token = COM_ParseExt( text, qfalse );
         if( !token[0] )
@@ -429,7 +429,7 @@ static void ParseTexMod( char* _text, shaderStage_t* stage )
     //
     // swap
     //
-    if( !Q_stricmp( token, "swap" ) )    // swap S/T coords (rotate 90d)
+    if( !Q_stricmp( token, "swap" ) ) // swap S/T coords (rotate 90d)
     {
         tmi->type = TMOD_SWAP;
     }
@@ -671,7 +671,7 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
         }
         //
         // check special case for map16/map32/mapcomp/mapnocomp (compression enabled)
-        if( !Q_stricmp( token, "map16" ) )       // only use this texture if 16 bit color depth
+        if( !Q_stricmp( token, "map16" ) )    // only use this texture if 16 bit color depth
         {
             if( glConfig.colorBits <= 16 )
             {
@@ -679,11 +679,11 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             }
             else
             {
-                COM_ParseExt( text, qfalse );   // ignore the map
+                COM_ParseExt( text, qfalse ); // ignore the map
                 continue;
             }
         }
-        else if( !Q_stricmp( token, "map32" ) )         // only use this texture if 16 bit color depth
+        else if( !Q_stricmp( token, "map32" ) )      // only use this texture if 16 bit color depth
         {
             if( glConfig.colorBits > 16 )
             {
@@ -691,11 +691,11 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             }
             else
             {
-                COM_ParseExt( text, qfalse );   // ignore the map
+                COM_ParseExt( text, qfalse ); // ignore the map
                 continue;
             }
         }
-        else if( !Q_stricmp( token, "mapcomp" ) )         // only use this texture if compression is enabled
+        else if( !Q_stricmp( token, "mapcomp" ) )      // only use this texture if compression is enabled
         {
             if( glConfig.textureCompression && r_ext_compressed_textures->integer )
             {
@@ -703,11 +703,11 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             }
             else
             {
-                COM_ParseExt( text, qfalse );   // ignore the map
+                COM_ParseExt( text, qfalse ); // ignore the map
                 continue;
             }
         }
-        else if( !Q_stricmp( token, "mapnocomp" ) )         // only use this texture if compression is not available or disabled
+        else if( !Q_stricmp( token, "mapnocomp" ) )      // only use this texture if compression is not available or disabled
         {
             if( !glConfig.textureCompression )
             {
@@ -715,11 +715,11 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             }
             else
             {
-                COM_ParseExt( text, qfalse );   // ignore the map
+                COM_ParseExt( text, qfalse ); // ignore the map
                 continue;
             }
         }
-        else if( !Q_stricmp( token, "animmapcomp" ) )         // only use this texture if compression is enabled
+        else if( !Q_stricmp( token, "animmapcomp" ) )      // only use this texture if compression is enabled
         {
             if( glConfig.textureCompression && r_ext_compressed_textures->integer )
             {
@@ -728,11 +728,11 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             else
             {
                 while( token[0] )
-                    COM_ParseExt( text, qfalse );   // ignore the map
+                    COM_ParseExt( text, qfalse ); // ignore the map
                 continue;
             }
         }
-        else if( !Q_stricmp( token, "animmapnocomp" ) )         // only use this texture if compression is not available or disabled
+        else if( !Q_stricmp( token, "animmapnocomp" ) )      // only use this texture if compression is not available or disabled
         {
             if( !glConfig.textureCompression )
             {
@@ -741,7 +741,7 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             else
             {
                 while( token[0] )
-                    COM_ParseExt( text, qfalse );   // ignore the map
+                    COM_ParseExt( text, qfalse ); // ignore the map
                 continue;
             }
         }
@@ -757,20 +757,20 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
                 return qfalse;
             }
             
-//----(SA)	fixes startup error and allows polygon shadows to work again
+            //----(SA)	fixes startup error and allows polygon shadows to work again
             if( !Q_stricmp( token, "$whiteimage" ) || !Q_stricmp( token, "*white" ) )
             {
-//----(SA)	end
+                //----(SA)	end
                 stage->bundle[0].image[0] = tr.whiteImage;
                 continue;
             }
-//----(SA) added
+            //----(SA) added
             else if( !Q_stricmp( token, "$dlight" ) )
             {
                 stage->bundle[0].image[0] = tr.dlightImage;
                 continue;
             }
-//----(SA) end
+            //----(SA) end
             else if( !Q_stricmp( token, "$lightmap" ) )
             {
                 stage->bundle[0].isLightmap = qtrue;
@@ -786,10 +786,10 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             }
             else
             {
-//----(SA)	modified
-//				stage->bundle[0].image[0] = R_FindImageFile( token, !shader.noMipMaps, !shader.noPicMip, GL_REPEAT );
+                //----(SA)	modified
+                //				stage->bundle[0].image[0] = R_FindImageFile( token, !shader.noMipMaps, !shader.noPicMip, GL_REPEAT );
                 stage->bundle[0].image[0] = R_FindImageFileExt( token, !shader.noMipMaps, !shader.noPicMip, shader.characterMip, GL_REPEAT );
-//----(SA)	end
+                //----(SA)	end
                 if( !stage->bundle[0].image[0] )
                 {
                     ri.Printf( PRINT_WARNING, "WARNING: R_FindImageFile could not find '%s' in shader '%s'\n", token, shader.name );
@@ -1105,14 +1105,14 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
                 token = COM_ParseExt( text, qfalse );
                 if( token[0] )
                 {
-                    stage->zFadeBounds[0] = atof( token );    // lower range
+                    stage->zFadeBounds[0] = atof( token );  // lower range
                     token = COM_ParseExt( text, qfalse );
-                    stage->zFadeBounds[1] = atof( token );    // upper range
+                    stage->zFadeBounds[1] = atof( token );  // upper range
                 }
                 else
                 {
                     stage->zFadeBounds[0] = -1.0;   // lower range
-                    stage->zFadeBounds[1] =  1.0;   // upper range
+                    stage->zFadeBounds[1] = 1.0;   // upper range
                 }
                 
             }
@@ -1309,7 +1309,7 @@ static void ParseDeform( char** text )
         return;
     }
     
-    ds = &shader.deforms[ shader.numDeforms ];
+    ds = &shader.deforms[shader.numDeforms];
     shader.numDeforms++;
     
     if( !Q_stricmp( token, "projectionShadow" ) )
@@ -1423,7 +1423,7 @@ static void ParseDeform( char** text )
     {
         int i;
         
-        for( i = 0 ; i < 3 ; i++ )
+        for( i = 0; i < 3; i++ )
         {
             token = COM_ParseExt( text, qfalse );
             if( token[0] == 0 )
@@ -1453,7 +1453,7 @@ skyParms <outerbox> <cloudheight> <innerbox>
 static void ParseSkyParms( char** text )
 {
     char*        token;
-    static char* suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
+    static char* suf[6] = { "rt", "bk", "lf", "ft", "up", "dn" };
     char pathname[MAX_QPATH];
     int i;
     
@@ -1466,11 +1466,11 @@ static void ParseSkyParms( char** text )
     }
     if( strcmp( token, "-" ) )
     {
-        for( i = 0 ; i < 6 ; i++ )
+        for( i = 0; i < 6; i++ )
         {
             Com_sprintf( pathname, sizeof( pathname ), "%s_%s.tga"
                          , token, suf[i] );
-            shader.sky.outerbox[i] = R_FindImageFile( ( char* ) pathname, qtrue, qtrue, GL_CLAMP_TO_EDGE );
+            shader.sky.outerbox[i] = R_FindImageFile( ( char* )pathname, qtrue, qtrue, GL_CLAMP_TO_EDGE );
             if( !shader.sky.outerbox[i] )
             {
                 shader.sky.outerbox[i] = tr.defaultImage;
@@ -1502,11 +1502,11 @@ static void ParseSkyParms( char** text )
     }
     if( strcmp( token, "-" ) )
     {
-        for( i = 0 ; i < 6 ; i++ )
+        for( i = 0; i < 6; i++ )
         {
             Com_sprintf( pathname, sizeof( pathname ), "%s_%s.tga"
                          , token, suf[i] );
-            shader.sky.innerbox[i] = R_FindImageFile( ( char* ) pathname, qtrue, qtrue, GL_CLAMP_TO_EDGE );
+            shader.sky.innerbox[i] = R_FindImageFile( ( char* )pathname, qtrue, qtrue, GL_CLAMP_TO_EDGE );
             if( !shader.sky.innerbox[i] )
             {
                 shader.sky.innerbox[i] = tr.defaultImage;
@@ -1590,80 +1590,80 @@ infoParm_t infoParms[] =
 {
     // server relevant contents
     
-//----(SA)	modified
-    {"clipmissile",  1,  0, CONTENTS_MISSILECLIP},       // impact only specific weapons (rl, gl)
-//----(SA)	end
-
-// RF, AI sight
-    {"ai_nosight",   1,  0,  CONTENTS_AI_NOSIGHT},
-    {"clipshot", 1,  0,  CONTENTS_CLIPSHOT},         // stops bullets
-// RF, end
-
-    {"water",        1,  0,  CONTENTS_WATER },
-    {"slag",     1,  0,  CONTENTS_SLIME },       // uses the CONTENTS_SLIME flag, but the shader reference is changed to 'slag'
+    //----(SA)	modified
+    { "clipmissile",  1,  0, CONTENTS_MISSILECLIP },       // impact only specific weapons (rl, gl)
+    //----(SA)	end
+    
+    // RF, AI sight
+    { "ai_nosight",   1,  0,  CONTENTS_AI_NOSIGHT },
+    { "clipshot", 1,  0,  CONTENTS_CLIPSHOT },         // stops bullets
+    // RF, end
+    
+    { "water",        1,  0,  CONTENTS_WATER },
+    { "slag",     1,  0,  CONTENTS_SLIME },       // uses the CONTENTS_SLIME flag, but the shader reference is changed to 'slag'
     // to idendify that this doesn't work the same as 'slime' did.
     // (slime hurts instantly, slag doesn't)
-//	{"slime",		1,	0,	CONTENTS_SLIME },		// mildly damaging
-    {"lava",     1,  0,  CONTENTS_LAVA },        // very damaging
-    {"playerclip",   1,  0,  CONTENTS_PLAYERCLIP },
-    {"monsterclip",  1,  0,  CONTENTS_MONSTERCLIP },
-    {"nodrop",       1,  0,  CONTENTS_NODROP },      // don't drop items or leave bodies (death fog, lava, etc)
-    {"nonsolid", 1,  SURF_NONSOLID,  0},                     // clears the solid flag
+    //	{"slime",		1,	0,	CONTENTS_SLIME },		// mildly damaging
+    { "lava",     1,  0,  CONTENTS_LAVA },        // very damaging
+    { "playerclip",   1,  0,  CONTENTS_PLAYERCLIP },
+    { "monsterclip",  1,  0,  CONTENTS_MONSTERCLIP },
+    { "nodrop",       1,  0,  CONTENTS_NODROP },      // don't drop items or leave bodies (death fog, lava, etc)
+    { "nonsolid", 1,  SURF_NONSOLID,  0 },                     // clears the solid flag
     
     // utility relevant attributes
-    {"origin",       1,  0,  CONTENTS_ORIGIN },      // center of rotating brushes
-    {"trans",        0,  0,  CONTENTS_TRANSLUCENT }, // don't eat contained surfaces
-    {"detail",       0,  0,  CONTENTS_DETAIL },      // don't include in structural bsp
-    {"structural",   0,  0,  CONTENTS_STRUCTURAL },  // force into structural bsp even if trnas
-    {"areaportal",   1,  0,  CONTENTS_AREAPORTAL },  // divides areas
-    {"clusterportal", 1, 0,  CONTENTS_CLUSTERPORTAL },   // for bots
-    {"donotenter",  1,  0,  CONTENTS_DONOTENTER },       // for bots
+    { "origin",       1,  0,  CONTENTS_ORIGIN },      // center of rotating brushes
+    { "trans",        0,  0,  CONTENTS_TRANSLUCENT }, // don't eat contained surfaces
+    { "detail",       0,  0,  CONTENTS_DETAIL },      // don't include in structural bsp
+    { "structural",   0,  0,  CONTENTS_STRUCTURAL },  // force into structural bsp even if trnas
+    { "areaportal",   1,  0,  CONTENTS_AREAPORTAL },  // divides areas
+    { "clusterportal", 1, 0,  CONTENTS_CLUSTERPORTAL },   // for bots
+    { "donotenter",  1,  0,  CONTENTS_DONOTENTER },       // for bots
     
     // Rafael - nopass
-    {"donotenterlarge", 1, 0,    CONTENTS_DONOTENTER_LARGE }, // for larger bots
+    { "donotenterlarge", 1, 0,    CONTENTS_DONOTENTER_LARGE }, // for larger bots
     
-    {"fog",          1,  0,  CONTENTS_FOG},          // carves surfaces entering
-    {"sky",          0,  SURF_SKY,       0 },        // emit light from an environment map
-    {"lightfilter",  0,  SURF_LIGHTFILTER, 0 },      // filter light going through it
-    {"alphashadow",  0,  SURF_ALPHASHADOW, 0 },      // test light on a per-pixel basis
-    {"hint",     0,  SURF_HINT,      0 },        // use as a primary splitter
+    { "fog",          1,  0,  CONTENTS_FOG },          // carves surfaces entering
+    { "sky",          0,  SURF_SKY,       0 },        // emit light from an environment map
+    { "lightfilter",  0,  SURF_LIGHTFILTER, 0 },      // filter light going through it
+    { "alphashadow",  0,  SURF_ALPHASHADOW, 0 },      // test light on a per-pixel basis
+    { "hint",     0,  SURF_HINT,      0 },        // use as a primary splitter
     
     // server attributes
-    {"slick",            0,  SURF_SLICK,     0 },
-    {"noimpact",     0,  SURF_NOIMPACT,  0 },        // don't make impact explosions or marks
-    {"nomarks",          0,  SURF_NOMARKS,   0 },        // don't make impact marks, but still explode
-    {"ladder",           0,  SURF_LADDER,    0 },
-    {"nodamage",     0,  SURF_NODAMAGE,  0 },
+    { "slick",            0,  SURF_SLICK,     0 },
+    { "noimpact",     0,  SURF_NOIMPACT,  0 },        // don't make impact explosions or marks
+    { "nomarks",          0,  SURF_NOMARKS,   0 },        // don't make impact marks, but still explode
+    { "ladder",           0,  SURF_LADDER,    0 },
+    { "nodamage",     0,  SURF_NODAMAGE,  0 },
     
-    {"monsterslick", 0,  SURF_MONSTERSLICK,  0},     // surf only slick for monsters
+    { "monsterslick", 0,  SURF_MONSTERSLICK,  0 },     // surf only slick for monsters
     
-//	{"flesh",		0,	SURF_FLESH,		0 },
-    {"glass",        0,  SURF_GLASS,     0 },    //----(SA)	added
-    {"ceramic",      0,  SURF_CERAMIC,   0 },    //----(SA)	added
+    //	{"flesh",		0,	SURF_FLESH,		0 },
+    { "glass",        0,  SURF_GLASS,     0 },    //----(SA)	added
+    { "ceramic",      0,  SURF_CERAMIC,   0 },    //----(SA)	added
     
     // steps
-    {"metal",        0,  SURF_METAL,     0 },
-    {"metalsteps",   0,  SURF_METAL,     0 },    // retain bw compatibility with Q3A metal shaders... (SA)
-    {"nosteps",      0,  SURF_NOSTEPS,   0 },
-    {"woodsteps",    0,  SURF_WOOD,      0 },
-    {"grasssteps",   0,  SURF_GRASS,     0 },
-    {"gravelsteps",  0,  SURF_GRAVEL,    0 },
-    {"carpetsteps",  0,  SURF_CARPET,    0 },
-    {"snowsteps",    0,  SURF_SNOW,      0 },
-    {"roofsteps",    0,  SURF_ROOF,      0 },    // tile roof
+    { "metal",        0,  SURF_METAL,     0 },
+    { "metalsteps",   0,  SURF_METAL,     0 },    // retain bw compatibility with Q3A metal shaders... (SA)
+    { "nosteps",      0,  SURF_NOSTEPS,   0 },
+    { "woodsteps",    0,  SURF_WOOD,      0 },
+    { "grasssteps",   0,  SURF_GRASS,     0 },
+    { "gravelsteps",  0,  SURF_GRAVEL,    0 },
+    { "carpetsteps",  0,  SURF_CARPET,    0 },
+    { "snowsteps",    0,  SURF_SNOW,      0 },
+    { "roofsteps",    0,  SURF_ROOF,      0 },    // tile roof
     
-    {"rubble", 0, SURF_RUBBLE, 0 },
+    { "rubble", 0, SURF_RUBBLE, 0 },
     
     // drawsurf attributes
-    {"nodraw",       0,  SURF_NODRAW,    0 },    // don't generate a drawsurface (or a lightmap)
-    {"pointlight",   0,  SURF_POINTLIGHT, 0 },   // sample lighting at vertexes
-    {"nolightmap",   0,  SURF_NOLIGHTMAP, 0 },       // don't generate a lightmap
-    {"nodlight", 0,  SURF_NODLIGHT, 0 },     // don't ever add dynamic lights
+    { "nodraw",       0,  SURF_NODRAW,    0 },    // don't generate a drawsurface (or a lightmap)
+    { "pointlight",   0,  SURF_POINTLIGHT, 0 },   // sample lighting at vertexes
+    { "nolightmap",   0,  SURF_NOLIGHTMAP, 0 },       // don't generate a lightmap
+    { "nodlight", 0,  SURF_NODLIGHT, 0 },     // don't ever add dynamic lights
     
-    {"monsterslicknorth",    0, SURF_MONSLICK_N, 0},
-    {"monsterslickeast", 0, SURF_MONSLICK_E, 0},
-    {"monsterslicksouth",    0, SURF_MONSLICK_S, 0},
-    {"monsterslickwest", 0, SURF_MONSLICK_W, 0}
+    { "monsterslicknorth",    0, SURF_MONSLICK_N, 0 },
+    { "monsterslickeast", 0, SURF_MONSLICK_E, 0 },
+    { "monsterslicksouth",    0, SURF_MONSLICK_S, 0 },
+    { "monsterslickwest", 0, SURF_MONSLICK_W, 0 }
     
 };
 
@@ -1682,7 +1682,7 @@ static void ParseSurfaceParm( char** text )
     int i;
     
     token = COM_ParseExt( text, qfalse );
-    for( i = 0 ; i < numInfoParms ; i++ )
+    for( i = 0; i < numInfoParms; i++ )
     {
         if( !Q_stricmp( token, infoParms[i].name ) )
         {
@@ -1910,16 +1910,21 @@ static qboolean ParseShader( char** text )
         }
         else if( !Q_stricmp( token, "sunshader" ) )
         {
+            int	tokenLen;
+            
             token = COM_ParseExt( text, qfalse );
             if( !token[0] )
             {
                 ri.Printf( PRINT_WARNING, "WARNING: missing shader name for 'sunshader'\n" );
                 continue;
             }
-            tr.sunShaderName = CopyString( token );
+            
+            tokenLen = strlen( token ) + 1;
+            tr.sunShaderName = ri.Hunk_Alloc( sizeof( char ) * tokenLen, h_low );
+            Q_strncpyz( tr.sunShaderName, token, tokenLen );
         }
-//----(SA)	added
-        else if( !Q_stricmp( token, "lightgridmulamb" ) )    // ambient multiplier for lightgrid
+        //----(SA)	added
+        else if( !Q_stricmp( token, "lightgridmulamb" ) ) // ambient multiplier for lightgrid
         {
             token = COM_ParseExt( text, qfalse );
             if( !token[0] )
@@ -1932,7 +1937,7 @@ static qboolean ParseShader( char** text )
                 tr.lightGridMulAmbient = atof( token );
             }
         }
-        else if( !Q_stricmp( token, "lightgridmuldir" ) )             // directional multiplier for lightgrid
+        else if( !Q_stricmp( token, "lightgridmuldir" ) )          // directional multiplier for lightgrid
         {
             token = COM_ParseExt( text, qfalse );
             if( !token[0] )
@@ -1945,7 +1950,7 @@ static qboolean ParseShader( char** text )
                 tr.lightGridMulDirected = atof( token );
             }
         }
-//----(SA)	end
+        //----(SA)	end
         else if( !Q_stricmp( token, "waterfogvars" ) )
         {
             vec3_t watercolor;
@@ -1970,26 +1975,26 @@ static qboolean ParseShader( char** text )
             //			to change at some point, but I'm not sure how to track fog parameters
             //			on a "per-water volume" basis yet.
             
-            if( fogvar == 0 )          // '0' specifies "use the map values for everything except the fog color
+            if( fogvar == 0 )         // '0' specifies "use the map values for everything except the fog color
             {
                 // TODO
             }
-            else if( fogvar > 1 )           // distance "linear" fog
+            else if( fogvar > 1 )          // distance "linear" fog
             {
                 Com_sprintf( fogString, sizeof( fogString ), "0 %d 1.1 %f %f %f 200", ( int )fogvar, watercolor[0], watercolor[1], watercolor[2] );
-//				R_SetFog(FOG_WATER, 0, fogvar, watercolor[0], watercolor[1], watercolor[2], 1.1);
+                //				R_SetFog(FOG_WATER, 0, fogvar, watercolor[0], watercolor[1], watercolor[2], 1.1);
             }
             else                          // density "exp" fog
             {
                 Com_sprintf( fogString, sizeof( fogString ), "0 5 %f %f %f %f 200", fogvar, watercolor[0], watercolor[1], watercolor[2] );
-//				R_SetFog(FOG_WATER, 0, 5, watercolor[0], watercolor[1], watercolor[2], fogvar);
+                //				R_SetFog(FOG_WATER, 0, 5, watercolor[0], watercolor[1], watercolor[2], fogvar);
             }
             
-//		near
-//		far
-//		density
-//		r,g,b
-//		time to complete
+            //		near
+            //		far
+            //		density
+            //		r,g,b
+            //		time to complete
             ri.Cvar_Set( "r_waterFogColor", fogString );
             
             continue;
@@ -2018,19 +2023,19 @@ static qboolean ParseShader( char** text )
             //					density (so old maps or maps that just need softening fog don't have to care about farclip)
             
             fogDensity = atof( token );
-            if( fogDensity >= 1 )    // linear
+            if( fogDensity >= 1 )   // linear
             {
-                fogFar      = fogDensity;
+                fogFar = fogDensity;
             }
             else
             {
-                fogFar      = 5;
+                fogFar = 5;
             }
             
-//			R_SetFog(FOG_MAP, 0, fogFar, fogColor[0], fogColor[1], fogColor[2], fogDensity);
+            //			R_SetFog(FOG_MAP, 0, fogFar, fogColor[0], fogColor[1], fogColor[2], fogDensity);
             ri.Cvar_Set( "r_mapFogColor", va( "0 %d %f %f %f %f 0", fogFar, fogDensity, fogColor[0], fogColor[1], fogColor[2] ) );
-//			R_SetFog(FOG_CMD_SWITCHFOG, FOG_MAP, 50, 0, 0, 0, 0);
-
+            //			R_SetFog(FOG_CMD_SWITCHFOG, FOG_MAP, 50, 0, 0, 0, 0);
+            
             continue;
         }
         // done.
@@ -2272,7 +2277,7 @@ static qboolean CollapseMultitexture( void )
     int i;
     textureBundle_t tmpBundle;
     
-    if( !qglActiveTextureARB )
+    if( !GLEW_ARB_multitexture )
     {
         return qfalse;
     }
@@ -2307,7 +2312,7 @@ static qboolean CollapseMultitexture( void )
     bbits &= ( GLS_DSTBLEND_BITS | GLS_SRCBLEND_BITS );
     
     // search for a valid multitexture blend function
-    for( i = 0; collapse[i].blendA != -1 ; i++ )
+    for( i = 0; collapse[i].blendA != -1; i++ )
     {
         if( abits == collapse[i].blendA
                 && bbits == collapse[i].blendB )
@@ -2405,12 +2410,12 @@ static void SortNewShader( void )
     float sort;
     shader_t*    newShader;
     
-    newShader = tr.shaders[ tr.numShaders - 1 ];
+    newShader = tr.shaders[tr.numShaders - 1];
     sort = newShader->sort;
     
-    for( i = tr.numShaders - 2 ; i >= 0 ; i-- )
+    for( i = tr.numShaders - 2; i >= 0; i-- )
     {
-        if( tr.sortedShaders[ i ]->sort <= sort )
+        if( tr.sortedShaders[i]->sort <= sort )
         {
             break;
         }
@@ -2454,15 +2459,15 @@ static shader_t* GeneratePermanentShader( void )
         newShader->fogPass = FP_LE;
     }
     
-    tr.shaders[ tr.numShaders ] = newShader;
+    tr.shaders[tr.numShaders] = newShader;
     newShader->index = tr.numShaders;
     
-    tr.sortedShaders[ tr.numShaders ] = newShader;
+    tr.sortedShaders[tr.numShaders] = newShader;
     newShader->sortedIndex = tr.numShaders;
     
     tr.numShaders++;
     
-    for( i = 0 ; i < newShader->numUnfoggedPasses ; i++ )
+    for( i = 0; i < newShader->numUnfoggedPasses; i++ )
     {
         if( !stages[i].active )
         {
@@ -2474,7 +2479,7 @@ static shader_t* GeneratePermanentShader( void )
         
         *newShader->stages[i] = stages[i];
         
-        for( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ )
+        for( b = 0; b < NUM_TEXTURE_BUNDLES; b++ )
         {
             if( !newShader->stages[i]->bundle[b].numTexMods )
             {
@@ -2884,20 +2889,20 @@ static char* FindShaderInShaderText( const char* shadername )
     // note that this could get confused if a shader name is used inside
     // another shader definition
     while ( 1 ) {
-    	token = COM_ParseExt( &p, qtrue );
-    	if ( token[0] == 0 ) {
-    		break;
-    	}
+    token = COM_ParseExt( &p, qtrue );
+    if ( token[0] == 0 ) {
+    break;
+    }
     
-    	if ( token[0] == '{' ) {
-    		// skip the definition
-    		SkipBracedSection( &p );
-    	} else if ( !Q_stricmp( token, shadername ) ) {
-    		return p;
-    	} else {
-    		// skip to end of line
-    		SkipRestOfLine( &p );
-    	}
+    if ( token[0] == '{' ) {
+    // skip the definition
+    SkipBracedSection( &p );
+    } else if ( !Q_stricmp( token, shadername ) ) {
+    return p;
+    } else {
+    // skip to end of line
+    SkipRestOfLine( &p );
+    }
     }
     */
     
@@ -2918,7 +2923,7 @@ shader_t* R_FindShaderByName( const char* name )
     int hash;
     shader_t*    sh;
     
-    if( ( name == NULL ) || ( name[0] == 0 ) )     // bk001205
+    if( ( name == NULL ) || ( name[0] == 0 ) ) // bk001205
     {
         return tr.defaultShader;
     }
@@ -3009,11 +3014,11 @@ shader_t* R_FindShader( const char* name, int lightmapIndex, qboolean mipRawImag
         
         // Ridah, modified this so we don't keep trying to load an invalid lightmap shader
         /*
-        		if ( sh->lightmapIndex == lightmapIndex &&
-        			!Q_stricmp(sh->name, strippedName)) {
-        			// match found
-        			return sh;
-        		}
+        if ( sh->lightmapIndex == lightmapIndex &&
+        !Q_stricmp(sh->name, strippedName)) {
+        // match found
+        return sh;
+        }
         */
         if( ( ( sh->lightmapIndex == lightmapIndex ) || ( sh->lightmapIndex < 0 && lightmapIndex >= 0 ) ) &&
                 !Q_stricmp( sh->name, strippedName ) )
@@ -3043,7 +3048,7 @@ shader_t* R_FindShader( const char* name, int lightmapIndex, qboolean mipRawImag
     memset( &stages, 0, sizeof( stages ) );
     Q_strncpyz( shader.name, strippedName, sizeof( shader.name ) );
     shader.lightmapIndex = lightmapIndex;
-    for( i = 0 ; i < MAX_SHADER_STAGES ; i++ )
+    for( i = 0; i < MAX_SHADER_STAGES; i++ )
     {
         stages[i].bundle[0].texMods = texMods[i];
     }
@@ -3192,7 +3197,7 @@ qhandle_t RE_RegisterShaderFromImage( const char* name, int lightmapIndex, image
     Com_Memset( &stages, 0, sizeof( stages ) );
     Q_strncpyz( shader.name, name, sizeof( shader.name ) );
     shader.lightmapIndex = lightmapIndex;
-    for( i = 0 ; i < MAX_SHADER_STAGES ; i++ )
+    for( i = 0; i < MAX_SHADER_STAGES; i++ )
     {
         stages[i].bundle[0].texMods = texMods[i];
     }
@@ -3415,7 +3420,7 @@ void    R_ShaderList_f( void )
     ri.Printf( PRINT_ALL, "-----------------------\n" );
     
     count = 0;
-    for( i = 0 ; i < tr.numShaders ; i++ )
+    for( i = 0; i < tr.numShaders; i++ )
     {
         if( ri.Cmd_Argc() > 1 )
         {
@@ -3484,11 +3489,11 @@ void    R_ShaderList_f( void )
         
         if( shader->defaultShader )
         {
-            ri.Printf( PRINT_ALL,  ": %s (DEFAULTED)\n", shader->name );
+            ri.Printf( PRINT_ALL, ": %s (DEFAULTED)\n", shader->name );
         }
         else
         {
-            ri.Printf( PRINT_ALL,  ": %s\n", shader->name );
+            ri.Printf( PRINT_ALL, ": %s\n", shader->name );
         }
         count++;
     }
@@ -3618,14 +3623,14 @@ static void ScanAndLoadShaderFiles( void )
     s_shaderText = ri.Hunk_Alloc( sum + numShaders * 2, h_low );
     
     // free in reverse order, so the temp files are all dumped
-    for( i = numShaders - 1; i >= 0 ; i-- )
+    for( i = numShaders - 1; i >= 0; i-- )
     {
         strcat( s_shaderText, "\n" );
         p = &s_shaderText[strlen( s_shaderText )];
         strcat( s_shaderText, buffers[i] );
         ri.FS_FreeFile( buffers[i] );
         buffers[i] = p;
-//		COM_Compress(p);
+        //		COM_Compress(p);
     }
     
     // free up memory
@@ -3666,10 +3671,10 @@ static void CreateInternalShaders( void )
 
 static void CreateExternalShaders( void )
 {
-//	tr.projectionShadowShader = R_FindShader( "projectionShadow", LIGHTMAP_NONE, qtrue );
+    //	tr.projectionShadowShader = R_FindShader( "projectionShadow", LIGHTMAP_NONE, qtrue );
     tr.flareShader = R_FindShader( "flareShader", LIGHTMAP_NONE, qtrue );
     tr.spotFlareShader = R_FindShader( "spotLight", LIGHTMAP_NONE, qtrue );
-//	tr.sunShader = R_FindShader( "sun", LIGHTMAP_NONE, qtrue );	//----(SA)	let sky shader set this
+    //	tr.sunShader = R_FindShader( "sun", LIGHTMAP_NONE, qtrue );	//----(SA)	let sky shader set this
     tr.sunflareShader[0] = R_FindShader( "sunflare1", LIGHTMAP_NONE, qtrue );
     tr.dlightShader = R_FindShader( "dlightshader", LIGHTMAP_NONE, qtrue );
 }
@@ -3737,13 +3742,13 @@ void R_PurgeShaders( int count )
         if( *sh )
         {
             // free all memory associated with this shader
-            for( j = 0 ; j < ( *sh )->numUnfoggedPasses ; j++ )
+            for( j = 0; j < ( *sh )->numUnfoggedPasses; j++ )
             {
                 if( !( *sh )->stages[j] )
                 {
                     break;
                 }
-                for( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ )
+                for( b = 0; b < NUM_TEXTURE_BUNDLES; b++ )
                 {
                     if( ( *sh )->stages[j]->bundle[b].texMods )
                     {
@@ -3795,7 +3800,7 @@ void R_BackupShaders( void )
 =================
 R_RegisterShaderImages
 
-  Make sure all images that belong to this shader remain valid
+Make sure all images that belong to this shader remain valid
 =================
 */
 static qboolean R_RegisterShaderImages( shader_t* sh )
@@ -3811,7 +3816,7 @@ static qboolean R_RegisterShaderImages( shader_t* sh )
     {
         if( sh->stages[i] && sh->stages[i]->active )
         {
-            for( b = 0 ; b < NUM_TEXTURE_BUNDLES ; b++ )
+            for( b = 0; b < NUM_TEXTURE_BUNDLES; b++ )
             {
                 for( j = 0; sh->stages[i]->bundle[b].image[j] && j < MAX_IMAGE_ANIMATIONS; j++ )
                 {
@@ -3830,7 +3835,7 @@ static qboolean R_RegisterShaderImages( shader_t* sh )
 ===============
 R_FindCachedShader
 
-  look for the given shader in the list of backupShaders
+look for the given shader in the list of backupShaders
 ===============
 */
 shader_t* R_FindCachedShader( const char* name, int lightmapIndex, int hash )
@@ -3882,10 +3887,10 @@ shader_t* R_FindCachedShader( const char* name, int lightmapIndex, int hash )
             backupShaders[sh->index] = NULL;    // make sure we don't try and free it
             
             // set the index up, and add it to the current list
-            tr.shaders[ tr.numShaders ] = sh;
+            tr.shaders[tr.numShaders] = sh;
             sh->index = tr.numShaders;
             
-            tr.sortedShaders[ tr.numShaders ] = sh;
+            tr.sortedShaders[tr.numShaders] = sh;
             sh->sortedIndex = tr.numShaders;
             
             tr.numShaders++;
@@ -3956,8 +3961,8 @@ void R_InitShaders( void )
 {
 
     glfogNum = FOG_NONE;
-    ri.Cvar_Set( "r_waterFogColor", "0" );  // clear fog
-    ri.Cvar_Set( "r_mapFogColor", "0" );        //
+    ri.Cvar_Set( "r_waterFogColor", "0" ); // clear fog
+    ri.Cvar_Set( "r_mapFogColor", "0" );      //
     ri.Cvar_Set( "r_savegameFogColor", "0" );
     
     ri.Printf( PRINT_ALL, "Initializing Shaders\n" );

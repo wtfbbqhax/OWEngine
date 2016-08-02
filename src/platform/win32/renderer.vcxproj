@@ -16,13 +16,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
@@ -49,12 +49,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\..\compiled\</OutDir>
     <IntDir>..\..\..\compiled\intermate\renderer\</IntDir>
+    <TargetName>rendererGL</TargetName>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;__USEA3D;__A3D_GEOM;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -64,7 +66,7 @@
       <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalIncludeDirectories>..\..\glew\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -75,7 +77,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>..\..\glew\lib\Release\Win32\glew32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -85,7 +87,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;__USEA3D;__A3D_GEOM;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\glew\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -108,89 +110,98 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>..\..\glew\lib\Release\Win32\glew32.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/renderer.bsc</OutputFile>
     </Bscmake>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>..\..\renderer\ref_trin.def</ModuleDefinitionFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\..\renderer\ref_trin.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\ft2\ahangles.c" />
-    <ClCompile Include="..\..\ft2\ahglobal.c" />
-    <ClCompile Include="..\..\ft2\ahglyph.c" />
-    <ClCompile Include="..\..\ft2\ahhint.c" />
-    <ClCompile Include="..\..\ft2\ahmodule.c" />
-    <ClCompile Include="..\..\ft2\ahoptim.c" />
-    <ClCompile Include="..\..\ft2\ftcalc.c" />
-    <ClCompile Include="..\..\ft2\ftdebug.c" />
-    <ClCompile Include="..\..\ft2\ftextend.c" />
-    <ClCompile Include="..\..\ft2\ftglyph.c" />
-    <ClCompile Include="..\..\ft2\ftgrays.c" />
-    <ClCompile Include="..\..\ft2\ftinit.c" />
-    <ClCompile Include="..\..\ft2\ftlist.c" />
-    <ClCompile Include="..\..\ft2\ftmm.c" />
-    <ClCompile Include="..\..\ft2\ftnames.c" />
-    <ClCompile Include="..\..\ft2\ftobjs.c" />
-    <ClCompile Include="..\..\ft2\ftoutln.c" />
-    <ClCompile Include="..\..\ft2\ftraster.c" />
-    <ClCompile Include="..\..\ft2\ftrend1.c" />
-    <ClCompile Include="..\..\ft2\ftsmooth.c" />
-    <ClCompile Include="..\..\ft2\ftstream.c" />
-    <ClCompile Include="..\..\ft2\ftsystem.c" />
-    <ClCompile Include="..\..\ft2\sfdriver.c" />
-    <ClCompile Include="..\..\ft2\sfobjs.c" />
-    <ClCompile Include="..\..\ft2\ttcmap.c" />
-    <ClCompile Include="..\..\ft2\ttdriver.c" />
-    <ClCompile Include="..\..\ft2\ttgload.c" />
-    <ClCompile Include="..\..\ft2\ttinterp.c" />
-    <ClCompile Include="..\..\ft2\ttload.c" />
-    <ClCompile Include="..\..\ft2\ttobjs.c" />
-    <ClCompile Include="..\..\ft2\ttpload.c" />
-    <ClCompile Include="..\..\ft2\ttpost.c" />
-    <ClCompile Include="..\..\ft2\ttsbit.c" />
-    <ClCompile Include="..\..\jpeg-6\jcapimin.c" />
-    <ClCompile Include="..\..\jpeg-6\jccoefct.c" />
-    <ClCompile Include="..\..\jpeg-6\jccolor.c" />
-    <ClCompile Include="..\..\jpeg-6\jcdctmgr.c" />
-    <ClCompile Include="..\..\jpeg-6\jchuff.c" />
-    <ClCompile Include="..\..\jpeg-6\jcinit.c" />
-    <ClCompile Include="..\..\jpeg-6\jcmainct.c" />
-    <ClCompile Include="..\..\jpeg-6\jcmarker.c" />
-    <ClCompile Include="..\..\jpeg-6\jcmaster.c" />
-    <ClCompile Include="..\..\jpeg-6\jcomapi.c" />
-    <ClCompile Include="..\..\jpeg-6\jcparam.c" />
-    <ClCompile Include="..\..\jpeg-6\jcphuff.c" />
-    <ClCompile Include="..\..\jpeg-6\jcprepct.c" />
-    <ClCompile Include="..\..\jpeg-6\jcsample.c" />
-    <ClCompile Include="..\..\jpeg-6\jctrans.c" />
-    <ClCompile Include="..\..\jpeg-6\jdapimin.c" />
-    <ClCompile Include="..\..\jpeg-6\jdapistd.c" />
-    <ClCompile Include="..\..\jpeg-6\jdatadst.c" />
-    <ClCompile Include="..\..\jpeg-6\jdatasrc.c" />
-    <ClCompile Include="..\..\jpeg-6\jdcoefct.c" />
-    <ClCompile Include="..\..\jpeg-6\jdcolor.c" />
-    <ClCompile Include="..\..\jpeg-6\jddctmgr.c" />
-    <ClCompile Include="..\..\jpeg-6\jdhuff.c" />
-    <ClCompile Include="..\..\jpeg-6\jdinput.c" />
-    <ClCompile Include="..\..\jpeg-6\jdmainct.c" />
-    <ClCompile Include="..\..\jpeg-6\jdmarker.c" />
-    <ClCompile Include="..\..\jpeg-6\jdmaster.c" />
-    <ClCompile Include="..\..\jpeg-6\jdpostct.c" />
-    <ClCompile Include="..\..\jpeg-6\jdsample.c" />
-    <ClCompile Include="..\..\jpeg-6\jdtrans.c" />
-    <ClCompile Include="..\..\jpeg-6\jerror.c" />
-    <ClCompile Include="..\..\jpeg-6\jfdctflt.c" />
-    <ClCompile Include="..\..\jpeg-6\jidctflt.c" />
-    <ClCompile Include="..\..\jpeg-6\jmemmgr.c" />
-    <ClCompile Include="..\..\jpeg-6\jmemnobs.c" />
-    <ClCompile Include="..\..\jpeg-6\jutils.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ahangles.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ahglobal.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ahglyph.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ahhint.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ahmodule.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ahoptim.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftcalc.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftdebug.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftextend.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftglyph.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftgrays.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftinit.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftlist.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftmm.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftnames.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftobjs.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftoutln.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftraster.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftrend1.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftsmooth.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftstream.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ftsystem.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\sfdriver.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\sfobjs.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttcmap.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttdriver.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttgload.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttinterp.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttload.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttobjs.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttpload.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttpost.c" />
+    <ClCompile Include="..\..\..\libraries\ft2\ttsbit.c" />
+    <ClCompile Include="..\..\..\libraries\glew-2.0.0\src\glew.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcapimin.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jccoefct.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jccolor.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcdctmgr.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jchuff.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcinit.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcmainct.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcmarker.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcmaster.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcomapi.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcparam.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcphuff.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcprepct.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcsample.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jctrans.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdapimin.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdapistd.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdatadst.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdatasrc.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdcoefct.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdcolor.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jddctmgr.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdhuff.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdinput.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdmainct.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdmarker.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdmaster.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdpostct.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdsample.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdtrans.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jerror.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jfdctflt.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jidctflt.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jmemmgr.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jmemnobs.c" />
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jutils.c" />
+    <ClCompile Include="..\..\game\q_math.c" />
+    <ClCompile Include="..\..\game\q_shared.c" />
     <ClCompile Include="..\win32\win_gamma.c" />
     <ClCompile Include="..\win32\win_glimp.c" />
-    <ClCompile Include="..\win32\win_qgl.c" />
     <ClCompile Include="..\..\renderer\tr_animation.c" />
     <ClCompile Include="..\..\renderer\tr_backend.c" />
     <ClCompile Include="..\..\renderer\tr_bsp.c" />
@@ -217,77 +228,79 @@
     <ClCompile Include="..\..\renderer\tr_world.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\glew.h" />
+    <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\wglew.h" />
     <ClInclude Include="..\..\cgame\tr_types.h" />
-    <ClInclude Include="..\..\ft2\ahangles.h" />
-    <ClInclude Include="..\..\ft2\ahglobal.h" />
-    <ClInclude Include="..\..\ft2\ahglyph.h" />
-    <ClInclude Include="..\..\ft2\ahhint.h" />
-    <ClInclude Include="..\..\ft2\ahloader.h" />
-    <ClInclude Include="..\..\ft2\ahmodule.h" />
-    <ClInclude Include="..\..\ft2\ahoptim.h" />
-    <ClInclude Include="..\..\ft2\ahtypes.h" />
-    <ClInclude Include="..\..\ft2\autohint.h" />
-    <ClInclude Include="..\..\ft2\freetype.h" />
-    <ClInclude Include="..\..\ft2\ftcalc.h" />
-    <ClInclude Include="..\..\ft2\ftconfig.h" />
-    <ClInclude Include="..\..\ft2\ftdebug.h" />
-    <ClInclude Include="..\..\ft2\ftdriver.h" />
-    <ClInclude Include="..\..\ft2\fterrors.h" />
-    <ClInclude Include="..\..\ft2\ftextend.h" />
-    <ClInclude Include="..\..\ft2\ftglyph.h" />
-    <ClInclude Include="..\..\ft2\ftgrays.h" />
-    <ClInclude Include="..\..\ft2\ftimage.h" />
-    <ClInclude Include="..\..\ft2\ftlist.h" />
-    <ClInclude Include="..\..\ft2\ftmemory.h" />
-    <ClInclude Include="..\..\ft2\ftmm.h" />
-    <ClInclude Include="..\..\ft2\ftmodule.h" />
-    <ClInclude Include="..\..\ft2\ftnames.h" />
-    <ClInclude Include="..\..\ft2\ftobjs.h" />
-    <ClInclude Include="..\..\ft2\ftoption.h" />
-    <ClInclude Include="..\..\ft2\ftoutln.h" />
-    <ClInclude Include="..\..\ft2\ftraster.h" />
-    <ClInclude Include="..\..\ft2\ftrend1.h" />
-    <ClInclude Include="..\..\ft2\ftrender.h" />
-    <ClInclude Include="..\..\ft2\ftsmooth.h" />
-    <ClInclude Include="..\..\ft2\ftstream.h" />
-    <ClInclude Include="..\..\ft2\ftsystem.h" />
-    <ClInclude Include="..\..\ft2\fttypes.h" />
-    <ClInclude Include="..\..\ft2\psnames.h" />
-    <ClInclude Include="..\..\ft2\sfdriver.h" />
-    <ClInclude Include="..\..\ft2\sfnt.h" />
-    <ClInclude Include="..\..\ft2\sfobjs.h" />
-    <ClInclude Include="..\..\ft2\t1tables.h" />
-    <ClInclude Include="..\..\ft2\ttcmap.h" />
-    <ClInclude Include="..\..\ft2\ttdriver.h" />
-    <ClInclude Include="..\..\ft2\tterrors.h" />
-    <ClInclude Include="..\..\ft2\ttgload.h" />
-    <ClInclude Include="..\..\ft2\ttinterp.h" />
-    <ClInclude Include="..\..\ft2\ttload.h" />
-    <ClInclude Include="..\..\ft2\ttnameid.h" />
-    <ClInclude Include="..\..\ft2\ttobjs.h" />
-    <ClInclude Include="..\..\ft2\ttpload.h" />
-    <ClInclude Include="..\..\ft2\ttpost.h" />
-    <ClInclude Include="..\..\ft2\ttsbit.h" />
-    <ClInclude Include="..\..\ft2\tttables.h" />
-    <ClInclude Include="..\..\ft2\tttags.h" />
-    <ClInclude Include="..\..\ft2\tttypes.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahangles.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahglobal.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahglyph.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahhint.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahloader.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahmodule.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahoptim.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ahtypes.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\autohint.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\freetype.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftcalc.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftconfig.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftdebug.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftdriver.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\fterrors.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftextend.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftglyph.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftgrays.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftimage.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftlist.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftmemory.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftmm.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftmodule.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftnames.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftobjs.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftoption.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftoutln.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftraster.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftrend1.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftrender.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftsmooth.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftstream.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ftsystem.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\fttypes.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\psnames.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\sfdriver.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\sfnt.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\sfobjs.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\t1tables.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttcmap.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttdriver.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\tterrors.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttgload.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttinterp.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttload.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttnameid.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttobjs.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttpload.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttpost.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\ttsbit.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\tttables.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\tttags.h" />
+    <ClInclude Include="..\..\..\libraries\ft2\tttypes.h" />
     <ClInclude Include="..\..\game\q_shared.h" />
     <ClInclude Include="..\..\game\surfaceflags.h" />
     <ClInclude Include="..\..\jpeg-6\jchuff.h" />
-    <ClInclude Include="..\..\jpeg-6\jconfig.h" />
-    <ClInclude Include="..\..\jpeg-6\jdct.h" />
-    <ClInclude Include="..\..\jpeg-6\jdhuff.h" />
-    <ClInclude Include="..\..\jpeg-6\jerror.h" />
-    <ClInclude Include="..\..\jpeg-6\jinclude.h" />
-    <ClInclude Include="..\..\jpeg-6\jmemsys.h" />
-    <ClInclude Include="..\..\jpeg-6\jmorecfg.h" />
-    <ClInclude Include="..\..\jpeg-6\jpegint.h" />
-    <ClInclude Include="..\..\jpeg-6\jpeglib.h" />
-    <ClInclude Include="..\..\jpeg-6\jversion.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jconfig.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jdct.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jdhuff.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jerror.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jinclude.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jmemsys.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jmorecfg.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jpegint.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jpeglib.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jversion.h" />
     <ClInclude Include="..\..\qcommon\cm_public.h" />
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
-    <ClInclude Include=".glw_win.h" />
+    <ClInclude Include="glw_win.h" />
     <ClInclude Include="..\win32\resource.h" />
     <ClInclude Include="..\win32\win_local.h" />
     <ClInclude Include="..\..\renderer\anorms256.h" />

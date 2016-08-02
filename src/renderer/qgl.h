@@ -58,7 +58,7 @@
 #endif /* __GNUC__ */
 
 #include <windows.h>
-#include "../glew/include/GL/glew.h"
+#include <GL/glew.h>
 #elif defined( __MACOS__ )
 
 #include <OpenGL/gl.h>

@@ -466,10 +466,10 @@ static void RB_SurfaceBeam( void )
     
     GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE );
     
-    qglColor4f( 1, 0, 0, 1 );
+    glColor4f( 1, 0, 0, 1 );
     
-    qglVertexPointer( 3, GL_FLOAT, 0, points );
-    qglDrawArrays( GL_TRIANGLE_STRIP, 0, NUM_BEAM_SEGS * 2 );
+    glVertexPointer( 3, GL_FLOAT, 0, points );
+    glDrawArrays( GL_TRIANGLE_STRIP, 0, NUM_BEAM_SEGS * 2 );
 }
 
 //================================================================================
@@ -1471,12 +1471,12 @@ static void RB_SurfaceAxis( void )
     unsigned short indicies[6] = { 0, 1, 0, 2, 0, 3 };
     
     GL_Bind( tr.whiteImage );
-    qglLineWidth( 3 );
-    qglEnableClientState( GL_COLOR_ARRAY );
-    qglColorPointer( 4, GL_UNSIGNED_BYTE, 0, colors );
-    qglVertexPointer( 3, GL_FLOAT, 0, verts );
-    qglDrawElements( GL_LINES, 6, GL_UNSIGNED_SHORT, indicies );
-    qglLineWidth( 1 );
+    glLineWidth( 3 );
+    glEnableClientState( GL_COLOR_ARRAY );
+    glColorPointer( 4, GL_UNSIGNED_BYTE, 0, colors );
+    glVertexPointer( 3, GL_FLOAT, 0, verts );
+    glDrawElements( GL_LINES, 6, GL_UNSIGNED_SHORT, indicies );
+    glLineWidth( 1 );
 }
 
 //===========================================================================
@@ -1595,7 +1595,7 @@ void RB_SurfaceDisplayList( srfDisplayList_t* surf )
 {
     // all apropriate state must be set in RB_BeginSurface
     // this isn't implemented yet...
-    qglCallList( surf->listNum );
+    glCallList( surf->listNum );
 }
 
 void RB_SurfaceSkip( void* surf )

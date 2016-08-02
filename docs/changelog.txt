@@ -1,5 +1,12 @@
 Changelog
 
+08-03-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed switching to fullscreen on Windows
+	- Replaced the QGL interface with GLEW.
+	- Fixed compiling on Windows platform
+	- Moved renderer to dynamic module
+	- Moved library files in their own folder
+
 07-30-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed compiling on Windows platform
 	- Fixed undefined 'CM_ClearMap'

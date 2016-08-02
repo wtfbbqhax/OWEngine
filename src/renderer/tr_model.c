@@ -1940,7 +1940,7 @@ void* R_Hunk_Begin( void )
     hunkcursize = 0;
     hunkmaxsize = maxsize;
     
-#ifdef _WIN32
+#if 0 //def _WIN32
     
     // this will "reserve" a chunk of memory for use by this application
     // it will not be "committed" just yet, but the swap file will grow
@@ -1988,7 +1988,7 @@ void* R_Hunk_Alloc( int size )
     // round to cacheline
     size = ( size + 31 ) & ~31;
     
-#ifdef _WIN32
+#if 0 //def _WIN32
     
     // commit pages as needed
     buf = VirtualAlloc( membase, hunkcursize + size, MEM_COMMIT, PAGE_READWRITE );
@@ -2026,7 +2026,7 @@ void R_Hunk_End( void )
     
     if( membase )
     {
-#ifdef _WIN32
+#if 0 //def _WIN32
         VirtualFree( membase, 0, MEM_RELEASE );
 #elif defined( __MACOS__ )
         //DAJ FIXME free (membase);
@@ -2054,7 +2054,7 @@ void R_Hunk_Reset( void )
     }
 #endif
     
-#ifdef _WIN32
+#if 0 //def _WIN32
     // mark the existing committed pages as reserved, but not committed
     VirtualFree( membase, hunkcursize, MEM_DECOMMIT );
 #endif

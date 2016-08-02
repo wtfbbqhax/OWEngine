@@ -51,13 +51,15 @@
 
 #define DIRECTINPUT_VERSION 0x0800
 
-#ifdef DOOMSOUND    ///// (SA) DOOMSOUND
-#include "../mssdk/include/dinput.h"
-#include "../mssdk/include/dsound.h"
-#else
+//#ifdef DOOMSOUND    ///// (SA) DOOMSOUND
+//#include "../mssdk/include/dinput.h"
+//#include "../mssdk/include/dsound.h"
+//#else
+//#include <dinput.h>
+//#include <dsound.h>
 #include <dinput.h>
 #include <dsound.h>
-#endif  ///// (SA) DOOMSOUND
+//#endif  ///// (SA) DOOMSOUND
 
 #include <winsock.h>
 #include <wsipx.h>
@@ -120,13 +122,17 @@ extern "C" {
         // when we get a windows message, we store the time off so keyboard processing
         // can know the exact time of an event
         unsigned sysMsgTime;
+        qboolean classRegistered;
     } WinVars_t;
     
     extern WinVars_t g_wv;
+    
+    char* WinGetLastError();
     
 #ifdef DOOMSOUND    ///// (SA) DOOMSOUND
 #ifdef __cplusplus
 }
 #endif
 #endif  ///// (SA) DOOMSOUND
+
 

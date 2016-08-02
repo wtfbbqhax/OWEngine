@@ -105,16 +105,16 @@ void R_RenderShadowEdges( void )
         i2 = tess.indexes[ i * 3 + 1 ];
         i3 = tess.indexes[ i * 3 + 2 ];
         
-        qglBegin( GL_TRIANGLE_STRIP );
-        qglVertex3fv( tess.xyz[ i1 ] );
-        qglVertex3fv( tess.xyz[ i1 + tess.numVertexes ] );
-        qglVertex3fv( tess.xyz[ i2 ] );
-        qglVertex3fv( tess.xyz[ i2 + tess.numVertexes ] );
-        qglVertex3fv( tess.xyz[ i3 ] );
-        qglVertex3fv( tess.xyz[ i3 + tess.numVertexes ] );
-        qglVertex3fv( tess.xyz[ i1 ] );
-        qglVertex3fv( tess.xyz[ i1 + tess.numVertexes ] );
-        qglEnd();
+        glBegin( GL_TRIANGLE_STRIP );
+        glVertex3fv( tess.xyz[ i1 ] );
+        glVertex3fv( tess.xyz[ i1 + tess.numVertexes ] );
+        glVertex3fv( tess.xyz[ i2 ] );
+        glVertex3fv( tess.xyz[ i2 + tess.numVertexes ] );
+        glVertex3fv( tess.xyz[ i3 ] );
+        glVertex3fv( tess.xyz[ i3 + tess.numVertexes ] );
+        glVertex3fv( tess.xyz[ i1 ] );
+        glVertex3fv( tess.xyz[ i1 + tess.numVertexes ] );
+        glEnd();
     }
 #else
     int c, c2;
@@ -163,8 +163,8 @@ void R_RenderShadowEdges( void )
                 indicies[2] = i2;
                 indicies[3] = i2 + tess.numVertexes;
     
-                qglVertexPointer( 3, GL_FLOAT, 16, tess.xyz );
-                qglDrawElements( GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, indicies );
+                glVertexPointer( 3, GL_FLOAT, 16, tess.xyz );
+                glDrawElements( GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, indicies );
                 c_edges++;
             }
             else
@@ -255,45 +255,45 @@ void RB_ShadowTessEnd( void )
     // draw the silhouette edges
     
     GL_Bind( tr.whiteImage );
-    qglEnable( GL_CULL_FACE );
+    glEnable( GL_CULL_FACE );
     GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
-    qglColor4f( 0.2f, 0.2f, 0.2f, 1.0f );
+    glColor4f( 0.2f, 0.2f, 0.2f, 1.0f );
     
     // don't write to the color buffer
-    qglColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+    glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
     
-    qglEnable( GL_STENCIL_TEST );
-    qglStencilFunc( GL_ALWAYS, 1, 255 );
+    glEnable( GL_STENCIL_TEST );
+    glStencilFunc( GL_ALWAYS, 1, 255 );
     
     // mirrors have the culling order reversed
     if( backEnd.viewParms.isMirror )
     {
-        qglCullFace( GL_FRONT );
-        qglStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+        glCullFace( GL_FRONT );
+        glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
         
         R_RenderShadowEdges();
         
-        qglCullFace( GL_BACK );
-        qglStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
+        glCullFace( GL_BACK );
+        glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
         
         R_RenderShadowEdges();
     }
     else
     {
-        qglCullFace( GL_BACK );
-        qglStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+        glCullFace( GL_BACK );
+        glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
         
         R_RenderShadowEdges();
         
-        qglCullFace( GL_FRONT );
-        qglStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
+        glCullFace( GL_FRONT );
+        glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
         
         R_RenderShadowEdges();
     }
     
     
     // reenable writing to the color buffer
-    qglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+    glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
 }
 
 
@@ -326,27 +326,27 @@ void RB_ShadowFinish( void )
     {
         return;
     }
-    qglEnable( GL_STENCIL_TEST );
-    qglStencilFunc( GL_NOTEQUAL, 0, 255 );
+    glEnable( GL_STENCIL_TEST );
+    glStencilFunc( GL_NOTEQUAL, 0, 255 );
     
-    qglDisable( GL_CLIP_PLANE0 );
-    qglDisable( GL_CULL_FACE );
+    glDisable( GL_CLIP_PLANE0 );
+    glDisable( GL_CULL_FACE );
     
     GL_Bind( tr.whiteImage );
     
-    qglLoadIdentity();
+    glLoadIdentity();
     
-    qglColor4f( 0.6f, 0.6f, 0.6f, 1.0f );
+    glColor4f( 0.6f, 0.6f, 0.6f, 1.0f );
     GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO );
     
-//	qglColor4f( 1, 0, 0, 1 );
+//	glColor4f( 1, 0, 0, 1 );
 //	GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );
 
-    qglVertexPointer( 3, GL_FLOAT, 0, quad );
-    qglDrawElements( GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, indicies );
+    glVertexPointer( 3, GL_FLOAT, 0, quad );
+    glDrawElements( GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_SHORT, indicies );
     
-    qglColor4f( 1, 1, 1, 1 );
-    qglDisable( GL_STENCIL_TEST );
+    glColor4f( 1, 1, 1, 1 );
+    glDisable( GL_STENCIL_TEST );
 }
 
 

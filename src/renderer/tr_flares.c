@@ -356,7 +356,7 @@ void RB_TestFlare( flare_t* f )
 //	glState.finishCalled = qtrue;	// (SA) Hmm, shouldn't this be true?
 
     // read back the z buffer contents
-//	qglReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
+//	ReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
 //	screenZ = backEnd.viewParms.projectionMatrix[14] /
 //		( ( 2*depth - 1 ) * backEnd.viewParms.projectionMatrix[11] - backEnd.viewParms.projectionMatrix[10] );
 
@@ -570,24 +570,24 @@ void RB_RenderFlares( void )
     
     if( backEnd.viewParms.isPortal )
     {
-        qglDisable( GL_CLIP_PLANE0 );
+        glDisable( GL_CLIP_PLANE0 );
     }
     
-    qglPushMatrix();
-    qglLoadIdentity();
-    qglMatrixMode( GL_PROJECTION );
-    qglPushMatrix();
-    qglLoadIdentity();
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode( GL_PROJECTION );
+    glPushMatrix();
+    glLoadIdentity();
 #if defined (__ANDROID__)
-    qglOrthof( backEnd.viewParms.viewportX, backEnd.viewParms.viewportX + backEnd.viewParms.viewportWidth,
-               backEnd.viewParms.viewportY, backEnd.viewParms.viewportY + backEnd.viewParms.viewportHeight,
-               -99999, 99999 );
-#else
-    qglOrtho( backEnd.viewParms.viewportX, backEnd.viewParms.viewportX + backEnd.viewParms.viewportWidth,
+    glOrthof( backEnd.viewParms.viewportX, backEnd.viewParms.viewportX + backEnd.viewParms.viewportWidth,
               backEnd.viewParms.viewportY, backEnd.viewParms.viewportY + backEnd.viewParms.viewportHeight,
               -99999, 99999 );
+#else
+    glOrtho( backEnd.viewParms.viewportX, backEnd.viewParms.viewportX + backEnd.viewParms.viewportWidth,
+             backEnd.viewParms.viewportY, backEnd.viewParms.viewportY + backEnd.viewParms.viewportHeight,
+             -99999, 99999 );
 #endif
-               
+              
     for( f = r_activeFlares ; f ; f = f->next )
     {
         if( f->frameSceneNum == backEnd.viewParms.frameSceneNum
@@ -598,8 +598,8 @@ void RB_RenderFlares( void )
         }
     }
     
-    qglPopMatrix();
-    qglMatrixMode( GL_MODELVIEW );
-    qglPopMatrix();
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glPopMatrix();
 }
 

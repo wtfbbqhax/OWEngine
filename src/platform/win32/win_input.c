@@ -433,11 +433,11 @@ IN_Startup
 */
 void IN_Startup( void )
 {
-    Com_Printf( "\n------- Input Initialization -------\n" );
+    Com_DPrintf( "\n------- Input Initialization -------\n" );
     IN_StartupMouse();
     IN_StartupJoystick();
     IN_StartupMIDI();
-    Com_Printf( "------------------------------------\n" );
+    Com_DPrintf( "------------------------------------\n" );
     
     in_mouse->modified = qfalse;
     in_joystick->modified = qfalse;
@@ -482,7 +482,6 @@ void IN_Init( void )
     joy_threshold           = Cvar_Get( "joy_threshold",         "0.15",      CVAR_ARCHIVE );
     
     k_language              = Cvar_Get( "k_language",               "american", CVAR_ARCHIVE | CVAR_NORESTART );
-    
     
     IN_Startup();
 }
@@ -530,8 +529,7 @@ void IN_Frame( void )
         // temporarily deactivate if not in the game and
         // running on the desktop
         // voodoo always counts as full screen
-        if( Cvar_VariableValue( "r_fullscreen" ) == 0
-                && strcmp( Cvar_VariableString( "r_glDriver" ), _3DFX_DRIVER_NAME ) )
+        if( Cvar_VariableValue( "r_fullscreen" ) == 0 )
         {
             IN_DeactivateMouse();
             return;

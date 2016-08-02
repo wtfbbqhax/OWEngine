@@ -159,6 +159,7 @@
 
 
 #define PATH_SEP '\\'
+#define DLL_EXT ".dll"
 
 #endif
 
@@ -177,6 +178,7 @@
 #endif
 
 #define PATH_SEP    '/'
+#define DLL_EXT ".dylib"
 
 #define GAME_HARD_LINKED
 #define CGAME_HARD_LINKED
@@ -225,6 +227,7 @@ void Sys_PumpEvents( void );
 #endif
 
 #define PATH_SEP '/'
+#define DLL_EXT ".so"
 
 #endif
 
@@ -589,6 +592,7 @@ void VectorInverse( vec3_t v );
 void Vector4Scale( const vec4_t in, vec_t scale, vec4_t out );
 void VectorRotate( vec3_t in, vec3_t matrix[3], vec3_t out );
 int Q_log2( int val );
+int Q_vsnprintf( char* dest, int size, const char* fmt, va_list argptr );
 
 float Q_acos( float c );
 
@@ -645,6 +649,7 @@ void ProjectPointOntoVector( vec3_t point, vec3_t vStart, vec3_t vEnd, vec3_t vP
 float Com_Clamp( float min, float max, float value );
 
 char*    COM_SkipPath( char* pathname );
+void    COM_FixPath( char* pathname );
 void    COM_StripExtension( const char* in, char* out );
 void    COM_StripFilename( char* in, char* out );
 void    COM_DefaultExtension( char* path, int maxSize, const char* extension );
@@ -663,6 +668,7 @@ void    COM_ParseWarning( char* format, ... );
 qboolean COM_BitCheck( const int array[], int bitNum );
 void COM_BitSet( int array[], int bitNum );
 void COM_BitClear( int array[], int bitNum );
+int Com_HashKey( char* string, int maxlen );
 
 #define MAX_TOKENLENGTH     1024
 

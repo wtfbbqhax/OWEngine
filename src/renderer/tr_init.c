@@ -42,21 +42,6 @@
 
 #include "tr_local.h"
 
-#ifdef QGL_LOG_GL_CALLS
-unsigned int QGLLogGLCalls = 1;
-
-#include <time.h>
-static clock_t start, end;
-FILE* QGLDebugFile( void )
-{
-    end = clock();
-    fprintf( stdout, "%f ms ", ( ( double )( end - start ) * 1000 ) / CLOCKS_PER_SEC );
-    start = end;
-    return stdout;
-};
-#endif
-
-
 //#ifdef __USEA3D
 //// Defined in snd_a3dg_refcommon.c
 //void RE_A3D_RenderGeometry (void *pVoidA3D, void *pVoidGeom, void *pVoidMat, void *pVoidGeomStatus);
@@ -233,20 +218,10 @@ int max_polys;
 cvar_t*  r_maxpolyverts;
 int max_polyverts;
 
-void ( APIENTRY* qglMultiTexCoord2fARB )( GLenum texture, GLfloat s, GLfloat t );
-void ( APIENTRY* qglActiveTextureARB )( GLenum texture );
-void ( APIENTRY* qglClientActiveTextureARB )( GLenum texture );
-
-void ( APIENTRY* qglLockArraysEXT )( GLint, GLint );
-void ( APIENTRY* qglUnlockArraysEXT )( void );
-
-//----(SA)	added
-void ( APIENTRY* qglPNTrianglesiATI )( GLenum pname, GLint param );
-void ( APIENTRY* qglPNTrianglesfATI )( GLenum pname, GLfloat param );
 /*
 The tessellation level and normal generation mode are specified with:
 
-	void qglPNTriangles{if}ATI(enum pname, T param)
+	void glPNTriangles{if}ATI(enum pname, T param)
 
 	If <pname> is:
 		GL_PN_TRIANGLES_NORMAL_MODE_ATI -
@@ -339,7 +314,7 @@ static void InitOpenGL( void )
         Q_strlwr( renderer_buffer );
         
         // OpenGL driver constants
-        qglGetIntegerv( GL_MAX_TEXTURE_SIZE, &temp );
+        glGetIntegerv( GL_MAX_TEXTURE_SIZE, &temp );
         glConfig.maxTextureSize = temp;
         
         // stubbed or broken drivers may have reported 0...
@@ -369,7 +344,7 @@ void GL_CheckErrors( void )
     int err;
     char s[64];
     
-    err = qglGetError();
+    err = glGetError();
     if( err == GL_NO_ERROR )
     {
         return;
@@ -509,7 +484,7 @@ void R_TakeScreenshot( int x, int y, int width, int height, char* fileName )
     buffer[15] = height >> 8;
     buffer[16] = 24;    // pixel size
     
-    qglReadPixels( x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer + 18 );
+    glReadPixels( x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer + 18 );
     
     // swap rgb to bgr
     c = 18 + width * height * 3;
@@ -542,7 +517,7 @@ void R_TakeScreenshotJPEG( int x, int y, int width, int height, char* fileName )
     
     buffer = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 4 );
     
-    qglReadPixels( x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
+    glReadPixels( x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
     
     // gamma correct
     if( ( tr.overbrightBits > 0 ) && glConfig.deviceSupportsGamma )
@@ -640,7 +615,7 @@ void R_LevelShot( void )
     buffer[14] = 128;
     buffer[16] = 24;    // pixel size
     
-    qglReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_RGB, GL_UNSIGNED_BYTE, source );
+    glReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_RGB, GL_UNSIGNED_BYTE, source );
     
     // resample from source
     xScale = glConfig.vidWidth / 512.0f;
@@ -836,76 +811,59 @@ void R_ScreenShotJPEG_f( void )
 */
 void GL_SetDefaultState( void )
 {
+    int i;
+    
+    GLimp_LogComment( "--- GL_SetDefaultState ---\n" );
+    
 #if defined (__ANDROID__)
-    qglClearDepthf( 1.0f );
+    glClearDepthf( 1.0f );
 #else
-    qglClearDepth( 1.0f );
+    glClearDepth( 1.0f );
 #endif
     
-    qglCullFace( GL_FRONT );
+    glCullFace( GL_FRONT );
     
-    qglColor4f( 1, 1, 1, 1 );
+    
+    glColor4f( 1, 1, 1, 1 );
     
     // initialize downstream texture unit if we're running
     // in a multitexture environment
-    if( qglActiveTextureARB )
+    if( GLEW_ARB_multisample )
     {
         GL_SelectTexture( 1 );
         GL_TextureMode( r_textureMode->string );
         GL_TexEnv( GL_MODULATE );
-        qglDisable( GL_TEXTURE_2D );
+        glDisable( GL_TEXTURE_2D );
         GL_SelectTexture( 0 );
     }
     
-    qglEnable( GL_TEXTURE_2D );
+    glEnable( GL_TEXTURE_2D );
     GL_TextureMode( r_textureMode->string );
     GL_TexEnv( GL_MODULATE );
     
-    qglShadeModel( GL_SMOOTH );
-    qglDepthFunc( GL_LEQUAL );
+    glShadeModel( GL_SMOOTH );
+    glDepthFunc( GL_LEQUAL );
     
     // the vertex array is always enabled, but the color and texture
     // arrays are enabled and disabled around the compiled vertex array call
-    qglEnableClientState( GL_VERTEX_ARRAY );
+    glEnableClientState( GL_VERTEX_ARRAY );
     
     //
     // make sure our GL state vector is set correctly
     //
     glState.glStateBits = GLS_DEPTHTEST_DISABLE | GLS_DEPTHMASK_TRUE;
 #if 0
-    qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 #endif
-    qglDepthMask( GL_TRUE );
-    qglDisable( GL_DEPTH_TEST );
-    qglEnable( GL_SCISSOR_TEST );
-    qglDisable( GL_CULL_FACE );
-    qglDisable( GL_BLEND );
+    glDepthMask( GL_TRUE );
+    glDisable( GL_DEPTH_TEST );
+    glEnable( GL_SCISSOR_TEST );
+    glDisable( GL_CULL_FACE );
+    glDisable( GL_BLEND );
     
 //----(SA)	added.
 
 //----(SA)	end
-}
-
-/*
-================
-R_PrintLongString
-Workaround for ri.Printf's 1024 characters buffer limit.
-================
-*/
-void R_PrintLongString( const char* string )
-{
-    char buffer[1024];
-    const char* p;
-    int size = strlen( string );
-    
-    p = string;
-    while( size > 0 )
-    {
-        Q_strncpyz( buffer, p, sizeof( buffer ) );
-        ri.Printf( PRINT_ALL, "%s", buffer );
-        p += 1023;
-        size -= 1023;
-    }
 }
 
 /*
@@ -930,8 +888,7 @@ void GfxInfo_f( void )
     ri.Printf( PRINT_ALL, "\nGL_VENDOR: %s\n", glConfig.vendor_string );
     ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
     ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
-    ri.Printf( PRINT_ALL, "GL_EXTENSIONS: %s\n" );//, glConfig.extensions_string );
-    R_PrintLongString( glConfig.extensions_string );
+    ri.Printf( PRINT_ALL, "GL_EXTENSIONS: %s\n", glConfig.extensions_string );
     ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize );
     ri.Printf( PRINT_ALL, "GL_MAX_ACTIVE_TEXTURES_ARB: %d\n", glConfig.maxActiveTextures );
     ri.Printf( PRINT_ALL, "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
@@ -963,7 +920,7 @@ void GfxInfo_f( void )
         primitives = r_primitives->integer;
         if( primitives == 0 )
         {
-            if( qglLockArraysEXT )
+            if( glLockArraysEXT )
             {
                 primitives = 2;
             }
@@ -994,13 +951,13 @@ void GfxInfo_f( void )
     ri.Printf( PRINT_ALL, "picmip: %d\n", r_picmip->integer );
     ri.Printf( PRINT_ALL, "picmip2: %d\n", r_picmip2->integer );
     ri.Printf( PRINT_ALL, "texture bits: %d\n", r_texturebits->integer );
-    ri.Printf( PRINT_ALL, "multitexture: %s\n", enablestrings[qglActiveTextureARB != 0] );
-    ri.Printf( PRINT_ALL, "compiled vertex arrays: %s\n", enablestrings[qglLockArraysEXT != 0 ] );
+    ri.Printf( PRINT_ALL, "multitexture: %s\n", enablestrings[glActiveTextureARB != 0] );
+    ri.Printf( PRINT_ALL, "compiled vertex arrays: %s\n", enablestrings[glLockArraysEXT != 0 ] );
     ri.Printf( PRINT_ALL, "texenv add: %s\n", enablestrings[glConfig.textureEnvAddAvailable != 0] );
     ri.Printf( PRINT_ALL, "compressed textures: %s\n", enablestrings[glConfig.textureCompression != TC_NONE] );
     
-    ri.Printf( PRINT_ALL, "ATI truform: %s\n", enablestrings[qglPNTrianglesiATI != 0] );
-    if( qglPNTrianglesiATI )
+    ri.Printf( PRINT_ALL, "ATI truform: %s\n", enablestrings[glPNTrianglesiATI != 0] );
+    if( glPNTrianglesiATI )
     {
 //DAJ bogus at this point		ri.Printf( PRINT_ALL, "MAX_PN_TRIANGLES_TESSELATION_LEVEL_ATI: %d\n", glConfig.ATIMaxTruformTess );
         ri.Printf( PRINT_ALL, "Truform Tess: %d\n", r_ati_truform_tess->integer );
@@ -1013,18 +970,35 @@ void GfxInfo_f( void )
     {
         ri.Printf( PRINT_ALL, "Fog Mode: %s\n", r_nv_fogdist_mode->string );
     }
-    
+    if( glConfig.driverType == GLDRV_OPENGL )
+    {
+        int contextFlags, profile;
+        
+        ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Creating OpenGL context\n" );
+        
+        glGetIntegerv( GL_CONTEXT_PROFILE_MASK, &profile );
+        if( profile == GL_CONTEXT_CORE_PROFILE_BIT )
+        {
+            ri.Printf( PRINT_ALL, S_COLOR_GREEN "Having a core profile\n" );
+        }
+        else
+        {
+            ri.Printf( PRINT_ALL, S_COLOR_RED "Having a compatibility profile\n" );
+        }
+        
+        glGetIntegerv( GL_CONTEXT_FLAGS, &contextFlags );
+        if( contextFlags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT )
+        {
+            ri.Printf( PRINT_ALL, S_COLOR_GREEN "Context is forward compatible\n" );
+        }
+        else
+        {
+            ri.Printf( PRINT_ALL, S_COLOR_RED "Context is NOT forward compatible\n" );
+        }
+    }
     if( r_vertexLight->integer || glConfig.hardwareType == GLHW_PERMEDIA2 )
     {
         ri.Printf( PRINT_ALL, "HACK: using vertex lightmap approximation\n" );
-    }
-    if( glConfig.hardwareType == GLHW_RAGEPRO )
-    {
-        ri.Printf( PRINT_ALL, "HACK: ragePro approximations\n" );
-    }
-    if( glConfig.hardwareType == GLHW_RIVA128 )
-    {
-        ri.Printf( PRINT_ALL, "HACK: riva128 approximations\n" );
     }
     if( glConfig.smpActive )
     {
@@ -1356,7 +1330,7 @@ void R_Init( void )
     
     RB_ZombieFXInit();
     
-    err = qglGetError();
+    err = glGetError();
     if( err != GL_NO_ERROR )
     {
         ri.Printf( PRINT_ALL, "glGetError() = 0x%x\n", err );
@@ -1453,87 +1427,128 @@ Touch all images to make sure they are resident
 void RE_EndRegistration( void )
 {
     R_SyncRenderThread();
-    if( !Sys_LowPhysicalMemory() )
-    {
-        RB_ShowImages();
-    }
 }
 
 
 /*
 @@@@@@@@@@@@@@@@@@@@@
 GetRefAPI
-
 @@@@@@@@@@@@@@@@@@@@@
 */
-refexport_t* GetRefAPI( int apiVersion, refimport_t* rimp )
-{
-    static refexport_t re;
-    
-    ri = *rimp;
-    
-    memset( &re, 0, sizeof( re ) );
-    
-    if( apiVersion != REF_API_VERSION )
-    {
-        ri.Printf( PRINT_ALL, "Mismatched REF_API_VERSION: expected %i, got %i\n",
-                   REF_API_VERSION, apiVersion );
-        return NULL;
-    }
-    
-    // the RE_ functions are Renderer Entry points
-    
-    re.Shutdown = RE_Shutdown;
-    
-    re.BeginRegistration = RE_BeginRegistration;
-    re.RegisterModel    = RE_RegisterModel;
-    re.RegisterSkin     = RE_RegisterSkin;
-//----(SA) added
-    re.GetSkinModel         = RE_GetSkinModel;
-    re.GetShaderFromModel   = RE_GetShaderFromModel;
-//----(SA) end
-    re.RegisterShader   = RE_RegisterShader;
-    re.RegisterShaderNoMip = RE_RegisterShaderNoMip;
-    re.LoadWorld        = RE_LoadWorldMap;
-    re.SetWorldVisData  = RE_SetWorldVisData;
-    re.EndRegistration  = RE_EndRegistration;
-    
-    re.BeginFrame       = RE_BeginFrame;
-    re.EndFrame         = RE_EndFrame;
-    
-    re.MarkFragments    = R_MarkFragments;
-    re.LerpTag          = R_LerpTag;
-    re.ModelBounds      = R_ModelBounds;
-    
-    re.ClearScene       = RE_ClearScene;
-    re.AddRefEntityToScene = RE_AddRefEntityToScene;
-    re.AddPolyToScene   = RE_AddPolyToScene;
-    // Ridah
-    re.AddPolysToScene  = RE_AddPolysToScene;
-    // done.
-    re.AddLightToScene  = RE_AddLightToScene;
-//----(SA)
-    re.AddCoronaToScene = RE_AddCoronaToScene;
-    re.SetFog           = R_SetFog;
-//----(SA)
-    re.RenderScene      = RE_RenderScene;
-    
-    re.SetColor         = RE_SetColor;
-    re.DrawStretchPic   = RE_StretchPic;
-    re.DrawStretchPicGradient   = RE_StretchPicGradient;
-    re.DrawStretchRaw   = RE_StretchRaw;
-    re.UploadCinematic  = RE_UploadCinematic;
-    re.RegisterFont     = RE_RegisterFont;
-    re.RemapShader      = R_RemapShader;
-    re.GetEntityToken   = R_GetEntityToken;
-    
-#ifdef BLAH // MrE __USEA3D
-    re.A3D_RenderGeometry = RE_A3D_RenderGeometry;
+#if defined(__cplusplus)
+extern "C" {
 #endif
+    refexport_t* GetRefAPI( int apiVersion, refimport_t* rimp )
+    {
+        static refexport_t re;
+        
+        ri = *rimp;
+        
+        memset( &re, 0, sizeof( re ) );
+        
+        if( apiVersion != REF_API_VERSION )
+        {
+            ri.Printf( PRINT_ALL, "Mismatched REF_API_VERSION: expected %i, got %i\n",
+                       REF_API_VERSION, apiVersion );
+            return NULL;
+        }
+        
+        // the RE_ functions are Renderer Entry points
+        
+        re.Shutdown = RE_Shutdown;
+        
+        re.BeginRegistration = RE_BeginRegistration;
+        re.RegisterModel    = RE_RegisterModel;
+        re.RegisterSkin     = RE_RegisterSkin;
+//----(SA) added
+        re.GetSkinModel         = RE_GetSkinModel;
+        re.GetShaderFromModel   = RE_GetShaderFromModel;
+//----(SA) end
+        re.RegisterShader   = RE_RegisterShader;
+        re.RegisterShaderNoMip = RE_RegisterShaderNoMip;
+        re.LoadWorld        = RE_LoadWorldMap;
+        re.SetWorldVisData  = RE_SetWorldVisData;
+        re.EndRegistration  = RE_EndRegistration;
+        
+        re.BeginFrame       = RE_BeginFrame;
+        re.EndFrame         = RE_EndFrame;
+        
+        re.MarkFragments    = R_MarkFragments;
+        re.LerpTag          = R_LerpTag;
+        re.ModelBounds      = R_ModelBounds;
+        
+        re.ClearScene       = RE_ClearScene;
+        re.AddRefEntityToScene = RE_AddRefEntityToScene;
+        re.AddPolyToScene   = RE_AddPolyToScene;
+        // Ridah
+        re.AddPolysToScene  = RE_AddPolysToScene;
+        // done.
+        re.AddLightToScene  = RE_AddLightToScene;
+//----(SA)
+        re.AddCoronaToScene = RE_AddCoronaToScene;
+        re.SetFog           = R_SetFog;
+//----(SA)
+        re.RenderScene      = RE_RenderScene;
+        
+        re.SetColor         = RE_SetColor;
+        re.DrawStretchPic   = RE_StretchPic;
+        re.DrawStretchPicGradient   = RE_StretchPicGradient;
+        re.DrawStretchRaw   = RE_StretchRaw;
+        re.UploadCinematic  = RE_UploadCinematic;
+        re.RegisterFont     = RE_RegisterFont;
+        re.RemapShader      = R_RemapShader;
+        re.GetEntityToken   = R_GetEntityToken;
+        
+#ifdef BLAH // MrE __USEA3D
+        re.A3D_RenderGeometry = RE_A3D_RenderGeometry;
+#endif
+        
+        // RF
+        re.ZombieFXAddNewHit = RB_ZombieFXAddNewHit;
+        
+        return &re;
+    }
+#if defined(__cplusplus)
+} // extern "C"
+#endif
+
+#ifndef REF_HARD_LINKED
+// this is only here so the functions in q_shared.c and bg_*.c can link
+
+void QDECL Com_Printf( const char* msg, ... )
+{
+    va_list         argptr;
+    char            text[1024];
     
-    // RF
-    re.ZombieFXAddNewHit = RB_ZombieFXAddNewHit;
+    va_start( argptr, msg );
+    _vsnprintf( text, sizeof( text ), msg, argptr );
+    va_end( argptr );
     
-    return &re;
+    ri.Printf( PRINT_ALL, "%s", text );
 }
 
+void QDECL Com_DPrintf( const char* msg, ... )
+{
+    va_list         argptr;
+    char            text[1024];
+    
+    va_start( argptr, msg );
+    _vsnprintf( text, sizeof( text ), msg, argptr );
+    va_end( argptr );
+    
+    ri.Printf( PRINT_DEVELOPER, "%s", text );
+}
+
+void QDECL Com_Error( int level, const char* error, ... )
+{
+    va_list         argptr;
+    char            text[1024];
+    
+    va_start( argptr, error );
+    _vsnprintf( text, sizeof( text ), error, argptr );
+    va_end( argptr );
+    
+    ri.Error( level, "%s", text );
+}
+
+#endif

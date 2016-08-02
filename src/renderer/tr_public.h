@@ -45,7 +45,7 @@
 
 #include "../cgame/tr_types.h"
 
-#define REF_API_VERSION     8
+#define REF_API_VERSION     9
 
 //
 // these are the functions exported by the refresh module
@@ -187,6 +187,7 @@ typedef struct
     void ( *CIN_UploadCinematic )( int handle );
     int ( *CIN_PlayCinematic )( const char* arg0, int xpos, int ypos, int width, int height, int bits );
     e_status( *CIN_RunCinematic )( int handle );
+    void* ( *Sys_GetSystemHandles )( void );
     
 } refimport_t;
 
@@ -194,6 +195,6 @@ typedef struct
 // this is the only function actually exported at the linker level
 // If the module can't init to a valid rendering state, NULL will be
 // returned.
-refexport_t* GetRefAPI( int apiVersion, refimport_t* rimp );
+typedef refexport_t* ( *GetRefAPI_t )( int apiVersion, refimport_t* rimp );
 
 #endif  // __TR_PUBLIC_H

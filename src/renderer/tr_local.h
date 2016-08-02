@@ -47,7 +47,7 @@
 #include "../qcommon/qfiles.h"
 #include "../qcommon/qcommon.h"
 #include "tr_public.h"
-#include "qgl.h"
+#include <GL/glew.h>
 
 #define GL_INDEX_TYPE       GL_UNSIGNED_SHORT
 typedef unsigned short glIndex_t;
@@ -1016,6 +1016,7 @@ typedef struct
     
     qboolean worldMapLoaded;
     world_t*                 world;
+    char                     worldDir[MAX_OSPATH];   // for referencing external lightmaps
     
     const byte*              externalVisData;   // from RE_SetWorldVisData, shared with CM_Load
     
@@ -1380,6 +1381,7 @@ qhandle_t   RE_GetShaderFromModel( qhandle_t modelid, int surfnum, int withlight
 model_t*     R_AllocModel( void );
 
 void        R_Init( void );
+
 image_t*     R_FindImageFile( const char* name, qboolean mipmap, qboolean allowPicmip, int glWrapClampMode );
 image_t*     R_FindImageFileExt( const char* name, qboolean mipmap, qboolean allowPicmip, qboolean characterMip, int glWrapClampMode ); //----(SA)	added
 

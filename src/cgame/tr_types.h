@@ -292,6 +292,11 @@ typedef enum
 typedef enum
 {
     GLHW_GENERIC,           // where everthing works the way it should
+    //Dushan
+    GLDRV_OPENGL,
+    GLHW_VULKAN,
+    //
+    //TODO - Dushan - Remove all this
     GLHW_3DFX_2D3D,         // Voodoo Banshee or Voodoo3, relevant since if this is
     // the hardware type then there can NOT exist a secondary
     // display adapter

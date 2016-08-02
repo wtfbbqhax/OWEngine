@@ -1853,7 +1853,6 @@ void CL_KeyEvent( int key, qboolean down, unsigned time )
         }
     }
     
-#ifdef __linux__
     if( key == K_ENTER )
     {
         if( down )
@@ -1876,7 +1875,6 @@ void CL_KeyEvent( int key, qboolean down, unsigned time )
             }
         }
     }
-#endif
     
     // console key is hardcoded, so the user can never unbind it
     if( key == '`' || key == '~' )

@@ -65,6 +65,18 @@
 
 static char sys_cmdline[MAX_STRING_CHARS];
 
+char* WinGetLastError()
+{
+    static char buf[4096];
+    
+    FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                   NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
+                   buf,
+                   4096, NULL );
+                   
+    return buf;
+}
+
 /*
 ==================
 Sys_LowPhysicalMemory()
@@ -783,6 +795,30 @@ found_dll:
     return libHandle;
 }
 
+// RB: added generic DLL loading routines
+void* Sys_LoadDLLSimple( const char* name )
+{
+    return ( void* )LoadLibrary( name );
+}
+
+void* Sys_LoadFunction( void* dllHandle, const char* functionName )
+{
+    return ( void* )GetProcAddress( ( HMODULE )dllHandle, functionName );
+}
+
+char* Sys_DLLError()
+{
+    static char buf[4096];
+    
+    FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                   NULL, GetLastError(), MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
+                   buf,
+                   4096, NULL );
+                   
+    return buf;
+}
+
+
 
 /*
 ========================================================================
@@ -826,7 +862,7 @@ void Sys_MusicThread( void )
     }
 }
 
-#if 0
+#if 1
 
 void Sys_InitStreamThread( void )
 {
@@ -1444,6 +1480,10 @@ void Sys_Init( void )
     IN_Init();      // FIXME: not in dedicated?
 }
 
+void* Sys_GetSystemHandles( void )
+{
+    return &g_wv;
+}
 
 //=======================================================================
 
@@ -1465,6 +1505,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     {
         return 0;
     }
+    
+    g_wv.classRegistered = qfalse;
     
     g_wv.hInstance = hInstance;
     Q_strncpyz( sys_cmdline, lpCmdLine, sizeof( sys_cmdline ) );

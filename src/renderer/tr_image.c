@@ -51,7 +51,7 @@
  */
 
 #define JPEG_INTERNALS
-#include "../jpeg-6/jpeglib.h"
+#include "../../libraries/jpeg-6/jpeglib.h"
 
 
 static void LoadBMP( const char* name, byte** pic, int* width, int* height );
@@ -197,15 +197,6 @@ void GL_TextureMode( const char* string )
         }
     }
     
-    // hack to prevent trilinear from being set on voodoo,
-    // because their driver freaks...
-    if( i == 5 && glConfig.hardwareType == GLHW_3DFX_2D3D )
-    {
-        ri.Printf( PRINT_ALL, "Refusing to set trilinear on a voodoo.\n" );
-        i = 3;
-    }
-    
-    
     if( i == 6 )
     {
         ri.Printf( PRINT_ALL, "bad filter name\n" );
@@ -222,8 +213,8 @@ void GL_TextureMode( const char* string )
         if( glt->mipmap )
         {
             GL_Bind( glt );
-            qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
-            qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
+            glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
+            glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
         }
     }
 }
@@ -882,7 +873,7 @@ static void Upload32( unsigned* data,
     {
         if( !mipmap )
         {
-            qglTexImage2D( GL_TEXTURE_2D, 0, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+            glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
             *pUploadWidth = scaled_width;
             *pUploadHeight = scaled_height;
             *format = internalFormat;
@@ -917,7 +908,7 @@ static void Upload32( unsigned* data,
     *pUploadHeight = scaled_height;
     *format = internalFormat;
     
-    qglTexImage2D( GL_TEXTURE_2D, 0, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaledBuffer );
+    glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaledBuffer );
     
     if( mipmap )
     {
@@ -944,20 +935,20 @@ static void Upload32( unsigned* data,
                 R_BlendOverTexture( ( byte* )scaledBuffer, scaled_width * scaled_height, mipBlendColors[miplevel] );
             }
             
-            qglTexImage2D( GL_TEXTURE_2D, miplevel, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaledBuffer );
+            glTexImage2D( GL_TEXTURE_2D, miplevel, internalFormat, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaledBuffer );
         }
     }
 done:
 
     if( mipmap )
     {
-        qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
-        qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max );
     }
     else
     {
-        qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-        qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     }
     
     GL_CheckErrors();
@@ -1043,7 +1034,7 @@ image_t* R_CreateImageExt( const char* name, const byte* pic, int width, int hei
     image->wrapClampMode = glWrapClampMode;
     
     // lightmaps are always allocated on TMU 1
-    if( qglActiveTextureARB && isLightmap )
+    if( glActiveTextureARB && isLightmap )
     {
         image->TMU = 1;
     }
@@ -1052,7 +1043,7 @@ image_t* R_CreateImageExt( const char* name, const byte* pic, int width, int hei
         image->TMU = 0;
     }
     
-    if( qglActiveTextureARB )
+    if( glActiveTextureARB )
     {
         GL_SelectTexture( image->TMU );
     }
@@ -1070,10 +1061,10 @@ image_t* R_CreateImageExt( const char* name, const byte* pic, int width, int hei
               &image->uploadHeight,
               noCompress );
               
-    qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapClampMode );
-    qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapClampMode );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glWrapClampMode );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glWrapClampMode );
     
-    qglBindTexture( GL_TEXTURE_2D, 0 );
+    glBindTexture( GL_TEXTURE_2D, 0 );
     
     if( image->TMU == 1 )
     {
@@ -2464,7 +2455,7 @@ static void R_CreateFogImage( void )
     borderColor[2] = 1.0;
     borderColor[3] = 1;
     
-    qglTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor );
+    glTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor );
 #endif
 }
 
@@ -2689,7 +2680,7 @@ void R_DeleteTextures( void )
     
     for( i = 0; i < tr.numImages ; i++ )
     {
-        qglDeleteTextures( 1, &tr.images[i]->texnum );
+        glDeleteTextures( 1, &tr.images[i]->texnum );
     }
     memset( tr.images, 0, sizeof( tr.images ) );
     // Ridah
@@ -2697,18 +2688,18 @@ void R_DeleteTextures( void )
     // done.
     
     memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
-    if( qglBindTexture )
+    if( glBindTexture )
     {
-        if( qglActiveTextureARB )
+        if( glActiveTextureARB )
         {
             GL_SelectTexture( 1 );
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
             GL_SelectTexture( 0 );
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
         }
         else
         {
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
         }
     }
 }
@@ -3920,23 +3911,23 @@ void R_PurgeImage( image_t* image )
 
     texnumImages[image->texnum - 1024] = NULL;
     
-    qglDeleteTextures( 1, &image->texnum );
+    glDeleteTextures( 1, &image->texnum );
     
     R_CacheImageFree( image );
     
     memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
-    if( qglBindTexture )
+    if( glBindTexture )
     {
-        if( qglActiveTextureARB )
+        if( glActiveTextureARB )
         {
             GL_SelectTexture( 1 );
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
             GL_SelectTexture( 0 );
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
         }
         else
         {
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
         }
     }
 }
@@ -4017,18 +4008,18 @@ void R_BackupImages( void )
     tr.numImages = 0;
     
     memset( glState.currenttextures, 0, sizeof( glState.currenttextures ) );
-    if( qglBindTexture )
+    if( glBindTexture )
     {
-        if( qglActiveTextureARB )
+        if( glActiveTextureARB )
         {
             GL_SelectTexture( 1 );
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
             GL_SelectTexture( 0 );
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
         }
         else
         {
-            qglBindTexture( GL_TEXTURE_2D, 0 );
+            glBindTexture( GL_TEXTURE_2D, 0 );
         }
     }
 }

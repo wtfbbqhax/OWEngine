@@ -208,9 +208,6 @@
     <ClInclude Include="..\..\qcommon\qfiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\renderer\qgl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\server\server.h">
       <Filter>Header Files</Filter>
     </ClInclude>

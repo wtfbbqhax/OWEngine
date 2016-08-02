@@ -9,24 +9,36 @@
       <UniqueIdentifier>{34577cec-a078-440b-b876-f818d3e54dbd}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
-    <Filter Include="jpeg">
+    <Filter Include="libraries">
+      <UniqueIdentifier>{04ecaf3b-fbb2-462c-9b42-b684dffc9ee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\jpeg">
       <UniqueIdentifier>{0310f09a-8eae-408c-a757-ee675c79ad29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jpeg\Source Files No. 1">
+    <Filter Include="libraries\jpeg\Source Files No. 1">
       <UniqueIdentifier>{f2b1b7ab-9c04-439c-b62c-1461412e307c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="jpeg\Header Files No. 1">
+    <Filter Include="libraries\jpeg\Header Files No. 1">
       <UniqueIdentifier>{4487a7b5-4cdc-459c-b27b-8fe62fb012c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FreeType2">
+    <Filter Include="libraries\FreeType2">
       <UniqueIdentifier>{078debbd-e0c6-451c-bfac-fb31d406376f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FreeType2\Source Files No. 2">
+    <Filter Include="libraries\FreeType2\Source Files No. 2">
       <UniqueIdentifier>{c4ce4465-f85d-471a-9dd4-6dc58792f030}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FreeType2\Header Files No. 2">
+    <Filter Include="libraries\FreeType2\Header Files No. 2">
       <UniqueIdentifier>{ca37327f-edf1-4e23-bf23-6d6b31f7f2d7}</UniqueIdentifier>
       <Extensions>.h</Extensions>
+    </Filter>
+    <Filter Include="libraries\glew">
+      <UniqueIdentifier>{bc860765-cee6-4ce3-adcb-5feb0335a102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\glew\Header Files">
+      <UniqueIdentifier>{6984d2d1-2f71-46af-ab9e-badf12796cea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libraries\glew\Source Files">
+      <UniqueIdentifier>{aa24162e-d41a-4fc4-b83e-063df3add80d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,216 +47,6 @@
     </ClCompile>
     <ClCompile Include="..\win32\win_glimp.c">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\win32\win_qgl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ahangles.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ahglobal.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ahglyph.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ahhint.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ahmodule.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ahoptim.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftcalc.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftdebug.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftextend.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftglyph.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftgrays.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftinit.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftlist.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftmm.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftnames.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftobjs.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftoutln.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftraster.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftrend1.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftsmooth.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftstream.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ftsystem.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\sfdriver.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\sfobjs.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttcmap.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttdriver.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttgload.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttinterp.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttload.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttobjs.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttpload.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttpost.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ft2\ttsbit.c">
-      <Filter>FreeType2\Source Files No. 2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcapimin.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jccoefct.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jccolor.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcdctmgr.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jchuff.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcinit.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcmainct.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcmarker.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcmaster.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcomapi.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcparam.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcphuff.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcprepct.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jcsample.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jctrans.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdapimin.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdapistd.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdatadst.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdatasrc.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdcoefct.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdcolor.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jddctmgr.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdhuff.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdinput.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdmainct.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdmarker.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdmaster.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdpostct.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdsample.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jdtrans.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jerror.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jfdctflt.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jidctflt.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jmemmgr.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jmemnobs.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\jpeg-6\jutils.c">
-      <Filter>jpeg\Source Files No. 1</Filter>
     </ClCompile>
     <ClCompile Include="..\..\renderer\tr_backend.c">
       <Filter>Source Files</Filter>
@@ -318,6 +120,222 @@
     <ClCompile Include="..\..\renderer\tr_world.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ahangles.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ahglobal.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ahglyph.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ahhint.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ahoptim.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ahmodule.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftcalc.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftdebug.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftextend.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftglyph.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftgrays.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftinit.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftlist.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftmm.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftnames.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftobjs.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftoutln.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftraster.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftrend1.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftsmooth.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftstream.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ftsystem.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\sfdriver.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttcmap.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\sfobjs.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttdriver.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttgload.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttinterp.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttload.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttobjs.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttpload.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttpost.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\ft2\ttsbit.c">
+      <Filter>libraries\FreeType2\Source Files No. 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jutils.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jmemnobs.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jmemmgr.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jidctflt.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jfdctflt.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jerror.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdtrans.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdsample.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdpostct.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdmaster.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdmarker.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdmainct.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdinput.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdhuff.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jddctmgr.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdcoefct.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdcolor.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdatasrc.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdatadst.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdapistd.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jdapimin.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jctrans.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcsample.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcprepct.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcphuff.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcparam.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcomapi.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcmaster.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcmarker.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcmainct.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcinit.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jchuff.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcdctmgr.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jccolor.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jccoefct.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\jpeg-6\jcapimin.c">
+      <Filter>libraries\jpeg\Source Files No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libraries\glew-2.0.0\src\glew.c">
+      <Filter>libraries\glew\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\win32\resource.h">
@@ -326,172 +344,10 @@
     <ClInclude Include="..\win32\win_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ft2\ahangles.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahglobal.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahglyph.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahhint.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahloader.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahmodule.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahoptim.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ahtypes.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\autohint.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\freetype.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftcalc.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftconfig.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftdriver.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftdebug.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\fterrors.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftextend.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftglyph.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftgrays.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftimage.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftlist.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftmemory.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftmm.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftmodule.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftnames.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftobjs.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftoption.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftoutln.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftraster.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftrend1.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftrender.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftsmooth.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftstream.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ftsystem.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\fttypes.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\psnames.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\sfdriver.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\sfnt.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\sfobjs.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\t1tables.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttcmap.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttdriver.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\tterrors.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttgload.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttinterp.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttload.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttnameid.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttobjs.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttpload.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttpost.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\ttsbit.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\tttables.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\tttags.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ft2\tttypes.h">
-      <Filter>FreeType2\Header Files No. 2</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\renderer\anorms256.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\qcommon\cm_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include=".glw_win.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\jpeg-6\jchuff.h">
@@ -521,35 +377,203 @@
     <ClInclude Include="..\..\cgame\tr_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jconfig.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="glw_win.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jdct.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahangles.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jdhuff.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahglobal.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jerror.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahglyph.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jinclude.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahhint.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jmemsys.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahloader.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jmorecfg.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahmodule.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jpegint.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahoptim.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jpeglib.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\ahtypes.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jversion.h">
-      <Filter>jpeg\Header Files No. 1</Filter>
+    <ClInclude Include="..\..\..\libraries\ft2\autohint.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\freetype.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftconfig.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftcalc.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftdebug.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftdriver.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\fterrors.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftextend.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftglyph.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftgrays.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftlist.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftimage.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftmemory.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftmm.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftmodule.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftobjs.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftnames.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftoption.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftoutln.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftraster.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftrend1.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftrender.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftsmooth.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftstream.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ftsystem.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\fttypes.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\psnames.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\sfnt.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\sfdriver.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\sfobjs.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\t1tables.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttcmap.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttdriver.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\tterrors.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttgload.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttinterp.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttload.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttnameid.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttobjs.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttpload.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttpost.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\ttsbit.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\tttables.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\tttags.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\ft2\tttypes.h">
+      <Filter>libraries\FreeType2\Header Files No. 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jconfig.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jdct.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jerror.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jdhuff.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jinclude.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jmemsys.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jmorecfg.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jpegint.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jpeglib.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jversion.h">
+      <Filter>libraries\jpeg\Header Files No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\wglew.h">
+      <Filter>libraries\glew\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\glew.h">
+      <Filter>libraries\glew\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
