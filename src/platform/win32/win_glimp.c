@@ -1066,7 +1066,9 @@ static void GLW_InitVulkanInstance( void )
     
     err = vkCreateInstance( &vkInstanceCreateInfo, NULL, &mVulkanInstance );
     if( err != VK_SUCCESS )
+	{
         ri.Error( PRINT_ALL, "Couldn't create Vulkan instance" );
+	}
         
     VkWin32SurfaceCreateInfoKHR vkSurfaceCreateInfo;
     memset( &vkSurfaceCreateInfo, 0, sizeof( vkSurfaceCreateInfo ) );
@@ -1167,7 +1169,9 @@ void GLW_InitVulkanSwapchain()
     
     VkSurfaceTransformFlagBitsKHR vkPreTransform;
     if( vkSurfaceProperties.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR )
+	{
         vkPreTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	}
     else
     {
         vkPreTransform = vkSurfaceProperties.currentTransform;
@@ -1218,7 +1222,9 @@ static void GLW_InitVulkanCommandBuffers( void )
     
     err = vkCreateCommandPool( mVulkanDevice, &vkCommandPoolCreateInfo, NULL, &mVulkanCommandPool );
     if( err != VK_SUCCESS )
+	{
         ri.Error( PRINT_ALL, "Couldn't create Vulkan command pool" );
+	}
         
     VkCommandBufferAllocateInfo vkCommandBufferAllocateInfo;
     memset( &vkCommandBufferAllocateInfo, 0, sizeof( vkCommandBufferAllocateInfo ) );

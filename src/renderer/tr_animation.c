@@ -1390,7 +1390,7 @@ RB_SurfaceAnim
 */
 void RB_SurfaceAnim( mdsSurface_t* surface )
 {
-    int */i,/* j, k;
+    int /*i,*/ j, k;
     refEntity_t* refent;
     int*             boneList;
     mdsHeader_t*     header;

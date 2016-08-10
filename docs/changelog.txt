@@ -5,6 +5,7 @@ Changelog
 	- Reformatted MacOS source code
 	- Fixed couple of warnings
 	- Added support for Vulkan Renderer (Instance, Swapchain, CommandBuffers, VulkanDevice) only on Windows platform
+	- Fixed compiling on Windows platform
 
 08-03-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed switching to fullscreen on Windows
