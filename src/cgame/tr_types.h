@@ -293,7 +293,7 @@ typedef enum
 {
     GLHW_GENERIC,           // where everthing works the way it should
     //Dushan
-    GLDRV_OPENGL,
+    GLHW_OPENGL,
     GLHW_VULKAN,
     //
     //TODO - Dushan - Remove all this
