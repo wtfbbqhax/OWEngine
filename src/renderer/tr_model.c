@@ -1979,7 +1979,7 @@ void* R_Hunk_Begin( void )
 
 void* R_Hunk_Alloc( int size )
 {
-#ifdef _WIN32
+#if 0//def _WIN32
     void*    buf;
 #endif
     

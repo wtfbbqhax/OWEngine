@@ -3,6 +3,7 @@ Changelog
 08-10-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed problems with collision
 	- Reformatted MacOS source code
+	- Fixed couple of warning
 
 08-03-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed switching to fullscreen on Windows

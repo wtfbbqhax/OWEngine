@@ -3092,7 +3092,7 @@ void BotCheckEvents( bot_state_t* bs, entityState_t* state )
     //
     switch( event )
     {
-        //client obituary event
+            //client obituary event
         case EV_OBITUARY:
         {
             int target, attacker, mod;

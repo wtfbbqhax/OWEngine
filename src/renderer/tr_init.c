@@ -811,8 +811,8 @@ void R_ScreenShotJPEG_f( void )
 */
 void GL_SetDefaultState( void )
 {
-    int i;
-    
+//    int i;
+
     GLimp_LogComment( "--- GL_SetDefaultState ---\n" );
     
 #if defined (__ANDROID__)
@@ -885,12 +885,6 @@ void GfxInfo_f( void )
         "fullscreen"
     };
     
-    ri.Printf( PRINT_ALL, "\nGL_VENDOR: %s\n", glConfig.vendor_string );
-    ri.Printf( PRINT_ALL, "GL_RENDERER: %s\n", glConfig.renderer_string );
-    ri.Printf( PRINT_ALL, "GL_VERSION: %s\n", glConfig.version_string );
-    ri.Printf( PRINT_ALL, "GL_EXTENSIONS: %s\n", glConfig.extensions_string );
-    ri.Printf( PRINT_ALL, "GL_MAX_TEXTURE_SIZE: %d\n", glConfig.maxTextureSize );
-    ri.Printf( PRINT_ALL, "GL_MAX_ACTIVE_TEXTURES_ARB: %d\n", glConfig.maxActiveTextures );
     ri.Printf( PRINT_ALL, "\nPIXELFORMAT: color(%d-bits) Z(%d-bit) stencil(%d-bits)\n", glConfig.colorBits, glConfig.depthBits, glConfig.stencilBits );
     ri.Printf( PRINT_ALL, "MODE: %d, %d x %d %s hz:", r_mode->integer, glConfig.vidWidth, glConfig.vidHeight, fsstrings[r_fullscreen->integer == 1] );
     if( glConfig.displayFrequency )
@@ -970,7 +964,12 @@ void GfxInfo_f( void )
     {
         ri.Printf( PRINT_ALL, "Fog Mode: %s\n", r_nv_fogdist_mode->string );
     }
-    if( glConfig.driverType == GLDRV_OPENGL )
+    //Dushan
+    if( glConfig.driverType == GLHW_VULKAN )
+    {
+        ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Creating Vulkan context\n" );
+    }
+    else
     {
         int contextFlags, profile;
         

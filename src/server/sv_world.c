@@ -321,7 +321,7 @@ void SV_LinkEntity( sharedEntity_t* gEnt )
     {
         // expand for rotation
         float max;
-        int i;
+        //int i;
         
         max = RadiusFromBounds( gEnt->r.mins, gEnt->r.maxs );
         for( i = 0 ; i < 3 ; i++ )
