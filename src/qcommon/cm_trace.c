@@ -1474,7 +1474,8 @@ void CM_Trace( trace_t* results, const vec3_t start, const vec3_t end,
                 CM_TestCapsuleInCapsule( &tw, model );
             }
             else
-#else if( model == CAPSULE_MODEL_HANDLE )
+#else
+            if( model == CAPSULE_MODEL_HANDLE )
             {
                 if( tw.sphere.use )
                 {
@@ -1532,7 +1533,8 @@ void CM_Trace( trace_t* results, const vec3_t start, const vec3_t end,
                 CM_TraceCapsuleThroughCapsule( &tw, model );
             }
             else
-#else if( model == CAPSULE_MODEL_HANDLE )
+#else
+            if( model == CAPSULE_MODEL_HANDLE )
             {
                 if( tw.sphere.use )
                 {

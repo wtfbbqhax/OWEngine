@@ -1,5 +1,8 @@
 Changelog
 
+08-10-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed problems with collision
+
 08-03-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed switching to fullscreen on Windows
 	- Replaced the QGL interface with GLEW.
