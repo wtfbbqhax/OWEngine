@@ -5,6 +5,8 @@ Changelog
 	- Added OculusVR SDK files
 	- Moved binary files into "binary" folder
 	- Moved engine library files into "system" folder
+	- Added support for Oculus Rift VR device
+	- Added support for Razer Hydra motion device
 	
 08-10-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed problems with collision

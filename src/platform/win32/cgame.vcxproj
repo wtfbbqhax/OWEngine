@@ -42,7 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\..\compiled\main\</OutDir>
-    <IntDir>..\..\..\compiled\intermediate\cgame\</IntDir>
+    <IntDir>..\..\..\compiled\intermate\cgame\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>cgamex86</TargetName>
   </PropertyGroup>
@@ -95,6 +95,8 @@
       <ImportLibrary>.\Debug/cgamex86.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <MapExports>true</MapExports>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

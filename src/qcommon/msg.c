@@ -783,6 +783,10 @@ void MSG_WriteDeltaUsercmd( msg_t* msg, usercmd_t* from, usercmd_t* to )
     MSG_WriteDelta( msg, from->angles[0], to->angles[0], 16 );
     MSG_WriteDelta( msg, from->angles[1], to->angles[1], 16 );
     MSG_WriteDelta( msg, from->angles[2], to->angles[2], 16 );
+    //*** Add Head Tracking to message.
+    MSG_WriteDelta( msg, from->headAngles[0], to->headAngles[0], 16 );
+    MSG_WriteDelta( msg, from->headAngles[1], to->headAngles[1], 16 );
+    MSG_WriteDelta( msg, from->headAngles[2], to->headAngles[2], 16 );
     MSG_WriteDelta( msg, from->forwardmove, to->forwardmove, 8 );
     MSG_WriteDelta( msg, from->rightmove, to->rightmove, 8 );
     MSG_WriteDelta( msg, from->upmove, to->upmove, 8 );
@@ -813,9 +817,19 @@ void MSG_ReadDeltaUsercmd( msg_t* msg, usercmd_t* from, usercmd_t* to )
     to->angles[0] = MSG_ReadDelta( msg, from->angles[0], 16 );
     to->angles[1] = MSG_ReadDelta( msg, from->angles[1], 16 );
     to->angles[2] = MSG_ReadDelta( msg, from->angles[2], 16 );
+    //*** Add Head Tracking angles
+    to->headAngles[0] = MSG_ReadDelta( msg, from->headAngles[0], 16 );
+    to->headAngles[1] = MSG_ReadDelta( msg, from->headAngles[1], 16 );
+    to->headAngles[2] = MSG_ReadDelta( msg, from->headAngles[2], 16 );
     to->forwardmove = MSG_ReadDelta( msg, from->forwardmove, 8 );
+    if( to->forwardmove == -128 )
+        to->forwardmove = -127;
     to->rightmove = MSG_ReadDelta( msg, from->rightmove, 8 );
+    if( to->rightmove == -128 )
+        to->rightmove = -127;
     to->upmove = MSG_ReadDelta( msg, from->upmove, 8 );
+    if( to->upmove == -128 )
+        to->upmove = -127;
     to->buttons = MSG_ReadDelta( msg, from->buttons, 8 );
     to->wbuttons = MSG_ReadDelta( msg, from->wbuttons, 8 );
     to->weapon = MSG_ReadDelta( msg, from->weapon, 8 );
@@ -844,6 +858,9 @@ void MSG_WriteDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* 
     if( from->angles[0] == to->angles[0] &&
             from->angles[1] == to->angles[1] &&
             from->angles[2] == to->angles[2] &&
+            from->headAngles[0] == to->headAngles[0] && //*** add head tracking angles
+            from->headAngles[1] == to->headAngles[1] &&
+            from->headAngles[2] == to->headAngles[2] &&
             from->forwardmove == to->forwardmove &&
             from->rightmove == to->rightmove &&
             from->upmove == to->upmove &&
@@ -863,6 +880,10 @@ void MSG_WriteDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* 
     MSG_WriteDeltaKey( msg, key, from->angles[0], to->angles[0], 16 );
     MSG_WriteDeltaKey( msg, key, from->angles[1], to->angles[1], 16 );
     MSG_WriteDeltaKey( msg, key, from->angles[2], to->angles[2], 16 );
+    //*** Add head tracking angles
+    MSG_WriteDeltaKey( msg, key, from->headAngles[0], to->headAngles[0], 16 );
+    MSG_WriteDeltaKey( msg, key, from->headAngles[1], to->headAngles[1], 16 );
+    MSG_WriteDeltaKey( msg, key, from->headAngles[2], to->headAngles[2], 16 );
     MSG_WriteDeltaKey( msg, key, from->forwardmove, to->forwardmove, 8 );
     MSG_WriteDeltaKey( msg, key, from->rightmove, to->rightmove, 8 );
     MSG_WriteDeltaKey( msg, key, from->upmove, to->upmove, 8 );
@@ -897,9 +918,19 @@ void MSG_ReadDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* t
         to->angles[0] = MSG_ReadDeltaKey( msg, key, from->angles[0], 16 );
         to->angles[1] = MSG_ReadDeltaKey( msg, key, from->angles[1], 16 );
         to->angles[2] = MSG_ReadDeltaKey( msg, key, from->angles[2], 16 );
+        //*** Add head tracking Angles.
+        to->headAngles[0] = MSG_ReadDeltaKey( msg, key, from->headAngles[0], 16 );
+        to->headAngles[1] = MSG_ReadDeltaKey( msg, key, from->headAngles[1], 16 );
+        to->headAngles[2] = MSG_ReadDeltaKey( msg, key, from->headAngles[2], 16 );
         to->forwardmove = MSG_ReadDeltaKey( msg, key, from->forwardmove, 8 );
+        if( to->forwardmove == -128 )
+            to->forwardmove = -127;
         to->rightmove = MSG_ReadDeltaKey( msg, key, from->rightmove, 8 );
+        if( to->rightmove == -128 )
+            to->rightmove = -127;
         to->upmove = MSG_ReadDeltaKey( msg, key, from->upmove, 8 );
+        if( to->upmove == -128 )
+            to->upmove = -127;
         to->buttons = MSG_ReadDeltaKey( msg, key, from->buttons, 8 );
         to->wbuttons = MSG_ReadDeltaKey( msg, key, from->wbuttons, 8 );
         to->weapon = MSG_ReadDeltaKey( msg, key, from->weapon, 8 );
@@ -913,6 +944,10 @@ void MSG_ReadDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* t
         to->angles[0] = from->angles[0];
         to->angles[1] = from->angles[1];
         to->angles[2] = from->angles[2];
+        //*** Add head tracking angles
+        to->headAngles[0] = from->headAngles[0];
+        to->headAngles[1] = from->headAngles[1];
+        to->headAngles[2] = from->headAngles[2];
         to->forwardmove = from->forwardmove;
         to->rightmove = from->rightmove;
         to->upmove = from->upmove;

@@ -147,6 +147,7 @@ typedef struct
     // tracked view angles to account for standing on rotating objects,
     // and teleport direction changes
     vec3_t viewangles;
+    vec3_t headAngles; //*** Head Tracking
     
     int serverId;                   // included in each client message so the server
     // can tell if it is for a prior map_restart

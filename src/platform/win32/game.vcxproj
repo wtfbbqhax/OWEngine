@@ -42,8 +42,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\..\compiled\main\</OutDir>
-    <IntDir>..\..\..\compiled\intermediate\game\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <IntDir>..\..\..\compiled\intermate\game\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
     <TargetName>qagamex86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,14 +81,14 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Building game function table...</Message>
-      <Command>..\..\..\compiled\extractfuncs.bat</Command>
+      <Command>..\..\..\compiled\binaries\extractfuncs.bat</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>..\..\game\game.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>$(intDir)$(TargetName).map</MapFileName>
@@ -99,6 +99,9 @@
       <ImportLibrary>.\Debug/qagamex86.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <MapExports>true</MapExports>
+      <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
+      <LinkStatus>true</LinkStatus>
+      <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -134,7 +137,7 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Building game function table...</Message>
-      <Command>..\..\..\compiled\extractfuncs.bat</Command>
+      <Command>..\..\..\compiled\binaries\extractfuncs.bat</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>

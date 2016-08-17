@@ -193,6 +193,7 @@ void RB_ShadowTessEnd( void )
     int i;
     int numTris;
     vec3_t lightDir;
+    GLboolean rgba[4];
     
     // we can only do this if we have enough space in the vertex buffers
     if( tess.numVertexes >= SHADER_MAX_VERTEXES / 2 )
@@ -260,6 +261,7 @@ void RB_ShadowTessEnd( void )
     glColor4f( 0.2f, 0.2f, 0.2f, 1.0f );
     
     // don't write to the color buffer
+    glGetBooleanv( GL_COLOR_WRITEMASK, rgba );
     glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
     
     glEnable( GL_STENCIL_TEST );
@@ -293,7 +295,7 @@ void RB_ShadowTessEnd( void )
     
     
     // reenable writing to the color buffer
-    glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+    glColorMask( rgba[0], rgba[1], rgba[2], rgba[3] );
 }
 
 

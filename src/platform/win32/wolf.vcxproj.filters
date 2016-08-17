@@ -241,5 +241,8 @@
     <ClInclude Include="win_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\libraries\libovr\libovrwrapper\libovrwrapper\libovrwrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

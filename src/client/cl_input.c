@@ -65,6 +65,10 @@ at the same time.
 ===============================================================================
 */
 
+#if !defined( __ANDROID__ )
+#include <motioncontrollers.h>
+#endif
+
 static kbutton_t kb[NUM_BUTTONS];
 
 void IN_MLookDown( void )
@@ -733,6 +737,126 @@ void CL_JoystickMove( usercmd_t* cmd )
 
 /*
 =================
+CL_RazorHydra
+=================
+*/
+#if !defined( __ANDROID__ )
+static void CL_RazorHydra( usercmd_t* cmd )
+{
+    float joyx, joyy, trigger, yaw, pitch, roll;
+    unsigned int buttons;
+    int movespeed;
+    //float pos[3];
+    float pos;
+    //float mx, my;
+    
+    if( kb[KB_SPEED].active ^ cl_run->integer )
+    {
+        movespeed = 127;
+        cmd->buttons &= ~BUTTON_WALKING;
+    }
+    else
+    {
+        cmd->buttons |= BUTTON_WALKING;
+        movespeed = 64;
+    }
+    
+    if( RazorHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    {
+        static unsigned int lockbtn = 0;
+        static float accjoyx = 0.0f;
+        accjoyx -= ( joyx );
+        cl.viewangles[YAW] = accjoyx + ( yaw    * ( 180.0f / 3.14159f ) );
+        
+        cl.viewangles[PITCH] = -pitch * ( 180.0f / 3.14159f );
+        cl.viewangles[ROLL] = -roll  * ( 180.0f / 3.14159f );
+        
+        if( trigger > 0.1f )
+        {
+            cmd->buttons |= BUTTON_ATTACK;
+        }
+        
+        if( ( ( buttons & SIXENSE_BUTTON_BUMPER ) != 0 ) && ( ( lockbtn & SIXENSE_BUTTON_BUMPER ) == 0 ) )
+        {
+            Cmd_ExecuteString( "weapnext" );
+        }
+        
+        if( ( ( buttons & SIXENSE_BUTTON_START ) != 0 ) && ( ( lockbtn & SIXENSE_BUTTON_START ) == 0 ) )
+        {
+            Cmd_ExecuteString( "+zoom" );
+        }
+        
+        lockbtn = buttons;
+    }
+    
+    if( RazorHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    {
+        static unsigned int lockbtn = 0;
+        if( ( ( buttons & SIXENSE_BUTTON_BUMPER ) != 0 ) && ( ( lockbtn & SIXENSE_BUTTON_BUMPER ) == 0 ) )
+        {
+            cmd->upmove = movespeed;
+        }
+        
+        
+        cmd->forwardmove = ClampChar( cmd->forwardmove + ( int )( joyy * movespeed ) );
+        cmd->rightmove = ClampChar( cmd->rightmove + ( int )( joyx * movespeed ) );
+        
+        /*if (roll > 0.2 || roll < -0.2)
+        cmd->rightmove   = ClampChar(cmd->rightmove   + (int)(-roll * movespeed));*/
+        lockbtn = buttons;
+    }
+    
+#if 0
+    if( !kb[KB_STRAFE].active )
+    {
+        cmd->rightmove = ClampChar( cmd->rightmove + m_side->value * mx );
+    }
+    else
+    {
+        cl.viewangles[YAW] -= m_yaw->value * mx;
+    }
+    
+    if( ( ( kb[KB_MLOOK].active || cl_freelook->integer ) && !kb[KB_STRAFE].active )
+{
+    cl.viewangles[PITCH] += m_pitch->value * my;
+    }
+    else
+    {
+        cmd->forwardmove = ClampChar( cmd->forwardmove - m_forward->value * my );
+    }
+#endif
+}
+
+/*
+=================
+CL_OculusHeadTracker
+=================
+*/
+static void CL_OculusHeadTracker()
+{
+    static float lastYaw = 0.0f;
+    static float supitch = 0.0f;
+    float yaw;
+    float pitch;
+    float roll;
+    /*static int bla = 0;
+    ++bla;
+    Com_Printf("HMD: %d\n", bla);*/
+    if( OculusVR_Peek( &yaw, &pitch, &roll ) != 0 )
+    {
+        cl.headAngles[YAW] = ( yaw    * ( 180.0f / 3.14159f ) ); // Delta Yaw to adjust with mouse Yaw.
+        lastYaw = yaw;
+        cl.headAngles[PITCH] = ( -pitch  * ( 180.0f / 3.14159f ) );
+        cl.headAngles[ROLL] = ( -roll   * ( 180.0f / 3.14159f ) );
+    }
+    
+    /*	supitch += 0.01f;
+    cl.headAngles[YAW] = sin(supitch) * (180.0f / 3.14159f);*/
+}
+#endif
+
+/*
+=================
 CL_MouseMove
 =================
 */
@@ -885,6 +1009,7 @@ void CL_FinishMove( usercmd_t* cmd )
     for( i = 0 ; i < 3 ; i++ )
     {
         cmd->angles[i] = ANGLE2SHORT( cl.viewangles[i] );
+        cmd->headAngles[i] = ANGLE2SHORT( cl.headAngles[i] ); //*** Head Tracking
     }
 }
 
@@ -911,6 +1036,14 @@ usercmd_t CL_CreateCmd( void )
     
     // get basic movement from keyboard
     CL_KeyMove( &cmd );
+    
+#if !defined( __ANDROID__ )
+    // Siense SDK update
+    CL_RazorHydra( &cmd );
+    
+    // get head tracker direction
+    CL_OculusHeadTracker();
+#endif
     
     // get basic movement from mouse
     CL_MouseMove( &cmd );

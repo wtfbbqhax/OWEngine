@@ -70,10 +70,22 @@ cvar_t*  r_detailTextures;
 
 cvar_t*  r_znear;
 cvar_t*  r_zfar;
+cvar_t*  r_zproj;
+cvar_t*  r_stereoSeparation;
 
 cvar_t*  r_smp;
 cvar_t*  r_showSmp;
 cvar_t*  r_skipBackEnd;
+
+#if !defined( __ANDROID__ )
+cvar_t*  ovr_fovoffset;
+cvar_t*  ovr_warpingShader;
+cvar_t*  ovr_ovrdetected;
+cvar_t*  ovr_lenseoffset;
+cvar_t*  ovr_ipd;
+cvar_t*  ovr_viewofsx;
+cvar_t*  ovr_viewofsy;
+#endif
 
 cvar_t*  r_ignorehwgamma;
 cvar_t*  r_measureOverdraw;
@@ -131,7 +143,6 @@ cvar_t*  r_logFile;
 cvar_t*  r_stencilbits;
 cvar_t*  r_depthbits;
 cvar_t*  r_colorbits;
-cvar_t*  r_stereo;
 cvar_t*  r_primitives;
 cvar_t*  r_texturebits;
 
@@ -218,6 +229,164 @@ int max_polys;
 cvar_t*  r_maxpolyverts;
 int max_polyverts;
 
+GLuint LoadShaders()
+{
+    /*
+    uniform float4 rpMVPmatrixX				:	register(c21);
+    uniform float4 rpMVPmatrixY				:	register(c22);
+    uniform float4 rpMVPmatrixZ				:	register(c23);
+    uniform float4 rpMVPmatrixW				:	register(c24);
+    
+    */
+    
+    
+    char* VertexShader =
+        "void main()"\
+        "{	"\
+        "gl_TexCoord[0] = gl_MultiTexCoord0;"\
+        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "\
+        "}";
+        
+        
+    char* FragmentShader =
+        /*"uniform sampler2D texid;"\
+        "void main (void)"\
+        "{"\
+        "gl_FragColor = texture2D( texid, vec2(gl_TexCoord[0]));"\
+        "}";*/
+        
+        /*"uniform float c;\n"\
+        "uniform sampler2D texid;\n"\
+        "varying vec2 vUv;\n"\
+        "void main()\n"\
+        "{\n"\
+        "   float c = 0.1;\n"
+        "	vec2 uv = gl_TexCoord[0];\n"\
+        "	vec2 vector = uv * 2.0 - 1.0;\n"\
+        "   float factor = 1.0/(1.0+c);\n"\
+        "   float vectorLen = length(vector);\n"\
+        "   vec2 direction = vector / vectorLen;\n"\
+        "   float newLen = vectorLen + c * pow(vectorLen,3.0);\n"\
+        "   vec2 newVector = direction * newLen * factor;\n"\
+        "	newVector = (newVector + 1.0) / 2.0;\n"\
+        "	if (newVector.x < 0.0 || newVector.x > 1.0 || newVector.y < 0.0 || newVector.y > 1.0)\n"\
+        "		gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n"\
+        "	else\n"\
+        "   	gl_FragColor = texture2D(texid, newVector);\n"\
+        "}\n";
+        */
+        
+        "uniform sampler2D texid;\n"\
+        "uniform vec2      LensCenter;\n"\
+        "uniform vec2      ScreenCenter;\n"\
+        "uniform vec2      Scale;\n"\
+        "uniform vec2      ScaleIn;\n"\
+        "uniform vec4      HmdWarpParam;\n"\
+        "uniform vec2      Offset;\n"\
+        "void main()\n"\
+        "{\n"\
+        "   vec2  uv = gl_TexCoord[0].xy;\n"\
+        "	vec2  theta   = (uv - LensCenter) *ScaleIn;\n"\
+        "	float rSq     = theta.x * theta.x + theta.y * theta.y;\n"\
+        "	vec2  rvector = Offset + theta * (HmdWarpParam.x + HmdWarpParam.y * rSq +\n"\
+        "		                     HmdWarpParam.z * rSq * rSq +\n"\
+        "							 HmdWarpParam.w * rSq * rSq * rSq);\n"\
+        "	vec2  tc      = (LensCenter + Scale * rvector);\n"\
+        "	if (any(bvec2(clamp(tc, ScreenCenter-vec2(0.50,0.5), ScreenCenter+vec2(0.50,0.5))-tc)))\n"\
+        "		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"\
+        "	else\n"\
+        "		gl_FragColor = texture2D(texid, tc);	\n"\
+        "}\n";
+        
+        
+    /*
+    "uniform sampler2D texid;\n"\
+    "void main(void)\n"\
+    "{\n"\
+    "// Exact distortion parameters (a, b, c) are not known yet, these are just placeholers\n"\
+    "float a = 0.20;\n"\
+    "float b = 0.00;\n"\
+    "float c = 0.00;\n"\
+    "float d = 1.0 - (a + b + c);\n"\
+    "// Calculate the source location radius (distance from the centre of the viewport)\n"\
+    "// fragPos - xy position of the current fragment (destination) in NDC space [-1 1]^2\n"\
+    "vec2 texcoord = vec2(gl_TexCoord[0]) + vec2(0.0, 0.0);\n"\
+    "float destR = length(texcoord);\n"\
+    "float srcR = a * pow(destR,4.0) + b * pow(destR,3.0) + c * pow(destR,2.0) + d * destR;\n"\
+    "// Calculate the source vector (radial)\n"\
+    "vec2 correctedRadial = (normalize(texcoord)) * (srcR);\n"\
+    "// Transform the coordinates (from [-1,1]^2 to [0, 1]^2)\n"\
+    "vec2 uv = (correctedRadial*0.5) + vec2(0.5,0.5); \n"\
+    "// Sample the texture at the source location\n"\
+    "gl_FragColor = texture2D(texid, uv); \n"\
+    "}\n";*/
+    
+    
+    GLint Result = GL_FALSE;
+    int InfoLogLength;
+    GLuint ProgramID;
+    char* infoLog;
+    int charsWritten;
+    
+    
+    
+    // Create the shaders
+    GLuint VertexShaderID = glCreateShader( GL_VERTEX_SHADER );
+    GLuint FragmentShaderID = glCreateShader( GL_FRAGMENT_SHADER );
+    
+    glShaderSource( VertexShaderID, 1, &VertexShader, NULL );
+    glCompileShader( VertexShaderID );
+    
+    // Check Vertex Shader
+    glGetShaderiv( VertexShaderID, GL_COMPILE_STATUS, &Result );
+    glGetShaderiv( VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength );
+    if( InfoLogLength > 1 )
+    {
+        infoLog = ( char* )malloc( InfoLogLength );
+        glGetShaderInfoLog( VertexShaderID, InfoLogLength, &charsWritten, infoLog );
+        Com_Printf( "%s\n", infoLog );
+        free( infoLog );
+    }
+    
+    
+    // Compile Fragment Shader
+    glShaderSource( FragmentShaderID, 1, &FragmentShader, NULL );
+    glCompileShader( FragmentShaderID );
+    
+    // Check Fragment Shader
+    glGetShaderiv( FragmentShaderID, GL_COMPILE_STATUS, &Result );
+    glGetShaderiv( FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength );
+    if( InfoLogLength > 1 )
+    {
+        infoLog = ( char* )malloc( InfoLogLength );
+        glGetShaderInfoLog( FragmentShaderID, InfoLogLength, &charsWritten, infoLog );
+        Com_Printf( "%s\n", infoLog );
+        free( infoLog );
+    }
+    
+    
+    ProgramID = glCreateProgram();
+    glAttachShader( ProgramID, VertexShaderID );
+    glAttachShader( ProgramID, FragmentShaderID );
+    glLinkProgram( ProgramID );
+    
+    // Check the program
+    glGetProgramiv( ProgramID, GL_LINK_STATUS, &Result );
+    glGetProgramiv( ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength );
+    if( InfoLogLength > 1 )
+    {
+        infoLog = ( char* )malloc( InfoLogLength );
+        glGetProgramInfoLog( ProgramID, InfoLogLength, &charsWritten, infoLog );
+        Com_Printf( "%s\n", infoLog );
+        free( infoLog );
+    }
+    
+    glDeleteShader( VertexShaderID );
+    glDeleteShader( FragmentShaderID );
+    
+    return ProgramID;
+}
+
 /*
 The tessellation level and normal generation mode are specified with:
 
@@ -291,6 +460,29 @@ static void AssertCvarRange( cvar_t* cv, float minVal, float maxVal, qboolean sh
 static void InitOpenGL( void )
 {
     char renderer_buffer[1024];
+    GLfloat qvbd[18];
+    GLenum err;
+    GLenum status;
+    GLenum buffers[] = { GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT };
+    
+    qvbd[0] = -1.0f;
+    qvbd[1] = -1.0f;
+    qvbd[2] = 0.0f;
+    qvbd[3] = 1.0f;
+    qvbd[4] = -1.0f;
+    qvbd[5] = 0.0f;
+    qvbd[6] = -1.0f;
+    qvbd[7] = 1.0f;
+    qvbd[8] = 0.0f;
+    qvbd[9] = -1.0f;
+    qvbd[10] = 1.0f;
+    qvbd[11] = 0.0f;
+    qvbd[12] = 1.0f;
+    qvbd[13] = -1.0f;
+    qvbd[14] = 0.0f;
+    qvbd[15] = 1.0f;
+    qvbd[16] = 1.0f;
+    qvbd[17] = 0.0f;
     
     //
     // initialize OS specific portions of the renderer
@@ -332,6 +524,64 @@ static void InitOpenGL( void )
     
     // set default state
     GL_SetDefaultState();
+    
+    // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+    err = glewInit();
+    
+    // Create Render Target for Oculus Rift
+    if( ovr_warpingShader->integer )
+    {
+        glConfig.oculusFBL = 0;
+        glConfig.oculusFBR = 0;
+        glGenFramebuffersEXT( 1, &glConfig.oculusFBL );
+        glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, glConfig.oculusFBL );
+        
+        
+        // The depth buffer
+        glGenRenderbuffers( 1, &glConfig.oculusDepthRenderBufferLeft );
+        glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, glConfig.oculusDepthRenderBufferLeft );
+        glRenderbufferStorageEXT( GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, glConfig.vidWidth, glConfig.vidHeight );
+        
+        glGenTextures( 1, &glConfig.oculusRenderTargetLeft );
+        glBindTexture( GL_TEXTURE_2D, glConfig.oculusRenderTargetLeft );
+        
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, glConfig.vidWidth, glConfig.vidHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0 ); // Empty Image
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        glGenerateMipmapEXT( GL_TEXTURE_2D );
+        
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, glConfig.oculusRenderTargetLeft, 0 );
+        
+        
+        glGenTextures( 1, &glConfig.oculusRenderTargetRight );
+        glBindTexture( GL_TEXTURE_2D, glConfig.oculusRenderTargetRight );
+        
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, glConfig.vidWidth, glConfig.vidHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0 ); // Empty Image
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        glGenerateMipmapEXT( GL_TEXTURE_2D );
+        
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_TEXTURE_2D, glConfig.oculusRenderTargetRight, 0 );
+        
+        glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, glConfig.oculusDepthRenderBufferLeft );
+        
+        
+        status = glCheckFramebufferStatusEXT( GL_FRAMEBUFFER_EXT );
+        if( status != GL_FRAMEBUFFER_COMPLETE_EXT )
+            exit( 1 );
+            
+        glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 );	// Unbind the FBO for now
+        
+        // Create and compile our GLSL program from the shaders
+        glConfig.oculusProgId = LoadShaders( "oculus.vertexshader", "oculus.fragmentshader" );
+        glConfig.oculusTexId = glGetUniformLocation( glConfig.oculusProgId, "renderedTexture" );
+    }
 }
 
 /*
@@ -474,6 +724,11 @@ void R_TakeScreenshot( int x, int y, int width, int height, char* fileName )
     byte*        buffer;
     int i, c, temp;
     
+    if( x > glConfig.vidWidth || width > glConfig.vidWidth || y > glConfig.vidHeight || height > glConfig.vidHeight )
+    {
+        printf( "R_TakeScreenshot out of bounds\n" );
+    }
+    
     buffer = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 3 + 18 );
     
     memset( buffer, 0, 18 );
@@ -484,6 +739,7 @@ void R_TakeScreenshot( int x, int y, int width, int height, char* fileName )
     buffer[15] = height >> 8;
     buffer[16] = 24;    // pixel size
     
+    glPixelStorei( GL_PACK_ALIGNMENT, 1 );
     glReadPixels( x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer + 18 );
     
     // swap rgb to bgr
@@ -615,6 +871,7 @@ void R_LevelShot( void )
     buffer[14] = 128;
     buffer[16] = 24;    // pixel size
     
+    glPixelStorei( GL_PACK_ALIGNMENT, 1 );
     glReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_RGB, GL_UNSIGNED_BYTE, source );
     
     // resample from source
@@ -965,11 +1222,7 @@ void GfxInfo_f( void )
         ri.Printf( PRINT_ALL, "Fog Mode: %s\n", r_nv_fogdist_mode->string );
     }
     //Dushan
-    if( glConfig.driverType == GLHW_VULKAN )
-    {
-        ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Creating Vulkan context\n" );
-    }
-    else
+    if( glConfig.driverType == GLDRV_OPENGL )
     {
         int contextFlags, profile;
         
@@ -1063,7 +1316,25 @@ void R_Register( void )
     r_detailTextures = ri.Cvar_Get( "r_detailtextures", "1", CVAR_ARCHIVE | CVAR_LATCH );
     r_texturebits = ri.Cvar_Get( "r_texturebits", "0", CVAR_ARCHIVE | CVAR_LATCH );
     r_colorbits = ri.Cvar_Get( "r_colorbits", "0", CVAR_ARCHIVE | CVAR_LATCH );
-    r_stereo = ri.Cvar_Get( "r_stereo", "0", CVAR_ARCHIVE | CVAR_LATCH );
+    r_zproj = ri.Cvar_Get( "r_zproj", "64", CVAR_ARCHIVE );
+    r_stereoSeparation = ri.Cvar_Get( "r_stereoSeparation", "64", CVAR_ARCHIVE );
+    
+    ovr_fovoffset = ri.Cvar_Get( "ovr_fovoffset", "0.0", CVAR_ARCHIVE );
+    ovr_viewofsx = ri.Cvar_Get( "ovr_viewofsx", "0", CVAR_ARCHIVE );
+    ovr_viewofsy = ri.Cvar_Get( "ovr_viewofsy", "0", CVAR_ARCHIVE );
+    ovr_ipd = ri.Cvar_Get( "ovr_ipd", "0", CVAR_ARCHIVE );
+    ovr_lenseoffset = ri.Cvar_Get( "ovr_lenseoffset", "0.5", CVAR_ARCHIVE );
+    ovr_warpingShader = ri.Cvar_Get( "ovr_warpingShader", "0", CVAR_ARCHIVE | CVAR_LATCH );
+    
+    if( OculusVRDetected )
+    {
+        ovr_ovrdetected = ri.Cvar_Get( "ovr_ovrdetected", "1", CVAR_LATCH | CVAR_CHEAT );
+    }
+    else
+    {
+        ovr_ovrdetected = ri.Cvar_Get( "ovr_ovrdetected", "0", CVAR_LATCH | CVAR_CHEAT );
+    }
+    
 #if defined  ( __linux__ )
     r_stencilbits = ri.Cvar_Get( "r_stencilbits", "0", CVAR_ARCHIVE | CVAR_LATCH );
 #elif defined ( __MACOS__ )

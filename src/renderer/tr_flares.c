@@ -356,7 +356,7 @@ void RB_TestFlare( flare_t* f )
 //	glState.finishCalled = qtrue;	// (SA) Hmm, shouldn't this be true?
 
     // read back the z buffer contents
-//	ReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
+//	glReadPixels( f->windowX, f->windowY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth );
 //	screenZ = backEnd.viewParms.projectionMatrix[14] /
 //		( ( 2*depth - 1 ) * backEnd.viewParms.projectionMatrix[11] - backEnd.viewParms.projectionMatrix[10] );
 

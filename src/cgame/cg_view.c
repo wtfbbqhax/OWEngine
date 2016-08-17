@@ -315,6 +315,142 @@ CG_OffsetThirdPersonView
 ===============
 */
 #define FOCUS_DISTANCE  512
+
+#if !defined( __ANDROID__ )
+static void CG_OffsetVRView( void )
+{
+    vec3_t		forward, right, up;
+    vec3_t      focusUp, focusRight;
+    vec3_t		view;
+    vec3_t      headVec;
+    vec3_t		focusAngles;
+    trace_t		trace;
+    static vec3_t	mins = { -4, -4, -4 };
+    static vec3_t	maxs = { 4, 4, 4 };
+    vec3_t		focusPoint;
+    float		focusDist;
+    float		forwardScale, sideScale;
+    
+    //cg.refdef.vieworg[2] = cg.predictedPlayerEntity.lerpOrigin[2] + cg.predictedPlayerEntity.headOrigin[2];
+    
+    cg.refdef.vieworg[0] += ( cg.predictedPlayerEntity.headOrigin[0] - cg.predictedPlayerEntity.lerpOrigin[0] );
+    cg.refdef.vieworg[1] += ( cg.predictedPlayerEntity.headOrigin[1] - cg.predictedPlayerEntity.lerpOrigin[1] );
+    cg.refdef.vieworg[2] += ( cg.predictedPlayerEntity.headOrigin[2] - cg.predictedPlayerEntity.lerpOrigin[2] );
+    
+    cg.refdef.vieworg[2] += cg.predictedPlayerState.viewheight;
+    
+    VectorCopy( cg.predictedPlayerEntity.headOrigin, cg.refdef.vieworg );
+    VectorCopy( cg.predictedPlayerEntity.lerpOrigin, cg.refdef.vieworg );
+    //cg.refdef.vieworg[2] = cg.predictedPlayerState.origin[2];
+    //*** SET HEAD TRACKING INPUT HERE!
+    if( OculusVRDetected )
+    {
+        cg.refdefViewAngles[ROLL] = cg.predictedPlayerState.headangles[ROLL]; //***
+        cg.refdefViewAngles[PITCH] = cg.predictedPlayerState.headangles[PITCH]; //*** Might need to adjust to rotate along axis of ROLL
+        cg.refdefViewAngles[YAW] += cg.predictedPlayerState.headangles[YAW];
+    }
+    else
+    {
+        /*vec3_t axis[3];
+        vec3_t worldaxis[3];
+        
+        axis[0][0] = 1;
+        axis[0][1] = 0;
+        axis[0][2] = 0;
+        
+        axis[1][0] = 0;
+        axis[1][1] = 1;
+        axis[1][2] = 0;
+        
+        axis[2][0] = 0;
+        axis[2][1] = 0;
+        axis[2][2] = 1;
+        
+        cg.refdefViewAngles[ROLL] = 90;
+        
+        AnglesToAxis(cg.refdefViewAngles, axis);*/
+        
+        //***cg.refdefViewAngles[YAW]  += cg.predictedPlayerState.headangles[YAW];
+        
+    }
+    
+    VectorCopy( cg.refdefViewAngles, focusAngles );
+    
+    // if dead, look at killer
+    if( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 )
+    {
+        focusAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
+        cg.refdefViewAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
+        cg.refdef.vieworg[2] += 12;
+    }
+    
+    AngleVectors( focusAngles, forward, focusRight, focusUp );
+    
+    VectorMA( cg.refdef.vieworg, FOCUS_DISTANCE, forward, focusPoint );
+    
+    VectorCopy( cg.refdef.vieworg, view );
+    
+    //VectorCopy(cg.predictedPlayerEntity.headAxis, cg.refdef.viewaxis); //***
+    
+    //***
+    cg_thirdPersonRange.value = 0;
+    view[1] -= 32; //*** remove
+    view[2] += 32;
+    
+    //*** Add 4 units to make the view at eye level
+    VectorMA( view, 4, cg.predictedPlayerEntity.headAxis[ROLL], view );
+    
+    cg.refdefViewAngles[PITCH] *= 0.5;
+    
+    AngleVectors( cg.refdefViewAngles, forward, right, up );
+    
+    // trace a ray from the origin to the viewpoint to make sure the view isn't
+    // in a solid block.  Use an 8 by 8 block to prevent the view from near clipping anything
+    
+    if( !cg_cameraMode.integer )
+    {
+        CG_Trace( &trace, cg.refdef.vieworg, mins, maxs, view, cg.predictedPlayerState.clientNum, MASK_SOLID );
+        
+        if( trace.fraction != 0.0 )
+        {
+            //*** Walk Back instead of changing view position!
+            /*VectorMA( view, -(1.0 - trace.fraction) * 10, focusUp, view );
+            VectorMA( cg.predictedPlayerState.origin, -(1.0 - trace.fraction) * 10, focusUp, cg.predictedPlayerState.origin );*/
+            
+            //cg.predictedPlayerEntity.currentState.event
+            /*cent->currentState.event = ps->externalEvent;
+            cent->currentState.eventParm = ps->externalEventParm;
+            CG_EntityEvent( cent, cent->lerpOrigin );*/
+            /*BG_AddPredictableEventToPlayerstate( EV_JUMP_PAD, 0, &cg.predictedPlayerState );
+            
+            
+            CG_CheckChangedPredictableEvents(&cg.predictedPlayerState);
+            cg.eventSequence = cg.predictedPlayerState.eventSequence;
+            cg.predictedPlayerState.jumppad_frame = 1000;
+            VectorCopy( focusUp, cg.predictedPlayerState.velocity );*/
+            /*cg.predictedPlayerState.pm_flags |= PMF_GRAPPLE_PULL;
+            VectorCopy(cg.predictedPlayerState.grapplePoint, focusUp);*/
+            
+            //*** ADJUST LEAN ANGLE!
+            // lean towards the direction of travel
+            
+        }
+    }
+    
+    VectorCopy( view, cg.refdef.vieworg );
+    
+    // select pitch to look at focus point from vieword
+    VectorSubtract( focusPoint, cg.refdef.vieworg, focusPoint );
+    focusDist = sqrt( focusPoint[0] * focusPoint[0] + focusPoint[1] * focusPoint[1] );
+    if( focusDist < 1 )
+    {
+        focusDist = 1;	// should never happen
+    }
+    cg.refdefViewAngles[PITCH] = -180 / M_PI * atan2( focusPoint[2], focusDist );
+    //	cg.refdefViewAngles[YAW] -= cg_thirdPersonAngle.value;
+}
+#endif
+
 static void CG_OffsetThirdPersonView( void )
 {
     vec3_t forward, right, up;
@@ -1306,10 +1442,15 @@ static int CG_CalcViewValues( void )
     // intermission view
     if( ps->pm_type == PM_INTERMISSION )
     {
-        VectorCopy( ps->origin, cg.refdef.vieworg );
-        VectorCopy( ps->viewangles, cg.refdefViewAngles );
-        AnglesToAxis( cg.refdefViewAngles, cg.refdef.viewaxis );
-        return CG_CalcFov();
+#if !defined( __ANDROID__ )
+        if( !OculusVRDetected )
+#endif
+        {
+            VectorCopy( ps->origin, cg.refdef.vieworg );
+            VectorCopy( ps->viewangles, cg.refdefViewAngles );
+            AnglesToAxis( cg.refdefViewAngles, cg.refdef.viewaxis );
+            return CG_CalcFov();
+        }
     }
     
     cg.bobcycle = ( ps->bobCycle & 128 ) >> 7;
@@ -1367,6 +1508,12 @@ static int CG_CalcViewValues( void )
         // back away from character
         CG_OffsetThirdPersonView();
     }
+#if !defined( __ANDROID__ )
+    else if( OculusVRDetected )
+    {
+        CG_OffsetVRView();
+    }
+#endif
     else
     {
         // offset for local bobbing and kicks
@@ -1838,6 +1985,9 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
     
     // build cg.refdef
     inwater = CG_CalcViewValues();
+    
+    // cg.refdef is 100% inisialized here -> set stereo flag
+    cg.refdef.stereoFrame = stereoView;
     
     CG_CalcShakeCamera();
     CG_ApplyShakeCamera();

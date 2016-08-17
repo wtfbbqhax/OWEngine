@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////////////
 //
 //  This file is part of OWEngine source code.
 //  Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
@@ -674,9 +674,11 @@ R_RotateForViewer
 Sets up the modelview matrix for a given viewParm
 =================
 */
-void R_RotateForViewer( void )
+void R_RotateForViewer( viewParms_t* dest )
 {
     float viewerMatrix[16];
+    float viewerTranslate[16];
+    float glviewMatrix[16];
     vec3_t origin;
     
     memset( &tr.or, 0, sizeof( tr.or ) );
@@ -696,12 +698,12 @@ void R_RotateForViewer( void )
     viewerMatrix[1] = tr.viewParms.or.axis[1][0];
     viewerMatrix[5] = tr.viewParms.or.axis[1][1];
     viewerMatrix[9] = tr.viewParms.or.axis[1][2];
-    viewerMatrix[13] = -origin[0] * viewerMatrix[1] + - origin[1] * viewerMatrix[5] + - origin[2] * viewerMatrix[9];
+    viewerMatrix[13] = -origin[0] * viewerMatrix[1] + - origin[1] * viewerMatrix[5] + -origin[2] * viewerMatrix[9];
     
     viewerMatrix[2] = tr.viewParms.or.axis[2][0];
     viewerMatrix[6] = tr.viewParms.or.axis[2][1];
     viewerMatrix[10] = tr.viewParms.or.axis[2][2];
-    viewerMatrix[14] = -origin[0] * viewerMatrix[2] + - origin[1] * viewerMatrix[6] + - origin[2] * viewerMatrix[10];
+    viewerMatrix[14] = -origin[0] * viewerMatrix[2] + - origin[1] * viewerMatrix[6] + -origin[2] * viewerMatrix[10];
     
     viewerMatrix[3] = 0;
     viewerMatrix[7] = 0;
@@ -710,10 +712,35 @@ void R_RotateForViewer( void )
     
     // convert from our coordinate system (looking down X)
     // to OpenGL's coordinate system (looking down -Z)
-    myGlMultMatrix( viewerMatrix, s_flipMatrix, tr.or.modelMatrix );
+    myGlMultMatrix( viewerMatrix, s_flipMatrix, glviewMatrix ); //tr.or.modelMatrix );
+    
+    viewerTranslate[0] = 1.0;
+    viewerTranslate[1] = 0.0;
+    viewerTranslate[2] = 0.0;
+    viewerTranslate[3] = 0.0;
+    
+    viewerTranslate[4] = 0.0;
+    viewerTranslate[5] = 1.0;
+    viewerTranslate[6] = 0.0;
+    viewerTranslate[7] = 0.0;
+    
+    viewerTranslate[8] = 0.0;
+    viewerTranslate[9] = 0.0;
+    viewerTranslate[10] = 1.0;
+    viewerTranslate[11] = 0.0;
+    
+    viewerTranslate[12] = 0.5 * HMD.InterpupillaryDistance;
+    if( dest != NULL && dest->stereoFrame == STEREO_RIGHT )
+    {
+        viewerTranslate[12] *= -1.0;
+    }
+    viewerTranslate[13] = 0.0;
+    viewerTranslate[14] = 0.0;
+    viewerTranslate[15] = 1.0;
+    
+    myGlMultMatrix( viewerTranslate, glviewMatrix, tr.or.modelMatrix );
     
     tr.viewParms.world = tr.or;
-    
 }
 
 
@@ -927,7 +954,15 @@ void R_SetupProjection( void )
 {
     float xmin, xmax, ymin, ymax;
     float width, height, depth;
-    float zNear, zFar;
+#if !defined( __ANDROID__ )
+    float stereoSep = r_stereoSeparation->value;
+    float frameMultiplier = 1;
+    float a = ( float )HMD.HResolution / ( 2.0 * ( float )HMD.VResolution );
+    float fov = 2.0 * atan( ( float )HMD.VScreenSize /
+                            ( 2.0 * ( float )HMD.EyeToScreenDistance ) ) - ovr_fovoffset->value;
+#endif
+    float zFar = 1000.0;
+    float zNear = 0.001;
     
     // dynamically compute far clip plane distance
     SetFarClip();
@@ -974,6 +1009,60 @@ void R_SetupProjection( void )
     tr.viewParms.projectionMatrix[7] = 0;
     tr.viewParms.projectionMatrix[11] = -1;
     tr.viewParms.projectionMatrix[15] = 0;
+    
+#if !defined( __ANDROID__ )
+    {
+        float projectionMatrix[16];
+        float H[16];
+        float hMeters;
+        float h;
+        
+        hMeters = ( ( float )HMD.HScreenSize / 4.0 ) - ( HMD.InterpupillaryDistance / 2.0 );
+        h = 4.0 * hMeters / ( float )HMD.HScreenSize;
+        
+        projectionMatrix[0] = 1.0 / ( a * tan( fov / 2 ) );
+        projectionMatrix[1] = 0;
+        projectionMatrix[2] = 0;
+        projectionMatrix[3] = 0;
+        
+        projectionMatrix[4] = 0;
+        projectionMatrix[5] = 1.0 / ( tan( fov / 2 ) );
+        projectionMatrix[6] = 0;
+        projectionMatrix[7] = 0;
+        
+        projectionMatrix[8] = 0;
+        projectionMatrix[9] = 0;
+        projectionMatrix[10] = zFar / ( zNear - zFar );
+        projectionMatrix[11] = -1.0;
+        
+        projectionMatrix[12] = 0;
+        projectionMatrix[13] = 0;
+        projectionMatrix[14] = ( zFar * zNear ) / ( zNear - zFar );
+        projectionMatrix[15] = 0;
+        
+        
+        H[0] = 1.0;
+        H[1] = 0.0;
+        H[2] = 0.0;
+        H[3] = 0.0;
+        
+        H[4] = 0.0;
+        H[5] = 1.0;
+        H[6] = 0.0;
+        H[7] = 0.0;
+        
+        H[8] = 0.0;
+        H[9] = 0.0;
+        H[10] = 1.0;
+        H[11] = 0.0;
+        
+        H[12] = h;
+        H[13] = 0.0;
+        H[14] = 0.0;
+        H[15] = 1.0;
+        
+    }
+#endif
 }
 
 /*
@@ -1330,7 +1419,7 @@ static qboolean SurfIsOffscreen( const drawSurf_t* drawSurf, vec4_t clipDest[128
         return qfalse;
     }
     
-    R_RotateForViewer();
+    R_RotateForViewer( NULL );
     
 // GR - decompose with tessellation flag
     R_DecomposeSort( drawSurf->sort, &entityNum, &shader, &fogNum, &dlighted, &atiTess );
@@ -2086,7 +2175,7 @@ void R_RenderView( viewParms_t* parms )
     tr.viewCount++;
     
     // set viewParms.world
-    R_RotateForViewer();
+    R_RotateForViewer( &tr.viewParms );
     
     R_SetupFrustum();
     

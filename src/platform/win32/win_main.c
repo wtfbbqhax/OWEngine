@@ -65,6 +65,11 @@
 
 static char sys_cmdline[MAX_STRING_CHARS];
 
+#include <motioncontrollers.h>
+
+struct OculusVR_HMDInfo HMD;
+int OculusVRDetected;
+
 char* WinGetLastError()
 {
     static char buf[4096];
@@ -82,7 +87,6 @@ char* WinGetLastError()
 Sys_LowPhysicalMemory()
 ==================
 */
-
 qboolean Sys_LowPhysicalMemory()
 {
     MEMORYSTATUS stat;
@@ -266,6 +270,8 @@ Sys_Quit
 */
 void Sys_Quit( void )
 {
+    OculusVR_Exit();
+    
     timeEndPeriod( 1 );
     IN_Shutdown();
     Sys_DestroyConsole();
@@ -703,12 +709,12 @@ Used to load a development dll instead of a virtual machine
 */
 extern char*     FS_BuildOSPath( const char* base, const char* game, const char* qpath );
 
-void* QDECL Sys_LoadDll( const char* name, int( QDECL** entryPoint )( int, ... ),
-                         int ( QDECL* systemcalls )( int, ... ) )
+void* QDECL Sys_LoadDll( const char* name, intptr_t( QDECL** entryPoint )( intptr_t, ... ),
+                         intptr_t( QDECL* systemcalls )( intptr_t, ... ) )
 {
     static int lastWarning = 0;
     HINSTANCE libHandle;
-    void ( QDECL * dllEntry )( int ( QDECL * syscallptr )( int, ... ) );
+    void ( QDECL * dllEntry )( intptr_t( QDECL * syscallptr )( intptr_t, ... ) );
     char*    basepath;
     char*    cdpath;
     char*    gamedir;
@@ -783,8 +789,8 @@ void* QDECL Sys_LoadDll( const char* name, int( QDECL** entryPoint )( int, ... )
     
 found_dll:
 
-    dllEntry = ( void ( QDECL* )( int ( QDECL* )( int, ... ) ) )GetProcAddress( libHandle, "dllEntry" );
-    *entryPoint = ( int ( QDECL* )( int, ... ) )GetProcAddress( libHandle, "vmMain" );
+    dllEntry = ( void ( QDECL* )( intptr_t( QDECL* )( intptr_t, ... ) ) )GetProcAddress( libHandle, "dllEntry" );
+    *entryPoint = ( intptr_t( QDECL* )( intptr_t, ... ) )GetProcAddress( libHandle, "vmMain" );
     if( !*entryPoint || !dllEntry )
     {
         FreeLibrary( libHandle );
@@ -795,7 +801,6 @@ found_dll:
     return libHandle;
 }
 
-// RB: added generic DLL loading routines
 void* Sys_LoadDLLSimple( const char* name )
 {
     SetDllDirectoryA( "../system" );
@@ -1518,6 +1523,37 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     // no abort/retry/fail errors
     SetErrorMode( SEM_FAILCRITICALERRORS );
     
+    // Init Oculus SDK
+    if( OculusVR_Init() == 0 )
+    {
+        OculusVRDetected = 0;
+        Com_Printf( "[OVR] OculusVR_Init() Failed!\n" );
+        HMD.HResolution = 1280;
+        HMD.VResolution = 800;
+        HMD.HScreenSize = 0.14976;
+        HMD.VScreenSize = 0.0935;
+        HMD.EyeToScreenDistance = 0.04;
+        HMD.InterpupillaryDistance = 0.058;
+    }
+    else
+    {
+        OculusVRDetected = 1;
+        Com_Printf( "[OVR] OculusVR_Init() Success!\n" );
+        if( OculusVR_QueryHMD( &HMD ) != 0 )
+        {
+            Com_Printf( "[OVR] Device Name       : %s\n", HMD.DisplayDeviceName );
+            Com_Printf( "[OVR] IPD               : %f\n", HMD.InterpupillaryDistance );
+            Com_Printf( "[OVR] Lens Separation D.: %f\n", HMD.LensSeparationDistance );
+            Com_Printf( "[OVR] Eye To Screen Dist: %f\n", HMD.EyeToScreenDistance );
+            Com_Printf( "[OVR] Screen Size       : %f, %f\n", HMD.HScreenSize, HMD.VScreenSize );
+            Com_Printf( "[OVR] Resolution        : %d, %d\n", HMD.HResolution, HMD.VResolution );
+            Com_Printf( "[OVR] Desktop Size      : %d, %d\n", HMD.DesktopX, HMD.DesktopY );
+            Com_Printf( "[OVR] VScreen Center    : %f\n", HMD.VScreenCenter );
+            Com_Printf( "[OVR] Distortion K      : %f, %f, %f, %f\n", HMD.DistortionK[0], HMD.DistortionK[1], HMD.DistortionK[2], HMD.DistortionK[3] );
+        }
+    }
+    
+    
     // get the initial time base
     Sys_Milliseconds();
     
@@ -1580,5 +1616,4 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     
     // never gets here
 }
-
 

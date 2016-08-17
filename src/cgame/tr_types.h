@@ -52,6 +52,7 @@
 #define RF_THIRD_PERSON     2       // don't draw through eyes, only mirrors (player bodies, chat sprites)
 #define RF_FIRST_PERSON     4       // only draw through eyes (view weapon, damage blood blob)
 #define RF_DEPTHHACK        8       // for view weapon Z crunching
+#define RF_CROSSHAIR        16
 #define RF_NOSHADOW         64      // don't add stencil shadows
 
 #define RF_LIGHTING_ORIGIN  128     // use refEntity->lightingOrigin instead of refEntity->origin
@@ -225,6 +226,12 @@ typedef struct
 
 //----(SA)	end
 
+typedef enum
+{
+    STEREO_CENTER,
+    STEREO_LEFT,
+    STEREO_RIGHT
+} stereoFrame_t;
 
 #define MAX_RENDER_STRINGS          8
 #define MAX_RENDER_STRING_LENGTH    32
@@ -242,27 +249,17 @@ typedef struct
     // 1 bits will prevent the associated area from rendering at all
     byte areamask[MAX_MAP_AREA_BYTES];
     
-    
-    
+    stereoFrame_t stereoFrame;
+    float delta_yaw;
     
     // text messages for deform text shaders
     char text[MAX_RENDER_STRINGS][MAX_RENDER_STRING_LENGTH];
-    
     
 //----(SA)	added (needed to pass fog infos into the portal sky scene)
     glfog_t glfog;
 //----(SA)	end
 
 } refdef_t;
-
-
-typedef enum
-{
-    STEREO_CENTER,
-    STEREO_LEFT,
-    STEREO_RIGHT
-} stereoFrame_t;
-
 
 /*
 ** glconfig_t
@@ -286,15 +283,13 @@ typedef enum
     // should always be the lowest value in this
     // enum set
     GLDRV_STANDALONE,           // driver is a non-3Dfx standalone driver
-    GLDRV_VOODOO                // driver is a 3Dfx standalone driver
+    GLDRV_VOODOO,                // driver is a 3Dfx standalone driver
+    GLDRV_OPENGL
 } glDriverType_t;
 
 typedef enum
 {
     GLHW_GENERIC,           // where everthing works the way it should
-    //Dushan
-    GLHW_OPENGL,
-    GLHW_VULKAN,
     //
     //TODO - Dushan - Remove all this
     GLHW_3DFX_2D3D,         // Voodoo Banshee or Voodoo3, relevant since if this is
@@ -352,6 +347,16 @@ typedef struct
     qboolean smpActive;                     // dual processor
     
     qboolean textureFilterAnisotropicAvailable;                 //DAJ
+    
+    unsigned int oculusProgId;
+    unsigned int oculusTexId;
+    unsigned int oculusFBL;
+    unsigned int oculusFBR;
+    unsigned int oculusRenderTargetLeft;
+    unsigned int oculusRenderTargetRight;
+    unsigned int oculusDepthRenderBufferLeft;
+    unsigned int oculusDepthRenderBufferRight;
+    unsigned int oculusQuadVB;
 } glconfig_t;
 
 

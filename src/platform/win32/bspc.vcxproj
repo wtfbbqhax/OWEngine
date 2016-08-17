@@ -45,7 +45,7 @@
     <_ProjectFileVersion>14.0.24720.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
     <IntDir>..\..\..\compiled\intermate\bspc\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -54,8 +54,8 @@
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
-    <IntDir>..\..\..\compiled\intermediate\bspc\</IntDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
+    <IntDir>..\..\..\compiled\intermate\bspc\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />

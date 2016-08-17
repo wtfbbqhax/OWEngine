@@ -49,6 +49,13 @@
 #include "tr_public.h"
 #include <GL/glew.h>
 
+#if !defined( __ANDROID__ )
+#include <motioncontrollers.h>
+
+struct OculusVR_HMDInfo HMD;
+int OculusVRDetected;
+#endif
+
 #define GL_INDEX_TYPE       GL_UNSIGNED_SHORT
 typedef unsigned short glIndex_t;
 
@@ -500,6 +507,9 @@ typedef struct
     vec3_t vieworg;
     vec3_t viewaxis[3];             // transformation matrix
     
+    stereoFrame_t stereoFrame;
+    float delta_yaw;
+    
     int time;                       // time in milliseconds for shader effects and other time dependent rendering issues
     int rdflags;                    // RDF_NOWORLDMODEL, etc
     
@@ -588,11 +598,12 @@ typedef struct
     cplane_t frustum[4];
     vec3_t visBounds[2];
     float zFar;
-    
+    stereoFrame_t stereoFrame;
     int dirty;
     
     glfog_t glFog;                  // fog parameters	//----(SA)	added
     
+    float bodyYaw;
 } viewParms_t;
 
 
@@ -1128,12 +1139,13 @@ extern cvar_t*   r_verbose;             // used for verbose debug spew
 extern cvar_t*   r_ignoreFastPath;      // allows us to ignore our Tess fast paths
 
 extern cvar_t*   r_znear;               // near Z clip plane
+extern cvar_t*   r_zproj;               // z distance of projection plane
+extern cvar_t*   r_stereoSeparation;    // separation of cameras for stereo rendering
 extern cvar_t*   r_zfar;                // far Z clip plane
 
 extern cvar_t*   r_stencilbits;         // number of desired stencil bits
 extern cvar_t*   r_depthbits;           // number of desired depth bits
 extern cvar_t*   r_colorbits;           // number of desired color bits, only relevant for fullscreen
-extern cvar_t*   r_stereo;              // desired pixelformat stereo flag
 extern cvar_t*   r_texturebits;         // number of desired texture bits
 // 0 = use framebuffer depth
 // 16 = use 16-bit textures
@@ -1243,6 +1255,16 @@ extern cvar_t*  r_lodCurveError;
 extern cvar_t*  r_smp;
 extern cvar_t*  r_showSmp;
 extern cvar_t*  r_skipBackEnd;
+
+#if !defined( __ANDROID__ )
+extern  cvar_t*  ovr_fovoffset;
+extern  cvar_t*  ovr_warpingShader;
+extern  cvar_t*  ovr_ovrdetected;
+extern  cvar_t*  ovr_lenseoffset;
+extern  cvar_t*  ovr_ipd;
+extern  cvar_t*  ovr_viewofsx;
+extern  cvar_t*  ovr_viewofsy;
+#endif
 
 extern cvar_t*  r_ignoreGLErrors;
 
@@ -1360,6 +1382,7 @@ void    GL_Cull( int cullType );
 
 #define GLS_DEFAULT         GLS_DEPTHMASK_TRUE
 
+void R_SetupProjection();
 void    RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, qboolean dirty );
 void    RE_UploadCinematic( int w, int h, int cols, int rows, const byte* data, int client, qboolean dirty );
 

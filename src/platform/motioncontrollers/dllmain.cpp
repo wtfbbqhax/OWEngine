@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  This file is part of OWEngine source code.
-//  Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
+//  Copyright (C) 2013 Frederic Lauzon
 //  Copyright (C) 2016 Dusan Jocic <dusanjocic@msn.com>
 //
 //  This file is part of the OWEngine single player GPL Source Code.
@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   glw_win.h
+//  File name:   dllmain.c
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -40,36 +40,30 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WIN32
-#  error You should not be including this file on this platform
-#endif
+#if defined (_WIN32)
 
-#ifndef __GLW_WIN_H__
-#define __GLW_WIN_H__
+#include <windows.h>
 
-typedef struct
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
 {
-    WNDPROC wndproc;
-    
-    HDC hDC;                // handle to device context
-    HGLRC hGLRC;            // handle to GL rendering context
-    
-    PIXELFORMATDESCRIPTOR pfd;
-    int pixelformat;
-    
-    HINSTANCE hinstOpenGL;  // HINSTANCE for the OpenGL library
-    
-    qboolean allowdisplaydepthchange;
-    qboolean pixelFormatSet;
-    
-    int desktopBitsPixel;
-    int desktopWidth, desktopHeight;
-    
-    qboolean cdsFullscreen;
-    
-    FILE* log_fp;
-} glwstate_t;
-
-extern glwstate_t glw_state;
+    switch( ul_reason_for_call )
+    {
+        case DLL_PROCESS_ATTACH:
+            DisableThreadLibraryCalls( hModule );
+            break;
+        case DLL_THREAD_ATTACH:
+            break;
+        case DLL_THREAD_DETACH:
+            break;
+        case DLL_PROCESS_DETACH:
+            FreeLibraryAndExitThread( hModule, 0 );
+            break;
+    }
+    return TRUE;
+}
 
 #endif

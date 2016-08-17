@@ -41,12 +41,12 @@
     <_ProjectFileVersion>14.0.25123.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
     <IntDir>..\..\..\compiled\intermate\wolf\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
     <IntDir>..\..\..\compiled\intermate\wolf\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -72,7 +72,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\glew\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\motioncontrollers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -126,15 +126,14 @@
       <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\motioncontrollers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;wsock32.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -147,7 +146,8 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -207,6 +207,7 @@
     <ClCompile Include="win_wndproc.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\libraries\libovr\libovrwrapper\libovrwrapper\libovrwrapper.h" />
     <ClInclude Include="..\..\botai\botai.h" />
     <ClInclude Include="..\..\cgame\cg_public.h" />
     <ClInclude Include="..\..\cgame\tr_types.h" />
@@ -238,8 +239,8 @@
     <ProjectReference Include="botlib.vcxproj">
       <Project>{86691fdd-e0c6-4d71-9ffd-e0f30f19aa3e}</Project>
     </ProjectReference>
-    <ProjectReference Include="renderer.vcxproj">
-      <Project>{f45a4f73-0ea1-4eb2-9829-154964adec6a}</Project>
+    <ProjectReference Include="motioncontrollers.vcxproj">
+      <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
     </ProjectReference>
     <ProjectReference Include="Splines.vcxproj">
       <Project>{aa96579b-0f16-4614-8453-0b03c8b39a46}</Project>

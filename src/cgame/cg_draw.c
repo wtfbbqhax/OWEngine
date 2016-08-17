@@ -1095,44 +1095,54 @@ static float CG_DrawSnapshot( float y )
 CG_DrawFPS
 ==================
 */
-#define FPS_FRAMES  4
-static float CG_DrawFPS( float y )
+#define FPS_FRAMES 4
+static float CG_DrawFPS( float y, stereoFrame_t stereoFrame )
 {
-    char*        s;
-    int w;
-    static int previousTimes[FPS_FRAMES];
-    static int index;
-    int i, total;
-    int fps;
-    static int previous;
-    int t, frameTime;
+    char*		s;
+    int			w;
+    static int	previousTimes[FPS_FRAMES];
+    static int	index;
+    int		i, total;
+    static  int fps;
+    static	int	previous;
+    int		t, frameTime;
     
     // don't use serverTime, because that will be drifting to
     // correct for internet lag changes, timescales, timedemos, etc
-    t = trap_Milliseconds();
-    frameTime = t - previous;
-    previous = t;
-    
-    previousTimes[index % FPS_FRAMES] = frameTime;
-    index++;
-    if( index > FPS_FRAMES )
+    if( stereoFrame == STEREO_LEFT || stereoFrame == STEREO_CENTER )
     {
-        // average multiple frames together to smooth changes out a bit
-        total = 0;
-        for( i = 0 ; i < FPS_FRAMES ; i++ )
-        {
-            total += previousTimes[i];
-        }
-        if( !total )
-        {
-            total = 1;
-        }
-        fps = 1000 * FPS_FRAMES / total;
+        t = trap_Milliseconds();
+        frameTime = t - previous;
+        previous = t;
         
+        previousTimes[index % FPS_FRAMES] = frameTime;
+        index++;
+        if( index > FPS_FRAMES )
+        {
+            // average multiple frames together to smooth changes out a bit
+            total = 0;
+            for( i = 0; i < FPS_FRAMES; i++ )
+            {
+                total += previousTimes[i];
+            }
+            if( !total )
+            {
+                total = 1;
+            }
+            fps = 1000 * FPS_FRAMES / total;
+            
+            s = va( "%ifps", fps );
+            w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+            
+            CG_DrawBigString( 635 - w, y + 2, s, 1.0F );
+        }
+    }
+    else
+    {
         s = va( "%ifps", fps );
         w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
         
-        CG_DrawBigString( UPPERRIGHT_X - w, y + 2, s, 1.0F );
+        CG_DrawBigString( 635 - w, y + 2, s, 1.0F );
     }
     
     return y + BIGCHAR_HEIGHT + 4;
@@ -1385,7 +1395,7 @@ CG_DrawUpperRight
 
 =====================
 */
-static void CG_DrawUpperRight( void )
+static void CG_DrawUpperRight( stereoFrame_t stereoFrame )
 {
     float y;
     
@@ -1401,7 +1411,7 @@ static void CG_DrawUpperRight( void )
     }
     if( cg_drawFPS.integer )
     {
-        y = CG_DrawFPS( y );
+        y = CG_DrawFPS( y, stereoFrame );
     }
     if( cg_drawTimer.integer )
     {
@@ -3840,7 +3850,7 @@ static void CG_ScreenFade( void )
 CG_Draw2D
 =================
 */
-static void CG_Draw2D( void )
+static void CG_Draw2D( stereoFrame_t stereoFrame )
 {
 
     // if we are taking a levelshot for the menu, don't draw anything
@@ -3912,7 +3922,7 @@ static void CG_Draw2D( void )
     
     if( !cg_paused.integer )
     {
-        CG_DrawUpperRight();
+        CG_DrawUpperRight( stereoFrame );
     }
     
 //	CG_DrawLowerRight();
@@ -4147,7 +4157,7 @@ void CG_DrawActive( stereoFrame_t stereoView )
     CG_TileClear();     //----(SA)	moved to 2d section to avoid 2d/3d fog-state problems
     
     // draw status bar and other floating elements
-    CG_Draw2D();
+    CG_Draw2D( stereoView );
 }
 
 

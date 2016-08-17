@@ -46,6 +46,11 @@ volatile renderCommandList_t*    renderCommandList;
 
 volatile qboolean renderThreadActive;
 
+#if !defined( __ANDROID__ )
+
+extern backEndState_t	backEnd;
+extern void RB_SetGL2D( void );
+#endif
 
 /*
 =====================
@@ -405,7 +410,26 @@ for each RE_EndFrame
 */
 void RE_BeginFrame( stereoFrame_t stereoFrame )
 {
-    drawBufferCommand_t* cmd;
+    drawBufferCommand_t* cmd = NULL;
+    
+#if !defined( __ANDROID__ )
+    glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, glConfig.oculusFBL );
+    glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, glConfig.oculusDepthRenderBufferLeft );
+    
+    glViewport( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
+    
+    if( ovr_warpingShader->integer )
+    {
+        if( stereoFrame == STEREO_LEFT )
+        {
+            glDrawBuffer( GL_COLOR_ATTACHMENT0_EXT );
+        }
+        else
+        {
+            glDrawBuffer( GL_COLOR_ATTACHMENT1_EXT );
+        }
+    }
+#endif
     
     if( !tr.registered )
     {
@@ -501,28 +525,87 @@ void RE_BeginFrame( stereoFrame_t stereoFrame )
     //
     // draw buffer stuff
     //
-    cmd = R_GetCommandBuffer( sizeof( *cmd ) );
-    if( !cmd )
-    {
+    if( !( cmd = R_GetCommandBuffer( sizeof( *cmd ) ) ) )
         return;
-    }
+        
     cmd->commandId = RC_DRAW_BUFFER;
     
+    if( stereoFrame == STEREO_LEFT )
     {
-        if( stereoFrame != STEREO_CENTER )
-        {
-            ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
-        }
-        if( !Q_stricmp( r_drawBuffer->string, "GL_FRONT" ) )
-        {
-            cmd->buffer = ( int )GL_FRONT;
-        }
-        else
-        {
-            cmd->buffer = ( int )GL_BACK;
-        }
+        cmd->buffer = ( int )GL_BACK_LEFT;
     }
+    else if( stereoFrame == STEREO_RIGHT )
+    {
+        cmd->buffer = ( int )GL_BACK_RIGHT;
+    }
+    else
+    {
+        ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame );
+    }
+    tr.refdef.stereoFrame = stereoFrame;
 }
+
+#if !defined( __ANDROID__ )
+void SetupShaderDistortion( int eye, float VPX, float VPY, float VPW, float VPH )
+{
+    float  as, x, y, w, h;
+    struct OculusVR_StereoCfg stereoCfg;
+    GLuint lenscenter = glGetUniformLocation( glConfig.oculusProgId, "LensCenter" );
+    GLuint screencenter = glGetUniformLocation( glConfig.oculusProgId, "ScreenCenter" );
+    GLuint uscale = glGetUniformLocation( glConfig.oculusProgId, "Scale" );
+    GLuint uscalein = glGetUniformLocation( glConfig.oculusProgId, "ScaleIn" );
+    GLuint uhmdwarp = glGetUniformLocation( glConfig.oculusProgId, "HmdWarpParam" );
+    GLuint offset = glGetUniformLocation( glConfig.oculusProgId, "Offset" );
+    
+    stereoCfg.x = VPX;
+    stereoCfg.y = VPY;
+    stereoCfg.w = VPW * 0.5f;
+    stereoCfg.h = VPH;
+    
+    as = ( VPW * 0.5f ) / VPH;
+    x = VPX / ( float )( glConfig.vidWidth );
+    y = VPY / ( float )( glConfig.vidHeight );
+    w = VPW / ( float )( glConfig.vidWidth );
+    h = VPH / ( float )( glConfig.vidHeight );
+    
+    if( OculusVRDetected )
+    {
+        OculusVR_StereoConfig( eye, &stereoCfg );
+    }
+    else
+    {
+        stereoCfg.distscale = 1.701516f;
+        stereoCfg.XCenterOffset = 0.145299f;
+        if( eye == 1 )
+        {
+            stereoCfg.XCenterOffset *= -1;
+        }
+        stereoCfg.K[0] = 1.00f;
+        stereoCfg.K[1] = 0.22f;
+        stereoCfg.K[2] = 0.24f;
+        stereoCfg.K[3] = 0.00f;
+    }
+    
+    glUniform2f( lenscenter, x + ( w + stereoCfg.XCenterOffset * ovr_lenseoffset->value ) * 0.5f, y + h * 0.5f );
+    glUniform2f( screencenter, x + w * 0.5f, y + h * 0.5f );
+    if( eye == 1 )
+        glUniform2f( offset, ovr_viewofsx->value, ovr_viewofsy->value );
+    else
+        glUniform2f( offset, -ovr_viewofsx->value, ovr_viewofsy->value );
+        
+    stereoCfg.distscale = 1.0f / stereoCfg.distscale;
+    
+    glUniform2f( uscale, ( w / 2 ) * stereoCfg.distscale, ( h / 2 ) * stereoCfg.distscale * as );
+    glUniform2f( uscalein, ( 2 / w ), ( 2 / h ) / as );
+    glUniform4fv( uhmdwarp, 1, stereoCfg.K );
+    
+    if( ovr_ipd->value != 0.0 )
+    {
+        HMD.InterpupillaryDistance = ovr_ipd->value;
+    }
+    
+}
+#endif
 
 
 /*
@@ -535,6 +618,14 @@ Returns the number of msec spent in the back end
 void RE_EndFrame( int* frontEndMsec, int* backEndMsec )
 {
     swapBuffersCommand_t*    cmd;
+#if !defined( __ANDROID__ )
+    float x;
+    float y;
+    float w;
+    float h;
+    GLuint texID;
+    static int b = 0;
+#endif
     
     if( !tr.registered )
     {
@@ -548,6 +639,106 @@ void RE_EndFrame( int* frontEndMsec, int* backEndMsec )
     cmd->commandId = RC_SWAP_BUFFERS;
     
     R_IssueRenderCommands( qtrue );
+    
+#if !defined( __ANDROID__ )
+    //*** Rift post processing
+    if( ovr_warpingShader->integer )
+    {
+        glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 );
+        glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, 0 );
+        
+        if( !backEnd.projection2D )
+        {
+            RB_SetGL2D();
+        }
+        
+        glViewport( 0, 0, glConfig.vidWidth, glConfig.vidHeight ); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+        
+        // Use our shader
+        glUseProgram( glConfig.oculusProgId );
+        
+        
+        glEnable( GL_TEXTURE_2D );
+        
+        
+        {
+            float VPX = 0.0f;
+            float VPY = 0.0f;
+            float VPW = glConfig.vidWidth; // ViewPort Width
+            float VPH = glConfig.vidHeight;
+            
+            SetupShaderDistortion( 0, VPX, VPY, VPW, VPH ); // Left Eye
+        }
+        
+        // Set our "renderedTexture" sampler to user Texture Unit 0
+        texID = glGetUniformLocation( glConfig.oculusProgId, "texid" );
+        glUniform1i( texID, 0 );
+        
+        
+        glColor3f( tr.identityLight, tr.identityLight, tr.identityLight );
+        
+        //	if (stereoFrame == STEREO_LEFT)
+        {
+        
+            glActiveTexture( GL_TEXTURE0 );
+            glBindTexture( GL_TEXTURE_2D, glConfig.oculusRenderTargetLeft );
+            
+            x = 0.0f;
+            y = 0.0f;
+            w = glConfig.vidWidth;
+            h = glConfig.vidHeight;
+            
+            
+            glBegin( GL_QUADS );
+            glTexCoord2f( 0, 1 );
+            glVertex2f( x, y );
+            glTexCoord2f( 1, 1 );
+            glVertex2f( x + w / 2, y );
+            glTexCoord2f( 1, 0 );
+            glVertex2f( x + w / 2, y + h );
+            glTexCoord2f( 0, 0 );
+            glVertex2f( x, y + h );
+            glEnd();
+        }
+        //else
+        {
+        
+        
+            {
+                float VPX = 0;
+                float VPY = 0.0f;
+                float VPW = glConfig.vidWidth; // ViewPort Width
+                float VPH = glConfig.vidHeight;
+                
+                SetupShaderDistortion( 1, VPX, VPY, VPW, VPH ); // Right Eye
+            }
+            
+            glActiveTexture( GL_TEXTURE0 );
+            glBindTexture( GL_TEXTURE_2D, glConfig.oculusRenderTargetRight );
+            
+            
+            x = glConfig.vidWidth * 0.5f;
+            y = 0.0f;
+            w = glConfig.vidWidth;
+            h = glConfig.vidHeight;
+            
+            
+            glBegin( GL_QUADS );
+            glTexCoord2f( 0, 1 );
+            glVertex2f( x, y );
+            glTexCoord2f( 1, 1 );
+            glVertex2f( x + w / 2, y );
+            glTexCoord2f( 1, 0 );
+            glVertex2f( x + w / 2, y + h );
+            glTexCoord2f( 0, 0 );
+            glVertex2f( x, y + h );
+            glEnd();
+        }
+        // unbind the GLSL program
+        // this means that from here the OpenGL fixed functionality is used
+        glUseProgram( 0 );
+    }
+#endif
     
     // use the other buffers next frame, because another CPU
     // may still be rendering into the current ones

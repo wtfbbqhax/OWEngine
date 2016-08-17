@@ -43,12 +43,12 @@
     <_ProjectFileVersion>14.0.25123.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\system\</OutDir>
     <IntDir>..\..\..\compiled\intermate\renderer\</IntDir>
     <TargetName>rendererGL</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\system</OutDir>
     <IntDir>..\..\..\compiled\intermate\renderer\</IntDir>
     <TargetName>rendererGL</TargetName>
     <LinkIncremental>true</LinkIncremental>
@@ -67,7 +67,7 @@
       <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;..\..\..\libraries\vulkan\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;..\motioncontrollers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -85,8 +85,9 @@
       <OutputFile>.\Release/renderer.bsc</OutputFile>
     </Bscmake>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\libraries\vulkan\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>..\..\renderer\ref_trin.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -105,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;..\..\..\libraries\vulkan\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;..\motioncontrollers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -126,9 +127,10 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Link>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>..\..\renderer\ref_trin.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>..\..\..\libraries\vulkan\Bin32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -314,6 +316,11 @@
     <ClInclude Include="..\..\renderer\qgl.h" />
     <ClInclude Include="..\..\renderer\tr_local.h" />
     <ClInclude Include="..\..\renderer\tr_public.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="motioncontrollers.vcxproj">
+      <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

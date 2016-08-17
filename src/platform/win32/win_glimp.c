@@ -57,43 +57,6 @@
 #include <GL/wglew.h>
 #include "glw_win.h"
 
-#ifdef _WIN32
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vk_platform.h>
-
-static VkInstance mVulkanInstance;
-static VkPhysicalDevice mVulkanPhysicalDevice;
-static VkPhysicalDeviceProperties mVulkanPhysicalDeviceProperties;
-static VkDevice mVulkanDevice;
-static VkSurfaceKHR mVulkanSurface;
-static VkSwapchainKHR mVulkanSwapchain;
-
-static PFN_vkGetDeviceProcAddr fpGetDeviceProcAddr;
-static PFN_vkGetPhysicalDeviceSurfaceSupportKHR fpGetPhysicalDeviceSurfaceSupportKHR;
-static PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR fpGetPhysicalDeviceSurfaceCapabilitiesKHR;
-static PFN_vkGetPhysicalDeviceSurfaceFormatsKHR fpGetPhysicalDeviceSurfaceFormatsKHR;
-static PFN_vkCreateSwapchainKHR fpCreateSwapchainKHR;
-static PFN_vkDestroySwapchainKHR fpDestroySwapchainKHR;
-
-static unsigned int mVulkanGfxQueueFamilyIndex;
-
-static VkCommandPool mVulkanCommandPool;
-static VkCommandBuffer mVulkanCommandBuffers[2];
-static VkFence mVulkanCommandBufferFences[2];
-
-#define GET_INSTANCE_PROC_ADDR(inst, entrypoint) { \
-	fp##entrypoint = (PFN_vk##entrypoint)vkGetInstanceProcAddr(inst, "vk" #entrypoint); \
-	if (fp##entrypoint == NULL) ri.Error( PRINT_ALL, "vkGetInstanceProcAddr failed to find vk" #entrypoint); \
-}
-
-#define GET_DEVICE_PROC_ADDR(dev, entrypoint) { \
-	fp##entrypoint = (PFN_vk##entrypoint)fpGetDeviceProcAddr(dev, "vk" #entrypoint); \
-    if (fp##entrypoint == NULL) ri.Error( PRINT_ALL, "vkGetDeviceProcAddr failed to find vk" #entrypoint); \
-}
-
 extern void WG_CheckHardwareGamma( void );
 extern void WG_RestoreGamma( void );
 
@@ -125,7 +88,7 @@ typedef enum
 
 #define WINDOW_CLASS_NAME   "Wolfenstein"
 
-static void GLW_InitVulkanInstance( void );
+static void     GLW_InitExtensions( void );
 static rserr_t  GLW_SetMode( int mode,
                              int colorbits,
                              qboolean cdsFullscreen );
@@ -164,212 +127,21 @@ static qboolean GLW_StartDriverAndSetMode( int mode,
 }
 
 /*
-** ChoosePFD
+** GLW_InitDriver
 **
-** Helper function that replaces ChoosePixelFormat.
+** - get a DC if one doesn't exist
+** - create an HGLRC if one doesn't exist
 */
-#define MAX_PFDS 256
-
-static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR* pPFD )
+static qboolean GLW_InitDriver( int colorbits )
 {
-    PIXELFORMATDESCRIPTOR pfds[MAX_PFDS + 1];
-    int maxPFD = 0;
-    int i;
-    int bestMatch = 0;
-    
-    ri.Printf( PRINT_ALL, "...GLW_ChoosePFD( %d, %d, %d )\n", ( int ) pPFD->cColorBits, ( int ) pPFD->cDepthBits, ( int ) pPFD->cStencilBits );
-    
-    // count number of PFDs
-    maxPFD = DescribePixelFormat( hDC, 1, sizeof( PIXELFORMATDESCRIPTOR ), &pfds[0] );
-    
-    if( maxPFD > MAX_PFDS )
+    PIXELFORMATDESCRIPTOR pfd =
     {
-        ri.Printf( PRINT_WARNING, "...numPFDs > MAX_PFDS (%d > %d)\n", maxPFD, MAX_PFDS );
-        maxPFD = MAX_PFDS;
-    }
-    
-    ri.Printf( PRINT_ALL, "...%d PFDs found\n", maxPFD - 1 );
-    
-    // grab information
-    for( i = 1; i <= maxPFD; i++ )
-    {
-        DescribePixelFormat( hDC, i, sizeof( PIXELFORMATDESCRIPTOR ), &pfds[i] );
-    }
-    
-    // look for a best match
-    for( i = 1; i <= maxPFD; i++ )
-    {
-        //
-        // make sure this has hardware acceleration
-        //
-        if( ( pfds[i].dwFlags & PFD_GENERIC_FORMAT ) != 0 )
-        {
-            if( !r_allowSoftwareGL->integer )
-            {
-                if( r_verbose->integer )
-                {
-                    ri.Printf( PRINT_ALL, "...PFD %d rejected, software acceleration\n", i );
-                }
-                continue;
-            }
-        }
-        
-        // verify pixel type
-        if( pfds[i].iPixelType != PFD_TYPE_RGBA )
-        {
-            if( r_verbose->integer )
-            {
-                ri.Printf( PRINT_ALL, "...PFD %d rejected, not RGBA\n", i );
-            }
-            continue;
-        }
-        
-        // verify proper flags
-        if( ( ( pfds[i].dwFlags & pPFD->dwFlags ) & pPFD->dwFlags ) != pPFD->dwFlags )
-        {
-            if( r_verbose->integer )
-            {
-                ri.Printf( PRINT_ALL, "...PFD %d rejected, improper flags (%x instead of %x)\n", i, pfds[i].dwFlags, pPFD->dwFlags );
-            }
-            continue;
-        }
-        
-        // verify enough bits
-        if( pfds[i].cDepthBits < 15 )
-        {
-            continue;
-        }
-        if( ( pfds[i].cStencilBits < 4 ) && ( pPFD->cStencilBits > 0 ) )
-        {
-            continue;
-        }
-        
-        //
-        // selection criteria (in order of priority):
-        //
-        //  PFD_STEREO
-        //  colorBits
-        //  depthBits
-        //  stencilBits
-        //
-        if( bestMatch )
-        {
-            // check stereo
-            if( ( pfds[i].dwFlags & PFD_STEREO ) && ( !( pfds[bestMatch].dwFlags & PFD_STEREO ) ) && ( pPFD->dwFlags & PFD_STEREO ) )
-            {
-                bestMatch = i;
-                continue;
-            }
-            
-            if( !( pfds[i].dwFlags & PFD_STEREO ) && ( pfds[bestMatch].dwFlags & PFD_STEREO ) && ( pPFD->dwFlags & PFD_STEREO ) )
-            {
-                bestMatch = i;
-                continue;
-            }
-            
-            // check color
-            if( pfds[bestMatch].cColorBits != pPFD->cColorBits )
-            {
-                // prefer perfect match
-                if( pfds[i].cColorBits == pPFD->cColorBits )
-                {
-                    bestMatch = i;
-                    continue;
-                }
-                // otherwise if this PFD has more bits than our best, use it
-                else if( pfds[i].cColorBits > pfds[bestMatch].cColorBits )
-                {
-                    bestMatch = i;
-                    continue;
-                }
-            }
-            
-            // check depth
-            if( pfds[bestMatch].cDepthBits != pPFD->cDepthBits )
-            {
-                // prefer perfect match
-                if( pfds[i].cDepthBits == pPFD->cDepthBits )
-                {
-                    bestMatch = i;
-                    continue;
-                }
-                // otherwise if this PFD has more bits than our best, use it
-                else if( pfds[i].cDepthBits > pfds[bestMatch].cDepthBits )
-                {
-                    bestMatch = i;
-                    continue;
-                }
-            }
-            
-            // check stencil
-            if( pfds[bestMatch].cStencilBits != pPFD->cStencilBits )
-            {
-                // prefer perfect match
-                if( pfds[i].cStencilBits == pPFD->cStencilBits )
-                {
-                    bestMatch = i;
-                    continue;
-                }
-                // otherwise if this PFD has more bits than our best, use it
-                else if( ( pfds[i].cStencilBits > pfds[bestMatch].cStencilBits ) &&
-                         ( pPFD->cStencilBits > 0 ) )
-                {
-                    bestMatch = i;
-                    continue;
-                }
-            }
-        }
-        else
-        {
-            bestMatch = i;
-        }
-    }
-    
-    if( !bestMatch )
-    {
-        return 0;
-    }
-    
-    if( ( pfds[bestMatch].dwFlags & PFD_GENERIC_FORMAT ) != 0 )
-    {
-        if( !r_allowSoftwareGL->integer )
-        {
-            ri.Printf( PRINT_ALL, "...no hardware acceleration found\n" );
-            return 0;
-        }
-        else
-        {
-            ri.Printf( PRINT_ALL, "...using software emulation\n" );
-        }
-    }
-    else if( pfds[bestMatch].dwFlags & PFD_GENERIC_ACCELERATED )
-    {
-        ri.Printf( PRINT_ALL, "...MCD acceleration found\n" );
-    }
-    else
-    {
-        ri.Printf( PRINT_ALL, "...hardware acceleration found\n" );
-    }
-    
-    *pPFD = pfds[bestMatch];
-    
-    return bestMatch;
-}
-
-/*
-** void GLW_CreatePFD
-**
-** Helper function zeros out then fills in a PFD
-*/
-static void GLW_CreatePFD( PIXELFORMATDESCRIPTOR* pPFD, int colorbits, int depthbits, int stencilbits, qboolean stereo )
-{
-    PIXELFORMATDESCRIPTOR src =
-    {
-        sizeof( PIXELFORMATDESCRIPTOR ),  // size of this pfd
+        sizeof( PIXELFORMATDESCRIPTOR ), // size of this pfd
         1,                              // version number
         PFD_DRAW_TO_WINDOW |            // support window
         PFD_SUPPORT_OPENGL |            // support OpenGL
-        PFD_DOUBLEBUFFER,               // double buffered
+        PFD_DOUBLEBUFFER |              // double buffered
+        PFD_STEREO |                    // use STEREO by default
         PFD_TYPE_RGBA,                  // RGBA type
         24,                             // 24-bit color depth
         0, 0, 0, 0, 0, 0,               // color bits ignored
@@ -385,111 +157,15 @@ static void GLW_CreatePFD( PIXELFORMATDESCRIPTOR* pPFD, int colorbits, int depth
         0, 0, 0                         // layer masks ignored
     };
     
-    src.cColorBits = colorbits;
-    src.cDepthBits = depthbits;
-    src.cStencilBits = stencilbits;
+    ri.Printf( PRINT_ALL, "Initializing OpenGL driver\n" );
     
-    if( stereo )
-    {
-        ri.Printf( PRINT_ALL, "...attempting to use stereo\n" );
-        src.dwFlags |= PFD_STEREO;
-        glConfig.stereoEnabled = qtrue;
-    }
-    else
-    {
-        glConfig.stereoEnabled = qfalse;
-    }
-    
-    *pPFD = src;
-}
-
-/*
-** GLW_MakeContext
-*/
-static int GLW_MakeContext( PIXELFORMATDESCRIPTOR* pPFD )
-{
-    int pixelformat;
-    
-    //
-    // don't putz around with pixelformat if it's already set (e.g. this is a soft
-    // reset of the graphics system)
-    //
-    if( !glw_state.pixelFormatSet )
-    {
-        //
-        // choose, set, and describe our desired pixel format.  If we're
-        // using a minidriver then we need to bypass the GDI functions,
-        // otherwise use the GDI functions.
-        //
-        if( ( pixelformat = GLW_ChoosePFD( glw_state.hDC, pPFD ) ) == 0 )
-        {
-            ri.Printf( PRINT_ALL, "...GLW_ChoosePFD failed\n" );
-            return TRY_PFD_FAIL_SOFT;
-        }
-        ri.Printf( PRINT_ALL, "...PIXELFORMAT %d selected\n", pixelformat );
-        
-        DescribePixelFormat( glw_state.hDC, pixelformat, sizeof( *pPFD ), pPFD );
-        
-        if( SetPixelFormat( glw_state.hDC, pixelformat, pPFD ) == FALSE )
-        {
-            ri.Printf( PRINT_ALL, "...SetPixelFormat failed\n", glw_state.hDC );
-            return TRY_PFD_FAIL_SOFT;
-        }
-        
-        glw_state.pixelFormatSet = qtrue;
-    }
-    
-    //
-    // startup the OpenGL subsystem by creating a context and making it current
-    //
-    if( !glw_state.hGLRC )
-    {
-        ri.Printf( PRINT_ALL, "...creating window context: " );
-        if( ( glw_state.hGLRC = wglCreateContext( glw_state.hDC ) ) == 0 )
-        {
-            ri.Printf( PRINT_ALL, "failed\n" );
-            
-            return TRY_PFD_FAIL_HARD;
-        }
-        ri.Printf( PRINT_ALL, "succeeded\n" );
-        
-        ri.Printf( PRINT_ALL, "...making context current: " );
-        if( !wglMakeCurrent( glw_state.hDC, glw_state.hGLRC ) )
-        {
-            wglDeleteContext( glw_state.hGLRC );
-            glw_state.hGLRC = NULL;
-            ri.Printf( PRINT_ALL, "failed\n" );
-            return TRY_PFD_FAIL_HARD;
-        }
-        ri.Printf( PRINT_ALL, "succeeded\n" );
-    }
-    
-    return TRY_PFD_SUCCESS;
-}
-
-
-/*
-** GLW_InitDriver
-**
-** - get a DC if one doesn't exist
-** - create an HGLRC if one doesn't exist
-*/
-static qboolean GLW_InitDriver( int colorbits )
-{
-    int tpfd;
-    int depthbits, stencilbits;
-    static PIXELFORMATDESCRIPTOR pfd;       // save between frames since 'tr' gets cleared
-    
-    //
-    // get a DC for our window if we don't already have one allocated
-    //
     if( glw_state.hDC == NULL )
     {
         ri.Printf( PRINT_ALL, "...getting DC: " );
         
         if( ( glw_state.hDC = GetDC( g_wvPtr->hWnd ) ) == NULL )
         {
-            ri.Printf( PRINT_ALL, "failed\n" );
+            ri.Printf( PRINT_ALL, "^3failed^0\n" );
             return qfalse;
         }
         ri.Printf( PRINT_ALL, "succeeded\n" );
@@ -500,104 +176,62 @@ static qboolean GLW_InitDriver( int colorbits )
         colorbits = glw_state.desktopBitsPixel;
     }
     
-    //
-    // implicitly assume Z-buffer depth == desktop color depth
-    //
-    if( r_depthbits->integer == 0 )
-    {
-        if( colorbits > 16 )
-        {
-            depthbits = 24;
-        }
-        else
-        {
-            depthbits = 16;
-        }
-    }
-    else
-    {
-        depthbits = r_depthbits->integer;
-    }
+    ri.Printf( PRINT_ALL, "...attempting to use stereo\n" );
+    glConfig.stereoEnabled = qtrue;
     
     //
-    // do not allow stencil if Z-buffer depth likely won't contain it
+    // choose, set, and describe our desired pixel format.  If we're
+    // using a minidriver then we need to bypass the GDI functions,
+    // otherwise use the GDI functions.
     //
-    stencilbits = r_stencilbits->integer;
-    if( depthbits < 24 )
+    if( ( glw_state.pixelformat = ChoosePixelFormat( glw_state.hDC, &pfd ) ) == 0 )
     {
-        stencilbits = 0;
+        ri.Printf( PRINT_ALL, "...^3GLW_ChoosePFD failed^0\n" );
+        return qfalse;
+    }
+    ri.Printf( PRINT_ALL, "...PIXELFORMAT %d selected\n", glw_state.pixelformat );
+    
+    DescribePixelFormat( glw_state.hDC, glw_state.pixelformat, sizeof( pfd ), &pfd );
+    
+    // get the full info
+    DescribePixelFormat( glw_state.hDC, glw_state.pixelformat, sizeof( glw_state.pfd ), &glw_state.pfd );
+    glConfig.colorBits = glw_state.pfd.cColorBits;
+    glConfig.depthBits = glw_state.pfd.cDepthBits;
+    glConfig.stencilBits = glw_state.pfd.cStencilBits;
+    
+    // XP seems to set this incorrectly
+    if( !glConfig.stencilBits )
+    {
+        glConfig.stencilBits = 8;
+    }
+    
+    // the same SetPixelFormat is used either way
+    if( SetPixelFormat( glw_state.hDC, glw_state.pixelformat, &glw_state.pfd ) == FALSE )
+    {
+        ri.Printf( PRINT_ALL, "...^3SetPixelFormat failed^0\n", glw_state.hDC );
+        return qfalse;
     }
     
     //
-    // make two attempts to set the PIXELFORMAT
+    // startup the OpenGL subsystem by creating a context and making it current
     //
-    
-    //
-    // first attempt: r_colorbits, depthbits, and r_stencilbits
-    //
-    if( !glw_state.pixelFormatSet )
+    ri.Printf( PRINT_ALL, "...creating GL context: " );
+    if( ( glw_state.hGLRC = wglCreateContext( glw_state.hDC ) ) == 0 )
     {
-        GLW_CreatePFD( &pfd, colorbits, depthbits, stencilbits, r_stereo->integer );
-        if( ( tpfd = GLW_MakeContext( &pfd ) ) != TRY_PFD_SUCCESS )
-        {
-            if( tpfd == TRY_PFD_FAIL_HARD )
-            {
-                ri.Printf( PRINT_WARNING, "...failed hard\n" );
-                return qfalse;
-            }
-            
-            //
-            // punt if we've already tried the desktop bit depth and no stencil bits
-            //
-            if( ( r_colorbits->integer == glw_state.desktopBitsPixel ) &&
-                    ( stencilbits == 0 ) )
-            {
-                ReleaseDC( g_wvPtr->hWnd, glw_state.hDC );
-                glw_state.hDC = NULL;
-                
-                ri.Printf( PRINT_ALL, "...failed to find an appropriate PIXELFORMAT\n" );
-                
-                return qfalse;
-            }
-            
-            //
-            // second attempt: desktop's color bits and no stencil
-            //
-            if( colorbits > glw_state.desktopBitsPixel )
-            {
-                colorbits = glw_state.desktopBitsPixel;
-            }
-            GLW_CreatePFD( &pfd, colorbits, depthbits, 0, r_stereo->integer );
-            if( GLW_MakeContext( &pfd ) != TRY_PFD_SUCCESS )
-            {
-                if( glw_state.hDC )
-                {
-                    ReleaseDC( g_wvPtr->hWnd, glw_state.hDC );
-                    glw_state.hDC = NULL;
-                }
-                
-                ri.Printf( PRINT_ALL, "...failed to find an appropriate PIXELFORMAT\n" );
-                
-                return qfalse;
-            }
-        }
-        
-        /*
-        ** report if stereo is desired but unavailable
-        */
-        if( !( pfd.dwFlags & PFD_STEREO ) && ( r_stereo->integer != 0 ) )
-        {
-            ri.Printf( PRINT_ALL, "...failed to select stereo pixel format\n" );
-            glConfig.stereoEnabled = qfalse;
-        }
+        ri.Printf( PRINT_ALL, "^3failed^0\n" );
+        return qfalse;
     }
+    ri.Printf( PRINT_ALL, "succeeded\n" );
     
-    /*
-    ** store PFD specifics
-    */
-    glConfig.colorBits = ( int ) pfd.cColorBits;
-    glConfig.depthBits = ( int ) pfd.cDepthBits;
-    glConfig.stencilBits = ( int ) pfd.cStencilBits;
+    ri.Printf( PRINT_ALL, "...making context current: " );
+    if( !wglMakeCurrent( glw_state.hDC, glw_state.hGLRC ) )
+    {
+        wglDeleteContext( glw_state.hGLRC );
+        glw_state.hGLRC = NULL;
+        ri.Printf( PRINT_ALL, "^3failed^0\n" );
+        return qfalse;
+    }
+    ri.Printf( PRINT_ALL, "succeeded\n" );
     
     return qtrue;
 }
@@ -1000,90 +634,111 @@ static rserr_t GLW_SetMode( int mode,
 }
 
 /*
-=======================
-GLW_InitVulkanInstance
-=======================
+** GLW_InitExtensions
 */
-static void GLW_InitVulkanInstance( void )
+static void GLW_InitExtensions( void )
 {
-    VkResult err;
-    const char* extensionNames[256];
-    
-    ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Initializing Vulkan instance\n" );
-    
-    int found_surface_extensions = 0;
-    
-    unsigned int vkInstanceExtensionCount;
-    err = vkEnumerateInstanceExtensionProperties( NULL, &vkInstanceExtensionCount, NULL );
-    if( err == VK_SUCCESS || vkInstanceExtensionCount > 0 )
+    if( !r_allowExtensions->integer )
     {
-        VkExtensionProperties* vkInstanceExtensions = malloc( sizeof( VkExtensionProperties )
-                * vkInstanceExtensionCount );
-        err = vkEnumerateInstanceExtensionProperties( NULL, &vkInstanceExtensionCount,
-                vkInstanceExtensions );
-                
-        for( unsigned int i = 0; i < vkInstanceExtensionCount; ++i )
+        ri.Printf( PRINT_ALL, "* IGNORING OPENGL EXTENSIONS *\n" );
+        return;
+    }
+    
+    ri.Printf( PRINT_ALL, "Initializing OpenGL extensions\n" );
+    
+    glConfig.textureCompression = TC_NONE;
+    
+    // GL_EXT_texture_compression_s3tc
+    if( GLEW_ARB_texture_compression &&
+            GLEW_EXT_texture_compression_s3tc )
+    {
+        if( r_ext_compressed_textures->value )
         {
-            if( strcmp( VK_KHR_SURFACE_EXTENSION_NAME, vkInstanceExtensions[i].extensionName ) == 0 )
-            {
-                found_surface_extensions++;
-            }
-            if( strcmp( VK_KHR_WIN32_SURFACE_EXTENSION_NAME, vkInstanceExtensions[i].extensionName ) == 0 )
-            {
-                found_surface_extensions++;
-            }
-            
-            ri.Printf( PRINT_ALL, "%d: Extension %s\n", i, vkInstanceExtensions[i].extensionName );
-            extensionNames[i] = vkInstanceExtensions[i].extensionName;
+            glConfig.textureCompression = TC_EXT_COMP_S3TC;
+            ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_EXT_texture_compression_s3tc\n" );
         }
-        
-        free( vkInstanceExtensions );
+        else
+        {
+            ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_compression_s3tc\n" );
+        }
     }
-    
-    if( found_surface_extensions != 2 )
+    else
     {
-        ri.Printf( PRINT_ALL, "Couldn't find %s/%s extensions",
-                   VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME );
+        ri.Printf( PRINT_ALL, "...GL_EXT_texture_compression_s3tc not found\n" );
     }
     
-    VkApplicationInfo vkApplicationInfo;
-    memset( &vkApplicationInfo, 0, sizeof( vkApplicationInfo ) );
-    vkApplicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    vkApplicationInfo.pApplicationName = "Wolfenstein";
-    vkApplicationInfo.applicationVersion = 1;
-    vkApplicationInfo.pEngineName = "Wolfenstein";
-    vkApplicationInfo.engineVersion = 1;
-    vkApplicationInfo.apiVersion = VK_API_VERSION_1_0;
+    // GL_S3_s3tc ... legacy extension before GL_EXT_texture_compression_s3tc.
+    if( glConfig.textureCompression == TC_NONE )
+    {
+        if( GLEW_S3_s3tc )
+        {
+            if( r_ext_compressed_textures->value )
+            {
+                glConfig.textureCompression = TC_S3TC;
+                ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_S3_s3tc\n" );
+            }
+            else
+            {
+                ri.Printf( PRINT_ALL, "...ignoring GL_S3_s3tc\n" );
+            }
+        }
+        else
+        {
+            ri.Printf( PRINT_ALL, "...GL_S3_s3tc not found\n" );
+        }
+    }
     
-    char* vkInstanceExtensions[] = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
     
-    VkInstanceCreateInfo vkInstanceCreateInfo;
-    memset( &vkInstanceCreateInfo, 0, sizeof( vkInstanceCreateInfo ) );
-    vkInstanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    vkInstanceCreateInfo.pApplicationInfo = &vkApplicationInfo;
-    vkInstanceCreateInfo.enabledExtensionCount = 2;
-    vkInstanceCreateInfo.ppEnabledExtensionNames = vkInstanceExtensions;
+    // GL_EXT_texture_env_add
+    glConfig.textureEnvAddAvailable = qfalse;
+    if( GLEW_EXT_texture_env_add )
+    {
+        if( r_ext_texture_env_add->integer )
+        {
+            glConfig.textureEnvAddAvailable = qtrue;
+            ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_EXT_texture_env_add\n" );
+        }
+        else
+        {
+            glConfig.textureEnvAddAvailable = qfalse;
+            ri.Printf( PRINT_ALL, "...ignoring GL_EXT_texture_env_add\n" );
+        }
+    }
+    else
+    {
+        ri.Printf( PRINT_ALL, "...GL_EXT_texture_env_add not found\n" );
+    }
     
-    err = vkCreateInstance( &vkInstanceCreateInfo, NULL, &mVulkanInstance );
-    if( err != VK_SUCCESS )
-	{
-        ri.Error( PRINT_ALL, "Couldn't create Vulkan instance" );
-	}
-        
-    VkWin32SurfaceCreateInfoKHR vkSurfaceCreateInfo;
-    memset( &vkSurfaceCreateInfo, 0, sizeof( vkSurfaceCreateInfo ) );
-    vkSurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-    vkSurfaceCreateInfo.hinstance = GetModuleHandle( NULL );
-    vkSurfaceCreateInfo.hwnd = g_wvPtr->hWnd;
-    
-    err = vkCreateWin32SurfaceKHR( mVulkanInstance, &vkSurfaceCreateInfo, NULL, &mVulkanSurface );
-    if( err != VK_SUCCESS )
-        ri.Error( PRINT_ALL, "Couldn't create Vulkan surface" );
-        
-    GET_INSTANCE_PROC_ADDR( mVulkanInstance, GetDeviceProcAddr );
-    GET_INSTANCE_PROC_ADDR( mVulkanInstance, GetPhysicalDeviceSurfaceSupportKHR );
-    GET_INSTANCE_PROC_ADDR( mVulkanInstance, GetPhysicalDeviceSurfaceCapabilitiesKHR );
-    GET_INSTANCE_PROC_ADDR( mVulkanInstance, GetPhysicalDeviceSurfaceFormatsKHR );
+    // GL_ARB_multitexture
+    glConfig.maxActiveTextures = 1;
+    if( GLEW_ARB_multitexture )
+    {
+        if( r_ext_multitexture->value )
+        {
+            GLint glint = 0;
+            
+            glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &glint );
+            
+            glConfig.maxActiveTextures = ( int )glint;
+            
+            if( glConfig.maxActiveTextures > 1 )
+            {
+                ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_multitexture\n" );
+            }
+            else
+            {
+                ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
+            }
+        }
+        else
+        {
+            ri.Printf( PRINT_ALL, "...ignoring GL_ARB_multitexture\n" );
+        }
+    }
+    else
+    {
+        ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
+    }
 }
 
 /*
@@ -1127,139 +782,85 @@ void GLimp_EndFrame( void )
     // check logging
 }
 
-/*
-=======================
-GLW_InitVulkanSwapchain
-=======================
-*/
-void GLW_InitVulkanSwapchain()
+static void GetGLVersion( int* major, int* minor )
 {
-    ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Creating Vulkan swap chain\n" );
+    // for all versions
+    char* ver = ( char* )glGetString( GL_VERSION );
     
-    VkSurfaceCapabilitiesKHR vkSurfaceProperties;
-    fpGetPhysicalDeviceSurfaceCapabilitiesKHR( mVulkanPhysicalDevice, mVulkanSurface, &vkSurfaceProperties );
-    
-    unsigned int vkFormatCount;
-    fpGetPhysicalDeviceSurfaceFormatsKHR( mVulkanPhysicalDevice, mVulkanSurface, &vkFormatCount, NULL );
-    
-    VkSurfaceFormatKHR* vkSurfaceFormats =
-        ( VkSurfaceFormatKHR* )malloc( vkFormatCount * sizeof( VkSurfaceFormatKHR ) );
-    fpGetPhysicalDeviceSurfaceFormatsKHR( mVulkanPhysicalDevice, mVulkanSurface,
-                                          &vkFormatCount, vkSurfaceFormats );
-                                          
-    VkExtent2D vkSwapchainSize;
-    if( vkSurfaceProperties.currentExtent.width == -1u )
+    *major = ver[0] - '0';
+    if( *major >= 3 )
     {
-        vkSwapchainSize.width = glConfig.vidWidth;
-        vkSwapchainSize.height = glConfig.vidHeight;
+        // for GL 3.x
+        glGetIntegerv( GL_MAJOR_VERSION, major );
+        glGetIntegerv( GL_MINOR_VERSION, minor );
     }
     else
     {
-        vkSwapchainSize = vkSurfaceProperties.currentExtent;
+        *minor = ver[2] - '0';
     }
     
-    VkPresentModeKHR vkSwapchainPresentMode = VK_PRESENT_MODE_FIFO_KHR;
-    
-    unsigned int vkDesiredSwapchainImages = vkSurfaceProperties.minImageCount + 1;
-    if( ( vkSurfaceProperties.maxImageCount > 0 ) && ( vkDesiredSwapchainImages >
-            vkSurfaceProperties.maxImageCount ) )
-    {
-        vkDesiredSwapchainImages = vkSurfaceProperties.maxImageCount;
-    }
-    
-    VkSurfaceTransformFlagBitsKHR vkPreTransform;
-    if( vkSurfaceProperties.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR )
-	{
-        vkPreTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-	}
-    else
-    {
-        vkPreTransform = vkSurfaceProperties.currentTransform;
-    }
-    
-    VkSwapchainKHR oldSwapchain = mVulkanSwapchain;
-    
-    VkSwapchainCreateInfoKHR info = { VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
-    info.surface = mVulkanSurface;
-    info.minImageCount = vkDesiredSwapchainImages;
-    info.imageFormat = vkSurfaceFormats[0].format;
-    info.imageColorSpace = vkSurfaceFormats[0].colorSpace;
-    info.imageExtent.width = vkSwapchainSize.width;
-    info.imageExtent.height = vkSwapchainSize.height;
-    info.imageArrayLayers = 1;
-    info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-    info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    info.preTransform = vkPreTransform;
-    info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-    info.presentMode = vkSwapchainPresentMode;
-    info.clipped = qtrue;
-    info.oldSwapchain = oldSwapchain;
-    
-    fpCreateSwapchainKHR( mVulkanDevice, &info, NULL, &mVulkanSwapchain );
-    
-    if( oldSwapchain != VK_NULL_HANDLE )
-    {
-        fpDestroySwapchainKHR( mVulkanDevice, oldSwapchain, NULL );
-    }
+    // GLSL
+    ver = ( char* )glGetString( GL_SHADING_LANGUAGE_VERSION );
 }
 
-/*
-===============
-GLW_InitVulkanCommandBuffers
-===============
-*/
-static void GLW_InitVulkanCommandBuffers( void )
+
+static void GLW_InitOpenGLContext()
 {
-    ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Creating Vulkan command buffers\n" );
+    int retVal;
+    const char* success[] = { "failed", "success" };
     
-    VkResult err;
-    
-    VkCommandPoolCreateInfo vkCommandPoolCreateInfo;
-    memset( &vkCommandPoolCreateInfo, 0, sizeof( vkCommandPoolCreateInfo ) );
-    vkCommandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    vkCommandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    vkCommandPoolCreateInfo.queueFamilyIndex = mVulkanGfxQueueFamilyIndex;
-    
-    err = vkCreateCommandPool( mVulkanDevice, &vkCommandPoolCreateInfo, NULL, &mVulkanCommandPool );
-    if( err != VK_SUCCESS )
-	{
-        ri.Error( PRINT_ALL, "Couldn't create Vulkan command pool" );
-	}
-        
-    VkCommandBufferAllocateInfo vkCommandBufferAllocateInfo;
-    memset( &vkCommandBufferAllocateInfo, 0, sizeof( vkCommandBufferAllocateInfo ) );
-    vkCommandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    vkCommandBufferAllocateInfo.commandPool = mVulkanCommandPool;
-    vkCommandBufferAllocateInfo.commandBufferCount = 2;
-    
-    err = vkAllocateCommandBuffers( mVulkanDevice, &vkCommandBufferAllocateInfo, mVulkanCommandBuffers );
-    if( err != VK_SUCCESS )
+    if( WGLEW_ARB_create_context || wglewIsSupported( "WGL_ARB_create_context" ) )
     {
-        ri.Error( PRINT_ALL, "Couldn't create Vulkan command buffers" );
-    }
-    
-    VkFenceCreateInfo vkFenceCreateInfo;
-    memset( &vkFenceCreateInfo, 0, sizeof( vkFenceCreateInfo ) );
-    vkFenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    
-    for( int i = 0; i < 2; ++i )
-    {
-        err = vkCreateFence( mVulkanDevice, &vkFenceCreateInfo, NULL, &mVulkanCommandBufferFences[i] );
-        if( err != VK_SUCCESS )
+        if( wglCreateContextAttribsARB )
         {
-            ri.Error( PRINT_ALL, "Couldn't create Vulkan command fence" );
+            int attributes[11];
+            int attribIndex = 0;
+            attributes[attribIndex++] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+            attributes[attribIndex++] = 3;
+            attributes[attribIndex++] = WGL_CONTEXT_MINOR_VERSION_ARB;
+            attributes[attribIndex++] = 3;
+            attributes[attribIndex++] = WGL_CONTEXT_PROFILE_MASK_ARB;
+            attributes[attribIndex++] = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+            attributes[attribIndex++] = 0;
+            
+            // set current context to NULL
+            retVal = wglMakeCurrent( glw_state.hDC, NULL ) != 0;
+            ri.Printf( PRINT_ALL, "...wglMakeCurrent( %p, %p ): %s\n", glw_state.hDC, NULL, success[retVal] );
+            
+            // delete HGLRC
+            if( glw_state.hGLRC )
+            {
+                retVal = wglDeleteContext( glw_state.hGLRC ) != 0;
+                ri.Printf( PRINT_ALL, "...deleting standard GL context: %s\n", success[retVal] );
+                glw_state.hGLRC = NULL;
+            }
+            
+            ri.Printf( PRINT_ALL, "...initializing OpenGL %i.%i context ", 3, 3 );
+            glw_state.hGLRC = wglCreateContextAttribsARB( glw_state.hDC, 0, attributes );
+            
+            if( wglMakeCurrent( glw_state.hDC, glw_state.hGLRC ) )
+            {
+                ri.Printf( PRINT_ALL, " done\n" );
+                glConfig.driverType = GLDRV_OPENGL;
+            }
+            else
+            {
+                ri.Error( ERR_FATAL, "Could not initialize OpenGL 3.3 context\n" );
+            }
         }
     }
+    else
+    {
+        ri.Error( ERR_FATAL, "Cannot create A GL Rendering Context" );
+    }
 }
 
-/*
-=======================
-GLW_InitVulkanDevice
-=======================
-*/
-static void GLW_InitVulkanDevice()
+
+static void GLW_StartOpenGL()
 {
-    glConfig.driverType = GLHW_VULKAN;
+    GLenum glewResult;
+    
+    glConfig.driverType = GLDRV_OPENGL;
     
     // create the window and set up the context
     if( !GLW_StartDriverAndSetMode( r_mode->integer, r_colorbits->integer, r_fullscreen->integer ) )
@@ -1270,143 +871,24 @@ static void GLW_InitVulkanDevice()
         {
             if( !GLW_StartDriverAndSetMode( 3, 16, qtrue ) )
             {
-                ri.Error( ERR_FATAL, "GLW_InitVulkanDevice() - could not load OpenGL subsystem" );
+                ri.Error( ERR_FATAL, "GLW_StartOpenGL() - could not load OpenGL subsystem" );
             }
         }
     }
     
-    VkResult err;
-    
-    unsigned int vkPhysicalDeviceCount;
-    err = vkEnumeratePhysicalDevices( mVulkanInstance, &vkPhysicalDeviceCount, NULL );
-    if( err != VK_SUCCESS || vkPhysicalDeviceCount == 0 )
+    glewResult = glewInit();
+    if( GLEW_OK != glewResult )
     {
-        ri.Error( PRINT_ALL, "Couldn't find any Vulkan devices" );
+        // glewInit failed, something is seriously wrong
+        ri.Error( ERR_FATAL, "GLW_StartOpenGL() - could not load OpenGL subsystem: %s", glewGetErrorString( glewResult ) );
+    }
+    else
+    {
+        ri.Printf( PRINT_ALL, "Using GLEW %s\n", glewGetString( GLEW_VERSION ) );
     }
     
-    VkPhysicalDevice* vkPhysicalDevices = malloc( sizeof( VkPhysicalDevice ) * vkPhysicalDeviceCount );
-    err = vkEnumeratePhysicalDevices( mVulkanInstance, &vkPhysicalDeviceCount, vkPhysicalDevices );
-    mVulkanPhysicalDevice = vkPhysicalDevices[0];
-    free( vkPhysicalDevices );
-    
-    qboolean vkFoundSwapchainExtension = qfalse;
-    
-    unsigned int vkDeviceExtensionCount;
-    err = vkEnumerateDeviceExtensionProperties( mVulkanPhysicalDevice, NULL,
-            &vkDeviceExtensionCount, NULL );
-            
-    if( err == VK_SUCCESS || vkDeviceExtensionCount > 0 )
-    {
-        VkExtensionProperties* vkDeviceExtensions =
-            malloc( sizeof( VkExtensionProperties ) * vkDeviceExtensionCount );
-        err = vkEnumerateDeviceExtensionProperties( mVulkanPhysicalDevice, NULL,
-                &vkDeviceExtensionCount, vkDeviceExtensions );
-                
-        for( unsigned int i = 0; i < vkDeviceExtensionCount; ++i )
-        {
-            if( strcmp( VK_KHR_SWAPCHAIN_EXTENSION_NAME, vkDeviceExtensions[i].extensionName ) == 0 )
-            {
-                vkFoundSwapchainExtension = qtrue;
-                break;
-            }
-        }
-        
-        free( vkDeviceExtensions );
-    }
-    
-    if( !vkFoundSwapchainExtension )
-    {
-        ri.Error( PRINT_ALL, "Couldn't find swap chain extension" );
-    }
-    
-    vkGetPhysicalDeviceProperties( mVulkanPhysicalDevice, &mVulkanPhysicalDeviceProperties );
-    switch( mVulkanPhysicalDeviceProperties.vendorID )
-    {
-        case 0x8086:
-            ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Vendor: Intel\n" );
-            break;
-        case 0x10DE:
-            ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Vendor: NVIDIA\n" );
-            break;
-        case 0x1002:
-            ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Vendor: AMD\n" );
-            break;
-        default:
-            ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Vendor: Unknown (0x%x)\n",
-                       mVulkanPhysicalDeviceProperties.vendorID );
-    }
-    ri.Printf( PRINT_ALL, S_COLOR_YELLOW "Vulkan physical device: %s\n",
-               mVulkanPhysicalDeviceProperties.deviceName );
-               
-    qboolean vkFoundGraphicsQueue = qfalse;
-    unsigned int vkGfxQueueFamilyIndex;
-    
-    unsigned int vkQueueCount;
-    vkGetPhysicalDeviceQueueFamilyProperties( mVulkanPhysicalDevice, &vkQueueCount, NULL );
-    if( vkQueueCount == 0 )
-    {
-        ri.Error( PRINT_ALL, "Couldn't find any Vulkan queues" );
-    }
-    
-    unsigned int* vkQueueSupportsPresent =
-        ( unsigned int* )malloc( vkQueueCount * sizeof( unsigned int ) );
-    for( unsigned int i = 0; i < vkQueueCount; ++i )
-    {
-        fpGetPhysicalDeviceSurfaceSupportKHR( mVulkanPhysicalDevice, i,
-                                              mVulkanSurface, &vkQueueSupportsPresent[i] );
-    }
-    
-    VkQueueFamilyProperties* vkQueueFamilyProperties =
-        ( VkQueueFamilyProperties* )malloc( vkQueueCount * sizeof( VkQueueFamilyProperties ) );
-    vkGetPhysicalDeviceQueueFamilyProperties( mVulkanPhysicalDevice, &vkQueueCount,
-            vkQueueFamilyProperties );
-    for( unsigned int i = 0; i < vkQueueCount; ++i )
-    {
-        if( ( ( vkQueueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT ) != 0 )
-                && vkQueueSupportsPresent[i] )
-        {
-            vkFoundGraphicsQueue = qtrue;
-            vkGfxQueueFamilyIndex = i;
-            break;
-        }
-    }
-    
-    free( vkQueueSupportsPresent );
-    free( vkQueueFamilyProperties );
-    
-    if( !vkFoundGraphicsQueue )
-    {
-        ri.Error( PRINT_ALL, "Couldn't find graphics queue" );
-    }
-    
-    float queue_priorities[] = { 0.0 };
-    VkDeviceQueueCreateInfo vkQueueCreateInfo;
-    memset( &vkQueueCreateInfo, 0, sizeof( vkQueueCreateInfo ) );
-    vkQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    vkQueueCreateInfo.queueFamilyIndex = mVulkanGfxQueueFamilyIndex;
-    vkQueueCreateInfo.queueCount = 1;
-    vkQueueCreateInfo.pQueuePriorities = queue_priorities;
-    
-    char* device_extensions[] = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-    
-    VkDeviceCreateInfo vkDeviceCreateInfo;
-    memset( &vkDeviceCreateInfo, 0, sizeof( vkDeviceCreateInfo ) );
-    vkDeviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    vkDeviceCreateInfo.queueCreateInfoCount = 1;
-    vkDeviceCreateInfo.pQueueCreateInfos = &vkQueueCreateInfo;
-    vkDeviceCreateInfo.enabledExtensionCount = 1;
-    vkDeviceCreateInfo.ppEnabledExtensionNames = device_extensions;
-    
-    err = vkCreateDevice( mVulkanPhysicalDevice, &vkDeviceCreateInfo, NULL, &mVulkanDevice );
-    if( err != VK_SUCCESS )
-    {
-        ri.Error( PRINT_ALL, "Couldn't create Vulkan device" );
-    }
-    
-    GET_DEVICE_PROC_ADDR( mVulkanDevice, CreateSwapchainKHR );
-    GET_DEVICE_PROC_ADDR( mVulkanDevice, DestroySwapchainKHR );
+    GLW_InitOpenGLContext();
 }
-
 /*
 ** GLimp_Init
 **
@@ -1419,9 +901,12 @@ static void GLW_InitVulkanDevice()
 */
 void GLimp_Init( void )
 {
+    char buf[1024];
+    cvar_t* lastValidRenderer = ri.Cvar_Get( "r_lastValidRenderer", "(uninitialized)", CVAR_ARCHIVE );
     cvar_t* cv;
+    int i = 0, exts = 0;
     
-    ri.Printf( PRINT_ALL, "Initializing Graphics Layer subsystem\n" );
+    ri.Printf( PRINT_ALL, "Initializing OpenGL subsystem\n" );
     
     g_wvPtr = ri.Sys_GetSystemHandles();
     if( !g_wvPtr )
@@ -1439,12 +924,111 @@ void GLimp_Init( void )
     r_allowSoftwareGL = ri.Cvar_Get( "r_allowSoftwareGL", "0", CVAR_LATCH );
     r_maskMinidriver = ri.Cvar_Get( "r_maskMinidriver", "0", CVAR_LATCH );
     
-    ri.Printf( PRINT_ALL, "------- Vulkan Initialization -------\n" );
-    GLW_InitVulkanInstance();
-    GLW_InitVulkanDevice();
-    GLW_InitVulkanCommandBuffers();
-    GLW_InitVulkanSwapchain();
-    ri.Printf( PRINT_ALL, "------------------------------------\n" );
+    // load appropriate DLL and initialize subsystem
+    GLW_StartOpenGL();
+    
+    // get our config strings
+    Q_strncpyz( glConfig.vendor_string, glGetString( GL_VENDOR ), sizeof( glConfig.vendor_string ) );
+    Q_strncpyz( glConfig.renderer_string, glGetString( GL_RENDERER ), sizeof( glConfig.renderer_string ) );
+    Q_strncpyz( glConfig.version_string, glGetString( GL_VERSION ), sizeof( glConfig.version_string ) );
+    glGetIntegerv( GL_NUM_EXTENSIONS, &exts );
+    glConfig.extensions_string[0] = 0;
+    for( i = 0; i < exts; i++ )
+    {
+        if( strlen( glConfig.extensions_string ) + 100 >= sizeof( glConfig.extensions_string ) )
+        {
+            //Just so we wont error out when there are really a lot of extensions
+            break;
+        }
+        Q_strcat( glConfig.extensions_string, sizeof( glConfig.extensions_string ), va( "%s ", glGetStringi( GL_EXTENSIONS, i ) ) );
+    }
+    
+    // chipset specific configuration
+    Q_strncpyz( buf, glConfig.renderer_string, sizeof( buf ) );
+    Q_strlwr( buf );
+    
+    //
+    // NOTE: if changing cvars, do it within this block.  This allows them
+    // to be overridden when testing driver fixes, etc. but only sets
+    // them to their default state when the hardware is first installed/run.
+    //
+    if( Q_stricmp( lastValidRenderer->string, glConfig.renderer_string ) )
+    {
+        glConfig.hardwareType = GLHW_GENERIC;
+        
+        ri.Cvar_Set( "r_textureMode", "GL_LINEAR_MIPMAP_NEAREST" );
+        
+        // VOODOO GRAPHICS w/ 2MB
+        if( strstr( buf, "voodoo graphics/1 tmu/2 mb" ) )
+        {
+            ri.Cvar_Set( "r_picmip", "2" );
+            ri.Cvar_Get( "r_picmip", "1", CVAR_ARCHIVE | CVAR_LATCH );
+        }
+        else if( strstr( buf, "matrox" ) )
+        {
+            ri.Cvar_Set( "r_allowExtensions", "0" );
+        }
+        else
+        {
+            if( strstr( buf, "rage 128" ) || strstr( buf, "rage128" ) )
+            {
+                ri.Cvar_Set( "r_finish", "0" );
+            }
+            // Savage3D and Savage4 should always have trilinear enabled
+            else if( strstr( buf, "savage3d" ) || strstr( buf, "s3 savage4" ) )
+            {
+                ri.Cvar_Set( "r_texturemode", "GL_LINEAR_MIPMAP_LINEAR" );
+            }
+        }
+    }
+    
+    //
+    // this is where hardware specific workarounds that should be
+    // detected/initialized every startup should go.
+    //
+    if( strstr( buf, "banshee" ) || strstr( buf, "voodoo3" ) )
+    {
+        glConfig.hardwareType = GLHW_3DFX_2D3D;
+    }
+    // VOODOO GRAPHICS w/ 2MB
+    else if( strstr( buf, "voodoo graphics/1 tmu/2 mb" ) )
+    {
+    }
+    else if( strstr( buf, "glzicd" ) )
+    {
+    }
+    else if( strstr( buf, "rage pro" ) || strstr( buf, "Rage Pro" ) || strstr( buf, "ragepro" ) )
+    {
+        glConfig.hardwareType = GLHW_RAGEPRO;
+    }
+    else if( strstr( buf, "rage 128" ) )
+    {
+    }
+    else if( strstr( buf, "permedia2" ) )
+    {
+        glConfig.hardwareType = GLHW_PERMEDIA2;
+    }
+    else if( strstr( buf, "riva 128" ) )
+    {
+        glConfig.hardwareType = GLHW_RIVA128;
+    }
+    else if( strstr( buf, "riva tnt " ) )
+    {
+    }
+    
+    if( strstr( buf, "geforce" ) || strstr( buf, "ge-force" ) || strstr( buf, "radeon" ) || strstr( buf, "nv20" ) || strstr( buf, "nv30" )
+            || strstr( buf, "quadro" ) )
+    {
+        ri.Cvar_Set( "r_highQualityVideo", "1" );
+    }
+    else
+    {
+        ri.Cvar_Set( "r_highQualityVideo", "0" );
+    }
+    
+    ri.Cvar_Set( "r_lastValidRenderer", glConfig.renderer_string );
+    
+    GLW_InitExtensions();
     WG_CheckHardwareGamma();
 }
 

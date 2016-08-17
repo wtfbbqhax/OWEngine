@@ -21,10 +21,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Splines", "Splines.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "renderer", "renderer.vcxproj", "{F45A4F73-0EA1-4EB2-9829-154964ADEC6A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{57AE8F2D-CE82-4E1F-8BAD-647701B0D05A}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\docs\changelog.txt = ..\..\..\docs\changelog.txt
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "motioncontrollers", "motioncontrollers.vcxproj", "{E53950CE-D36C-4CE7-A674-92070E9DE94C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +65,10 @@ Global
 		{F45A4F73-0EA1-4EB2-9829-154964ADEC6A}.Debug|Win32.Build.0 = Debug|Win32
 		{F45A4F73-0EA1-4EB2-9829-154964ADEC6A}.Release|Win32.ActiveCfg = Release|Win32
 		{F45A4F73-0EA1-4EB2-9829-154964ADEC6A}.Release|Win32.Build.0 = Release|Win32
+		{E53950CE-D36C-4CE7-A674-92070E9DE94C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E53950CE-D36C-4CE7-A674-92070E9DE94C}.Debug|Win32.Build.0 = Debug|Win32
+		{E53950CE-D36C-4CE7-A674-92070E9DE94C}.Release|Win32.ActiveCfg = Release|Win32
+		{E53950CE-D36C-4CE7-A674-92070E9DE94C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

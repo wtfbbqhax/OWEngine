@@ -485,6 +485,10 @@ void RB_BeginDrawingView( void )
 {
     int clearBits = 0;
     
+#if !defined( __ANDROID__ )
+    glViewport( 0, 0, glConfig.vidWidth, glConfig.vidHeight ); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+#endif
+    
     // sync with gl if needed
     if( r_finish->integer == 1 && !glState.finishCalled )
     {
@@ -1079,6 +1083,10 @@ void RB_RenderDrawSurfList( drawSurf_t* drawSurfs, int numDrawSurfs )
     // save original time for entity shader offsets
     originalTime = backEnd.refdef.floatTime;
     
+    //*** Set oculus render target
+#if !defined( __ANDROID__ )
+    glViewport( 0, 0, glConfig.vidWidth, glConfig.vidHeight ); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+#endif
     // clear the z buffer, set the modelview, etc
     RB_BeginDrawingView();
     
@@ -1831,6 +1839,7 @@ const void*  RB_SwapBuffers( const void* data )
         unsigned char* stencilReadback;
         
         stencilReadback = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
+        glPixelStorei( GL_PACK_ALIGNMENT, 1 );
         glReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
         
         for( i = 0; i < glConfig.vidWidth * glConfig.vidHeight; i++ )

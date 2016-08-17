@@ -543,7 +543,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame )
             case CA_LOADING:
             case CA_PRIMED:
                 // draw the game information screen and loading progress
-                CL_CGameRendering( stereoFrame );
+                CL_CGameRendering( STEREO_CENTER );
                 
                 // also draw the connection information, so it doesn't
                 // flash away too briefly on local or lan games
@@ -552,7 +552,7 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame )
                 VM_Call( uivm, UI_DRAW_CONNECT_SCREEN, qtrue );
                 break;
             case CA_ACTIVE:
-                CL_CGameRendering( stereoFrame );
+                CL_CGameRendering( STEREO_CENTER );
                 SCR_DrawDemoRecording();
                 break;
         }
@@ -602,6 +602,14 @@ void SCR_UpdateScreen( void )
     if( cls.glconfig.stereoEnabled )
     {
         SCR_DrawScreenField( STEREO_LEFT );
+        if( com_speeds->integer )
+        {
+            re.EndFrame( &time_frontend, &time_backend );
+        }
+        else
+        {
+            re.EndFrame( NULL, NULL );
+        }
         SCR_DrawScreenField( STEREO_RIGHT );
     }
     else

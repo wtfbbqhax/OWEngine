@@ -45,6 +45,10 @@
 
 displayContextDef_t cgDC;
 
+#if !defined( __ANDROID__ )
+int OculusVRDetected = 0;
+#endif
+
 int forceModelModificationCount = -1;
 
 void CG_Init( int serverMessageNum, int serverCommandSequence );
@@ -2527,6 +2531,9 @@ Will perform callbacks to make the loading info screen update.
 void CG_Init( int serverMessageNum, int serverCommandSequence )
 {
     const char*  s;
+#if !defined( __ANDROID__ )
+    char rendererinfos[128];
+#endif
     
     // clear everything
     memset( &cgs, 0, sizeof( cgs ) );
@@ -2534,6 +2541,11 @@ void CG_Init( int serverMessageNum, int serverCommandSequence )
     memset( cg_entities, 0, sizeof( cg_entities ) );
     memset( cg_weapons, 0, sizeof( cg_weapons ) );
     memset( cg_items, 0, sizeof( cg_items ) );
+    
+#if !defined( __ANDROID__ )
+    trap_Cvar_VariableStringBuffer( "ovr_ovrdetected", rendererinfos, sizeof( rendererinfos ) );
+    OculusVRDetected = atoi( rendererinfos );
+#endif
     
     // RF, init the anim scripting
     cgs.animScriptData.soundIndex = CG_SoundScriptPrecache;

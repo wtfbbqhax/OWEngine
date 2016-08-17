@@ -43,13 +43,13 @@
     <_ProjectFileVersion>14.0.25123.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
-    <IntDir>..\..\..\compiled\intermediate\extractfuncs\</IntDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
+    <IntDir>..\..\..\compiled\intermate\extractfuncs\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>extractfuncs</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
     <IntDir>..\..\..\compiled\intermate\extractfuncs\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>extractfuncs</TargetName>

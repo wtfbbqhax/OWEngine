@@ -503,6 +503,10 @@ void RE_RenderScene( const refdef_t* fd )
     tr.refdef.height = fd->height;
     tr.refdef.fov_x = fd->fov_x;
     tr.refdef.fov_y = fd->fov_y;
+#if !defined( __ANDROID__ )
+    tr.refdef.stereoFrame = fd->stereoFrame;
+    tr.refdef.delta_yaw = fd->delta_yaw;
+#endif
     
     VectorCopy( fd->vieworg, tr.refdef.vieworg );
     VectorCopy( fd->viewaxis[0], tr.refdef.viewaxis[0] );
@@ -601,6 +605,8 @@ void RE_RenderScene( const refdef_t* fd )
     
     parms.fovX = tr.refdef.fov_x;
     parms.fovY = tr.refdef.fov_y;
+    
+    parms.stereoFrame = tr.refdef.stereoFrame;
     
     VectorCopy( fd->vieworg, parms.or.origin );
     VectorCopy( fd->viewaxis[0], parms.or.axis[0] );

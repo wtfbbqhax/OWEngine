@@ -43,11 +43,11 @@
     <_ProjectFileVersion>14.0.25123.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
     <IntDir>..\..\..\compiled\intermate\splines\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\compiled\</OutDir>
+    <OutDir>..\..\..\compiled\binaries\</OutDir>
     <IntDir>..\..\..\compiled\intermate\splines\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

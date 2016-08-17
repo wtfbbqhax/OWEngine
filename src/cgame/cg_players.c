@@ -5648,6 +5648,11 @@ void CG_Player( centity_t* cent )
     }
     head.customSkin = ci->headSkin;
     
+    VectorCopy( head.origin, cent->headOrigin ); //***
+    VectorCopy( head.axis[0], cent->headAxis[0] ); //***
+    VectorCopy( head.axis[1], cent->headAxis[1] ); //***
+    VectorCopy( head.axis[2], cent->headAxis[2] ); //***
+    
     VectorCopy( lightorigin, head.lightingOrigin );
     
     CG_PositionRotatedEntityOnTag( &head, &torso, "tag_head" );

@@ -363,6 +363,11 @@ typedef struct centity_s
     
     // (SA) added to help akimbo effects attach to the correct model
     qboolean akimboFire;
+    
+    vec3_t headOrigin;
+    vec3_t headAngles;
+    vec3_t headAxis[3];
+    vec3_t gunOrigin;
 } centity_t;
 
 
@@ -1641,6 +1646,10 @@ typedef struct
 
 //==============================================================================
 
+#if !defined( __ANDROID__ )
+extern int OculusVRDetected;
+#endif
+
 extern cgs_t cgs;
 extern cg_t cg;
 extern centity_t cg_entities[MAX_GENTITIES];
@@ -2243,6 +2252,7 @@ void CG_SendMoveSpeed( animation_t* animList, int numAnims, char* modelName );
 //
 void CG_Respawn( void );
 void CG_TransitionPlayerState( playerState_t* ps, playerState_t* ops );
+void CG_CheckChangedPredictableEvents( playerState_t* ps );
 void CG_LoadClientInfo( clientInfo_t* ci );
 
 
