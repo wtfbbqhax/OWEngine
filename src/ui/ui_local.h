@@ -395,7 +395,7 @@ uiMenuCommand_t _UI_GetActiveMenu( void );
 int             UI_AdjustTimeByGame( int time );
 void            UI_ShowPostGame( qboolean newHigh );
 void            UI_ClearScores();
-void            UI_LoadArenas( void );
+//void            UI_LoadArenas( void );
 
 //
 // ui_menu.c

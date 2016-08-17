@@ -5456,7 +5456,7 @@ static void UI_RunMenuScript( char** args )
         }
         else if( Q_stricmp( name, "loadArenas" ) == 0 )
         {
-            UI_LoadArenas();
+            //UI_LoadArenas();
             UI_MapCountByGameType( qfalse );
             Menu_SetFeederSelection( NULL, FEEDER_ALLMAPS, 0, "createserver" );
             //#endif	// #ifdef MISSIONPACK

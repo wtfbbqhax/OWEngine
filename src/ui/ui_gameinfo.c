@@ -127,6 +127,7 @@ int UI_ParseInfos( char* buf, int max, char* infos[] )
 UI_LoadArenasFromFile
 ===============
 */
+#if 0
 static void UI_LoadArenasFromFile( char* filename )
 {
     int len;
@@ -152,12 +153,13 @@ static void UI_LoadArenasFromFile( char* filename )
     
     ui_numArenas += UI_ParseInfos( buf, MAX_ARENAS - ui_numArenas, &ui_arenaInfos[ui_numArenas] );
 }
-
+#endif
 /*
 ===============
 UI_LoadArenas
 ===============
 */
+#if 0
 void UI_LoadArenas( void )
 {
     int numdirs;
@@ -252,7 +254,7 @@ void UI_LoadArenas( void )
         }
     }
 }
-
+#endif
 
 /*
 ===============
