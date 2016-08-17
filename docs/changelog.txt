@@ -1,5 +1,9 @@
 Changelog
 
+08-17-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added Sixense SDK files
+	- Added OculusVR SDK files
+
 08-10-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed problems with collision
 	- Reformatted MacOS source code
