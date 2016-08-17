@@ -798,6 +798,7 @@ found_dll:
 // RB: added generic DLL loading routines
 void* Sys_LoadDLLSimple( const char* name )
 {
+    SetDllDirectoryA( "../system" );
     return ( void* )LoadLibrary( name );
 }
 
