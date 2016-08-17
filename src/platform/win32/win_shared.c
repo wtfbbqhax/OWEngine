@@ -444,5 +444,11 @@ char*    Sys_DefaultHomePath( void )
 
 char* Sys_DefaultInstallPath( void )
 {
-    return Sys_Cwd();
+    static char installdir[MAX_OSPATH];
+    
+    Com_sprintf( installdir, sizeof( installdir ), "%s", Sys_Cwd() );
+    Q_strreplace( installdir, sizeof( installdir ), "binaries", "" );
+    
+    return installdir;
 }
+

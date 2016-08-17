@@ -755,6 +755,7 @@ char* Q_CleanStr( char* string );
 // Ridah
 int Q_strncasecmp( char* s1, char* s2, int n );
 int Q_strcasecmp( char* s1, char* s2 );
+qboolean Q_strreplace( char* dest, int destsize, const char* find, const char* replace );
 // done.
 //=============================================
 
@@ -1232,6 +1233,8 @@ typedef struct playerState_s
     // Rafael
     int gunfx;
     
+    vec3_t headangles; // for Head Tracking
+    
     // RF, burning effect is required for view blending effect
     int onFireStart;
     
@@ -1340,12 +1343,12 @@ typedef struct playerState_s
 typedef struct usercmd_s
 {
     int serverTime;
+    int angles[3];        //*** View Angles (lerp direction, gun position)
+    int headAngles[3];    //*** Head Tracking Angles
     byte buttons;
     byte wbuttons;
     byte weapon;
     byte holdable;          //----(SA)	added
-    int angles[3];
-    
     
     signed char forwardmove, rightmove, upmove;
     signed char wolfkick;       // RF, we should move this over to a wbutton, this is a huge waste of bandwidth
