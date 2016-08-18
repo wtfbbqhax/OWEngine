@@ -737,19 +737,18 @@ void CL_JoystickMove( usercmd_t* cmd )
 
 /*
 =================
-CL_RazorHydra
+CL_RazerHydra
 =================
 */
 #if !defined( __ANDROID__ )
-static void CL_RazorHydra( usercmd_t* cmd )
+static void CL_RazerHydra( usercmd_t* cmd )
 {
     float joyx, joyy, trigger, yaw, pitch, roll;
     unsigned int buttons;
     int movespeed;
-    //float pos[3];
     float pos;
-    //float mx, my;
-    
+//    float mx, my;
+
     if( kb[KB_SPEED].active ^ cl_run->integer )
     {
         movespeed = 127;
@@ -761,7 +760,7 @@ static void CL_RazorHydra( usercmd_t* cmd )
         movespeed = 64;
     }
     
-    if( RazorHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    if( RazerHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
     {
         static unsigned int lockbtn = 0;
         static float accjoyx = 0.0f;
@@ -789,7 +788,7 @@ static void CL_RazorHydra( usercmd_t* cmd )
         lockbtn = buttons;
     }
     
-    if( RazorHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    if( RazerHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
     {
         static unsigned int lockbtn = 0;
         if( ( ( buttons & SIXENSE_BUTTON_BUMPER ) != 0 ) && ( ( lockbtn & SIXENSE_BUTTON_BUMPER ) == 0 ) )
@@ -797,17 +796,18 @@ static void CL_RazorHydra( usercmd_t* cmd )
             cmd->upmove = movespeed;
         }
         
+        //cmd->forwardmove = ClampChar( cmd->forwardmove + ( int )( joyy * movespeed ) );
+        //cmd->rightmove = ClampChar( cmd->rightmove + ( int )( joyx * movespeed ) );
         
-        cmd->forwardmove = ClampChar( cmd->forwardmove + ( int )( joyy * movespeed ) );
-        cmd->rightmove = ClampChar( cmd->rightmove + ( int )( joyx * movespeed ) );
-        
-        /*if (roll > 0.2 || roll < -0.2)
-        cmd->rightmove   = ClampChar(cmd->rightmove   + (int)(-roll * movespeed));*/
+        //if (roll > 0.2 || roll < -0.2)
+        //{
+        //  cmd->rightmove = ClampChar(cmd->rightmove + (int)(-roll * movespeed));
+        //}
         lockbtn = buttons;
     }
     
 #if 0
-    if( !kb[KB_STRAFE].active )
+    if( kb[KB_STRAFE].active )
     {
         cmd->rightmove = ClampChar( cmd->rightmove + m_side->value * mx );
     }
@@ -816,9 +816,9 @@ static void CL_RazorHydra( usercmd_t* cmd )
         cl.viewangles[YAW] -= m_yaw->value * mx;
     }
     
-    if( ( ( kb[KB_MLOOK].active || cl_freelook->integer ) && !kb[KB_STRAFE].active )
-{
-    cl.viewangles[PITCH] += m_pitch->value * my;
+    if( ( kb[KB_MLOOK].active || cl_freelook->integer ) && !kb[KB_STRAFE].active )
+    {
+        cl.viewangles[PITCH] += m_pitch->value * my;
     }
     else
     {
@@ -1039,7 +1039,10 @@ usercmd_t CL_CreateCmd( void )
     
 #if !defined( __ANDROID__ )
     // Siense SDK update
-    CL_RazorHydra( &cmd );
+    if( cl_razerhydra->integer )
+    {
+        CL_RazerHydra( &cmd );
+    }
     
     // get head tracker direction
     CL_OculusHeadTracker();

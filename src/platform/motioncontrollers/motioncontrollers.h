@@ -99,4 +99,5 @@ MOTIONCONTROLLER_API void  OculusVR_Exit();
 MOTIONCONTROLLER_API int   OculusVR_QueryHMD( struct OculusVR_HMDInfo* refHmdInfo );
 MOTIONCONTROLLER_API int   OculusVR_Peek( float* yaw, float* pitch, float* roll );
 MOTIONCONTROLLER_API int   OculusVR_StereoConfig( int eye, struct OculusVR_StereoCfg* stereoCfg );
-MOTIONCONTROLLER_API int   RazorHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons );
+MOTIONCONTROLLER_API int   RazerHydra_Init();
+MOTIONCONTROLLER_API int   RazerHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons );

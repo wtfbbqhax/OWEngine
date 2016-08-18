@@ -95,6 +95,7 @@ cvar_t*  cl_language;
 cvar_t*  cl_debugTranslation;
 // -NERVE - SMF
 
+cvar_t*  cl_razerhydra;
 
 char cl_cdkey[34] = "                                ";
 
@@ -2872,6 +2873,8 @@ void CL_Init( void )
     m_filter = Cvar_Get( "m_filter", "0", CVAR_ARCHIVE );
     
     cl_motdString = Cvar_Get( "cl_motdString", "", CVAR_ROM );
+    
+    cl_razerhydra = Cvar_Get( "cl_razerhydra", "0", CVAR_ARCHIVE );
     
     Cvar_Get( "cl_maxPing", "800", CVAR_ARCHIVE );
     

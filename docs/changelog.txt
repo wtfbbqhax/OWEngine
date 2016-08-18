@@ -2,6 +2,9 @@ Changelog
 
 08-18-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed problem with mouse/head movement when Sixense motion device is enabled
+	- Fixed drawing cinematics on engine start
+	- Separated loading Razer Hydra device from initialization of Oculus VR
+		NOTE: Added cvar for initialization
 
 08-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added Sixense SDK files

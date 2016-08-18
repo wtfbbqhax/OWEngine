@@ -88,14 +88,6 @@ MOTIONCONTROLLER_API int OculusVR_Init()
 {
     bInited = false;
     
-    sixenseInit();
-    
-    sixenseUtils::getTheControllerManager()->setGameType( sixenseUtils::ControllerManager::ONE_PLAYER_TWO_CONTROLLER );
-    sixenseUtils::getTheControllerManager()->registerSetupCallback( controller_manager_setup_callback );
-    ///sixenseSetFilterParams(0.0f,  1.0f, 0.5f, 0.5f);
-    
-    sixenseSetFilterEnabled( 0 );
-    
     System::Init( Log::ConfigureDefaultLog( OVR::LogMask_All ) );
     
     if( System::IsInitialized() )
@@ -256,10 +248,31 @@ MOTIONCONTROLLER_API int OculusVR_StereoConfig( int eye, struct OculusVR_StereoC
 
 /*
 =====================
-RazorHydra_Peek
+RazerHydra_Init
 =====================
 */
-MOTIONCONTROLLER_API int RazorHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons )
+MOTIONCONTROLLER_API int RazerHydra_Init()
+{
+    if( sixenseInit() != SIXENSE_SUCCESS )
+    {
+        return 0;
+    }
+    
+    sixenseUtils::getTheControllerManager()->setGameType( sixenseUtils::ControllerManager::ONE_PLAYER_TWO_CONTROLLER );
+    sixenseUtils::getTheControllerManager()->registerSetupCallback( controller_manager_setup_callback );
+    ///sixenseSetFilterParams(0.0f,  1.0f, 0.5f, 0.5f);
+    
+    sixenseSetFilterEnabled( 0 );
+    
+    return 1;
+}
+
+/*
+=====================
+RazerHydra_Peek
+=====================
+*/
+MOTIONCONTROLLER_API int RazerHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons )
 {
     const  sixenseUtils::IControllerManager::controller_desc HandIndex[] =
     {

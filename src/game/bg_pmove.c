@@ -4457,6 +4457,8 @@ static void PM_Weapon( void )
                                 }
                             }
                             ps->viewangles[i] = SHORT2ANGLE( temp );
+                            temp = cmd->headAngles[i];
+                            ps->headangles[i] = SHORT2ANGLE( temp );
                         }
                         
                         

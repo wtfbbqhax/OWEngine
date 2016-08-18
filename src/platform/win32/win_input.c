@@ -44,6 +44,7 @@
 #include "../../client/client.h"
 #include "win_local.h"
 
+#include <motioncontrollers.h>
 
 typedef struct
 {
@@ -113,6 +114,7 @@ qboolean in_appactive;
 // forward-referenced functions
 void IN_StartupJoystick( void );
 void IN_JoyMove( void );
+void IN_StartupRazerHydra( void );
 
 static void MidiInfo_f( void );
 
@@ -436,6 +438,7 @@ void IN_Startup( void )
     Com_DPrintf( "\n------- Input Initialization -------\n" );
     IN_StartupMouse();
     IN_StartupJoystick();
+    IN_StartupRazerHydra();
     IN_StartupMIDI();
     Com_DPrintf( "------------------------------------\n" );
     
@@ -648,6 +651,13 @@ void IN_StartupJoystick( void )
     
     // mark the joystick as available
     joy.avail = qtrue;
+}
+
+//Dushan
+void IN_StartupRazerHydra( void )
+{
+    RazerHydra_Init();
+    Com_DPrintf( "Razer Hydra device active.\n" );
 }
 
 /*
