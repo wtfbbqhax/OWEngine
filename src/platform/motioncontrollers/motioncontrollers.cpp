@@ -60,22 +60,22 @@ Util::Render::StereoConfig   pStereo;
 
 // flags that the controller manager system can set to tell the graphics system to draw the instructions
 // for the player
-static bool controller_manager_screen_visible = true;
-std::string controller_manager_text_string;
+//static bool controller_manager_screen_visible = true;
+//std::string controller_manager_text_string;
 
 static void controller_manager_setup_callback( sixenseUtils::ControllerManager::setup_step step )
 {
     if( sixenseUtils::getTheControllerManager()->isMenuVisible() )
     {
-        controller_manager_screen_visible = true;
-        controller_manager_text_string = sixenseUtils::getTheControllerManager()->getStepString();
+        //controller_manager_screen_visible = true;
+        //controller_manager_text_string = sixenseUtils::getTheControllerManager()->getStepString();
         
         // We could also load the supplied controllermanager textures using the filename: sixenseUtils::getTheControllerManager()->getTextureFileName();
     }
     else
     {
         // We're done with the setup, so hide the instruction screen.
-        controller_manager_screen_visible = false;
+        //controller_manager_screen_visible = false;
     }
 }
 
