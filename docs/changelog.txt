@@ -5,6 +5,7 @@ Changelog
 	- Fixed drawing cinematics on engine start
 	- Separated loading Razer Hydra device from initialization of Oculus VR
 		NOTE: Added cvar for initialization
+	- Added precompiled binary files
 
 08-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added Sixense SDK files
