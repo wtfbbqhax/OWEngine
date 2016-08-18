@@ -598,10 +598,12 @@ void SCR_UpdateScreen( void )
     }
     recursive = 1;
     
-    // if running in stereo, we need to draw the frame twice
-    if( cls.glconfig.stereoEnabled )
+    // If there is no VM, there are also no rendering commands issued. Stop the renderer in
+    // that case.
+    if( uivm || com_dedicated->integer )
     {
         SCR_DrawScreenField( STEREO_LEFT );
+        
         if( com_speeds->integer )
         {
             re.EndFrame( &time_frontend, &time_backend );
@@ -610,11 +612,8 @@ void SCR_UpdateScreen( void )
         {
             re.EndFrame( NULL, NULL );
         }
+        
         SCR_DrawScreenField( STEREO_RIGHT );
-    }
-    else
-    {
-        SCR_DrawScreenField( STEREO_CENTER );
     }
     
     if( com_speeds->integer )

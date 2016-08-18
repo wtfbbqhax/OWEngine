@@ -2174,6 +2174,13 @@ void CL_PlayCinematic_f( void )
 
 void SCR_DrawCinematic( void )
 {
+    vec4_t color;
+    color[0] = 1;
+    color[1] = 1;
+    color[2] = 1;
+    color[3] = 1;
+    SCR_FillRect( 0, 0, 1, 1, color );
+    
     if( CL_handle >= 0 && CL_handle < MAX_VIDEO_HANDLES )
     {
         CIN_DrawCinematic( CL_handle );
