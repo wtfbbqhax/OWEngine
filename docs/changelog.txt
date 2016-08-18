@@ -6,6 +6,7 @@ Changelog
 	- Separated loading Razer Hydra device from initialization of Oculus VR
 		NOTE: Added cvar for initialization
 	- Added precompiled binary files
+	- There is no really reason to include OculusVR cvar's on Android
 
 08-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added Sixense SDK files

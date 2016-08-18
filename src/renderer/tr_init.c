@@ -529,6 +529,7 @@ static void InitOpenGL( void )
     err = glewInit();
     
     // Create Render Target for Oculus Rift
+#if !defined( __ANDROID__ )
     if( ovr_warpingShader->integer )
     {
         glConfig.oculusFBL = 0;
@@ -582,6 +583,7 @@ static void InitOpenGL( void )
         glConfig.oculusProgId = LoadShaders( "oculus.vertexshader", "oculus.fragmentshader" );
         glConfig.oculusTexId = glGetUniformLocation( glConfig.oculusProgId, "renderedTexture" );
     }
+#endif
 }
 
 /*
@@ -1319,6 +1321,7 @@ void R_Register( void )
     r_zproj = ri.Cvar_Get( "r_zproj", "64", CVAR_ARCHIVE );
     r_stereoSeparation = ri.Cvar_Get( "r_stereoSeparation", "64", CVAR_ARCHIVE );
     
+#if !defined( __ANDROID__ )
     ovr_fovoffset = ri.Cvar_Get( "ovr_fovoffset", "0.0", CVAR_ARCHIVE );
     ovr_viewofsx = ri.Cvar_Get( "ovr_viewofsx", "0", CVAR_ARCHIVE );
     ovr_viewofsy = ri.Cvar_Get( "ovr_viewofsy", "0", CVAR_ARCHIVE );
@@ -1334,6 +1337,7 @@ void R_Register( void )
     {
         ovr_ovrdetected = ri.Cvar_Get( "ovr_ovrdetected", "0", CVAR_LATCH | CVAR_CHEAT );
     }
+#endif
     
 #if defined  ( __linux__ )
     r_stencilbits = ri.Cvar_Get( "r_stencilbits", "0", CVAR_ARCHIVE | CVAR_LATCH );
