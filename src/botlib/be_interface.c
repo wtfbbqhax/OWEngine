@@ -961,7 +961,7 @@ static void Init_AI_Export( ai_export_t* ai )
 GetBotLibAPI
 ============
 */
-botlib_export_t* GetBotLibAPI( int apiVersion, botlib_import_t* import )
+botlib_export_t* GetBotLibraryAPI( int apiVersion, botlib_import_t* import )
 {
     botimport = *import;
     
@@ -993,4 +993,28 @@ botlib_export_t* GetBotLibAPI( int apiVersion, botlib_import_t* import )
     be_botlib_export.Test = BotExportTest;
     
     return &be_botlib_export;
+}
+
+void QDECL Com_Printf( const char* msg, ... )
+{
+    va_list         argptr;
+    char            text[1024];
+    
+    va_start( argptr, msg );
+    _vsnprintf( text, sizeof( text ), msg, argptr );
+    va_end( argptr );
+    
+    botimport.Print( PRINT_ALL, "%s", text );
+}
+
+void QDECL Com_Error( int level, const char* error, ... )
+{
+    va_list         argptr;
+    char            text[1024];
+    
+    va_start( argptr, error );
+    _vsnprintf( text, sizeof( text ), error, argptr );
+    va_end( argptr );
+    
+    botimport.Error( level, "%s", text );
 }

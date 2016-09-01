@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#define BOTLIB_API_VERSION      2
+#define BOTLIB_API_VERSION      3
 
 struct aas_clientmove_s;
 struct aas_entityinfo_s;
@@ -193,6 +193,8 @@ typedef struct botlib_import_s
 {
     //print messages from the bot library
     void ( QDECL* Print )( int type, char* fmt, ... );
+    //Dushan
+    void ( QDECL* Error )( int errorLevel, const char* fmt, ... );
     //trace a bbox through the world
     void ( *Trace )( bsp_trace_t* trace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask );
     //trace a bbox against a specific entity
@@ -458,7 +460,7 @@ typedef struct botlib_export_s
 } botlib_export_t;
 
 //linking of bot library
-botlib_export_t* GetBotLibAPI( int apiVersion, botlib_import_t* import );
+typedef botlib_export_t* ( *GetBotLibAPI )( int apiVersion, botlib_import_t* rimp );
 
 /* Library variables:
 

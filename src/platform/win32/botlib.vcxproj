@@ -16,13 +16,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
@@ -43,11 +43,11 @@
     <_ProjectFileVersion>14.0.25123.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\compiled\binaries\</OutDir>
+    <OutDir>..\..\..\compiled\system\</OutDir>
     <IntDir>..\..\..\compiled\intermate\botlib\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\compiled\binaries\</OutDir>
+    <OutDir>..\..\..\compiled\system\</OutDir>
     <IntDir>..\..\..\compiled\intermate\botlib\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,6 +77,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)$(TargetName).bsc</OutputFile>
     </Bscmake>
+    <Link>
+      <AdditionalDependencies>Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>.\botlib.def</ModuleDefinitionFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,6 +110,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/botlib.bsc</OutputFile>
     </Bscmake>
+    <Link>
+      <AdditionalDependencies>Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>.\botlib.def</ModuleDefinitionFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\botlib\be_aas_bspq3.c" />
@@ -137,6 +145,8 @@
     <ClCompile Include="..\..\botlib\l_precomp.c" />
     <ClCompile Include="..\..\botlib\l_script.c" />
     <ClCompile Include="..\..\botlib\l_struct.c" />
+    <ClCompile Include="..\..\game\q_math.c" />
+    <ClCompile Include="..\..\game\q_shared.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\game\be_aas.h" />
@@ -176,6 +186,9 @@
     <ClInclude Include="..\..\botlib\l_script.h" />
     <ClInclude Include="..\..\botlib\l_struct.h" />
     <ClInclude Include="..\..\botlib\l_utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="botlib.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

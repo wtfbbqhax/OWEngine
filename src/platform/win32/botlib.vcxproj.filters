@@ -98,6 +98,12 @@
     <ClCompile Include="..\..\botlib\l_log.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\game\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game\q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\botlib\aasfile.h">
@@ -211,5 +217,10 @@
     <ClInclude Include="..\..\game\surfaceflags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="botlib.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

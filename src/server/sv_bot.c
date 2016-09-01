@@ -642,6 +642,9 @@ qboolean BotImport_AICast_CheckAttackAtPos( int entnum, int enemy, vec3_t pos, q
 }
 // done.
 
+static cvar_t*  sv_botLib = NULL;
+static void*    botLib = NULL;
+
 /*
 ==================
 SV_BotInitBotLib
@@ -650,22 +653,52 @@ SV_BotInitBotLib
 void SV_BotInitBotLib( void )
 {
     botlib_import_t botlib_import;
-    
-#if COPY_PROTECT
-    if( !Cvar_VariableValue( "fs_restrict" ) && !Sys_CheckCD() )
-    {
-        Com_Error( ERR_NEED_CD, "Game CD not in drive" );
-    }
-#else
-    Com_Printf( "Bypassing CD checks\n" );
-#endif
+    GetBotLibAPI    GetBotAPI;
+    char            dllName[MAX_OSPATH];
     
     /*
     if ( botlib_export ) {
     	SV_BotLibShutdown();
     }*/
     
+    Com_Printf( "----- Initializing bot library ----\n" );
+    
+#ifdef _WIN32
+    Com_sprintf( dllName, sizeof( dllName ), "botlib" DLL_EXT );
+#else
+    Com_sprintf( dllName, sizeof( dllName ), "botlib%s" ARCH_STRING DLL_EXT );
+#endif
+    
+    Com_Printf( "Loading \"%s\"...", dllName );
+    if( ( botLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
+    {
+#if 0//def _WIN32
+        Com_Printf( "failed:\n\"%s\"\n", Sys_DLLError() );
+#else
+        char            fn[1024];
+        
+        Q_strncpyz( fn, Sys_Cwd(), sizeof( fn ) );
+        strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
+        strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
+        
+        Com_Printf( "Loading \"%s\"...", fn );
+        if( ( botLib = Sys_LoadDLLSimple( fn ) ) == 0 )
+        {
+            Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
+        }
+#endif	/* _WIN32 */
+    }
+    
+    Com_Printf( "done\n" );
+    
+    GetBotAPI = Sys_LoadFunction( botLib, "GetBotLibraryAPI" );
+    if( !GetBotAPI )
+    {
+        Com_Error( ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_DLLError() );
+    }
+    
     botlib_import.Print = BotImport_Print;
+    botlib_import.Error = Com_Error;
     botlib_import.Trace = BotImport_Trace;
     botlib_import.EntityTrace = BotImport_EntityTrace;
     botlib_import.PointContents = BotImport_PointContents;
@@ -700,7 +733,8 @@ void SV_BotInitBotLib( void )
     botlib_import.AICast_CheckAttackAtPos = BotImport_AICast_CheckAttackAtPos;
     // done.
     
-    botlib_export = ( botlib_export_t* )GetBotLibAPI( BOTLIB_API_VERSION, &botlib_import );
+    Com_Printf( "Calling GetBotAPI...\n" );
+    botlib_export = GetBotAPI( BOTLIB_API_VERSION, &botlib_import );
 }
 
 
