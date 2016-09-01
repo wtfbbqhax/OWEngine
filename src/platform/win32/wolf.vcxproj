@@ -116,7 +116,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;WIN32;MOTIONCONTROLLER_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -207,7 +207,7 @@
     <ClCompile Include="win_wndproc.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\libraries\libovr\libovrwrapper\libovrwrapper\libovrwrapper.h" />
+    <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
     <ClInclude Include="..\..\botai\botai.h" />
     <ClInclude Include="..\..\cgame\cg_public.h" />
     <ClInclude Include="..\..\cgame\tr_types.h" />
@@ -236,12 +236,6 @@
     <ClInclude Include="win_local.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="botlib.vcxproj">
-      <Project>{86691fdd-e0c6-4d71-9ffd-e0f30f19aa3e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="motioncontrollers.vcxproj">
-      <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
-    </ProjectReference>
     <ProjectReference Include="Splines.vcxproj">
       <Project>{aa96579b-0f16-4614-8453-0b03c8b39a46}</Project>
     </ProjectReference>

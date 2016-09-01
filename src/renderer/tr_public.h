@@ -188,7 +188,7 @@ typedef struct
     int ( *CIN_PlayCinematic )( const char* arg0, int xpos, int ypos, int width, int height, int bits );
     e_status( *CIN_RunCinematic )( int handle );
     void* ( *Sys_GetSystemHandles )( void );
-    
+    int( *OculusVR_StereoConfig )( int eye, struct OculusVR_StereoCfg* stereoCfg );
 } refimport_t;
 
 

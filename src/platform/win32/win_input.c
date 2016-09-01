@@ -45,6 +45,7 @@
 #include "win_local.h"
 
 #include <motioncontrollers.h>
+extern motcontr_export_t mce;
 
 typedef struct
 {
@@ -656,7 +657,7 @@ void IN_StartupJoystick( void )
 //Dushan
 void IN_StartupRazerHydra( void )
 {
-    RazerHydra_Init();
+    mce.RazerHydra_Init();
     Com_DPrintf( "Razer Hydra device active.\n" );
 }
 

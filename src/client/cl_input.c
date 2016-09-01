@@ -67,6 +67,7 @@ at the same time.
 
 #if !defined( __ANDROID__ )
 #include <motioncontrollers.h>
+extern motcontr_export_t mce;
 #endif
 
 static kbutton_t kb[NUM_BUTTONS];
@@ -760,7 +761,7 @@ static void CL_RazerHydra( usercmd_t* cmd )
         movespeed = 64;
     }
     
-    if( RazerHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    if( mce.RazerHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
     {
         static unsigned int lockbtn = 0;
         static float accjoyx = 0.0f;
@@ -788,7 +789,7 @@ static void CL_RazerHydra( usercmd_t* cmd )
         lockbtn = buttons;
     }
     
-    if( RazerHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    if( mce.RazerHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
     {
         static unsigned int lockbtn = 0;
         if( ( ( buttons & SIXENSE_BUTTON_BUMPER ) != 0 ) && ( ( lockbtn & SIXENSE_BUTTON_BUMPER ) == 0 ) )
@@ -842,7 +843,7 @@ static void CL_OculusHeadTracker()
     /*static int bla = 0;
     ++bla;
     Com_Printf("HMD: %d\n", bla);*/
-    if( OculusVR_Peek( &yaw, &pitch, &roll ) != 0 )
+    if( mce.OculusVR_Peek( &yaw, &pitch, &roll ) != 0 )
     {
         cl.headAngles[YAW] = ( yaw    * ( 180.0f / 3.14159f ) ); // Delta Yaw to adjust with mouse Yaw.
         lastYaw = yaw;

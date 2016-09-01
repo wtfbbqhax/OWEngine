@@ -40,12 +40,16 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "../../game/q_shared.h"
 #include "motioncontrollers.h"
 #include <OVR.h>
 #include <sixense_utils/derivatives.hpp>
 #include <sixense_utils/button_states.hpp>
 #include <sixense_utils/event_triggers.hpp>
 #include <sixense_utils/controller_manager/controller_manager.hpp>
+
+motcontr_export_t mcexport;
+motcontr_import_t mcimport;
 
 using namespace OVR;
 
@@ -84,7 +88,7 @@ static void controller_manager_setup_callback( sixenseUtils::ControllerManager::
 OculusVR_Init
 =====================
 */
-MOTIONCONTROLLER_API int OculusVR_Init()
+int OculusVR_Init()
 {
     bInited = false;
     
@@ -132,7 +136,7 @@ MOTIONCONTROLLER_API int OculusVR_Init()
 OculusVR_Exit
 =====================
 */
-MOTIONCONTROLLER_API void OculusVR_Exit()
+void OculusVR_Exit()
 {
     pSensor.Clear();
     pHMD.Clear();
@@ -147,7 +151,7 @@ MOTIONCONTROLLER_API void OculusVR_Exit()
 OculusVR_QueryHMD
 =====================
 */
-MOTIONCONTROLLER_API int OculusVR_QueryHMD( OculusVR_HMDInfo* refHmdInfo )
+int OculusVR_QueryHMD( OculusVR_HMDInfo* refHmdInfo )
 {
     if( !bInited )
     {
@@ -182,7 +186,7 @@ MOTIONCONTROLLER_API int OculusVR_QueryHMD( OculusVR_HMDInfo* refHmdInfo )
 OculusVR_Peek
 =====================
 */
-MOTIONCONTROLLER_API int OculusVR_Peek( float* yaw, float* pitch, float* roll )
+int OculusVR_Peek( float* yaw, float* pitch, float* roll )
 {
     if( !bInited )
     {
@@ -200,7 +204,7 @@ MOTIONCONTROLLER_API int OculusVR_Peek( float* yaw, float* pitch, float* roll )
 OculusVR_StereoConfig
 =====================
 */
-MOTIONCONTROLLER_API int OculusVR_StereoConfig( int eye, struct OculusVR_StereoCfg* stereoCfg )
+int OculusVR_StereoConfig( int eye, struct OculusVR_StereoCfg* stereoCfg )
 {
     /*if (!bInited)
     {
@@ -251,7 +255,7 @@ MOTIONCONTROLLER_API int OculusVR_StereoConfig( int eye, struct OculusVR_StereoC
 RazerHydra_Init
 =====================
 */
-MOTIONCONTROLLER_API int RazerHydra_Init()
+int RazerHydra_Init()
 {
     if( sixenseInit() != SIXENSE_SUCCESS )
     {
@@ -272,7 +276,7 @@ MOTIONCONTROLLER_API int RazerHydra_Init()
 RazerHydra_Peek
 =====================
 */
-MOTIONCONTROLLER_API int RazerHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons )
+int RazerHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons )
 {
     const  sixenseUtils::IControllerManager::controller_desc HandIndex[] =
     {
@@ -320,3 +324,54 @@ MOTIONCONTROLLER_API int RazerHydra_Peek( int hand, float* joyx, float* joyy, fl
     return 1;
 }
 
+/*
+============
+GetMotContrLibAPI
+============
+*/
+motcontr_export_t* GetMotContrLibAPI( int apiVersion, motcontr_import_t* import )
+{
+    mcimport = *import;
+    
+    memset( &mcexport, 0, sizeof( mcexport ) );
+    
+    if( apiVersion != MOTLIB_API_VERSION )
+    {
+        mcimport.Print( "Mismatched BOTLIB_API_VERSION: expected %i, got %i\n", MOTLIB_API_VERSION, apiVersion );
+        return NULL;
+    }
+    
+    mcexport.OculusVR_Init = OculusVR_Init;
+    mcexport.OculusVR_Exit = OculusVR_Exit;
+    mcexport.OculusVR_QueryHMD = OculusVR_QueryHMD;
+    mcexport.OculusVR_Peek = OculusVR_Peek;
+    mcexport.OculusVR_StereoConfig = OculusVR_StereoConfig;
+    mcexport.RazerHydra_Init = RazerHydra_Init;
+    mcexport.RazerHydra_Peek = RazerHydra_Peek;
+    
+    return &mcexport;
+}
+
+void QDECL Com_Printf( const char* msg, ... )
+{
+    va_list         argptr;
+    char            text[1024];
+    
+    va_start( argptr, msg );
+    _vsnprintf( text, sizeof( text ), msg, argptr );
+    va_end( argptr );
+    
+    mcimport.Print( "%s", text );
+}
+
+void QDECL Com_Error( int level, const char* error, ... )
+{
+    va_list         argptr;
+    char            text[1024];
+    
+    va_start( argptr, error );
+    _vsnprintf( text, sizeof( text ), error, argptr );
+    va_end( argptr );
+    
+    mcimport.Error( level, "%s", text );
+}

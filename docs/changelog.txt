@@ -1,5 +1,8 @@
 Changelog
 
+09-02-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Moved motioncontrollers to dynamic module
+
 09-01-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Moved botlib to dynamic module
 	- Updated recompiled files

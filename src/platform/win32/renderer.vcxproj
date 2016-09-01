@@ -309,6 +309,7 @@
     <ClInclude Include="..\..\qcommon\cm_public.h" />
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
+    <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
     <ClInclude Include="glw_win.h" />
     <ClInclude Include="..\win32\resource.h" />
     <ClInclude Include="..\win32\win_local.h" />
@@ -316,11 +317,6 @@
     <ClInclude Include="..\..\renderer\qgl.h" />
     <ClInclude Include="..\..\renderer\tr_local.h" />
     <ClInclude Include="..\..\renderer\tr_public.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="motioncontrollers.vcxproj">
-      <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

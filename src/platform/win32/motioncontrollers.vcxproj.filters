@@ -18,5 +18,11 @@
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\game\q_shared.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="motioncontrollers.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

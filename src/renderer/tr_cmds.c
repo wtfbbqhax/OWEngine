@@ -47,7 +47,6 @@ volatile renderCommandList_t*    renderCommandList;
 volatile qboolean renderThreadActive;
 
 #if !defined( __ANDROID__ )
-
 extern backEndState_t	backEnd;
 extern void RB_SetGL2D( void );
 #endif
@@ -570,7 +569,7 @@ void SetupShaderDistortion( int eye, float VPX, float VPY, float VPW, float VPH 
     
     if( OculusVRDetected )
     {
-        OculusVR_StereoConfig( eye, &stereoCfg );
+        ri.OculusVR_StereoConfig( eye, &stereoCfg );
     }
     else
     {

@@ -66,7 +66,7 @@
 static char sys_cmdline[MAX_STRING_CHARS];
 
 #include <motioncontrollers.h>
-
+motcontr_export_t mce;
 struct OculusVR_HMDInfo HMD;
 int OculusVRDetected;
 
@@ -261,22 +261,6 @@ void QDECL Sys_Error( const char* error, ... )
     Sys_DestroyConsole();
     
     exit( 1 );
-}
-
-/*
-==============
-Sys_Quit
-==============
-*/
-void Sys_Quit( void )
-{
-    OculusVR_Exit();
-    
-    timeEndPeriod( 1 );
-    IN_Shutdown();
-    Sys_DestroyConsole();
-    
-    exit( 0 );
 }
 
 /*
@@ -1495,10 +1479,111 @@ void* Sys_GetSystemHandles( void )
 
 int totalMsec, countMsec;
 
+// Structure containing functions exported from refresh DLL
+static void* motcontLib = NULL;
+
+static void Init_MCLibrary( void )
+{
+    motcontr_import_t ri;
+    motcontr_export_t* ret;
+    GetMotContrLibAPI_t GetMotContrAPI;
+    char dllName[MAX_OSPATH];
+    
+    Com_Printf( "\n----- Initializing Motion Controllers ----\n" );
+    
+#ifdef _WIN32
+    Com_sprintf( dllName, sizeof( dllName ), "motioncontrollers" DLL_EXT );
+#else
+    Com_sprintf( dllName, sizeof( dllName ), "motioncontrollers" ARCH_STRING DLL_EXT );
+#endif
+    
+    Com_Printf( "Loading \"%s\"...", dllName );
+    if( ( motcontLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
+    {
+#if 0//def _WIN32
+        Com_Printf( "failed:\n\"%s\"\n", Sys_DLLError() );
+#else
+        char            fn[1024];
+        
+        Q_strncpyz( fn, Sys_Cwd(), sizeof( fn ) );
+        strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
+        strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
+        
+        Com_Printf( "Loading \"%s\"...", fn );
+        if( ( motcontLib = Sys_LoadDLLSimple( fn ) ) == 0 )
+        {
+            Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
+        }
+#endif	/* _WIN32 */
+    }
+    
+    ri.Print = Com_Printf;
+    ri.Error = Com_Error;
+    
+    Com_Printf( "done\n" );
+    
+    GetMotContrAPI = Sys_LoadFunction( motcontLib, "GetMotContrLibAPI" );
+    if( !GetMotContrAPI )
+    {
+        Com_Error( ERR_FATAL, "Can't load symbol GetMotContrLibAPI: '%s'\n", Sys_DLLError() );
+    }
+    
+    Com_Printf( "Calling GetMotContrLibAPI...\n" );
+    ret = GetMotContrAPI( MOTLIB_API_VERSION, &ri );
+    
+    Com_Printf( "-------------------------------\n" );
+    
+    if( !ret )
+    {
+        Com_Error( ERR_FATAL, "Couldn't initialize motion module" );
+    }
+    
+    mce = *ret;
+}
+
+/*
+============
+Shutdown_MCLibrary
+============
+*/
+static void Shutdown_MCLibrary( void )
+{
+    if( !mce.OculusVR_Exit )
+    {
+        return;
+    }
+    
+    mce.OculusVR_Exit();
+    memset( &mce, 0, sizeof( mce ) );
+    
+    if( motcontLib )
+    {
+        Sys_UnloadDll( motcontLib );
+        motcontLib = NULL;
+    }
+}
+
+/*
+==============
+Sys_Quit
+==============
+*/
+void Sys_Quit( void )
+{
+    Shutdown_MCLibrary();
+    
+    timeEndPeriod( 1 );
+    IN_Shutdown();
+    Sys_DestroyConsole();
+    
+    exit( 0 );
+}
+
+
+
 /*
 ==================
 WinMain
-
 ==================
 */
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
@@ -1523,36 +1608,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     // no abort/retry/fail errors
     SetErrorMode( SEM_FAILCRITICALERRORS );
     
-    // Init Oculus SDK
-    if( OculusVR_Init() == 0 )
-    {
-        OculusVRDetected = 0;
-        Com_Printf( "[OVR] OculusVR_Init() Failed!\n" );
-        HMD.HResolution = 1280;
-        HMD.VResolution = 800;
-        HMD.HScreenSize = 0.14976;
-        HMD.VScreenSize = 0.0935;
-        HMD.EyeToScreenDistance = 0.04;
-        HMD.InterpupillaryDistance = 0.058;
-    }
-    else
-    {
-        OculusVRDetected = 1;
-        Com_Printf( "[OVR] OculusVR_Init() Success!\n" );
-        if( OculusVR_QueryHMD( &HMD ) != 0 )
-        {
-            Com_Printf( "[OVR] Device Name       : %s\n", HMD.DisplayDeviceName );
-            Com_Printf( "[OVR] IPD               : %f\n", HMD.InterpupillaryDistance );
-            Com_Printf( "[OVR] Lens Separation D.: %f\n", HMD.LensSeparationDistance );
-            Com_Printf( "[OVR] Eye To Screen Dist: %f\n", HMD.EyeToScreenDistance );
-            Com_Printf( "[OVR] Screen Size       : %f, %f\n", HMD.HScreenSize, HMD.VScreenSize );
-            Com_Printf( "[OVR] Resolution        : %d, %d\n", HMD.HResolution, HMD.VResolution );
-            Com_Printf( "[OVR] Desktop Size      : %d, %d\n", HMD.DesktopX, HMD.DesktopY );
-            Com_Printf( "[OVR] VScreen Center    : %f\n", HMD.VScreenCenter );
-            Com_Printf( "[OVR] Distortion K      : %f, %f, %f, %f\n", HMD.DistortionK[0], HMD.DistortionK[1], HMD.DistortionK[2], HMD.DistortionK[3] );
-        }
-    }
-    
+    Init_MCLibrary();
     
     // get the initial time base
     Sys_Milliseconds();
@@ -1570,6 +1626,36 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 #endif
     
     Sys_InitStreamThread();
+    
+    // Init Oculus SDK
+    if( mce.OculusVR_Init() == 0 )
+    {
+        OculusVRDetected = 0;
+        Com_Printf( "[OVR] OculusVR_Init() Failed!\n" );
+        HMD.HResolution = 1280;
+        HMD.VResolution = 800;
+        HMD.HScreenSize = 0.14976;
+        HMD.VScreenSize = 0.0935;
+        HMD.EyeToScreenDistance = 0.04;
+        HMD.InterpupillaryDistance = 0.058;
+    }
+    else
+    {
+        OculusVRDetected = 1;
+        Com_Printf( "[OVR] OculusVR_Init() Success!\n" );
+        if( mce.OculusVR_QueryHMD( &HMD ) != 0 )
+        {
+            Com_Printf( "[OVR] Device Name       : %s\n", HMD.DisplayDeviceName );
+            Com_Printf( "[OVR] IPD               : %f\n", HMD.InterpupillaryDistance );
+            Com_Printf( "[OVR] Lens Separation D.: %f\n", HMD.LensSeparationDistance );
+            Com_Printf( "[OVR] Eye To Screen Dist: %f\n", HMD.EyeToScreenDistance );
+            Com_Printf( "[OVR] Screen Size       : %f, %f\n", HMD.HScreenSize, HMD.VScreenSize );
+            Com_Printf( "[OVR] Resolution        : %d, %d\n", HMD.HResolution, HMD.VResolution );
+            Com_Printf( "[OVR] Desktop Size      : %d, %d\n", HMD.DesktopX, HMD.DesktopY );
+            Com_Printf( "[OVR] VScreen Center    : %f\n", HMD.VScreenCenter );
+            Com_Printf( "[OVR] Distortion K      : %f, %f, %f, %f\n", HMD.DistortionK[0], HMD.DistortionK[1], HMD.DistortionK[2], HMD.DistortionK[3] );
+        }
+    }
     
     Com_Init( sys_cmdline );
     NET_Init();

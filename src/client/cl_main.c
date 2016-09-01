@@ -43,6 +43,10 @@
 #include "client.h"
 #include <limits.h>
 
+#ifndef __ANDROID__
+#include <motioncontrollers.h>
+#endif
+
 cvar_t*  cl_nodelta;
 cvar_t*  cl_debugMove;
 
@@ -2611,7 +2615,9 @@ CL_InitRef
 void CL_InitRef( void )
 {
     refimport_t ri;
+    motcontr_export_t mce;
     refexport_t* ret;
+    
     GetRefAPI_t		GetRefAPI;
     char            dllName[MAX_OSPATH];
     
@@ -2653,7 +2659,6 @@ void CL_InitRef( void )
         Com_Error( ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_DLLError() );
     }
     
-    
     ri.Cmd_AddCommand = Cmd_AddCommand;
     ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
     ri.Cmd_Argc = Cmd_Argc;
@@ -2688,6 +2693,7 @@ void CL_InitRef( void )
     ri.CIN_RunCinematic = CIN_RunCinematic;
     
     ri.Sys_GetSystemHandles = Sys_GetSystemHandles;
+    ri.OculusVR_StereoConfig = mce.OculusVR_StereoConfig;
     
     Com_Printf( "Calling GetRefAPI...\n" );
     ret = GetRefAPI( REF_API_VERSION, &ri );

@@ -575,6 +575,9 @@
     <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\glew.h">
       <Filter>libraries\glew\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\motioncontrollers\motioncontrollers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\renderer\ref_trin.def">
