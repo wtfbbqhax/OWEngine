@@ -578,6 +578,9 @@
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\splines\q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\renderer\ref_trin.def">

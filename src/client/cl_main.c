@@ -2631,7 +2631,7 @@ void CL_InitRef( void )
     Com_sprintf( dllName, sizeof( dllName ), "renderer%s" ARCH_STRING DLL_EXT, cl_renderer->string );
 #endif
     
-    Com_Printf( "Loading \"%s\"...", dllName );
+    Com_Printf( "Loading \"%s\"...\n", dllName );
     if( ( rendererLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
     {
 #if 0//def _WIN32
@@ -2643,15 +2643,13 @@ void CL_InitRef( void )
         strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
         strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
         
-        Com_Printf( "Loading \"%s\"...", fn );
+        Com_Printf( "Loading \"%s\"...\n", fn );
         if( ( rendererLib = Sys_LoadDLLSimple( fn ) ) == 0 )
         {
             Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
         }
 #endif	/* _WIN32 */
     }
-    
-    Com_Printf( "done\n" );
     
     GetRefAPI = Sys_LoadFunction( rendererLib, "GetRefAPI" );
     if( !GetRefAPI )
@@ -2706,7 +2704,7 @@ void CL_InitRef( void )
     
     if( !ret )
     {
-        Com_Error( ERR_FATAL, "Couldn't initialize refresh" );
+        Com_Error( ERR_FATAL, "Couldn't initialize refresh\n" );
     }
     
     re = *ret;

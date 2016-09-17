@@ -642,7 +642,6 @@ qboolean BotImport_AICast_CheckAttackAtPos( int entnum, int enemy, vec3_t pos, q
 }
 // done.
 
-static cvar_t*  sv_botLib = NULL;
 static void*    botLib = NULL;
 
 /*
@@ -669,7 +668,7 @@ void SV_BotInitBotLib( void )
     Com_sprintf( dllName, sizeof( dllName ), "botlib%s" ARCH_STRING DLL_EXT );
 #endif
     
-    Com_Printf( "Loading \"%s\"...", dllName );
+    Com_Printf( "Loading \"%s\"...\n", dllName );
     if( ( botLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
     {
 #if 0//def _WIN32
@@ -681,15 +680,13 @@ void SV_BotInitBotLib( void )
         strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
         strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
         
-        Com_Printf( "Loading \"%s\"...", fn );
+        Com_Printf( "Loading \"%s\"...\n", fn );
         if( ( botLib = Sys_LoadDLLSimple( fn ) ) == 0 )
         {
             Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
         }
 #endif	/* _WIN32 */
     }
-    
-    Com_Printf( "done\n" );
     
     GetBotAPI = Sys_LoadFunction( botLib, "GetBotLibraryAPI" );
     if( !GetBotAPI )

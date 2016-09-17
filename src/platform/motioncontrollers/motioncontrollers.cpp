@@ -337,7 +337,7 @@ motcontr_export_t* GetMotContrLibAPI( int apiVersion, motcontr_import_t* import 
     
     if( apiVersion != MOTLIB_API_VERSION )
     {
-        mcimport.Print( "Mismatched BOTLIB_API_VERSION: expected %i, got %i\n", MOTLIB_API_VERSION, apiVersion );
+        Com_Printf( "Mismatched BOTLIB_API_VERSION: expected %i, got %i\n", MOTLIB_API_VERSION, apiVersion );
         return NULL;
     }
     

@@ -1484,8 +1484,8 @@ static void* motcontLib = NULL;
 
 static void Init_MCLibrary( void )
 {
-    motcontr_import_t ri;
-    motcontr_export_t* ret;
+    motcontr_import_t mi;
+    motcontr_export_t* mex;
     GetMotContrLibAPI_t GetMotContrAPI;
     char dllName[MAX_OSPATH];
     
@@ -1497,30 +1497,28 @@ static void Init_MCLibrary( void )
     Com_sprintf( dllName, sizeof( dllName ), "motioncontrollers" ARCH_STRING DLL_EXT );
 #endif
     
-    Com_Printf( "Loading \"%s\"...", dllName );
+    Com_Printf( "Loading \"%s\"...\n", dllName );
     if( ( motcontLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
     {
-#if 0//def _WIN32
+#if 0 //def _WIN32
         Com_Printf( "failed:\n\"%s\"\n", Sys_DLLError() );
 #else
-        char            fn[1024];
+        char fn[1024];
         
         Q_strncpyz( fn, Sys_Cwd(), sizeof( fn ) );
         strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
         strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
         
-        Com_Printf( "Loading \"%s\"...", fn );
+        Com_Printf( "Loading \"%s\"...\n", fn );
         if( ( motcontLib = Sys_LoadDLLSimple( fn ) ) == 0 )
         {
-            Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
+            Com_Error( ERR_FATAL, "failed: %s\n", Sys_DLLError() );
         }
 #endif	/* _WIN32 */
     }
     
-    ri.Print = Com_Printf;
-    ri.Error = Com_Error;
-    
-    Com_Printf( "done\n" );
+    mi.Print = Com_Printf;
+    mi.Error = Com_Error;
     
     GetMotContrAPI = Sys_LoadFunction( motcontLib, "GetMotContrLibAPI" );
     if( !GetMotContrAPI )
@@ -1529,16 +1527,10 @@ static void Init_MCLibrary( void )
     }
     
     Com_Printf( "Calling GetMotContrLibAPI...\n" );
-    ret = GetMotContrAPI( MOTLIB_API_VERSION, &ri );
+    mex = GetMotContrAPI( MOTLIB_API_VERSION, &mi );
     
     Com_Printf( "-------------------------------\n" );
-    
-    if( !ret )
-    {
-        Com_Error( ERR_FATAL, "Couldn't initialize motion module" );
-    }
-    
-    mce = *ret;
+    mce = *mex;
 }
 
 /*
@@ -1570,11 +1562,11 @@ Sys_Quit
 */
 void Sys_Quit( void )
 {
-    Shutdown_MCLibrary();
-    
     timeEndPeriod( 1 );
     IN_Shutdown();
     Sys_DestroyConsole();
+    
+    Shutdown_MCLibrary();
     
     exit( 0 );
 }
@@ -1608,6 +1600,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     // no abort/retry/fail errors
     SetErrorMode( SEM_FAILCRITICALERRORS );
     
+    // init motion controller library
     Init_MCLibrary();
     
     // get the initial time base

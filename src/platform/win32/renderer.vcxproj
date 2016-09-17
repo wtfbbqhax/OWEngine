@@ -309,6 +309,7 @@
     <ClInclude Include="..\..\qcommon\cm_public.h" />
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
+    <ClInclude Include="..\..\splines\q_shared.h" />
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
     <ClInclude Include="glw_win.h" />
     <ClInclude Include="..\win32\resource.h" />
