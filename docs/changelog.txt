@@ -2,6 +2,7 @@ Changelog
 
 09-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed compiling on Windows platform
+	- Updated binary files
 
 09-02-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Moved motioncontrollers to dynamic module
