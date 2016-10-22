@@ -3,6 +3,7 @@ Changelog
 09-22-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Updated library files for compiling with Visual Studio 2015
 	- Added Android configuration for Visual Studio 2015
+	- Updated binary files and added Android .apk file
 
 09-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed compiling on Windows platform
