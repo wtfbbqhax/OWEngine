@@ -40,8 +40,8 @@ import java.util.concurrent.TimeUnit;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.support.v4.util.LongSparseArray;
-import android.util.Log;
+//import android.support.v4.util.LongSparseArray;
+//import android.util.Log;
 
 public class OWECallbackObj {
 	public OWEAudioTrack mAudioTrack;	

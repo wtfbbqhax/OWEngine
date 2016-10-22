@@ -36,7 +36,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <android/log.h>
-#include <owe.h>
+#include "owe.h"
 
 int  (*qmain)(int argc, char **argv);
 void (*onFrame)();

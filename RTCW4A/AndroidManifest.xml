@@ -1,11 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.owengine.rtcw4a"
+    package="com.OWEngine.RTCW4A"
     android:versionCode="12"
-    android:versionName="1">
+    android:versionName="1"
+    android:installLocation="preferExternal">
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="16"
         android:targetSdkVersion="16" />
+		
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>	
     <application
