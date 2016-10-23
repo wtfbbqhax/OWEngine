@@ -710,24 +710,19 @@ static void GLW_InitExtensions( void )
     }
     
     // GL_ARB_multitexture
-    glConfig.maxActiveTextures = 1;
     if( GLEW_ARB_multitexture )
     {
         if( r_ext_multitexture->value )
         {
-            GLint glint = 0;
-            
-            glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &glint );
-            
-            glConfig.maxActiveTextures = ( int )glint;
-            
-            if( glConfig.maxActiveTextures > 1 )
+			glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &glConfig.maxTextureUnits);
+                       
+            if( glConfig.maxTextureUnits > 1 )
             {
                 ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_multitexture\n" );
             }
             else
             {
-                ri.Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
+                ri.Printf( PRINT_ERROR, "...not using GL_ARB_multitexture, < 2 texture units\n" );
             }
         }
         else

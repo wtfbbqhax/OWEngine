@@ -308,7 +308,7 @@ typedef struct
     char extensions_string[4 * MAX_STRING_CHARS];                       // this is actually too short for many current cards/drivers  // (SA) doubled from 2x to 4x MAX_STRING_CHARS
     
     int maxTextureSize;                             // queried from GL
-    int maxActiveTextures;                          // multitexture ability
+    int maxTextureUnits;                            // multitexture ability
     
     int colorBits, depthBits, stencilBits;
     
