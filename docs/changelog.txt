@@ -1,5 +1,8 @@
 Changelog
 
+09-23-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added documents solution folder inside Visual Studio solution
+
 09-22-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Updated library files for compiling with Visual Studio 2015
 	- Added Android configuration for Visual Studio 2015

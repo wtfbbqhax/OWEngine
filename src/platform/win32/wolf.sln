@@ -31,6 +31,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OWENative", "..\..\..\OWE\O
 EndProject
 Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "OWEPackaging", "..\..\..\OWE\OWEPackaging.androidproj", "{52AA6CA6-9A97-4085-B05D-6F92B384179F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{5D78721E-727B-47BB-986C-2BCBAA03D8BD}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\docs\changelog.txt = ..\..\..\docs\changelog.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
