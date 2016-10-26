@@ -714,25 +714,115 @@ static void GLW_InitExtensions( void )
     {
         if( r_ext_multitexture->value )
         {
-			glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &glConfig.maxTextureUnits);
-                       
+            glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &glConfig.maxTextureUnits );
+            
             if( glConfig.maxTextureUnits > 1 )
             {
                 ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_multitexture\n" );
             }
             else
             {
-                ri.Printf( PRINT_ERROR, "...not using GL_ARB_multitexture, < 2 texture units\n" );
+                ri.Printf( ERR_FATAL, "...not using GL_ARB_multitexture, < 2 texture units\n" );
             }
         }
         else
         {
-            ri.Printf( PRINT_ALL, "...ignoring GL_ARB_multitexture\n" );
+            ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
         }
     }
     else
     {
         ri.Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
+    }
+    
+    // GL_ARB_transpose_matrix
+    if( GLEW_ARB_transpose_matrix )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_transpose_matrix\n" );
+    }
+    else
+    {
+        ri.Printf( PRINT_ALL, "...GL_ARB_transpose_matrix not found\n" );
+    }
+    
+    // GL_ARB_vertex_buffer_object
+    if( GLEW_ARB_vertex_buffer_object )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_vertex_buffer_object\n" );
+    }
+    else
+    {
+        ri.Error( PRINT_ALL, "...GL_ARB_vertex_buffer_object not found\n" );
+    }
+    
+    // GL_EXT_framebuffer_object
+    if( GLEW_EXT_framebuffer_object )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_EXT_framebuffer_object\n" );
+    }
+    else
+    {
+        ri.Printf( PRINT_ALL, "...GL_EXT_framebuffer_object not found\n" );
+    }
+    
+    // GL_ARB_shader_objects
+    if( GLEW_ARB_shader_objects )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_shader_objects\n" );
+    }
+    else
+    {
+        ri.Error( PRINT_ALL, "...GL_ARB_shader_objects not found\n" );
+    }
+    
+    // GL_ARB_vertex_program
+    if( GLEW_ARB_vertex_program )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_vertex_program\n" );
+    }
+    else
+    {
+        ri.Error( ERR_FATAL, "...GL_ARB_vertex_program not found\n" );
+    }
+    
+    // GL_ARB_vertex_shader
+    if( GLEW_ARB_vertex_shader )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_vertex_shader\n" );
+    }
+    else
+    {
+        ri.Error( PRINT_ALL, "...GL_ARB_vertex_shader not found\n" );
+    }
+    
+    // GL_ARB_fragment_shader
+    if( GLEW_ARB_fragment_shader )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_fragment_shader\n" );
+    }
+    else
+    {
+        ri.Error( PRINT_ALL, "...GL_ARB_fragment_shader not found\n" );
+    }
+    
+    // GL_ARB_geometry_shader4
+    if( GLEW_ARB_geometry_shader4 )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_geometry_shader4\n" );
+    }
+    else
+    {
+        ri.Error( PRINT_ALL, "...GL_ARB_geometry_shader4 not found\n" );
+    }
+    
+    // GL_ARB_shading_language_100
+    if( GLEW_ARB_shading_language_100 )
+    {
+        ri.Printf( PRINT_ALL, "...found OpenGL extension - GL_ARB_shading_language_100\n" );
+    }
+    else
+    {
+        ri.Printf( PRINT_ALL, "...GL_ARB_shading_language_100 not found\n" );
     }
 }
 

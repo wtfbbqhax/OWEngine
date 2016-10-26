@@ -1204,7 +1204,7 @@ void GfxInfo_f( void )
     ri.Printf( PRINT_ALL, "picmip: %d\n", r_picmip->integer );
     ri.Printf( PRINT_ALL, "picmip2: %d\n", r_picmip2->integer );
     ri.Printf( PRINT_ALL, "texture bits: %d\n", r_texturebits->integer );
-	ri.Printf( PRINT_ALL, "multitexture: %d\n", glConfig.maxTextureUnits );
+    ri.Printf( PRINT_ALL, "multitexture: %d\n", glConfig.maxTextureUnits );
     ri.Printf( PRINT_ALL, "compiled vertex arrays: %s\n", enablestrings[glLockArraysEXT != 0 ] );
     ri.Printf( PRINT_ALL, "texenv add: %s\n", enablestrings[glConfig.textureEnvAddAvailable != 0] );
     ri.Printf( PRINT_ALL, "compressed textures: %s\n", enablestrings[glConfig.textureCompression != TC_NONE] );

@@ -1196,6 +1196,7 @@ extern cvar_t*   r_ext_texenv_op;
 extern cvar_t*   r_ext_multitexture;
 extern cvar_t*   r_ext_compiled_vertex_array;
 extern cvar_t*   r_ext_texture_env_add;
+
 //----(SA)	added
 extern cvar_t*   r_ext_ATI_pntriangles;
 extern cvar_t*   r_ati_truform_tess;
