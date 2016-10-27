@@ -175,6 +175,24 @@ keyname_t keynames[] =
     {"AUX15", K_AUX15},
     {"AUX16", K_AUX16},
     
+    // gamepad buttons
+    { "PAD_A", K_GAMEPAD_A },
+    { "PAD_B", K_GAMEPAD_B },
+    { "PAD_X", K_GAMEPAD_X },
+    { "PAD_Y", K_GAMEPAD_Y },
+    { "START", K_GAMEPAD_START },
+    { "BACK", K_GAMEPAD_BACK },
+    { "LBUMPER", K_GAMEPAD_LBUMPER },
+    { "RBUMPER", K_GAMEPAD_RBUMPER },
+    { "DPAD_LEFT", K_GAMEPAD_DPAD_LEFT },
+    { "DPAD_RRIGHT", K_GAMEPAD_DPAD_RIGHT },
+    { "DPAD_UP", K_GAMEPAD_DPAD_UP },
+    { "DPAD_DOWN", K_GAMEPAD_DPAD_DOWN },
+    { "LSTICK", K_GAMEPAD_LSTICK },
+    { "RSTICK", K_GAMEPAD_RSTICK },
+    { "LTRIGGER", K_GAMEPAD_LTRIGGER },
+    { "RTRIGGER", K_GAMEPAD_RTRIGGER },
+    
     {"KP_HOME",          K_KP_HOME },
     {"KP_UPARROW",       K_KP_UPARROW },
     {"KP_PGUP",          K_KP_PGUP },
@@ -1939,6 +1957,17 @@ void CL_KeyEvent( int key, qboolean down, unsigned time )
         activeMenu = VM_Call( uivm, UI_GET_ACTIVE_MENU );
     }
     
+    
+    // handle start pressed during game
+    if( down &&
+            key == K_GAMEPAD_START &&
+            !( cls.keyCatchers & KEYCATCH_UI ) &&
+            cls.state == CA_ACTIVE &&
+            !clc.demoplaying )
+    {
+        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_INGAME );
+        return;
+    }
     
     // escape is always handled special
     if( key == K_ESCAPE && down )

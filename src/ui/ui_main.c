@@ -8173,7 +8173,9 @@ void _UI_KeyEvent( int key, qboolean down )
         menuDef_t* menu = Menu_GetFocused();
         if( menu )
         {
-            if( key == K_ESCAPE && down && !Menus_AnyFullScreenVisible() )
+            // Quit out of menus on start pressed
+            if( ( key == K_ESCAPE || key == K_GAMEPAD_START )
+                    && down && !Menus_AnyFullScreenVisible() )
             {
                 Menus_CloseAll();
             }

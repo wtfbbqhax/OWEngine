@@ -3658,6 +3658,7 @@ void Menu_HandleKey( menuDef_t* menu, int key, qboolean down )
             break;
         case K_KP_UPARROW:
         case K_UPARROW:
+        case K_GAMEPAD_DPAD_UP:
         case K_LEFTARROW:
         case K_MWHEELUP:
             Menu_SetPrevCursorItem( menu );
@@ -3675,6 +3676,7 @@ void Menu_HandleKey( menuDef_t* menu, int key, qboolean down )
         case K_TAB:
         case K_KP_DOWNARROW:
         case K_DOWNARROW:
+        case K_GAMEPAD_DPAD_DOWN:
         case K_RIGHTARROW:
         case K_MWHEELDOWN:
             Menu_SetNextCursorItem( menu );
@@ -3733,6 +3735,7 @@ void Menu_HandleKey( menuDef_t* menu, int key, qboolean down )
         case K_AUX16:
             break;
         case K_KP_ENTER:
+        case K_GAMEPAD_A:
         case K_ENTER:
         case K_MOUSE3:
             if( item )
@@ -4637,6 +4640,7 @@ qboolean Item_Bind_HandleKey( itemDef_t* item, int key, qboolean down )
         switch( key )
         {
             case K_ESCAPE:
+            case K_GAMEPAD_B:
                 g_waitingForKey = qfalse;
                 return qtrue;
                 

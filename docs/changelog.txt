@@ -1,5 +1,11 @@
 Changelog
 
+09-27-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added gamepad support for Windows
+
+09-26-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added more OpenGL extensions
+
 09-23-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added documents solution folder inside Visual Studio solution
 	- Changed GL_MAX_ACTIVE_TEXTURES_ARB to GL_MAX_TEXTURE_UNITS_ARB

@@ -856,6 +856,37 @@ static void CL_OculusHeadTracker()
 }
 #endif
 
+#ifdef _WIN32
+/*
+=================
+CL_GamepadEvent
+
+Gamepad values stay set until changed
+=================
+*/
+void CL_GamepadEvent( int axis, int value, int time )
+{
+    if( axis < 0 || axis >= MAX_JOYSTICK_AXIS )
+    {
+        Com_Error( ERR_DROP, "CL_GamepadEvent: bad axis %i", axis );
+    }
+    cl.gamepadAxis[axis] = value;
+}
+
+/*
+=================
+CL_GamepadMove
+=================
+*/
+void CL_GamepadMove( usercmd_t* cmd )
+{
+    // @pjb: only strafing/movement on a gamepad
+    cmd->rightmove = ClampChar( cmd->rightmove + cl.gamepadAxis[AXIS_SIDE] );
+    cmd->forwardmove = ClampChar( cmd->forwardmove + cl.gamepadAxis[AXIS_FORWARD] );
+    cmd->upmove = ClampChar( cmd->upmove + cl.gamepadAxis[AXIS_UP] );
+}
+#endif
+
 /*
 =================
 CL_MouseMove
@@ -1054,6 +1085,11 @@ usercmd_t CL_CreateCmd( void )
     
     // get basic movement from joystick
     CL_JoystickMove( &cmd );
+    
+#ifdef _WIN32
+    // get basic movement from gamepad
+    CL_GamepadMove( &cmd );
+#endif
     
     // check to make sure the angles haven't wrapped
     if( cl.viewangles[PITCH] - oldAngles[PITCH] > 90 )
