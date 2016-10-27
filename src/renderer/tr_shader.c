@@ -758,13 +758,18 @@ static qboolean ParseStage( shaderStage_t* stage, char** text )
             }
             
             //----(SA)	fixes startup error and allows polygon shadows to work again
-            if( !Q_stricmp( token, "$whiteimage" ) || !Q_stricmp( token, "*white" ) )
+            if( !Q_stricmp( token, "$whiteimage" ) || !Q_stricmp( token, "*$white" ) )
             {
                 //----(SA)	end
                 stage->bundle[0].image[0] = tr.whiteImage;
                 continue;
             }
             //----(SA) added
+            if( !Q_stricmp( token, "$blackimage" ) || !Q_stricmp( token, "$black" ) )
+            {
+                stage->bundle[0].image[0] = tr.blackImage;
+                continue;
+            }
             else if( !Q_stricmp( token, "$dlight" ) )
             {
                 stage->bundle[0].image[0] = tr.dlightImage;
@@ -3054,6 +3059,8 @@ shader_t* R_FindShader( const char* name, int lightmapIndex, qboolean mipRawImag
     }
     
     // FIXME: set these "need" values apropriately
+    shader.needsTangent = qtrue;
+    shader.needsBinormal = qtrue;
     shader.needsNormal = qtrue;
     shader.needsST1 = qtrue;
     shader.needsST2 = qtrue;
@@ -3203,6 +3210,8 @@ qhandle_t RE_RegisterShaderFromImage( const char* name, int lightmapIndex, image
     }
     
     // FIXME: set these "need" values apropriately
+    shader.needsTangent = qtrue;
+    shader.needsBinormal = qtrue;
     shader.needsNormal = qtrue;
     shader.needsST1 = qtrue;
     shader.needsST2 = qtrue;

@@ -321,7 +321,7 @@ static void DrawNormals( shaderCommands_t* input )
     for( i = 0; i < input->numVertexes; i++ )
     {
         VectorCopy( input->xyz[i], verts[i * 2] );
-        VectorMA( input->xyz[i], 2, input->normal[i], temp );
+        VectorMA( input->xyz[i], 2, input->normals[i], temp );
         VectorCopy( temp, verts[( i * 2 ) + 1] );
         indicies[( i * 2 )] = i * 2;
         indicies[( i * 2 ) + 1] = ( i * 2 ) + 1;
@@ -975,7 +975,7 @@ static void ComputeColors( shaderStage_t* pStage )
             range = highest - lowest;
             for( i = 0; i < tess.numVertexes; i++ )
             {
-                dot = DotProduct( tess.normal[i], worldUp );
+                dot = DotProduct( tess.normals[i], worldUp );
                 
                 // special handling for Zombie fade effect
                 if( zombieEffect )

@@ -2,6 +2,7 @@ Changelog
 
 09-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added gamepad support for Windows
+	- Added tangent space calculations
 
 09-26-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added more OpenGL extensions

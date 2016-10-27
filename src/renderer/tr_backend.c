@@ -803,7 +803,7 @@ void RB_ZombieFXProcessNewHits( trZombieFleshHitverts_t* fleshHitVerts, int oldN
         foundHit = qfalse;
         
         // for each vertex
-        for( j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = tess.normal[oldNumVerts];
+        for( j = 0, bestHitDist = -1, xyzTrav = tess.xyz[oldNumVerts], normTrav = tess.normals[oldNumVerts];
                 j < numSurfVerts;
                 j++, xyzTrav += 4, normTrav += 4 )
         {
@@ -923,7 +923,7 @@ void RB_ZombieFXDecompose( int oldNumVerts, int numSurfVerts, float deltaTimeSca
     
     vertColors = tess.vertexColors[oldNumVerts];
     xyz = tess.xyz[oldNumVerts];
-    norm = tess.normal[oldNumVerts];
+    norm = tess.normals[oldNumVerts];
     
     for( i = 0; i < numSurfVerts; i++, vertColors += 4, xyz += 4, norm += 4 )
     {

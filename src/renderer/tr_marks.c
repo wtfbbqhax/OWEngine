@@ -348,7 +348,7 @@ int R_OldMarkFragments( int numPoints, const vec3_t* points, const vec3_t projec
     float*           v;
     srfSurfaceFace_t* surf;
     srfGridMesh_t*   cv;
-    drawVert_t*      dv;
+    srfVert_t*       dv;
     vec3_t normal;
     vec3_t projectionDir;
     vec3_t v1, v2;
@@ -565,7 +565,7 @@ int R_MarkFragments( int orientation, const vec3_t* points, const vec3_t project
     float*           v;
     srfSurfaceFace_t* surf;
     srfGridMesh_t*   cv;
-    drawVert_t*      dv;
+    srfVert_t*       dv;
     vec3_t normal;
     vec3_t projectionDir;
     vec3_t v1, v2;
