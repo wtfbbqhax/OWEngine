@@ -3,6 +3,7 @@ Changelog
 11-09-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added "Tools" solution folder inside Visual Studio configuration
 	- Fixed compiling BSPC project
+	- Reformatted code with AStyle to match global indenting and formatting
 
 09-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added gamepad support for Windows
