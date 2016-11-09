@@ -1,5 +1,8 @@
 Changelog
 
+11-09-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added "Tools" solution folder inside Visual Studio configuration
+
 09-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added gamepad support for Windows
 	- Added tangent space calculations
