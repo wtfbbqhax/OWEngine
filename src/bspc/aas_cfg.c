@@ -50,6 +50,8 @@
 #include "../botlib/l_struct.h"
 #include "../botlib/l_libvar.h"
 
+#define FLT_MAX 3.402823466e+38F
+
 ///////////////////////////////////
 extern void LibVarSet( char* var_name, char* value );
 ///////////////////////////////////

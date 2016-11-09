@@ -56,6 +56,9 @@
 #include "l_log.h"
 #include "l_qfiles.h"
 
+#include <string.h>
+#define strcasecmp _stricmp
+
 //Mr Elusive shit
 #define ME
 #define DEBUG

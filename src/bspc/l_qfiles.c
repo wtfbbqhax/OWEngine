@@ -506,6 +506,7 @@ quakefile_t* FindQuakeFilesWithPakFilter( char* pakfilter, char* filter )
     WIN32_FIND_DATA filedata;
     HWND handle;
     struct _stat statbuf;
+    qboolean done;
 #else
     glob_t globbuf;
     struct stat statbuf;
@@ -513,7 +514,7 @@ quakefile_t* FindQuakeFilesWithPakFilter( char* pakfilter, char* filter )
 #endif
     quakefile_t* qfiles, *lastqf, *qf;
     char pakfile[_MAX_PATH], filename[_MAX_PATH], *str;
-    int done;
+    //int done;
     
     qfiles = NULL;
     lastqf = NULL;
