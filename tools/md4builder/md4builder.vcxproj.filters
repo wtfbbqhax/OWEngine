@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="fbxmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="md4anim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="md4mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libraries\glew-2.0.0\src\glew.c">
+      <Filter>Libraries\GLEW\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="md4builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\qcommon\qfiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game\q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\glew-2.0.0\include\GL\glew.h">
+      <Filter>Libraries\GLEW\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\glew-2.0.0\include\GL\wglew.h">
+      <Filter>Libraries\GLEW\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5553c5fe-35d0-46ee-bcb1-77c660fb105d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5f09c777-d015-4e65-a28f-627e5788261e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{c3e23027-8656-40d6-b8fc-a00ce6f71dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\GLEW">
+      <UniqueIdentifier>{8bde5b6f-f118-4378-b095-3a2f889357ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\GLEW\Source Files">
+      <UniqueIdentifier>{b3654af9-0aa8-434e-b1ae-934d4c2e9ef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\GLEW\Header Files">
+      <UniqueIdentifier>{57e4b82c-04fd-49c1-beaa-1d2df87725a0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
