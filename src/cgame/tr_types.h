@@ -175,6 +175,7 @@ typedef struct
     
     int entityNum;                  // currentState.number, so we can attach rendering effects to specific entities (Zombie)
     
+    int animHandle;
 } refEntity_t;
 
 //----(SA)

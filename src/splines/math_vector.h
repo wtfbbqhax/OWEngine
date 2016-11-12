@@ -456,6 +456,7 @@ public:
     float   Radius();       // radius from origin, not from center
     idVec3  Center();
     void    AddPoint( const idVec3& v );
+    void    AddPoint( float* v );
     void    AddBounds( const Bounds& bb );
     bool    IsCleared();
     bool    ContainsPoint( const idVec3& p );
@@ -514,6 +515,34 @@ ID_INLINE void Bounds::Zero()
 {
     b[0][0] = b[0][1] = b[0][2] =
                             b[1][0] = b[1][1] = b[1][2] = 0;
+}
+
+ID_INLINE void Bounds::AddPoint( float* v )
+{
+    if( v[0] < b[0][0] )
+    {
+        b[0][0] = v[0];
+    }
+    if( v[0] > b[1][0] )
+    {
+        b[1][0] = v[0];
+    }
+    if( v[1] < b[0][1] )
+    {
+        b[0][1] = v[1];
+    }
+    if( v[1] > b[1][1] )
+    {
+        b[1][1] = v[1];
+    }
+    if( v[2] < b[0][2] )
+    {
+        b[0][2] = v[2];
+    }
+    if( v[2] > b[1][2] )
+    {
+        b[1][2] = v[2];
+    }
 }
 
 ID_INLINE void Bounds::AddPoint( const idVec3& v )

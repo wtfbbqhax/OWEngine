@@ -209,6 +209,7 @@
     <ClCompile Include="..\..\..\libraries\jpeg-6\jutils.c" />
     <ClCompile Include="..\..\game\q_math.c" />
     <ClCompile Include="..\..\game\q_shared.c" />
+    <ClCompile Include="..\..\renderer\tr_model_md4mesh.c" />
     <ClCompile Include="..\win32\win_gamma.c" />
     <ClCompile Include="..\win32\win_glimp.c" />
     <ClCompile Include="..\..\renderer\tr_animation.c" />
@@ -318,6 +319,11 @@
     <ClInclude Include="..\..\renderer\qgl.h" />
     <ClInclude Include="..\..\renderer\tr_local.h" />
     <ClInclude Include="..\..\renderer\tr_public.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Splines.vcxproj">
+      <Project>{aa96579b-0f16-4614-8453-0b03c8b39a46}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

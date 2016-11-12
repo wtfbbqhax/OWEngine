@@ -147,6 +147,8 @@ typedef enum
     CG_R_REGISTERSKIN,
     CG_R_REGISTERSHADER,
     
+    CG_LOADANIM,
+    
     CG_R_GETSKINMODEL,      // client allowed to view what the .skin loaded so they can set their model appropriately
     CG_R_GETMODELSHADER,    // client allowed the shader handle for given model/surface (for things like debris inheriting shader from explosive)
     

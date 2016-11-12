@@ -402,6 +402,11 @@ void    trap_R_AddLightToScene( const vec3_t org, float intensity, float r, floa
     syscall( CG_R_ADDLIGHTTOSCENE, org, PASSFLOAT( intensity ), PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ), overdraw );
 }
 
+qhandle_t trap_R_LoadAnim( qhandle_t modelIndex, const char* name )
+{
+    return syscall( CG_LOADANIM, modelIndex, name );
+}
+
 //----(SA)
 void    trap_R_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags )
 {

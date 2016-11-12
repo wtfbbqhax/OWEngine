@@ -42,13 +42,14 @@
 
 #include "math_quaternion.h"
 #include "math_matrix.h"
+#include "math_angles.h"
 
 void toQuat( idVec3& src, quat_t& dst )
 {
-    dst.x = src.x;
-    dst.y = src.y;
-    dst.z = src.z;
-    dst.w = 0.0f;
+    mat3_t temp;
+    
+    toMatrix( src, temp );
+    toQuat( temp, dst );
 }
 
 void toQuat( angles_t& src, quat_t& dst )

@@ -541,8 +541,6 @@ issues.
 ==============================================================
 */
 
-#define BASEGAME "main"
-
 // referenced flags
 // these are in loop specific order so don't change the order
 #define FS_GENERAL_REF  0x01

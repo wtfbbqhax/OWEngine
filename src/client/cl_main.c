@@ -2685,13 +2685,17 @@ void CL_InitRef( void )
     ri.Cvar_Set = Cvar_Set;
     
     // cinematic stuff
-    
     ri.CIN_UploadCinematic = CIN_UploadCinematic;
     ri.CIN_PlayCinematic = CIN_PlayCinematic;
     ri.CIN_RunCinematic = CIN_RunCinematic;
     
     ri.Sys_GetSystemHandles = Sys_GetSystemHandles;
     ri.OculusVR_StereoConfig = mce.OculusVR_StereoConfig;
+    
+    //Dushan
+    ri.FS_FCloseFile = FS_FCloseFile;
+    ri.FS_Read = FS_Read;
+    ri.FS_FOpenFileByMode = FS_FOpenFileByMode;
     
     Com_Printf( "Calling GetRefAPI...\n" );
     ret = GetRefAPI( REF_API_VERSION, &ri );

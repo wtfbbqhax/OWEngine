@@ -54,6 +54,8 @@ extern "C" {
 #include "util_str.h"
 #include "math_vector.h"
 
+int Q_stricmp( const char* s1, const char* s2 );
+
 typedef int fileHandle_t;
 
 extern void glBox( idVec3& color, idVec3& point, float size );

@@ -46,7 +46,9 @@
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
+#define BASEGAME "main"
 #define Q3_VERSION      "Wolf 1.41"
+
 // ver 1.0.0	- release
 // ver 1.0.1	- post-release work
 // ver 1.1.0	- patch 1 (12/12/01)
@@ -802,8 +804,8 @@ qboolean Info_Validate( const char* s );
 void Info_NextPair( const char** s, char* key, char* value );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
-void QDECL Com_Error( int level, const char* error, ... );
-void QDECL Com_Printf( const char* msg, ... );
+void Com_Error( int level, const char* error, ... );
+void Com_Printf( const char* msg, ... );
 
 
 /*

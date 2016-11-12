@@ -340,104 +340,159 @@ typedef struct
 // done.
 
 /*
+ ==============================================================================
+
+MD4Anim file format
+
+==============================================================================
+*/
+#define MD4ANIM_IDENT           ( ( 'A' << 24 ) + ( '4' << 16 ) + ( 'D' << 8 ) + 'M' )
+#define MD4ANIM_VERSION         2
+#define MD4ANIM_JOINTNAMESIZE	32
+
+//
+// md4JointTransform_t
+//
+typedef struct
+{
+    vec3_t		translate;
+    vec4_t		rotation;
+} md4JointTransform_t;
+
+//
+// md4AnimFrame_t
+//
+typedef struct
+{
+    int			baseTransform;
+    vec3_t		mins;
+    vec3_t		maxs;
+} md4AnimFrame_t;
+
+//
+// md4AnimJoint_t
+//
+typedef struct
+{
+    char		name[MD4ANIM_JOINTNAMESIZE];
+    int			parentnum;
+} md4AnimJoint_t;
+
+//
+// md4AnimHeader_t
+//
+typedef struct
+{
+    int		iden;
+    int		version;
+    
+    int		ofsFrames;
+    int		numFrames;
+    
+    int		ofsJoints;
+    int		ofsTransforms;
+    int		numJoints;
+} md4AnimHeader_t;
+
+/*
 ==============================================================================
 
-MD4 file format
+MD4Mesh file format
 
 ==============================================================================
 */
 
-#define MD4_IDENT           ( ( '4' << 24 ) + ( 'P' << 16 ) + ( 'D' << 8 ) + 'I' )
-#define MD4_VERSION         1
-#define MD4_MAX_BONES       128
+#define MD4MESH_IDENT           ( ( 'M' << 24 ) + ( '4' << 16 ) + ( 'D' << 8 ) + 'M' )
+#define MD4MESH_VERSION         1
+#define MD4MESH_JOINTNAMESIZE	32
+#define MD4MESH_SCALE			0.5f
+#define MD4MESH_ZOFFSET			22
 
+//
+// md4MeshWeight_t
+//
 typedef struct
 {
-    int boneIndex;              // these are indexes into the boneReferences,
-    float boneWeight;           // not the global per-frame bone list
-    vec3_t offset;
-} md4Weight_t;
+    short					jointNum;
+    float					jointWeight;
+    vec3_t					offset;
+} md4MeshWeight_t;
 
+//
+// md4MeshVertex_t
+//
 typedef struct
 {
-    vec3_t normal;
-    vec2_t texCoords;
-    int numWeights;
-    md4Weight_t weights[1];     // variable sized
-} md4Vertex_t;
+    vec2_t					texCoords;
+    size_t					startweight;
+    size_t					numWeights;
+} md4MeshVertex_t;
 
+//
+// md4MeshJoint_t
+//
 typedef struct
 {
-    int indexes[3];
-} md4Triangle_t;
+    char		name[MD4MESH_JOINTNAMESIZE];
+    int			parentnum;
+    vec3_t		pos; // bind position
+    vec4_t		rotation;
+} md4MeshJoint_t;
 
+//
+// md4MeshSurface_t
+//
 typedef struct
 {
-    int ident;
+    int			iden;
     
-    char name[MAX_QPATH];           // polyset name
-    char shader[MAX_QPATH];
-    int shaderIndex;                // for in-game use
+    char		name[32];
     
-    int ofsHeader;                  // this will be a negative number
+    int			shadernum;
     
-    int numVerts;
-    int ofsVerts;
+    int			startVertex;
+    int			numVertexes;
     
-    int numTriangles;
-    int ofsTriangles;
+    int			startIndex;
+    int			numIndexes;
     
-    // Bone references are a set of ints representing all the bones
-    // present in any vertex weights for this surface.  This is
-    // needed because a model may have surfaces that need to be
-    // drawn at different sort times, and we don't want to have
-    // to re-interpolate all the bones for each surface.
-    int numBoneReferences;
-    int ofsBoneReferences;
-    
-    int ofsEnd;                     // next surface follows
-} md4Surface_t;
+    void*		header;
+} md4MeshSurface_t;
 
+//
+// md4MeshShader_t
+//
 typedef struct
 {
-    float matrix[3][4];
-} md4Bone_t;
+    char		shadername[MAX_QPATH];
+} md4MeshShader_t;
 
+//
+// md4MeshHeader_t
+//
 typedef struct
 {
-    vec3_t bounds[2];               // bounds of all surfaces of all LOD's for this frame
-    vec3_t localOrigin;             // midpoint of bounds, used for sphere cull
-    float radius;                   // dist from localOrigin to corner
-    char name[16];
-    md4Bone_t bones[1];             // [numBones]
-} md4Frame_t;
-
-typedef struct
-{
-    int numSurfaces;
-    int ofsSurfaces;                // first surface, others follow
-    int ofsEnd;                     // next lod follows
-} md4LOD_t;
-
-typedef struct
-{
-    int ident;
-    int version;
+    int		iden;
+    int		version;
     
-    char name[MAX_QPATH];           // model name
+    int		numJoints;
+    int		ofsJoints;
     
-    // frames and bones are shared by all levels of detail
-    int numFrames;
-    int numBones;
-    int ofsFrames;                  // md4Frame_t[numFrames]
+    int		numShaders;
+    int		ofsShaders;
     
-    // each level of detail has completely separate sets of surfaces
-    int numLODs;
-    int ofsLODs;
+    int		numSurfaces;
+    int		ofsSurface;
     
-    int ofsEnd;                     // end of file
-} md4Header_t;
-
+    int		numVertexes;
+    int		ofsVetexes;
+    
+    int		numIndexes;
+    int		ofsIndexes;
+    
+    int		numWeights;
+    int		ofsWeights;
+} md4MeshHeader_t;
 
 /*
 ==============================================================================

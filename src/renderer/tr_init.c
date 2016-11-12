@@ -1772,6 +1772,7 @@ extern "C" {
         re.RegisterFont     = RE_RegisterFont;
         re.RemapShader      = R_RemapShader;
         re.GetEntityToken   = R_GetEntityToken;
+        re.LoadAnim         = R_LoadMD4Anim;
         
 #ifdef BLAH // MrE __USEA3D
         re.A3D_RenderGeometry = RE_A3D_RenderGeometry;

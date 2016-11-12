@@ -42,6 +42,10 @@
 
 #include "tr_local.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #define LL( x ) x = LittleLong( x )
 
 // Ridah
@@ -49,6 +53,7 @@ static qboolean R_LoadMDC( model_t* mod, int lod, void* buffer, const char* mod_
 // done.
 static qboolean R_LoadMD3( model_t* mod, int lod, void* buffer, const char* name );
 static qboolean R_LoadMDS( model_t* mod, void* buffer, const char* name );
+static qboolean R_LoadMD4Mesh( model_t* mod, void* buffer, const char* name, int filelen );
 
 model_t* loadmodel;
 
@@ -88,7 +93,7 @@ model_t* R_AllocModel( void )
         return NULL;
     }
     
-    mod = ri.Hunk_Alloc( sizeof( *tr.models[tr.numModels] ), h_low );
+    mod = ( model_t* )ri.Hunk_Alloc( sizeof( *tr.models[tr.numModels] ), h_low );
     mod->index = tr.numModels;
     tr.models[tr.numModels] = mod;
     tr.numModels++;
@@ -189,6 +194,31 @@ qhandle_t RE_RegisterModel( const char* name )
     // load the files
     //
     numLoaded = 0;
+    
+    if( strstr( name, ".md4mesh" ) )  // try loading skeletal file
+    {
+        int len;
+        
+        loaded = qfalse;
+        len = ri.FS_ReadFile( name, ( void** )&buf );
+        if( buf )
+        {
+            loadmodel = mod;
+            
+            ident = LittleLong( *( unsigned* )buf );
+            if( ident == MD4MESH_IDENT )
+            {
+                loaded = R_LoadMD4Mesh( mod, buf, name, len );
+            }
+            
+            ri.FS_FreeFile( buf );
+        }
+        
+        if( loaded )
+        {
+            return mod->index;
+        }
+    }
     
     if( strstr( name, ".mds" ) )     // try loading skeletal file
     {
@@ -636,7 +666,7 @@ static qboolean R_MDC_ConvertMD3( model_t* mod, int lod, const char* mod_name )
     
     md3 = mod->md3[lod];
     
-    baseFrames = ri.Hunk_AllocateTempMemory( sizeof( *baseFrames ) * md3->numFrames );
+    baseFrames = ( int* )ri.Hunk_AllocateTempMemory( sizeof( *baseFrames ) * md3->numFrames );
     
     // the first frame is always a base frame
     numBaseFrames = 0;
@@ -702,7 +732,7 @@ static qboolean R_MDC_ConvertMD3( model_t* mod, int lod, const char* mod_name )
     // report the memory differences
     Com_Printf( "Compressed %s. Old = %i, New = %i\n", mod_name, md3->ofsEnd, mdcHeader.ofsEnd );
     
-    mdc = ri.Hunk_Alloc( mdcHeader.ofsEnd, h_low );
+    mdc = ( mdcHeader_t* )ri.Hunk_Alloc( mdcHeader.ofsEnd, h_low );
     mod->mdc[lod] = mdc;
     
     // we have the memory allocated, so lets fill it in
@@ -848,7 +878,7 @@ static qboolean R_LoadMDC( model_t* mod, int lod, void* buffer, const char* mod_
     mod->type = MOD_MDC;
     size = LittleLong( pinmodel->ofsEnd );
     mod->dataSize += size;
-    mod->mdc[lod] = ri.Hunk_Alloc( size, h_low );
+    mod->mdc[lod] = ( mdcHeader_t* )ri.Hunk_Alloc( size, h_low );
     
     memcpy( mod->mdc[lod], buffer, LittleLong( pinmodel->ofsEnd ) );
     
@@ -1076,11 +1106,11 @@ static qboolean R_LoadMD3( model_t* mod, int lod, void* buffer, const char* mod_
     // Ridah, convert to compressed format
     if( !r_compressModels->integer )
     {
-        mod->md3[lod] = ri.Hunk_Alloc( size, h_low );
+        mod->md3[lod] = ( md3Header_t* )ri.Hunk_Alloc( size, h_low );
     }
     else
     {
-        mod->md3[lod] = ri.Hunk_AllocateTempMemory( size );
+        mod->md3[lod] = ( md3Header_t* )ri.Hunk_AllocateTempMemory( size );
     }
     // done.
     
@@ -1265,7 +1295,150 @@ static qboolean R_LoadMD3( model_t* mod, int lod, void* buffer, const char* mod_
     return qtrue;
 }
 
+//
+// GetNumFramesFromAnimationFile
+//
 
+// I Needed a way to get the number of frames in a animation on the server
+// without actually loading in the model so this just loads in the header
+// for a .md4anim.
+int R_GetNumFramesFromAnimationFile( const char* name )
+{
+    qhandle_t animhandle;
+    fileHandle_t f;
+    int numFrames = 0;
+    md4AnimHeader_t header;
+    
+    // Try to open the file for reading.
+    if( !ri.FS_FOpenFileByMode( name, &f, FS_READ ) )
+    {
+        Com_Printf( "WARNING: R_GetNumFramesFromAnimationFile: Failed to open %s \n", name );
+        return 0;
+    }
+    
+    ri.FS_Read( &header, sizeof( md4AnimHeader_t ), f );
+    numFrames = header.numFrames;
+    
+    // Close the file.
+    ri.FS_FCloseFile( f );
+    
+    return numFrames;
+}
+
+
+//
+// R_LoadMD4Anim
+//
+qhandle_t R_LoadMD4Anim( qhandle_t modelHandle, const char* name )
+{
+    model_t* model;
+    md4AnimHeader_t* header;
+    md4AnimHeader_t* anim;
+    int fileLen;
+    qhandle_t animHandle;
+    
+    // Find the model first to ensure we can load the anim into a valid model.
+    model = R_GetModelByHandle( modelHandle );
+    if( model == NULL )
+    {
+        Com_Printf( "WARNING: R_LoadMD4Anim: Model Index is invalid. \n" );
+        return -1;
+    }
+    
+    // Read in the md4animation.
+    fileLen = ri.FS_ReadFile( name, ( void** )&header );
+    if( fileLen <= 0 )
+    {
+        Com_Printf( "WARNING: R_LoadMD4Anim: Failed to open %s \n", name );
+        return -1;
+    }
+    
+    // Check the iden.
+    if( header->iden != MD4ANIM_IDENT )
+    {
+        Com_Error( ERR_FATAL, "R_LoadMD4Anim: Invalid iden \n" );
+        return -1;
+    }
+    
+    // Check the version.
+    if( header->version != MD4ANIM_VERSION )
+    {
+        Com_Error( ERR_FATAL, "R_LoadMD4Anim: Invalid version.\n" );
+        return -1;
+    }
+    
+    // Check the number of joints in the anim file against the meshes.
+    if( header->numJoints != model->md4mesh->numJoints )
+    {
+        Com_Error( ERR_FATAL, "R_LoadMD4Anim: Anim has different number of joints then the mesh.\n" );
+        return -1;
+    }
+    
+    // Find a available anim slot in the model.
+    for( animHandle = 0; animHandle < MAX_MD4_ANIMS; animHandle++ )
+    {
+        if( model->md4Anims[animHandle] == NULL )
+            break;
+    }
+    
+    anim = model->md4Anims[animHandle] = ( md4AnimHeader_t* )ri.Hunk_Alloc( fileLen, h_low );
+    
+    // Copy the anim data to our internal struct.
+    memcpy( anim, header, fileLen );
+    
+    // Free the file header.
+    ri.FS_FreeFile( ( void* )header );
+    
+    return animHandle + 1;
+}
+
+//
+// R_LoadMD4Mesh
+//
+static qboolean R_LoadMD4Mesh( model_t* mod, void* buffer, const char* name, int filelen )
+{
+    md4MeshHeader_t* header, *md4Mesh;
+    md4MeshShader_t* shader;
+    md4MeshSurface_t* surface;
+    int i;
+    
+    header = ( md4MeshHeader_t* )buffer;
+    if( header->version != MD4MESH_VERSION )
+    {
+        ri.Printf( PRINT_WARNING, "R_LoadMD4MESH: %s has wrong version (%i should be %i)\n", name, header->version, MD4MESH_VERSION );
+        return qfalse;
+    }
+    
+    mod->type = MOD_MD4MESH;
+    mod->dataSize += filelen;
+    md4Mesh = mod->md4mesh = ( md4MeshHeader_t* )ri.Hunk_Alloc( filelen, h_low );
+    
+    memcpy( md4Mesh, buffer, filelen );
+    
+    // Load in all the shaders, and set the surface shader num to match the shader index.
+    for( i = 0; i < header->numSurfaces; i++ )
+    {
+        shader_t*    sh;
+        surface = ( md4MeshSurface_t* )( ( byte* )md4Mesh + header->ofsSurface + ( sizeof( md4MeshSurface_t ) * i ) );
+        shader = ( md4MeshShader_t* )( ( byte* )md4Mesh + header->ofsShaders + ( sizeof( md4MeshSurface_t ) * surface->shadernum ) );
+        
+        surface->iden = SF_MD4MESH;
+        
+        sh = R_FindShader( shader->shadername, LIGHTMAP_NONE, qtrue );
+        if( sh->defaultShader )
+        {
+            surface->shadernum = 0;
+        }
+        else
+        {
+            surface->shadernum = sh->index;
+        }
+        
+        surface->header = mod->md4mesh;
+    }
+    
+    return qtrue;
+}
 
 /*
 =================
@@ -1301,7 +1474,7 @@ static qboolean R_LoadMDS( model_t* mod, void* buffer, const char* mod_name )
     mod->type = MOD_MDS;
     size = LittleLong( pinmodel->ofsEnd );
     mod->dataSize += size;
-    mds = mod->mds = ri.Hunk_Alloc( size, h_low );
+    mds = mod->mds = ( mdsHeader_t* )ri.Hunk_Alloc( size, h_low );
     
     memcpy( mds, buffer, LittleLong( pinmodel->ofsEnd ) );
     
@@ -1484,7 +1657,7 @@ static qboolean R_LoadMDS( model_t* mod, void* buffer, const char* mod_name )
 */
 void RE_BeginRegistration( glconfig_t* glconfigOut )
 {
-    ri.Hunk_Clear();    // (SA) MEM NOTE: not in missionpack
+    //ri.Hunk_Clear();    // (SA) MEM NOTE: not in missionpack
     
     R_Init();
     *glconfigOut = glConfig;
@@ -1742,6 +1915,11 @@ int R_LerpTag( orientation_t* tag, const refEntity_t* refent, const char* tagNam
     frontLerp = frac;
     backLerp = 1.0 - frac;
     
+    if( model->type == MOD_MD4MESH )
+    {
+        return R_FindBone( model, model->md4Anims[0], tag, refent->frame, tagNameIn );
+    }
+    
     if( model->type == MOD_MESH )
     {
         // old MD3 style
@@ -1816,6 +1994,52 @@ int R_LerpTag( orientation_t* tag, const refEntity_t* refent, const char* tagNam
     VectorNormalize( tag->axis[2] );
     
     return retval;
+}
+
+
+//=============================================================================
+
+//
+// R_FindBone
+//
+int R_FindBone( model_t* model, md4AnimHeader_t* anim, orientation_t* tag, int frameNum, const char* boneName )
+{
+    md4MeshVertex_t* vert;
+    md4MeshHeader_t* header;
+    md4MeshWeight_t* weight;
+    md4MeshJoint_t*  bones;
+    md4AnimFrame_t* frame;
+    md4JointTransform_t* jointTransform;
+    
+    short* indexes;
+    int i, w, j;
+    int animHandle;
+    
+    header = ( md4MeshHeader_t* )model->md4mesh;
+    bones = ( md4MeshJoint_t* )( ( byte* )header + header->ofsJoints + ( 0 * sizeof( md4MeshJoint_t ) ) );
+    
+    animHandle = 0;
+    
+    frame = ( md4AnimFrame_t* )( ( byte* )anim + anim->ofsFrames + ( frameNum * sizeof( md4AnimFrame_t ) ) );
+    jointTransform = ( md4JointTransform_t* )( ( byte* )anim + anim->ofsTransforms + ( frame->baseTransform * sizeof( md4JointTransform_t ) ) );
+    
+    for( i = 0; i < anim->numJoints; i++, jointTransform++, bones++ )
+    {
+#if 0
+        if( !strcmp( bones->name, boneName ) )
+        {
+            mat3_t rotationMatrix;
+            VectorSet( tag->origin, jointTransform->translate[0], jointTransform->translate[1], jointTransform->translate[2] );
+            toMatrix( jointTransform->rotation, rotationMatrix );
+            
+            VectorCopy( rotationMatrix[0], tag->axis[0] );
+            VectorCopy( rotationMatrix[1], tag->axis[1] );
+            VectorCopy( rotationMatrix[2], tag->axis[2] );
+            return i;
+        }
+#endif
+    }
+    return -1;
 }
 
 /*
@@ -1901,6 +2125,15 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs )
         return;
     }
     
+    if( model->md4Anims[0] )
+    {
+        md4AnimFrame_t* frame = ( md4AnimFrame_t* )( ( byte* )model->md4Anims[0] + model->md4Anims[0]->ofsFrames + ( 0 * sizeof( md4AnimFrame_t ) ) );
+        VectorCopy( frame->mins, mins );
+        VectorCopy( frame->maxs, maxs );
+        
+        return;
+    }
+    
     VectorClear( mins );
     VectorClear( maxs );
     // done.
@@ -1940,12 +2173,12 @@ void* R_Hunk_Begin( void )
     hunkcursize = 0;
     hunkmaxsize = maxsize;
     
-#if 0 //def _WIN32
+#ifdef _WIN32
     
     // this will "reserve" a chunk of memory for use by this application
     // it will not be "committed" just yet, but the swap file will grow
     // now if needed
-    membase = VirtualAlloc( NULL, maxsize, MEM_RESERVE, PAGE_NOACCESS );
+    membase = ( byte* )VirtualAlloc( NULL, maxsize, MEM_RESERVE, PAGE_NOACCESS );
     
 #elif defined( __MACOS__ )
     
@@ -1959,7 +2192,7 @@ void* R_Hunk_Begin( void )
     //   I am merging the MP way of doing things though, just in case (since we have r_cache 1 on linux MP)
     if( !membase )
     {
-        membase = malloc( maxsize );
+        membase = ( byte* )malloc( maxsize );
         // TTimo NOTE: initially, I was doing the memset even if we had an existing membase
         // but this breaks some shaders (i.e. /map mp_beach, then go back to the main menu .. some shaders are missing)
         // I assume the shader missing is because we don't clear memory either on win32
@@ -1979,7 +2212,7 @@ void* R_Hunk_Begin( void )
 
 void* R_Hunk_Alloc( int size )
 {
-#if 0//def _WIN32
+#ifdef _WIN32
     void*    buf;
 #endif
     
@@ -1988,7 +2221,7 @@ void* R_Hunk_Alloc( int size )
     // round to cacheline
     size = ( size + 31 ) & ~31;
     
-#if 0 //def _WIN32
+#ifdef _WIN32
     
     // commit pages as needed
     buf = VirtualAlloc( membase, hunkcursize + size, MEM_COMMIT, PAGE_READWRITE );
@@ -2026,7 +2259,7 @@ void R_Hunk_End( void )
     
     if( membase )
     {
-#if 0 //def _WIN32
+#ifdef _WIN32
         VirtualFree( membase, 0, MEM_RELEASE );
 #elif defined( __MACOS__ )
         //DAJ FIXME free (membase);
@@ -2184,7 +2417,7 @@ void R_BackupModels( void )
                         {
                             if( ( j == MD3_MAX_LODS - 1 ) || ( mod->md3[j] != mod->md3[j + 1] ) )
                             {
-                                modBack->md3[j] = R_CacheModelAlloc( mod->md3[j]->ofsEnd );
+                                modBack->md3[j] = ( md3Header_t* )R_CacheModelAlloc( mod->md3[j]->ofsEnd );
                                 memcpy( modBack->md3[j], mod->md3[j], mod->md3[j]->ofsEnd );
                             }
                             else
@@ -2201,7 +2434,7 @@ void R_BackupModels( void )
                         {
                             if( ( j == MD3_MAX_LODS - 1 ) || ( mod->mdc[j] != mod->mdc[j + 1] ) )
                             {
-                                modBack->mdc[j] = R_CacheModelAlloc( mod->mdc[j]->ofsEnd );
+                                modBack->mdc[j] = ( mdcHeader_t* )R_CacheModelAlloc( mod->mdc[j]->ofsEnd );
                                 memcpy( modBack->mdc[j], mod->mdc[j], mod->mdc[j]->ofsEnd );
                             }
                             else
@@ -2338,7 +2571,7 @@ qboolean R_FindCachedModel( const char* name, model_t* newmod )
                         {
                             if( ( j == MD3_MAX_LODS - 1 ) || ( mod->md3[j] != mod->md3[j + 1] ) )
                             {
-                                newmod->md3[j] = ri.Hunk_Alloc( mod->md3[j]->ofsEnd, h_low );
+                                newmod->md3[j] = ( md3Header_t* )ri.Hunk_Alloc( mod->md3[j]->ofsEnd, h_low );
                                 memcpy( newmod->md3[j], mod->md3[j], mod->md3[j]->ofsEnd );
                                 R_RegisterMD3Shaders( newmod, j );
                                 R_CacheModelFree( mod->md3[j] );
@@ -2357,7 +2590,7 @@ qboolean R_FindCachedModel( const char* name, model_t* newmod )
                         {
                             if( ( j == MD3_MAX_LODS - 1 ) || ( mod->mdc[j] != mod->mdc[j + 1] ) )
                             {
-                                newmod->mdc[j] = ri.Hunk_Alloc( mod->mdc[j]->ofsEnd, h_low );
+                                newmod->mdc[j] = ( mdcHeader_t* )ri.Hunk_Alloc( mod->mdc[j]->ofsEnd, h_low );
                                 memcpy( newmod->mdc[j], mod->mdc[j], mod->mdc[j]->ofsEnd );
                                 R_RegisterMDCShaders( newmod, j );
                                 R_CacheModelFree( mod->mdc[j] );

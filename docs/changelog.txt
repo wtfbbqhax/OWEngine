@@ -1,5 +1,8 @@
 Changelog
 
+11-12-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added support for converted FBX animated models inside engine and gamelogics
+
 11-09-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added "Tools" solution folder inside Visual Studio configuration
 	- Fixed compiling BSPC project

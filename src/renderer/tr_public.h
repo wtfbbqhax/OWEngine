@@ -131,6 +131,7 @@ typedef struct
     void ( *ZombieFXAddNewHit )( int entityNum, const vec3_t hitPos, const vec3_t hitDir );
     
     qboolean( *GetEntityToken )( char* buffer, int size );
+    qhandle_t( *LoadAnim )( qhandle_t modelHandle, const char* name );
 } refexport_t;
 
 //
@@ -189,6 +190,10 @@ typedef struct
     e_status( *CIN_RunCinematic )( int handle );
     void* ( *Sys_GetSystemHandles )( void );
     int( *OculusVR_StereoConfig )( int eye, struct OculusVR_StereoCfg* stereoCfg );
+    
+    void ( *FS_FCloseFile )( fileHandle_t f );
+    int ( *FS_Read )( void* buffer, int len, fileHandle_t f );
+    int( *FS_FOpenFileByMode )( const char* qpath, fileHandle_t* f, fsMode_t mode );
 } refimport_t;
 
 

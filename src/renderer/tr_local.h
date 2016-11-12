@@ -630,6 +630,7 @@ typedef enum
     SF_MD3,
     SF_MDC,
     SF_MDS,
+    SF_MD4MESH,
     SF_FLARE,
     SF_ENTITY,              // beams, rails, lightning, etc that can be determined by entity
     SF_DISPLAY_LIST,
@@ -863,8 +864,11 @@ typedef enum
     MOD_BRUSH,
     MOD_MESH,
     MOD_MDS,
-    MOD_MDC // Ridah
+    MOD_MDC, // Ridah
+    MOD_MD4MESH
 } modtype_t;
+
+#define MAX_MD4_ANIMS 32
 
 typedef struct model_s
 {
@@ -877,7 +881,8 @@ typedef struct model_s
     md3Header_t* md3[MD3_MAX_LODS]; // only if type == MOD_MESH
     mdsHeader_t* mds;               // only if type == MOD_MDS
     mdcHeader_t* mdc[MD3_MAX_LODS]; // only if type == MOD_MDC
-    
+    md4MeshHeader_t* md4mesh;
+    md4AnimHeader_t* md4Anims[MAX_MD4_ANIMS];
     int numLods;
     
 // GR - model tessellation capability flag
@@ -1317,12 +1322,15 @@ void R_SwapBuffers( int );
 
 void R_RenderView( viewParms_t* parms );
 
+void R_AddMD4MeshSurfaces( trRefEntity_t* e );
+void RB_SurfaceMD4Mesh( md4MeshSurface_t* surfType );
+
 void R_AddMD3Surfaces( trRefEntity_t* e );
 void R_AddNullModelSurfaces( trRefEntity_t* e );
 void R_AddBeamSurfaces( trRefEntity_t* e );
 void R_AddRailSurfaces( trRefEntity_t* e, qboolean isUnderwater );
 void R_AddLightningBoltSurfaces( trRefEntity_t* e );
-
+int R_FindBone( model_t* model, md4AnimHeader_t* anim, orientation_t* tag, int frameNum, const char* boneName );
 void R_TagInfo_f( void );
 
 void R_AddPolygonSurfaces( void );
@@ -1433,6 +1441,8 @@ image_t*     R_CreateImageExt( const char* name, const byte* pic, int width, int
                                , qboolean allowPicmip, qboolean characterMip, int wrapClampMode );
 //----(SA)	end
 qboolean    R_GetModeInfo( int* width, int* height, float* windowAspect, int mode );
+
+qhandle_t	R_LoadMD4Anim( qhandle_t modelHandle, const char* name );
 
 void        R_SetColorMappings( void );
 void        R_GammaCorrect( byte* buffer, int bufSize );

@@ -46,7 +46,8 @@
 #include <assert.h>
 #include <math.h>
 
-class idVec3_t;
+class idVec3;
+#define idVec3_t idVec3
 class angles_t;
 class mat3_t;
 
@@ -80,6 +81,7 @@ public:
     friend quat_t operator-( quat_t a, quat_t b );
     quat_t&          operator-=( quat_t a );
     
+    quat_t operator*( const quat_t& a );
     friend quat_t operator*( quat_t a, float b );
     friend quat_t operator*( float a, quat_t b );
     quat_t&          operator*=( float a );
@@ -166,6 +168,14 @@ inline quat_t& quat_t::operator-=( quat_t a )
     w -= a.w;
     
     return *this;
+}
+
+inline quat_t quat_t::operator*( const quat_t& a )
+{
+    return quat_t( w * a.x + x * a.w + y * a.z - z * a.y,
+                   w * a.y + y * a.w + z * a.x - x * a.z,
+                   w * a.z + z * a.w + x * a.y - y * a.x,
+                   w * a.w - x * a.x - y * a.y - z * a.z );
 }
 
 inline quat_t operator*( quat_t a, float b )

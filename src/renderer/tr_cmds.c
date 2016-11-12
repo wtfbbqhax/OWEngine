@@ -436,6 +436,13 @@ void RE_BeginFrame( stereoFrame_t stereoFrame )
     }
     glState.finishCalled = qfalse;
     
+    if( r_debugSurface->integer )
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        glClearColor( 0, 0, 0, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    }
+    
     tr.frameCount++;
     tr.frameSceneNum = 0;
     

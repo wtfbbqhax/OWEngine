@@ -684,6 +684,9 @@ static qboolean CG_RegisterClientModelname( clientInfo_t* ci, const char* modelN
     }
     else        // try skeletal model
     {
+        Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.md4mesh", modelName );
+        ci->legsModel = trap_R_RegisterModel( filename );
+        
         Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.mds", modelName );
         ci->legsModel = trap_R_RegisterModel( filename );
         
@@ -696,6 +699,8 @@ static qboolean CG_RegisterClientModelname( clientInfo_t* ci, const char* modelN
         {
             ci->isSkeletal = qtrue;
             ci->torsoModel = ci->legsModel;
+            Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.md4anim", modelName );
+            trap_R_LoadAnim( ci->torsoModel, filename );
         }
     }
     

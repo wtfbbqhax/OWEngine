@@ -834,7 +834,8 @@ intptr_t CL_CgameSystemCalls( intptr_t* args )
         case CG_TESTPRINTFLOAT:
             Com_Printf( "%s%f\n", VMA( 1 ), VMF( 2 ) );
             return 0;
-            
+        case CG_LOADANIM:
+            return re.LoadAnim( args[1], VMA( 2 ) );
         case CG_LOADCAMERA:
             return loadCamera( args[1], VMA( 2 ) );
             

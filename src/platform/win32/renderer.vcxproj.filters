@@ -90,9 +90,6 @@
     <ClCompile Include="..\..\renderer\tr_mesh.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\renderer\tr_model.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\renderer\tr_scene.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -334,6 +331,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\game\q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\tr_model_md4mesh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\tr_model.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

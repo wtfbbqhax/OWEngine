@@ -103,16 +103,27 @@ void CG_TestModel_f( void )
     Q_strncpyz( cg.testModelName, CG_Argv( 1 ), MAX_QPATH );
     cg.testModelEntity.hModel = trap_R_RegisterModel( cg.testModelName );
     
-    if( trap_Argc() == 3 )
-    {
-        cg.testModelEntity.backlerp = atof( CG_Argv( 2 ) );
-        cg.testModelEntity.frame = 1;
-        cg.testModelEntity.oldframe = 0;
-    }
+    //if( trap_Argc() == 3 )
+    //{
+    //    cg.testModelEntity.backlerp = atof( CG_Argv( 2 ) );
+    //    cg.testModelEntity.frame = 1;
+    //    cg.testModelEntity.oldframe = 0;
+    //}
     if( !cg.testModelEntity.hModel )
     {
         CG_Printf( "Can't register model\n" );
         return;
+    }
+    
+    if( trap_Argc() == 3 )
+    {
+        cg.testModelEntity.animHandle = trap_R_LoadAnim( cg.testModelEntity.hModel, CG_Argv( 2 ) );
+        if( !cg.testModelEntity.animHandle )
+        {
+            cg.testModelEntity.hModel = 0;
+            CG_Printf( "Failed to register model animation\n" );
+            return;
+        }
     }
     
     VectorMA( cg.refdef.vieworg, 100, cg.refdef.viewaxis[0], cg.testModelEntity.origin );
