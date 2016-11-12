@@ -6,6 +6,7 @@ Changelog
 	- Added FBX library files
 	- Moved "bspc" and "extrafuncs" to "tools" folder
 	- Moved game logic files to new folder
+	- Renamed engine "src" folder
 
 11-09-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added "Tools" solution folder inside Visual Studio configuration
