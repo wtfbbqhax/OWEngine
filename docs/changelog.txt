@@ -4,6 +4,8 @@ Changelog
 	- Added support for converted FBX animated models inside engine and gamelogics
 	- Added FBX exporter with possibility to export FBX fiels to ".md4anim" and to ".md4mesh"
 	- Added FBX library files
+	- Moved "bspc" and "extrafuncs" to "tools" folder
+	- Moved game logic files to new folder
 
 11-09-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added "Tools" solution folder inside Visual Studio configuration
