@@ -140,7 +140,7 @@ void OculusVR_Exit()
 {
     pSensor.Clear();
     pHMD.Clear();
-    pManager->Release();
+    pManager.Clear();
     System::Destroy();
     sixenseExit();
     bInited = false;

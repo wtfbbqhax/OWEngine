@@ -10,6 +10,7 @@ Changelog
 	- Removed added folder
 	- Added missing Android project layout files
 	- Fixed debug build on Windows
+	- Fixed crash on engine exit
 
 11-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added support for converted FBX animated models inside engine and gamelogics
