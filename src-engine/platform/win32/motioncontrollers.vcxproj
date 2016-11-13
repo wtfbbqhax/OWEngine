@@ -63,7 +63,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -77,8 +77,8 @@
       </FunctionLevelLinking>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libovrd.lib;sixensed.lib;sixense_utilsd.lib;;Setupapi.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../../libraries/SixenseSDK/lib/win32/debug_dll;../../../libraries/OculusSDK/LibOVR/Lib/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libovr.lib;sixense.lib;sixense_utils.lib;;Setupapi.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../libraries/SixenseSDK/lib/win32/release_dll;../../../libraries/OculusSDK/LibOVR/Lib/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
