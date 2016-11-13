@@ -42,7 +42,7 @@
 
 #include "client.h"
 
-#include "../game/botlib.h"
+#include "../botlib/botlib.h"
 
 extern botlib_export_t* botlib_export;
 

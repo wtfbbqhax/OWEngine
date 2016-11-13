@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "q_shared.h"
+#include "../../../src-engine/qcommon/q_shared.h"
 #include "bg_public.h"
 
 #ifdef CGAMEDLL

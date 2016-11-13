@@ -207,8 +207,8 @@
     <ClCompile Include="..\..\..\libraries\jpeg-6\jmemmgr.c" />
     <ClCompile Include="..\..\..\libraries\jpeg-6\jmemnobs.c" />
     <ClCompile Include="..\..\..\libraries\jpeg-6\jutils.c" />
-    <ClCompile Include="..\..\game\q_math.c" />
-    <ClCompile Include="..\..\game\q_shared.c" />
+    <ClCompile Include="..\..\qcommon\q_math.c" />
+    <ClCompile Include="..\..\qcommon\q_shared.c" />
     <ClCompile Include="..\..\renderer\tr_model_md4mesh.c" />
     <ClCompile Include="..\win32\win_gamma.c" />
     <ClCompile Include="..\win32\win_glimp.c" />
@@ -240,7 +240,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\glew.h" />
     <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\wglew.h" />
-    <ClInclude Include="..\..\cgame\tr_types.h" />
+    <ClInclude Include="..\..\renderer\tr_types.h" />
     <ClInclude Include="..\..\..\libraries\ft2\ahangles.h" />
     <ClInclude Include="..\..\..\libraries\ft2\ahglobal.h" />
     <ClInclude Include="..\..\..\libraries\ft2\ahglyph.h" />
@@ -294,9 +294,9 @@
     <ClInclude Include="..\..\..\libraries\ft2\tttables.h" />
     <ClInclude Include="..\..\..\libraries\ft2\tttags.h" />
     <ClInclude Include="..\..\..\libraries\ft2\tttypes.h" />
-    <ClInclude Include="..\..\game\q_shared.h" />
-    <ClInclude Include="..\..\game\surfaceflags.h" />
-    <ClInclude Include="..\..\jpeg-6\jchuff.h" />
+    <ClInclude Include="..\..\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jchuff.h" />
     <ClInclude Include="..\..\..\libraries\jpeg-6\jconfig.h" />
     <ClInclude Include="..\..\..\libraries\jpeg-6\jdct.h" />
     <ClInclude Include="..\..\..\libraries\jpeg-6\jdhuff.h" />
@@ -310,7 +310,6 @@
     <ClInclude Include="..\..\qcommon\cm_public.h" />
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
-    <ClInclude Include="..\..\splines\q_shared.h" />
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
     <ClInclude Include="glw_win.h" />
     <ClInclude Include="..\win32\resource.h" />

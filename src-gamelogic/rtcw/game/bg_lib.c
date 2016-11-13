@@ -43,7 +43,7 @@
 
 // bg_lib,c --
 
-#include "q_shared.h"
+#include "../../../src-engine/qcommon/q_shared.h"
 
 /*-
  * Copyright (c) 1992, 1993

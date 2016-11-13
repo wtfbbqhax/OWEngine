@@ -43,8 +43,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
-#include "tr_types.h"
+#include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/renderer/tr_types.h"
 #include "../game/bg_public.h"
 #include "cg_public.h"
 

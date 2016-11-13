@@ -40,6 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "../../../src-engine/qcommon/q_shared.h"
+
 //debug line colors
 #define LINECOLOR_NONE          -1
 #define LINECOLOR_RED           1

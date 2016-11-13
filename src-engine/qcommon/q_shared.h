@@ -46,7 +46,7 @@
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
-#define BASEGAME "main"
+#define BASEGAME        "main"
 #define Q3_VERSION      "Wolf 1.41"
 
 // ver 1.0.0	- release

@@ -145,21 +145,21 @@
     <ClCompile Include="..\..\botlib\l_precomp.c" />
     <ClCompile Include="..\..\botlib\l_script.c" />
     <ClCompile Include="..\..\botlib\l_struct.c" />
-    <ClCompile Include="..\..\game\q_math.c" />
-    <ClCompile Include="..\..\game\q_shared.c" />
+    <ClCompile Include="..\..\qcommon\q_math.c" />
+    <ClCompile Include="..\..\qcommon\q_shared.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\game\be_aas.h" />
-    <ClInclude Include="..\..\game\be_ai_char.h" />
-    <ClInclude Include="..\..\game\be_ai_chat.h" />
-    <ClInclude Include="..\..\game\be_ai_gen.h" />
-    <ClInclude Include="..\..game\be_ai_goal.h" />
-    <ClInclude Include="..\..game\be_ai_move.h" />
-    <ClInclude Include="..\..game\be_ai_weap.h" />
-    <ClInclude Include="..\..\game\be_ea.h" />
-    <ClInclude Include="..\..\game\botlib.h" />
-    <ClInclude Include="..\..\game\q_shared.h" />
-    <ClInclude Include="..\..\game\surfaceflags.h" />
+    <ClInclude Include="..\..\botlib\be_aas.h" />
+    <ClInclude Include="..\..\botlib\be_ai_char.h" />
+    <ClInclude Include="..\..\botlib\be_ai_chat.h" />
+    <ClInclude Include="..\..\botlib\be_ai_gen.h" />
+    <ClInclude Include="..\..\botlib\be_ai_goal.h" />
+    <ClInclude Include="..\..\botlib\be_ai_move.h" />
+    <ClInclude Include="..\..\botlib\be_ai_weap.h" />
+    <ClInclude Include="..\..\botlib\be_ea.h" />
+    <ClInclude Include="..\..\botlib\botlib.h" />
+    <ClInclude Include="..\..\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
     <ClInclude Include="..\..\botlib\aasfile.h" />
     <ClInclude Include="..\..\botlib\be_aas_bsp.h" />
     <ClInclude Include="..\..\botlib\be_aas_cluster.h" />

@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
+#include "../qcommon/q_shared.h"
 #include "qcommon.h"
 
 static huffman_t msgHuff;

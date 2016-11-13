@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/g_local.h"
-#include "../game/q_shared.h"
+#include "g_local.h"
+#include "../../../src-engine/qcommon/q_shared.h"
 
 /*
 Contains the code to handle the various commands available with an event script.

@@ -327,16 +327,16 @@
     <ClCompile Include="..\..\..\libraries\glew-2.0.0\src\glew.c">
       <Filter>libraries\glew\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_math.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\game\q_shared.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\renderer\tr_model_md4mesh.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\renderer\tr_model.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\qcommon\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\qcommon\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -353,12 +353,6 @@
     <ClInclude Include="..\..\qcommon\cm_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\jpeg-6\jchuff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\q_shared.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\qcommon\qcommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -368,16 +362,10 @@
     <ClInclude Include="..\..\renderer\qgl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\surfaceflags.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\renderer\tr_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\renderer\tr_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cgame\tr_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="glw_win.h">
@@ -581,7 +569,16 @@
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\splines\q_shared.h">
+    <ClInclude Include="..\..\qcommon\q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\jpeg-6\jchuff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\qcommon\surfaceflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\tr_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

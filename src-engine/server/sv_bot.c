@@ -41,8 +41,8 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "server.h"
-#include "../game/botlib.h"
-#include "../botai/botai.h"
+#include "../botlib/botlib.h"
+#include "../../../src-gamelogic/rtcw/botai/botai.h"
 
 #define MAX_DEBUGPOLYS      128
 

@@ -134,39 +134,39 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\extractfuncs\extractfuncs.c" />
-    <ClCompile Include="..\..\extractfuncs\l_log.c" />
-    <ClCompile Include="..\..\extractfuncs\l_memory.c" />
-    <ClCompile Include="..\..\extractfuncs\l_precomp.c" />
-    <ClCompile Include="..\..\extractfuncs\l_script.c" />
+    <ClCompile Include="..\..\..\tools\extractfuncs\extractfuncs.c" />
+    <ClCompile Include="..\..\..\tools\extractfuncs\l_log.c" />
+    <ClCompile Include="..\..\..\tools\extractfuncs\l_memory.c" />
+    <ClCompile Include="..\..\..\tools\extractfuncs\l_precomp.c" />
+    <ClCompile Include="..\..\..\tools\extractfuncs\l_script.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\tools\extractfuncs\l_log.h" />
     <ClInclude Include="..\..\botlib\be_interface.h" />
     <ClInclude Include="..\..\botlib\l_script.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_ent.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_q2.h" />
-    <ClInclude Include="..\..\bspc\l_cmd.h" />
-    <ClInclude Include="..\..\bspc\l_log.h" />
-    <ClInclude Include="..\..\bspc\l_math.h" />
-    <ClInclude Include="..\..\bspc\l_mem.h" />
-    <ClInclude Include="..\..\bspc\l_poly.h" />
-    <ClInclude Include="..\..\bspc\l_qfiles.h" />
-    <ClInclude Include="..\..\bspc\l_threads.h" />
-    <ClInclude Include="..\..\bspc\l_utils.h" />
-    <ClInclude Include="..\..\bspc\q2files.h" />
-    <ClInclude Include="..\..\bspc\qbsp.h" />
-    <ClInclude Include="..\..\bspc\qfiles.h" />
-    <ClInclude Include="..\..\game\botlib.h" />
-    <ClInclude Include="..\..\game\q_shared.h" />
-    <ClInclude Include="..\..\game\surfaceflags.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_ent.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_q2.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_cmd.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_log.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_math.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_mem.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_poly.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_qfiles.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_threads.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_utils.h" />
+    <ClInclude Include="..\..\..\tools\bspc\q2files.h" />
+    <ClInclude Include="..\..\..\tools\bspc\qbsp.h" />
+    <ClInclude Include="..\..\..\tools\bspc\qfiles.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\botlib.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
     <ClInclude Include="..\..\qcommon\unzip.h" />
-    <ClInclude Include="..\..\extractfuncs\l_log.h" />
-    <ClInclude Include="..\..\extractfuncs\l_memory.h" />
-    <ClInclude Include="..\..\extractfuncs\l_precomp.h" />
-    <ClInclude Include="..\..\extractfuncs\l_script.h" />
+    <ClInclude Include="..\..\..\tools\extractfuncs\l_memory.h" />
+    <ClInclude Include="..\..\..\tools\extractfuncs\l_precomp.h" />
+    <ClInclude Include="..\..\..\tools\extractfuncs\l_script.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="extractfuncs.bat">
+    <CustomBuild Include="..\..\..\compiled\binaries\extractfuncs.bat">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </CustomBuild>

@@ -34,7 +34,7 @@
 //  Version:     v1.00
 //  Created:
 //  Compilers:
-//  Description: bot AI Library
+//  Description: bot AI library
 // -------------------------------------------------------------------------
 //  History:
 //
@@ -122,6 +122,7 @@ struct weaponinfo_s;
 #define ACTION_TALK             1024
 #define ACTION_GESTURE          2048
 #define ACTION_WALK             4096
+#define ACTION_RELOAD           8192
 
 //the bot input, will be converted to an usercmd_t
 typedef struct bot_input_s
@@ -212,7 +213,6 @@ typedef struct botlib_import_s
     //memory allocation
     void*        ( *GetMemory )( int size );
     void ( *FreeMemory )( void* ptr );
-    void ( *FreeZoneMemory )( void );
     void*        ( *HunkAlloc )( int size );
     //file system access
     int ( *FS_FOpenFile )( const char* qpath, fileHandle_t* file, fsMode_t mode );
@@ -288,6 +288,7 @@ typedef struct aas_export_s
     void ( *AAS_RT_ShowRoute )( vec3_t srcpos, int srcnum, int destnum );
     qboolean( *AAS_RT_GetHidePos )( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
     int ( *AAS_FindAttackSpotWithinRange )( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float* outpos );
+    qboolean( *AAS_GetRouteFirstVisPos )( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
     void ( *AAS_SetAASBlockingEntity )( vec3_t absmin, vec3_t absmax, qboolean blocking );
     // done.
     
@@ -312,6 +313,7 @@ typedef struct ea_export_s
     void ( *EA_SelectWeapon )( int client, int weapon );
     void ( *EA_Talk )( int client );
     void ( *EA_Attack )( int client );
+    void ( *EA_Reload )( int client );
     void ( *EA_Use )( int client );
     void ( *EA_Respawn )( int client );
     void ( *EA_Jump )( int client );
@@ -447,8 +449,14 @@ typedef struct botlib_export_s
     int ( *BotLibVarSet )( char* var_name, char* value );
     //gets a library variable returns BLERR_
     int ( *BotLibVarGet )( char* var_name, char* value, int size );
+    
     //sets a C-like define returns BLERR_
-    int ( *BotLibDefine )( char* string );
+    int ( *PC_AddGlobalDefine )( char* string );
+    int ( *PC_LoadSourceHandle )( const char* filename );
+    int ( *PC_FreeSourceHandle )( int handle );
+    int ( *PC_ReadTokenHandle )( int handle, pc_token_t* pc_token );
+    int ( *PC_SourceFileAndLine )( int handle, char* filename, int* line );
+    
     //start a frame in the bot library
     int ( *BotLibStartFrame )( float time );
     //load a new map in the bot library

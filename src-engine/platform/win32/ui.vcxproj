@@ -86,7 +86,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>..\..\ui\ui.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>..\..\..\src-gamelogic\rtcw\ui\ui.def</ModuleDefinitionFile>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
@@ -134,7 +134,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>..\..\ui\ui.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>..\..\..\src-gamelogic\rtcw\ui\ui.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(intDir)$(TargetName).map</MapFileName>
@@ -151,32 +151,32 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\game\bg_lib.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_misc.c" />
-    <ClCompile Include="..\..\game\q_math.c" />
-    <ClCompile Include="..\..\game\q_shared.c" />
-    <ClCompile Include="..\..\ui\ui_atoms.c" />
-    <ClCompile Include="..\..\ui\ui_gameinfo.c" />
-    <ClCompile Include="..\..\ui\ui_main.c" />
-    <ClCompile Include="..\..\ui\ui_players.c" />
-    <ClCompile Include="..\..\ui\ui_shared.c" />
-    <ClCompile Include="..\..\ui\ui_syscalls.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c" />
+    <ClCompile Include="..\..\qcommon\q_math.c" />
+    <ClCompile Include="..\..\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_syscalls.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\ui\ui.def" />
+    <None Include="..\..\..\src-gamelogic\rtcw\ui\ui.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\ui\menudef.h" />
-    <ClInclude Include="..\..\cgame\tr_types.h" />
-    <ClInclude Include="..\..\game\bg_public.h" />
-    <ClInclude Include="..\..\game\q_shared.h" />
-    <ClInclude Include="..\..\game\surfaceflags.h" />
-    <ClInclude Include="..\..\ui\keycodes.h" />
-    <ClInclude Include="..\..\ui\ui_local.h" />
-    <ClInclude Include="..\..\ui\ui_public.h" />
-    <ClInclude Include="..\..\ui\ui_shared.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\menudef.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\tr_types.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_public.h" />
+    <ClInclude Include="..\..\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\keycodes.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_local.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_public.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

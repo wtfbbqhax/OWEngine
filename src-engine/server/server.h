@@ -40,10 +40,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
+#include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-#include "../game/g_public.h"
-#include "../game/bg_public.h"
+#include "../../../src-gamelogic/rtcw/game/g_public.h"
+#include "../../../src-gamelogic/rtcw/game/bg_public.h"
 
 //=============================================================================
 

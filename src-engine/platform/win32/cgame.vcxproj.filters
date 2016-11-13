@@ -11,136 +11,136 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\game\bg_animation.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_animation.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_lib.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_misc.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_pmove.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_pmove.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_slidemove.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_slidemove.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_consolecmds.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_consolecmds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_draw.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_draw.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_drawtools.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_drawtools.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_effects.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_effects.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_event.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_ents.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_ents.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_event.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_flamethrower.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_flamethrower.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_info.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_info.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_localents.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_localents.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_main.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_marks.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_marks.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_newDraw.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_newDraw.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_particles.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_particles.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_players.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_players.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_playerstate.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_playerstate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_predict.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_predict.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_scoreboard.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_scoreboard.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_servercmds.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_servercmds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_snapshot.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_snapshot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_sound.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_sound.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_syscalls.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_syscalls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_trails.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_trails.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_view.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_view.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\cgame\cg_weapons.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_weapons.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_math.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_shared.c">
+    <ClCompile Include="..\..\qcommon\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_shared.c">
+    <ClCompile Include="..\..\qcommon\q_math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\game\bg_local.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\bg_public.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cgame\cg_local.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cgame\cg_public.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\keycodes.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\keycodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\menudef.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\menudef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\q_shared.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\surfaceflags.h">
+    <ClInclude Include="..\..\renderer\tr_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cgame\tr_types.h">
+    <ClInclude Include="..\..\qcommon\surfaceflags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\ui_shared.h">
+    <ClInclude Include="..\..\qcommon\q_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\cgame\cgame.def" />
+    <None Include="..\..\..\src-gamelogic\rtcw\cgame\cgame.def" />
   </ItemGroup>
 </Project>

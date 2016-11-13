@@ -15,69 +15,69 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\game\bg_lib.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_syscalls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_misc.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_math.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_shared.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_atoms.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_gameinfo.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_main.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_players.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_shared.c">
+    <ClCompile Include="..\..\qcommon\q_math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ui\ui_syscalls.c">
+    <ClCompile Include="..\..\qcommon\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\game\bg_public.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\keycodes.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\menudef.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\q_shared.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\tr_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\surfaceflags.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\menudef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\cgame\tr_types.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\keycodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\ui_local.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\ui_public.h">
+    <ClInclude Include="..\..\qcommon\surfaceflags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ui\ui_shared.h">
+    <ClInclude Include="..\..\qcommon\q_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\ui\ui.def">
-      <Filter>Source Files</Filter>
+    <None Include="..\..\..\src-gamelogic\rtcw\ui\ui.def">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

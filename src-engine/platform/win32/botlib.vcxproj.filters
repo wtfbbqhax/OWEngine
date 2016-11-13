@@ -98,18 +98,15 @@
     <ClCompile Include="..\..\botlib\l_log.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_math.c">
+    <ClCompile Include="..\..\qcommon\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_shared.c">
+    <ClCompile Include="..\..\qcommon\q_math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\botlib\aasfile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\be_aas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\botlib\be_aas_bsp.h">
@@ -157,34 +154,10 @@
     <ClInclude Include="..\..\botlib\be_aas_sample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\be_ai_char.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\be_ai_chat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\be_ai_gen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..game\be_ai_goal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..game\be_ai_move.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..game\be_ai_weap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\botlib\be_ai_weight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\be_ea.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\botlib\be_interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\botlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\botlib\l_crc.h">
@@ -211,10 +184,37 @@
     <ClInclude Include="..\..\botlib\l_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\q_shared.h">
+    <ClInclude Include="..\..\botlib\be_aas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\surfaceflags.h">
+    <ClInclude Include="..\..\botlib\be_ai_chat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\be_ai_gen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\be_ai_goal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\be_ai_move.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\be_ai_weap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\be_ai_char.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\be_ea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\botlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\qcommon\q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\qcommon\surfaceflags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

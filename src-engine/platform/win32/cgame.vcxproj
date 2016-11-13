@@ -83,7 +83,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>..\..\cgame\cgame.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>..\..\..\src-gamelogic\rtcw\cgame\cgame.def</ModuleDefinitionFile>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
@@ -134,7 +134,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ModuleDefinitionFile>..\..\cgame\cgame.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>..\..\..\src-gamelogic\rtcw\cgame\cgame.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(intDir)$(TargetName).map</MapFileName>
@@ -152,55 +152,55 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\game\bg_animation.c" />
-    <ClCompile Include="..\..\game\bg_lib.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_animation.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\game\bg_misc.c" />
-    <ClCompile Include="..\..\game\bg_pmove.c" />
-    <ClCompile Include="..\..\game\bg_slidemove.c" />
-    <ClCompile Include="..\..\game\q_math.c" />
-    <ClCompile Include="..\..\game\q_shared.c" />
-    <ClCompile Include="..\..\ui\ui_shared.c" />
-    <ClCompile Include="..\..\cgame\cg_consolecmds.c" />
-    <ClCompile Include="..\..\cgame\cg_draw.c" />
-    <ClCompile Include="..\..\cgame\cg_drawtools.c" />
-    <ClCompile Include="..\..\cgame\cg_effects.c" />
-    <ClCompile Include="..\..\cgame\cg_ents.c" />
-    <ClCompile Include="..\..\cgame\cg_event.c" />
-    <ClCompile Include="..\..\cgame\cg_flamethrower.c" />
-    <ClCompile Include="..\..\cgame\cg_info.c" />
-    <ClCompile Include="..\..\cgame\cg_localents.c" />
-    <ClCompile Include="..\..\cgame\cg_main.c" />
-    <ClCompile Include="..\..\cgame\cg_marks.c" />
-    <ClCompile Include="..\..\cgame\cg_newDraw.c" />
-    <ClCompile Include="..\..\cgame\cg_particles.c" />
-    <ClCompile Include="..\..\cgame\cg_players.c" />
-    <ClCompile Include="..\..\cgame\cg_playerstate.c" />
-    <ClCompile Include="..\..\cgame\cg_predict.c" />
-    <ClCompile Include="..\..\cgame\cg_scoreboard.c" />
-    <ClCompile Include="..\..\cgame\cg_servercmds.c" />
-    <ClCompile Include="..\..\cgame\cg_snapshot.c" />
-    <ClCompile Include="..\..\cgame\cg_sound.c" />
-    <ClCompile Include="..\..\cgame\cg_syscalls.c" />
-    <ClCompile Include="..\..\cgame\cg_trails.c" />
-    <ClCompile Include="..\..\cgame\cg_view.c" />
-    <ClCompile Include="..\..\cgame\cg_weapons.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_pmove.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_slidemove.c" />
+    <ClCompile Include="..\..\qcommon\q_math.c" />
+    <ClCompile Include="..\..\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_consolecmds.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_draw.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_drawtools.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_effects.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_ents.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_event.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_flamethrower.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_info.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_localents.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_main.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_marks.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_newDraw.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_particles.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_players.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_playerstate.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_predict.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_scoreboard.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_servercmds.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_snapshot.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_sound.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_syscalls.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_trails.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_view.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\cgame\cg_weapons.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\ui\menudef.h" />
-    <ClInclude Include="..\..\game\bg_local.h" />
-    <ClInclude Include="..\..\game\bg_public.h" />
-    <ClInclude Include="..\..\game\q_shared.h" />
-    <ClInclude Include="..\..\game\surfaceflags.h" />
-    <ClInclude Include="..\..\ui\keycodes.h" />
-    <ClInclude Include="..\..\ui\ui_shared.h" />
-    <ClInclude Include="..\..\cgame\cg_local.h" />
-    <ClInclude Include="..\..\cgame\cg_public.h" />
-    <ClInclude Include="..\..\cgame\tr_types.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\menudef.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_local.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_public.h" />
+    <ClInclude Include="..\..\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\keycodes.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_local.h" />
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_public.h" />
+    <ClInclude Include="..\..\renderer\tr_types.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\cgame\cgame.def" />
+    <None Include="..\..\..\src-gamelogic\rtcw\cgame\cgame.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

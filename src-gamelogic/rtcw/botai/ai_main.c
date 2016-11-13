@@ -40,16 +40,16 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 #include "../game/g_local.h"
-#include "../game/q_shared.h"
-#include "../game/botlib.h"      //bot lib interface
-#include "../game/be_aas.h"
-#include "../game/be_ea.h"
-#include "../game/be_ai_char.h"
-#include "../game/be_ai_chat.h"
-#include "../game/be_ai_gen.h"
-#include "../game/be_ai_goal.h"
-#include "../game/be_ai_move.h"
-#include "../game/be_ai_weap.h"
+#include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/botlib/botlib.h"      //bot lib interface
+#include "../../../src-engine/botlib/be_aas.h"
+#include "../../../src-engine/botlib/be_ea.h"
+#include "../../../src-engine/botlib/be_ai_char.h"
+#include "../../../src-engine/botlib/be_ai_chat.h"
+#include "../../../src-engine/botlib/be_ai_gen.h"
+#include "../../../src-engine/botlib/be_ai_goal.h"
+#include "../../../src-engine/botlib/be_ai_move.h"
+#include "../../../src-engine/botlib/be_ai_weap.h"
 #include "../botai/botai.h"          //bot ai interface
 
 #include "ai_main.h"

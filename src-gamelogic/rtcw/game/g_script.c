@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/g_local.h"
-#include "../game/q_shared.h"
+#include "g_local.h"
+#include "../../../src-engine/qcommon/q_shared.h"
 
 /*
 Scripting that allows the designers to control the behaviour of entities

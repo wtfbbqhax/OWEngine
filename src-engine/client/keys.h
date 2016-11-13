@@ -41,7 +41,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "../ui/keycodes.h"
+#include "../../src-gamelogic/rtcw/ui/keycodes.h"
 
 #define MAX_KEYS        256
 

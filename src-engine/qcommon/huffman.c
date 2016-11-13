@@ -42,7 +42,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
+#include "../qcommon/q_shared.h"
 #include "qcommon.h"
 
 static int bloc = 0;

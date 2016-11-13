@@ -44,7 +44,7 @@
 
 #ifdef BSPC
 
-#include "../bspc/l_qfiles.h"
+#include "../../tools/bspc/l_qfiles.h"
 
 void SetPlaneSignbits( cplane_t* out )
 {

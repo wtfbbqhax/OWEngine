@@ -80,12 +80,6 @@
     <ClCompile Include="..\..\qcommon\net_chan.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\game\q_math.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\game\q_shared.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\client\snd_adpcm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -161,20 +155,14 @@
     <ClCompile Include="win_snd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\qcommon\q_math.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\qcommon\q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\game\bg_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\botai\botai.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\botlib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cgame\cg_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\client\client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -190,16 +178,7 @@
     <ClInclude Include="..\..\qcommon\cm_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\g_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ui\keycodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\client\keys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\game\q_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\qcommon\qcommon.h">
@@ -217,19 +196,10 @@
     <ClInclude Include="..\..\client\snd_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\game\surfaceflags.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\renderer\tr_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\renderer\tr_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\cgame\tr_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ui\ui_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\qcommon\unzip.h">
@@ -242,6 +212,36 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\bg_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\botai\botai.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\botlib\botlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\g_public.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\keycodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\qcommon\q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\qcommon\surfaceflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\tr_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

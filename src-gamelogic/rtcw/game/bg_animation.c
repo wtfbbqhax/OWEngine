@@ -42,7 +42,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "q_shared.h"
+#include "../../../src-engine/qcommon/q_shared.h"
 #include "bg_public.h"
 
 // debug defines, to prevent doing costly string cvar lookups

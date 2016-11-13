@@ -162,80 +162,80 @@
     <ClCompile Include="..\..\qcommon\cm_trace.c" />
     <ClCompile Include="..\..\qcommon\md4.c" />
     <ClCompile Include="..\..\qcommon\unzip.c" />
-    <ClCompile Include="..\..\bspc\aas_areamerging.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_cfg.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_cfg.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_create.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_create.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_edgemelting.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_edgemelting.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_facemerging.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_facemerging.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_file.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_file.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_gsubdiv.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_gsubdiv.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_map.c" />
-    <ClCompile Include="..\..\bspc\aas_prunenodes.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_map.c" />
+    <ClCompile Include="..\..\..\tools\bspc\aas_prunenodes.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\aas_store.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_store.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\be_aas_bspc.c">
+    <ClCompile Include="..\..\..\tools\bspc\be_aas_bspc.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\brushbsp.c" />
-    <ClCompile Include="..\..\bspc\bspc.c">
+    <ClCompile Include="..\..\..\tools\bspc\brushbsp.c" />
+    <ClCompile Include="..\..\..\tools\bspc\bspc.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\csg.c" />
-    <ClCompile Include="..\..\bspc\faces.c" />
-    <ClCompile Include="..\..\bspc\glfile.c" />
-    <ClCompile Include="..\..\bspc\leakfile.c" />
-    <ClCompile Include="..\..\bspc\l_bsp_ent.c">
+    <ClCompile Include="..\..\..\tools\bspc\csg.c" />
+    <ClCompile Include="..\..\..\tools\bspc\faces.c" />
+    <ClCompile Include="..\..\..\tools\bspc\glfile.c" />
+    <ClCompile Include="..\..\..\tools\bspc\leakfile.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_ent.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\l_bsp_hl.c" />
-    <ClCompile Include="..\..\bspc\l_bsp_q1.c" />
-    <ClCompile Include="..\..\bspc\l_bsp_q2.c" />
-    <ClCompile Include="..\..\bspc\l_bsp_q3.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_hl.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q1.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q2.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\l_bsp_sin.c" />
-    <ClCompile Include="..\..\bspc\l_cmd.c" />
-    <ClCompile Include="..\..\bspc\l_log.c" />
-    <ClCompile Include="..\..\bspc\l_math.c" />
-    <ClCompile Include="..\..\bspc\l_mem.c" />
-    <ClCompile Include="..\..\bspc\l_poly.c" />
-    <ClCompile Include="..\..\bspc\l_qfiles.c" />
-    <ClCompile Include="..\..\bspc\l_threads.c" />
-    <ClCompile Include="..\..\bspc\l_utils.c" />
-    <ClCompile Include="..\..\bspc\map.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_sin.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_cmd.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_log.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_math.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_mem.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_poly.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_qfiles.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_threads.c" />
+    <ClCompile Include="..\..\..\tools\bspc\l_utils.c" />
+    <ClCompile Include="..\..\..\tools\bspc\map.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\map_hl.c" />
-    <ClCompile Include="..\..\bspc\map_q1.c" />
-    <ClCompile Include="..\..\bspc\map_q2.c" />
-    <ClCompile Include="..\..\bspc\map_q3.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_hl.c" />
+    <ClCompile Include="..\..\..\tools\bspc\map_q1.c" />
+    <ClCompile Include="..\..\..\tools\bspc\map_q2.c" />
+    <ClCompile Include="..\..\..\tools\bspc\map_q3.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\bspc\map_sin.c" />
-    <ClCompile Include="..\..\bspc\nodraw.c" />
-    <ClCompile Include="..\..\bspc\portals.c" />
-    <ClCompile Include="..\..\bspc\prtfile.c" />
-    <ClCompile Include="..\..\bspc\textures.c" />
-    <ClCompile Include="..\..\bspc\tree.c" />
-    <ClCompile Include="..\..\bspc\writebsp.c" />
-    <ClCompile Include="..\..\bspc\_files.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_sin.c" />
+    <ClCompile Include="..\..\..\tools\bspc\nodraw.c" />
+    <ClCompile Include="..\..\..\tools\bspc\portals.c" />
+    <ClCompile Include="..\..\..\tools\bspc\prtfile.c" />
+    <ClCompile Include="..\..\..\tools\bspc\textures.c" />
+    <ClCompile Include="..\..\..\tools\bspc\tree.c" />
+    <ClCompile Include="..\..\..\tools\bspc\writebsp.c" />
+    <ClCompile Include="..\..\..\tools\bspc\_files.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
     </ClCompile>
   </ItemGroup>
@@ -266,9 +266,8 @@
     <ClInclude Include="..\..\botlib\l_script.h" />
     <ClInclude Include="..\..\botlib\l_struct.h" />
     <ClInclude Include="..\..\botlib\l_utils.h" />
-    <ClInclude Include="..\..\game\be_aas.h" />
-    <ClInclude Include="..\..\game\q_shared.h" />
-    <ClInclude Include="..\..\game\surfaceflags.h" />
+    <ClInclude Include="..\..\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
     <ClInclude Include="..\..\qcommon\cm_local.h" />
     <ClInclude Include="..\..\qcommon\cm_patch.h" />
     <ClInclude Include="..\..\qcommon\cm_polylib.h" />
@@ -276,36 +275,36 @@
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
     <ClInclude Include="..\..\qcommon\unzip.h" />
-    <ClInclude Include="..\..\bspc\aas_areamerging.h" />
-    <ClInclude Include="..\..\bspc\aas_cfg.h" />
-    <ClInclude Include="..\..\bspc\aas_create.h" />
-    <ClInclude Include="..\..\bspc\aas_edgemelting.h" />
-    <ClInclude Include="..\..\bspc\aas_facemerging.h" />
-    <ClInclude Include="..\..\bspc\aas_file.h" />
-    <ClInclude Include="..\..\bspc\aas_gsubdiv.h" />
-    <ClInclude Include="..\..\bspc\aas_map.h" />
-    <ClInclude Include="..\..\bspc\aas_prunenodes.h" />
-    <ClInclude Include="..\..\bspc\aas_store.h" />
-    <ClInclude Include="..\..\bspc\be_aas_bspc.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_ent.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_hl.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_q1.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_q2.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_q3.h" />
-    <ClInclude Include="..\..\bspc\l_bsp_sin.h" />
-    <ClInclude Include="..\..\bspc\l_cmd.h" />
-    <ClInclude Include="..\..\bspc\l_log.h" />
-    <ClInclude Include="..\..\bspc\l_math.h" />
-    <ClInclude Include="..\..\bspc\l_mem.h" />
-    <ClInclude Include="..\..\bspc\l_poly.h" />
-    <ClInclude Include="..\..\bspc\l_qfiles.h" />
-    <ClInclude Include="..\..\bspc\l_threads.h" />
-    <ClInclude Include="..\..\bspc\l_utils.h" />
-    <ClInclude Include="..\..\bspc\q2files.h" />
-    <ClInclude Include="..\..\bspc\q3files.h" />
-    <ClInclude Include="..\..\bspc\qbsp.h" />
-    <ClInclude Include="..\..\bspc\qfiles.h" />
-    <ClInclude Include="..\..\bspc\sinfiles.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_areamerging.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_cfg.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_create.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_edgemelting.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_facemerging.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_file.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_gsubdiv.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_map.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_prunenodes.h" />
+    <ClInclude Include="..\..\..\tools\bspc\aas_store.h" />
+    <ClInclude Include="..\..\..\tools\bspc\be_aas_bspc.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_ent.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_hl.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_q1.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_q2.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_q3.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_bsp_sin.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_cmd.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_log.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_math.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_mem.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_poly.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_qfiles.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_threads.h" />
+    <ClInclude Include="..\..\..\tools\bspc\l_utils.h" />
+    <ClInclude Include="..\..\..\tools\bspc\q2files.h" />
+    <ClInclude Include="..\..\..\tools\bspc\q3files.h" />
+    <ClInclude Include="..\..\..\tools\bspc\qbsp.h" />
+    <ClInclude Include="..\..\..\tools\bspc\qfiles.h" />
+    <ClInclude Include="..\..\..\tools\bspc\sinfiles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

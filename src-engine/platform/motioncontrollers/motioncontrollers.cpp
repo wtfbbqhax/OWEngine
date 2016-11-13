@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../../game/q_shared.h"
+#include "../../qcommon/q_shared.h"
 #include "motioncontrollers.h"
 #include <OVR.h>
 #include <sixense_utils/derivatives.hpp>
