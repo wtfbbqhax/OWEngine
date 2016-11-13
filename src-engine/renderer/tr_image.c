@@ -695,7 +695,9 @@ static void Upload32( unsigned* data,
             data = resampledBuffer;
             width = width >> 1;
             height = height >> 1;
-            ri.Printf( PRINT_ALL, "r_rmse of %f has saved %dkb\n", r_rmse->value, ( rmse_saved / 1024 ) );
+#ifdef _DEBUG
+            ri.Printf( PRINT_DEVELOPER, "r_rmse of %f has saved %dkb\n", r_rmse->value, ( rmse_saved / 1024 ) );
+#endif
         }
     }
     else
@@ -709,7 +711,9 @@ static void Upload32( unsigned* data,
             data = resampledBuffer;
             width = width >> 1;
             height = height >> 1;
-            ri.Printf( PRINT_ALL, "r_rmse of %f has saved %dkb\n", r_rmse->value, ( rmse_saved / 1024 ) );
+#ifdef _DEBUG
+            ri.Printf( PRINT_DEVELOPER, "r_rmse of %f has saved %dkb\n", r_rmse->value, ( rmse_saved / 1024 ) );
+#endif
         }
     }
     //

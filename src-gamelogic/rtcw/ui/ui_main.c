@@ -1122,7 +1122,9 @@ void UI_ParseMenu( const char* menuFile )
     int handle;
     pc_token_t token;
     
+#ifdef _DEBUG
     Com_Printf( "Parsing menu file:%s\n", menuFile );
+#endif
     
     handle = trap_PC_LoadSource( menuFile );
     if( !handle )

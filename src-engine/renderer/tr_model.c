@@ -1341,7 +1341,7 @@ qhandle_t R_LoadMD4Anim( qhandle_t modelHandle, const char* name )
     model = R_GetModelByHandle( modelHandle );
     if( model == NULL )
     {
-        Com_Printf( "WARNING: R_LoadMD4Anim: Model Index is invalid. \n" );
+        ri.Printf( PRINT_DEVELOPER, "WARNING: R_LoadMD4Anim: Model Index is invalid. \n" );
         return -1;
     }
     
@@ -1349,28 +1349,28 @@ qhandle_t R_LoadMD4Anim( qhandle_t modelHandle, const char* name )
     fileLen = ri.FS_ReadFile( name, ( void** )&header );
     if( fileLen <= 0 )
     {
-        Com_Printf( "WARNING: R_LoadMD4Anim: Failed to open %s \n", name );
+        ri.Printf( PRINT_DEVELOPER, "WARNING: R_LoadMD4Anim: Failed to open %s \n", name );
         return -1;
     }
     
     // Check the iden.
     if( header->iden != MD4ANIM_IDENT )
     {
-        Com_Error( ERR_FATAL, "R_LoadMD4Anim: Invalid iden \n" );
+        ri.Error( ERR_FATAL, "R_LoadMD4Anim: Invalid iden \n" );
         return -1;
     }
     
     // Check the version.
     if( header->version != MD4ANIM_VERSION )
     {
-        Com_Error( ERR_FATAL, "R_LoadMD4Anim: Invalid version.\n" );
+        ri.Error( ERR_FATAL, "R_LoadMD4Anim: Invalid version.\n" );
         return -1;
     }
     
     // Check the number of joints in the anim file against the meshes.
     if( header->numJoints != model->md4mesh->numJoints )
     {
-        Com_Error( ERR_FATAL, "R_LoadMD4Anim: Anim has different number of joints then the mesh.\n" );
+        ri.Error( ERR_FATAL, "R_LoadMD4Anim: Anim has different number of joints then the mesh.\n" );
         return -1;
     }
     
