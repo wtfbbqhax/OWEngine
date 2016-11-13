@@ -49,93 +49,98 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class OWEMain extends Activity {
-	public static OWECallbackObj mAudio;
-	public static OWEView mGLSurfaceView;
-    public static String datadir;	
-	
-	public void ShowMessage(String s)
-	{
-		Toast.makeText(this, s, Toast.LENGTH_LONG).show();		
-	}
-
-	public boolean checkGameFiles()
-	{		
-		if(!new File(datadir).exists())
-		{
-			ShowMessage("Game files weren't found: put game files to "+datadir);
-			this.finish();
-			return false;
-		}
-		
-		return true;
-	}	
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		if (Build.VERSION.SDK_INT>=9)
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-		
-		super.onCreate(savedInstanceState);
-
-		datadir=PreferenceManager.getDefaultSharedPreferences(this).getString(OWEUtils.pref_datapath, OWEUtils.owei.default_path);
-				
-		if(checkGameFiles())
-		{
-			if (mGLSurfaceView==null)
-			mGLSurfaceView = new OWEView(this);			
-			setContentView(mGLSurfaceView);
-			mGLSurfaceView.requestFocus();			
-			if (mAudio==null)			
-			{
-			mAudio = new OWECallbackObj();
-			mAudio.vw=mGLSurfaceView;
-			}
-			OWEJNI.setCallbackObject(mAudio);
-		}
-		else
-		{
-			finish();
-		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		
-		if(mAudio != null)
-		{
-			mAudio.pause();			
-		}
-		
-		if(mGLSurfaceView != null)
-		{
-			mGLSurfaceView.onPause();
-		}		
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();						
-		
-		if(mGLSurfaceView != null)
-		{
-			mGLSurfaceView.onResume();
-		}			
-		
-		if(mAudio != null)
-		{			
-			mAudio.resume();
-		}		
-	}
+public class OWEMain extends Activity
+{
+    public static OWECallbackObj mAudio;
+    public static OWEView mGLSurfaceView;
+    public static String datadir;
+    
+    public void ShowMessage( String s )
+    {
+        Toast.makeText( this, s, Toast.LENGTH_LONG ).show();
+    }
+    
+    public boolean checkGameFiles()
+    {
+        if( !new File( datadir ).exists() )
+        {
+            ShowMessage( "Game files weren't found: put game files to " + datadir );
+            this.finish();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public void onCreate( Bundle savedInstanceState )
+    {
+        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                              WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        getWindow().addFlags( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON );
+        requestWindowFeature( Window.FEATURE_NO_TITLE );
+        
+        if( Build.VERSION.SDK_INT >= 9 )
+            setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE );
+            
+        super.onCreate( savedInstanceState );
+        
+        datadir = PreferenceManager.getDefaultSharedPreferences( this ).getString( OWEUtils.pref_datapath, OWEUtils.owei.default_path );
+        
+        if( checkGameFiles() )
+        {
+            if( mGLSurfaceView == null )
+                mGLSurfaceView = new OWEView( this );
+            setContentView( mGLSurfaceView );
+            mGLSurfaceView.requestFocus();
+            if( mAudio == null )
+            {
+                mAudio = new OWECallbackObj();
+                mAudio.vw = mGLSurfaceView;
+            }
+            OWEJNI.setCallbackObject( mAudio );
+        }
+        else
+        {
+            finish();
+        }
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+    }
+    
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        
+        if( mAudio != null )
+        {
+            mAudio.pause();
+        }
+        
+        if( mGLSurfaceView != null )
+        {
+            mGLSurfaceView.onPause();
+        }
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        
+        if( mGLSurfaceView != null )
+        {
+            mGLSurfaceView.onResume();
+        }
+        
+        if( mAudio != null )
+        {
+            mAudio.resume();
+        }
+    }
 }

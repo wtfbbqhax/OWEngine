@@ -34,24 +34,25 @@
 
 package com.owengine.owe;
 
-public class OWEInterface {
-	
-	public int UI_SIZE;
-	public String[] defaults_table;
-	public String[] texture_table;
-	public int[] type_table;
-	public int[] arg_table; //key,key,key,style or key,canbeheld,style,null	
+public class OWEInterface
+{
 
-	public boolean isRTCW=false;
-	public boolean isOW=false;
-	public boolean isD3=false;
-	public boolean isQ1=false;
-	
-	public String default_path;
-	
-	public String libname;
-	
-	//RTCW4A:
-	public final int RTCW4A_UI_ACTION=6;
-	public final int RTCW4A_UI_KICK=7;
+    public int UI_SIZE;
+    public String[] defaults_table;
+    public String[] texture_table;
+    public int[] type_table;
+    public int[] arg_table; //key,key,key,style or key,canbeheld,style,null
+    
+    public boolean isRTCW = false;
+    public boolean isOW = false;
+    public boolean isD3 = false;
+    public boolean isQ1 = false;
+    
+    public String default_path;
+    
+    public String libname;
+    
+    //RTCW4A:
+    public final int RTCW4A_UI_ACTION = 6;
+    public final int RTCW4A_UI_KICK = 7;
 }

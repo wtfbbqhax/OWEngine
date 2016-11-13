@@ -25,7 +25,7 @@
 //  File name:   owe.c
 //  Version:     v1.00
 //  Created:
-//  Compilers:   
+//  Compilers:
 //  Description:
 // -------------------------------------------------------------------------
 //  History:
@@ -38,215 +38,233 @@
 #include <android/log.h>
 #include "owe.h"
 
-int  (*qmain)(int argc, char **argv);
-void (*onFrame)();
-void (*onKeyEvent)(int state, int key,int chr);
-void (*onMotionEvent)(float x, float y);
-void (*onAudio)();
-void (*setCallbacks)(void *func, void *func2, void *func3);
-void (*setResolution)(int width, int height);
-void (*vidRestart)();
+int ( *qmain )( int argc, char** argv );
+void ( *onFrame )();
+void ( *onKeyEvent )( int state, int key, int chr );
+void ( *onMotionEvent )( float x, float y );
+void ( *onAudio )();
+void ( *setCallbacks )( void* func, void* func2, void* func3 );
+void ( *setResolution )( int width, int height );
+void ( *vidRestart )();
 
 jmethodID android_initAudio;
 jmethodID android_writeAudio;
 jmethodID android_setState;
 
-static JavaVM *jVM;
-static jobject audioBuffer=0;
-static jobject oweCallbackObj=0;
-static void *libdl;
+static JavaVM* jVM;
+static jobject audioBuffer = 0;
+static jobject oweCallbackObj = 0;
+static void* libdl;
 
-static void loadLib(char* libpath)
+static void loadLib( char* libpath )
 {
-    libdl = dlopen(libpath, RTLD_NOW | RTLD_GLOBAL);
-    if(!libdl)
+    libdl = dlopen( libpath, RTLD_NOW | RTLD_GLOBAL );
+    if( !libdl )
     {
-        __android_log_print(ANDROID_LOG_ERROR, "OWE_JNI", "Unable to load library: %s\n", dlerror());
+        __android_log_print( ANDROID_LOG_ERROR, "OWE_JNI", "Unable to load library: %s\n", dlerror() );
         return;
     }
-    qmain = dlsym(libdl, "main");
-    onFrame = dlsym(libdl, "OWE_DrawFrame");
-    onKeyEvent = dlsym(libdl, "OWE_KeyEvent");
-    onMotionEvent = dlsym(libdl, "OWE_MotionEvent");
-    onAudio = dlsym(libdl, "OWE_GetAudio");
-    setCallbacks = dlsym(libdl, "OWE_SetCallbacks");
-    setResolution = dlsym(libdl, "OWE_SetResolution");
-	vidRestart = dlsym(libdl, "OWE_OGLRestart");
+    qmain = dlsym( libdl, "main" );
+    onFrame = dlsym( libdl, "OWE_DrawFrame" );
+    onKeyEvent = dlsym( libdl, "OWE_KeyEvent" );
+    onMotionEvent = dlsym( libdl, "OWE_MotionEvent" );
+    onAudio = dlsym( libdl, "OWE_GetAudio" );
+    setCallbacks = dlsym( libdl, "OWE_SetCallbacks" );
+    setResolution = dlsym( libdl, "OWE_SetResolution" );
+    vidRestart = dlsym( libdl, "OWE_OGLRestart" );
 }
 
-void initAudio(void *buffer, int size)
+void initAudio( void* buffer, int size )
 {
-    JNIEnv *env;
+    JNIEnv* env;
     jobject tmp;
-    (*jVM)->GetEnv(jVM, (void**) &env, JNI_VERSION_1_4);
-    tmp = (*env)->NewDirectByteBuffer(env, buffer, size);
-    audioBuffer = (jobject)(*env)->NewGlobalRef(env, tmp);
-    return (*env)->CallVoidMethod(env, oweCallbackObj, android_initAudio, size);
+    ( *jVM )->GetEnv( jVM, ( void** ) &env, JNI_VERSION_1_4 );
+    tmp = ( *env )->NewDirectByteBuffer( env, buffer, size );
+    audioBuffer = ( jobject )( *env )->NewGlobalRef( env, tmp );
+    return ( *env )->CallVoidMethod( env, oweCallbackObj, android_initAudio, size );
 }
 
-void writeAudio(int offset, int length)
+void writeAudio( int offset, int length )
 {
-	if (audioBuffer==0) return;
-    JNIEnv *env;
-    if (((*jVM)->GetEnv(jVM, (void**) &env, JNI_VERSION_1_4))<0)
+    if( audioBuffer == 0 ) return;
+    JNIEnv* env;
+    if( ( ( *jVM )->GetEnv( jVM, ( void** ) &env, JNI_VERSION_1_4 ) ) < 0 )
     {
-    	(*jVM)->AttachCurrentThread(jVM,&env, NULL);
+        ( *jVM )->AttachCurrentThread( jVM, &env, NULL );
     }
-    (*env)->CallVoidMethod(env, oweCallbackObj, android_writeAudio, audioBuffer, offset, length);
+    ( *env )->CallVoidMethod( env, oweCallbackObj, android_writeAudio, audioBuffer, offset, length );
 }
 
-void setState(int state)
+void setState( int state )
 {
-    JNIEnv *env;
-    (*jVM)->GetEnv(jVM, (void**) &env, JNI_VERSION_1_4);
-    (*env)->CallVoidMethod(env, oweCallbackObj, android_setState, state);
+    JNIEnv* env;
+    ( *jVM )->GetEnv( jVM, ( void** ) &env, JNI_VERSION_1_4 );
+    ( *env )->CallVoidMethod( env, oweCallbackObj, android_setState, state );
 }
 
-int JNI_OnLoad(JavaVM* vm, void* reserved)
+int JNI_OnLoad( JavaVM* vm, void* reserved )
 {
-    JNIEnv *env;
+    JNIEnv* env;
     jVM = vm;
-    if((*vm)->GetEnv(vm, (void**) &env, JNI_VERSION_1_4) != JNI_OK)
+    if( ( *vm )->GetEnv( vm, ( void** ) &env, JNI_VERSION_1_4 ) != JNI_OK )
     {
-        __android_log_print(ANDROID_LOG_ERROR, "OWE_JNI", "JNI fatal error");
+        __android_log_print( ANDROID_LOG_ERROR, "OWE_JNI", "JNI fatal error" );
         return -1;
     }
-
+    
     return JNI_VERSION_1_4;
 }
 
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_setCallbackObject(JNIEnv *env, jclass c, jobject obj)
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_setCallbackObject( JNIEnv* env, jclass c, jobject obj )
 {
     oweCallbackObj = obj;
     jclass oweCallbackClass;
-
-    (*jVM)->GetEnv(jVM, (void**) &env, JNI_VERSION_1_4);
-    oweCallbackObj = (jobject)(*env)->NewGlobalRef(env, obj);
-    oweCallbackClass = (*env)->GetObjectClass(env, oweCallbackObj);
     
-    android_initAudio = (*env)->GetMethodID(env,oweCallbackClass,"init","(I)V");
-    android_writeAudio = (*env)->GetMethodID(env,oweCallbackClass,"writeAudio","(Ljava/nio/ByteBuffer;II)V");
-	android_setState = (*env)->GetMethodID(env,oweCallbackClass,"setState","(I)V");
-}
-
-static void UnEscapeQuotes( char *arg )
-{
-	char *last = NULL;
-	while( *arg ) {
-		if( *arg == '"' && *last == '\\' ) {
-			char *c_curr = arg;
-			char *c_last = last;
-			while( *c_curr ) {
-				*c_last = *c_curr;
-				c_last = c_curr;
-				c_curr++;
-			}
-			*c_last = '\0';
-		}
-		last = arg;
-		arg++;
-	}
-}
-
-static int ParseCommandLine(char *cmdline, char **argv)
-{
-	char *bufp;
-	char *lastp = NULL;
-	int argc, last_argc;
-	argc = last_argc = 0;
-	for ( bufp = cmdline; *bufp; ) {		
-		while ( isspace(*bufp) ) {
-			++bufp;
-		}		
-		if ( *bufp == '"' ) {
-			++bufp;
-			if ( *bufp ) {
-				if ( argv ) {
-					argv[argc] = bufp;
-				}
-				++argc;
-			}			
-			while ( *bufp && ( *bufp != '"' || *lastp == '\\' ) ) {
-				lastp = bufp;
-				++bufp;
-			}
-		} else {
-			if ( *bufp ) {
-				if ( argv ) {
-					argv[argc] = bufp;
-				}
-				++argc;
-			}			
-			while ( *bufp && ! isspace(*bufp) ) {
-				++bufp;
-			}
-		}
-		if ( *bufp ) {
-			if ( argv ) {
-				*bufp = '\0';
-			}
-			++bufp;
-		}
-		if( argv && last_argc != argc ) {
-			UnEscapeQuotes( argv[last_argc] );	
-		}
-		last_argc = argc;	
-	}
-	if ( argv ) {
-		argv[argc] = NULL;
-	}
-	return(argc);
-}
-
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_init(JNIEnv *env, jclass c, jstring LibPath, jint width, jint height, jstring GameDir, jstring Cmdline)
-{
-    char **argv;
-    int argc=0;
-	jboolean iscopy;
-	const char *dir = (*env)->GetStringUTFChars(
-                env, GameDir, &iscopy);
-    const char *arg = (*env)->GetStringUTFChars(
-                env, Cmdline, &iscopy);	
-	chdir(strdup(dir));
-	(*env)->ReleaseStringUTFChars(env, GameDir, dir);
-	argv = malloc(sizeof(char*) * 255);
-	argc = ParseCommandLine(strdup(arg), argv);	
-	(*env)->ReleaseStringUTFChars(env, Cmdline, arg);    
-	
-	const char *libpath = (*env)->GetStringUTFChars(
-                env, LibPath, &iscopy);	
-	loadLib(strdup(libpath));
-	(*env)->ReleaseStringUTFChars(env, LibPath, libpath);    
-
-    setCallbacks(&initAudio,&writeAudio,&setState);    
-    setResolution(width, height);
+    ( *jVM )->GetEnv( jVM, ( void** ) &env, JNI_VERSION_1_4 );
+    oweCallbackObj = ( jobject )( *env )->NewGlobalRef( env, obj );
+    oweCallbackClass = ( *env )->GetObjectClass( env, oweCallbackObj );
     
-    qmain(argc, argv);
-	free(argv);
+    android_initAudio = ( *env )->GetMethodID( env, oweCallbackClass, "init", "(I)V" );
+    android_writeAudio = ( *env )->GetMethodID( env, oweCallbackClass, "writeAudio", "(Ljava/nio/ByteBuffer;II)V" );
+    android_setState = ( *env )->GetMethodID( env, oweCallbackClass, "setState", "(I)V" );
 }
 
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_drawFrame(JNIEnv *env, jclass c)
+static void UnEscapeQuotes( char* arg )
+{
+    char* last = NULL;
+    while( *arg )
+    {
+        if( *arg == '"' && *last == '\\' )
+        {
+            char* c_curr = arg;
+            char* c_last = last;
+            while( *c_curr )
+            {
+                *c_last = *c_curr;
+                c_last = c_curr;
+                c_curr++;
+            }
+            *c_last = '\0';
+        }
+        last = arg;
+        arg++;
+    }
+}
+
+static int ParseCommandLine( char* cmdline, char** argv )
+{
+    char* bufp;
+    char* lastp = NULL;
+    int argc, last_argc;
+    argc = last_argc = 0;
+    for( bufp = cmdline; *bufp; )
+    {
+        while( isspace( *bufp ) )
+        {
+            ++bufp;
+        }
+        if( *bufp == '"' )
+        {
+            ++bufp;
+            if( *bufp )
+            {
+                if( argv )
+                {
+                    argv[argc] = bufp;
+                }
+                ++argc;
+            }
+            while( *bufp && ( *bufp != '"' || *lastp == '\\' ) )
+            {
+                lastp = bufp;
+                ++bufp;
+            }
+        }
+        else
+        {
+            if( *bufp )
+            {
+                if( argv )
+                {
+                    argv[argc] = bufp;
+                }
+                ++argc;
+            }
+            while( *bufp && ! isspace( *bufp ) )
+            {
+                ++bufp;
+            }
+        }
+        if( *bufp )
+        {
+            if( argv )
+            {
+                *bufp = '\0';
+            }
+            ++bufp;
+        }
+        if( argv && last_argc != argc )
+        {
+            UnEscapeQuotes( argv[last_argc] );
+        }
+        last_argc = argc;
+    }
+    if( argv )
+    {
+        argv[argc] = NULL;
+    }
+    return( argc );
+}
+
+
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_init( JNIEnv* env, jclass c, jstring LibPath, jint width, jint height, jstring GameDir, jstring Cmdline )
+{
+    char** argv;
+    int argc = 0;
+    jboolean iscopy;
+    const char* dir = ( *env )->GetStringUTFChars(
+                          env, GameDir, &iscopy );
+    const char* arg = ( *env )->GetStringUTFChars(
+                          env, Cmdline, &iscopy );
+    chdir( strdup( dir ) );
+    ( *env )->ReleaseStringUTFChars( env, GameDir, dir );
+    argv = malloc( sizeof( char* ) * 255 );
+    argc = ParseCommandLine( strdup( arg ), argv );
+    ( *env )->ReleaseStringUTFChars( env, Cmdline, arg );
+    
+    const char* libpath = ( *env )->GetStringUTFChars(
+                              env, LibPath, &iscopy );
+    loadLib( strdup( libpath ) );
+    ( *env )->ReleaseStringUTFChars( env, LibPath, libpath );
+    
+    setCallbacks( &initAudio, &writeAudio, &setState );
+    setResolution( width, height );
+    
+    qmain( argc, argv );
+    free( argv );
+}
+
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_drawFrame( JNIEnv* env, jclass c )
 {
     onFrame();
 }
 
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendKeyEvent(JNIEnv *env, jclass c, jint state, jint key, jint chr)
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendKeyEvent( JNIEnv* env, jclass c, jint state, jint key, jint chr )
 {
-    onKeyEvent(state,key,chr);
+    onKeyEvent( state, key, chr );
 }
 
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendMotionEvent(JNIEnv *env, jclass c, jfloat x, jfloat y)
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendMotionEvent( JNIEnv* env, jclass c, jfloat x, jfloat y )
 {
-    onMotionEvent(x, y);
+    onMotionEvent( x, y );
 }
 
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_requestAudioData(JNIEnv *env, jclass c)
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_requestAudioData( JNIEnv* env, jclass c )
 {
     onAudio();
 }
 
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_vidRestart(JNIEnv *env, jclass c)
-{    
-	vidRestart();
+JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_vidRestart( JNIEnv* env, jclass c )
+{
+    vidRestart();
 }

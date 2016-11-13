@@ -39,33 +39,37 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class OWEUiConfig extends Activity {
-	
-	OWEUiView vw;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);    	
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		if (Build.VERSION.SDK_INT>=9)
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-		
-		super.onCreate(savedInstanceState);
-		vw=new OWEUiView(this);
-		setContentView(vw);
-	}
-	
-	@Override
-	protected void onPause() {
-		vw.SaveAll();
-		super.onPause();
-	}
-	
-	@Override
-	public void onBackPressed() {
-		vw.SaveAll();
-		super.onBackPressed();
-	}
+public class OWEUiConfig extends Activity
+{
+
+    OWEUiView vw;
+    
+    @Override
+    protected void onCreate( Bundle savedInstanceState )
+    {
+        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        getWindow().addFlags( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON );
+        requestWindowFeature( Window.FEATURE_NO_TITLE );
+        
+        if( Build.VERSION.SDK_INT >= 9 )
+            setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE );
+            
+        super.onCreate( savedInstanceState );
+        vw = new OWEUiView( this );
+        setContentView( vw );
+    }
+    
+    @Override
+    protected void onPause()
+    {
+        vw.SaveAll();
+        super.onPause();
+    }
+    
+    @Override
+    public void onBackPressed()
+    {
+        vw.SaveAll();
+        super.onBackPressed();
+    }
 }

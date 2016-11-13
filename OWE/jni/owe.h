@@ -7,30 +7,30 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_setCallbackObject
-  (JNIEnv *, jclass, jobject);
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_init
-  (JNIEnv *, jclass, jstring, jint, jint, jstring, jstring);
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_drawFrame
-  (JNIEnv *, jclass);
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendKeyEvent
-  (JNIEnv *, jclass, jint, jint, jint);
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendMotionEvent
-  (JNIEnv *, jclass, jfloat, jfloat);
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_requestAudioData
-  (JNIEnv *, jclass);
-
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_vidRestart
-  (JNIEnv *, jclass);    
-  
-JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_setRenderer
-  (JNIEnv *env, jclass c, jobject obj);
-
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_setCallbackObject
+    ( JNIEnv*, jclass, jobject );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_init
+    ( JNIEnv*, jclass, jstring, jint, jint, jstring, jstring );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_drawFrame
+    ( JNIEnv*, jclass );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendKeyEvent
+    ( JNIEnv*, jclass, jint, jint, jint );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_sendMotionEvent
+    ( JNIEnv*, jclass, jfloat, jfloat );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_requestAudioData
+    ( JNIEnv*, jclass );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_vidRestart
+    ( JNIEnv*, jclass );
+    
+    JNIEXPORT void JNICALL Java_com_owengine_owe_OWEJNI_setRenderer
+    ( JNIEnv* env, jclass c, jobject obj );
+    
 #ifdef __cplusplus
 }
 #endif
