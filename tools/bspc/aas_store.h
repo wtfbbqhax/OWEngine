@@ -56,8 +56,8 @@
 #define AAS_MAX_CLUSTERS                    65536
 
 #define BSPCINCLUDE
-#include "../botlib/be_aas.h"
-#include "../botlib/be_aas_def.h"
+#include "../../src-engine/botlib/be_aas.h"
+#include "../../src-engine/botlib/be_aas_def.h"
 
 /*
 typedef struct bspc_aas_s

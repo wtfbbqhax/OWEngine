@@ -43,12 +43,12 @@
 #include <float.h>
 
 #include "qbsp.h"
-#include "../botlib/aasfile.h"
+#include "../../src-engine/botlib/aasfile.h"
 #include "aas_store.h"
 #include "aas_cfg.h"
-#include "../botlib/l_precomp.h"
-#include "../botlib/l_struct.h"
-#include "../botlib/l_libvar.h"
+#include "../../src-engine/botlib/l_precomp.h"
+#include "../../src-engine/botlib/l_struct.h"
+#include "../../src-engine/botlib/l_libvar.h"
 
 #define FLT_MAX 3.402823466e+38F
 

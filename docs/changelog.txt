@@ -2,7 +2,8 @@ Changelog
 
 11-13-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed compiling on Windows platform
-	- Moved Astyle files in root folder
+	- Moved AStyle files in root folder
+	- Fixed compiling "tools"
 
 11-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added support for converted FBX animated models inside engine and gamelogics

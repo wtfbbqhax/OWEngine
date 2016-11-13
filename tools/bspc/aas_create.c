@@ -41,7 +41,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "qbsp.h"
-#include "../botlib/aasfile.h"
+#include "../../src-engine/botlib/aasfile.h"
 #include "aas_create.h"
 #include "aas_store.h"
 #include "aas_gsubdiv.h"
@@ -50,7 +50,7 @@
 #include "aas_edgemelting.h"
 #include "aas_prunenodes.h"
 #include "aas_cfg.h"
-#include "../game/surfaceflags.h"
+#include "../../src-engine/qcommon/surfaceflags.h"
 
 #define AREAONFACESIDE( face, area )      ( face->frontarea != area )
 

@@ -40,18 +40,18 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
-#include "../bspc/l_log.h"
-#include "../bspc/l_qfiles.h"
-#include "../botlib/l_memory.h"
-#include "../botlib/l_script.h"
-#include "../botlib/l_precomp.h"
-#include "../botlib/l_struct.h"
-#include "../botlib/aasfile.h"
-#include "../botlib/botlib.h"
-#include "../botlib/be_aas.h"
-#include "../botlib/be_aas_def.h"
-#include "../qcommon/cm_public.h"
+#include "../../src-engine/qcommon/q_shared.h"
+#include "l_log.h"
+#include "l_qfiles.h"
+#include "../../src-engine/botlib/l_memory.h"
+#include "../../src-engine/botlib/l_script.h"
+#include "../../src-engine/botlib/l_precomp.h"
+#include "../../src-engine/botlib/l_struct.h"
+#include "../../src-engine/botlib/aasfile.h"
+#include "../../src-engine/botlib/botlib.h"
+#include "../../src-engine/botlib/be_aas.h"
+#include "../../src-engine/botlib/be_aas_def.h"
+#include "../../src-engine/qcommon/cm_public.h"
 
 //#define BSPC
 

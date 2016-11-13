@@ -42,10 +42,10 @@
 
 #include "qbsp.h"
 #include "l_mem.h"
-#include "../botlib/aasfile.h"           //aas_bbox_t
-#include "aas_store.h"       //AAS_MAX_BBOXES
+#include "../../src-engine/botlib/aasfile.h"           //aas_bbox_t
+#include "aas_store.h"                                 //AAS_MAX_BBOXES
 #include "aas_cfg.h"
-#include "../game/surfaceflags.h"
+#include "../../src-engine/qcommon/surfaceflags.h"
 
 #define SPAWNFLAG_NOT_EASY          0x00000100
 #define SPAWNFLAG_NOT_MEDIUM        0x00000200

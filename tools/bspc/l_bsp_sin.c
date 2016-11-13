@@ -46,7 +46,7 @@
 #include "l_mem.h"
 #include "l_log.h"
 #include "l_poly.h"
-#include "../botlib/l_script.h"
+#include "../../src-engine/botlib/l_script.h"
 #include "l_bsp_ent.h"
 #include "l_bsp_sin.h"
 

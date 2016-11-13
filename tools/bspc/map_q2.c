@@ -42,7 +42,7 @@
 
 #include "qbsp.h"
 #include "l_mem.h"
-#include "../botlib/aasfile.h"           //aas_bbox_t
+#include "../../src-engine/botlib/aasfile.h"           //aas_bbox_t
 #include "aas_store.h"       //AAS_MAX_BBOXES
 #include "aas_cfg.h"
 #include "aas_map.h"         //AAS_CreateMapBrushes

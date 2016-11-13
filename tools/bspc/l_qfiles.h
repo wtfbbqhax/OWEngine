@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../qcommon/unzip.h"
+#include "../../src-engine/qcommon/unzip.h"
 
 #define QFILETYPE_UNKNOWN           0x8000
 #define QFILETYPE_PAK               0x0001

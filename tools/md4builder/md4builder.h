@@ -46,11 +46,11 @@
 using namespace std;
 
 //Dushan - FIX ME
-#include "../../src/game/q_shared.h"
-#include "../../src/splines/splines.h"
-#include "../../src/splines/math_matrix.h"
-#include "../../src/splines/math_quaternion.h"
-#include "../../src/qcommon/qfiles.h"
+#include "../../src-engine/qcommon/q_shared.h"
+#include "../../src-engine/splines/splines.h"
+#include "../../src-engine/splines/math_matrix.h"
+#include "../../src-engine/splines/math_quaternion.h"
+#include "../../src-engine/qcommon/qfiles.h"
 
 #undef DotProduct
 #include "fbxsdk.h"

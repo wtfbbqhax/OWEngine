@@ -41,7 +41,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "md4builder.h"
-#include "../../src/game/q_shared.h"
+#include "../../src-engine/qcommon/q_shared.h"
 
 /*
 ============

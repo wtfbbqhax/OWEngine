@@ -40,10 +40,11 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../game/q_shared.h"
-#include "../game/botlib.h"
+//Dushan - FIX ME
+#include "../../src-engine/qcommon/q_shared.h"
+#include "../../src-engine/botlib/botlib.h"
 #include "l_log.h"
-#include "../botlib/be_interface.h"
+#include "../../src-engine/botlib/be_interface.h"
 
 //#define MEMDEBUG
 //#define MEMORYMANEGER

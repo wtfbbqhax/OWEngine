@@ -42,7 +42,7 @@
 
 #include "qbsp.h"
 #include "l_mem.h"
-#include "../botlib/aasfile.h"
+#include "../../src-engine/botlib/aasfile.h"
 #include "aas_store.h"
 #include "aas_cfg.h"
 
