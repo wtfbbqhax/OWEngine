@@ -8,6 +8,7 @@ Changelog
 	- Added missing Android files
 	- Added missing GPL licence, COPYING and README files
 	- Removed added folder
+	- Added missing Android project layout files
 
 11-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added support for converted FBX animated models inside engine and gamelogics
