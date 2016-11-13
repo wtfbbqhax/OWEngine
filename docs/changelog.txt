@@ -6,6 +6,7 @@ Changelog
 	- Fixed compiling "tools"
 	- Reformatted Java code with AStyle to match global indenting and formatting
 	- Added missing Android files
+	- Added missing GPL licence, COPYING and README files
 
 11-12-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added support for converted FBX animated models inside engine and gamelogics
