@@ -5288,21 +5288,25 @@ void CG_AnimPlayerConditions( centity_t* cent )
 {
     entityState_t* es;
     clientInfo_t* ci;
-//	int	legsAnim;
-
+    int	legsAnim;
+    
     if( cg.snap && cg.snap->ps.clientNum == cent->currentState.number && !cg.renderingThirdPerson )
     {
         return;
     }
     
     es = &cent->currentState;
-    // DHM-Nerve
-    //ci = &cgs.clientinfo[es->number];			// es->number is not always a valid client num
     ci = &cgs.clientinfo[es->clientNum];
-    // dhm-Nerve
     
     // WEAPON
-    BG_UpdateConditionValue( es->clientNum, ANIM_COND_WEAPON, es->weapon, qtrue );
+    if( es->eFlags & EF_ZOOMING )
+    {
+        BG_UpdateConditionValue( es->clientNum, ANIM_COND_WEAPON, WP_BINOCULARS, qtrue );
+    }
+    else
+    {
+        BG_UpdateConditionValue( es->clientNum, ANIM_COND_WEAPON, es->weapon, qtrue );
+    }
     
     // MOUNTED
     if( es->eFlags & EF_MG42_ACTIVE )
@@ -5347,15 +5351,10 @@ void CG_AnimPlayerConditions( centity_t* cent )
     }
     
     // reverse engineer the legs anim -> movetype (if possible)
-    //legsAnim = es->legsAnim & ~ANIM_TOGGLEBIT;
-    //if (ci->modelInfo->animations[legsAnim].movetype) {
-    //	BG_UpdateConditionValue( es->clientNum, ANIM_COND_MOVETYPE, ci->modelInfo->animations[legsAnim].movetype, qfalse );
-    //}
-    // RF, changed this since we dont need to be careful about bandwidth anymore, and this method
-    // is much more accurate
-    if( cent->currentState.animMovetype )
+    legsAnim = es->legsAnim & ~ANIM_TOGGLEBIT;
+    if( ci->modelInfo->animations[legsAnim].movetype )
     {
-        BG_UpdateConditionValue( es->clientNum, ANIM_COND_MOVETYPE, cent->currentState.animMovetype, qtrue );
+        BG_UpdateConditionValue( es->clientNum, ANIM_COND_MOVETYPE, ci->modelInfo->animations[legsAnim].movetype, qfalse );
     }
 }
 
@@ -5401,6 +5400,8 @@ void CG_Player( centity_t* cent )
     int renderfx;
     qboolean shadow;       //, drawweap = qtrue; // TTimo: unused
     float shadowPlane;
+    
+    qboolean usingBinocs = qfalse;              // NERVE - SMF
     
     float gumsflappin = 0;              // talking amplitude
     
@@ -5479,6 +5480,13 @@ void CG_Player( centity_t* cent )
     CG_PlayerAnimation( cent, &legs.oldframe, &legs.frame, &legs.backlerp,
                         &torso.oldframe, &torso.frame, &torso.backlerp );
                         
+    // NERVE - SMF - forcibly set binoc animation
+    if( cent->currentState.eFlags & EF_ZOOMING )
+    {
+        usingBinocs = qtrue;
+    }
+    // -NERVE - SMF
+    
     // add powerups floating behind the player
     CG_PlayerPowerups( cent );
     
@@ -5824,17 +5832,18 @@ void CG_Player( centity_t* cent )
     //
     // add the gun / barrel / flash
     //
-    CG_AddPlayerWeapon( &torso, NULL, cent );
+    if( !( cent->currentState.eFlags & EF_DEAD ) && !usingBinocs )
+    {
+        CG_AddPlayerWeapon( &torso, NULL, cent );
+    }
     
     cent->lastWeaponClientFrame = cg.clientFrame;
     
     //
     // add binoculars (if it's not the player)
     //
-    if( ( cent->currentState.clientNum != cg.snap->ps.clientNum ) &&
-            cent->currentState.eFlags & EF_ZOOMING )
+    if( usingBinocs )
     {
-    
         acc.hModel = cgs.media.thirdPersonBinocModel;
         CG_PositionEntityOnTag( &acc, &torso, "tag_weapon", 0, NULL );
         CG_AddRefEntityWithPowerups( &acc, cent->currentState.powerups, ci->team, &cent->currentState, cent->fireRiseDir );

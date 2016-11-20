@@ -2649,6 +2649,12 @@ static void CG_DrawCrosshair( void )
         }
     }
     
+    // using binoculars
+    if( cg.zoomedBinoc )
+    {
+        CG_DrawBinocReticle();
+        return;
+    }
     
     if( !cg_drawCrosshair.integer )     //----(SA)	moved down so it doesn't keep the scoped weaps from drawing reticles
     {

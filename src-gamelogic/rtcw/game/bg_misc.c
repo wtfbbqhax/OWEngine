@@ -1990,8 +1990,29 @@ gitem_t bg_itemlist[] =
     // jpw
     */
     
-    
-    
+    {
+        "weapon_binoculars",
+        "sound/misc/w_pkup.wav",
+        {
+            "",
+            "",
+            "",
+            0,
+            ""
+        },
+        
+        "",  // icon
+        "",          // ammo icon
+        "Binoculars",                // pickup
+        50, // this should never be picked up
+        IT_WEAPON,
+        WP_BINOCULARS,
+        WP_BINOCULARS,
+        WP_BINOCULARS,
+        "",                      // precache
+        "",                      // sounds
+        { 0, 0, 0, 0 }
+    },
     
     //
     // AMMO ITEMS

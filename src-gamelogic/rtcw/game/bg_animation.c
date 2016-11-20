@@ -2415,7 +2415,14 @@ void BG_AnimUpdatePlayerStateConditions( pmove_t* pmove )
     playerState_t* ps = pmove->ps;
     
     // WEAPON
-    BG_UpdateConditionValue( ps->clientNum, ANIM_COND_WEAPON, ps->weapon, qtrue );
+    if( ps->eFlags & EF_ZOOMING )
+    {
+        BG_UpdateConditionValue( ps->clientNum, ANIM_COND_WEAPON, WP_BINOCULARS, qtrue );
+    }
+    else
+    {
+        BG_UpdateConditionValue( ps->clientNum, ANIM_COND_WEAPON, ps->weapon, qtrue );
+    }
     
     // MOUNTED
     if( ps->eFlags & EF_MG42_ACTIVE )

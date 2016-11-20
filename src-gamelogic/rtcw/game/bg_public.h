@@ -609,7 +609,8 @@ typedef enum
     
     VERYBIGEXPLOSION,       // 31	// explosion effect for airplanes
     
-    WP_NUM_WEAPONS          // 32   NOTE: this cannot be larger than 64 for AI/player weapons!
+    WP_BINOCULARS,           // 32
+    WP_NUM_WEAPONS          // 33   NOTE: this cannot be larger than 64 for AI/player weapons!
     
 } weapon_t;
 
