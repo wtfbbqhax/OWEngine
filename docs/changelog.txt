@@ -1,5 +1,8 @@
 Changelog
 
+11-20-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added missing script  multiplayer actions (G_ScriptAction_ObjectiveShortAxisDesc, G_ScriptAction_ObjectiveShortAlliedDesc, G_ScriptAction_SetDefendingTeam, G_ScriptAction_OverviewImage and G_ScriptAction_RemoveEntity)
+
 11-13-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed compiling on Windows platform
 	- Moved AStyle files in root folder

@@ -78,12 +78,19 @@ qboolean G_ScriptAction_AxisRespawntime( gentity_t* ent, char* params );
 qboolean G_ScriptAction_AlliedRespawntime( gentity_t* ent, char* params );
 qboolean G_ScriptAction_NumberofObjectives( gentity_t* ent, char* params );
 qboolean G_ScriptAction_ObjectiveAxisDesc( gentity_t* ent, char* params );
+qboolean G_ScriptAction_ObjectiveShortAxisDesc(gentity_t *ent, char *params);     // NERVE - SMF
 qboolean G_ScriptAction_ObjectiveAlliedDesc( gentity_t* ent, char* params );
+qboolean G_ScriptAction_ObjectiveShortAlliedDesc(gentity_t *ent, char *params);   // NERVE - SMF
+qboolean G_ScriptAction_ObjectiveImage(gentity_t *ent, char *params);
 qboolean G_ScriptAction_SetWinner( gentity_t* ent, char* params );
 qboolean G_ScriptAction_SetObjectiveStatus( gentity_t* ent, char* params );
+qboolean G_ScriptAction_SetDefendingTeam(gentity_t *ent, char *params);           // NERVE - SMF
 qboolean G_ScriptAction_Announce( gentity_t* ent, char* params );
 qboolean G_ScriptAction_EndRound( gentity_t* ent, char* params );
 qboolean G_ScriptAction_SetRoundTimelimit( gentity_t* ent, char* params );
+qboolean G_ScriptAction_OverviewImage(gentity_t *ent, char *params);              // NERVE - SMF
+qboolean G_ScriptAction_RemoveEntity(gentity_t *ent, char *params);
+
 // dhm
 qboolean G_ScriptAction_BackupScript( gentity_t* ent, char* params );
 qboolean G_ScriptAction_RestoreScript( gentity_t* ent, char* params );
@@ -124,12 +131,18 @@ g_script_stack_action_t gScriptActions[] =
     {"wm_allied_respawntime",    G_ScriptAction_AlliedRespawntime},
     {"wm_number_of_objectives",  G_ScriptAction_NumberofObjectives},
     {"wm_objective_axis_desc",   G_ScriptAction_ObjectiveAxisDesc},
+	{"wm_objective_short_axis_desc", G_ScriptAction_ObjectiveShortAxisDesc},
     {"wm_objective_allied_desc", G_ScriptAction_ObjectiveAlliedDesc},
+	{"wm_objective_short_allied_desc", G_ScriptAction_ObjectiveShortAlliedDesc},
+	{ "wm_objective_image",           G_ScriptAction_ObjectiveImage },
     {"wm_setwinner",         G_ScriptAction_SetWinner},
     {"wm_set_objective_status",  G_ScriptAction_SetObjectiveStatus},
+	{ "wm_set_defending_team",        G_ScriptAction_SetDefendingTeam },
     {"wm_announce",              G_ScriptAction_Announce},
     {"wm_endround",              G_ScriptAction_EndRound},
     {"wm_set_round_timelimit",   G_ScriptAction_SetRoundTimelimit},
+	{"wm_overview_image",            G_ScriptAction_OverviewImage },                  // NERVE - SMF
+	{"remove",                       G_ScriptAction_RemoveEntity },
     // dhm
     {"backupscript",         G_ScriptAction_BackupScript},
     {"restorescript",            G_ScriptAction_RestoreScript},

@@ -1335,6 +1335,35 @@ qboolean G_ScriptAction_MapDescription( gentity_t* ent, char* params )
 
 /*
 ===================
+G_ScriptAction_OverviewImage
+
+syntax: wm_mapdescription <shadername>
+===================
+*/
+qboolean G_ScriptAction_OverviewImage(gentity_t *ent, char *params) {         // NERVE - SMF
+	char *pString, *token;
+	char cs[MAX_STRING_CHARS];
+
+	pString = params;
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_OverviewImage: shader name required\n");
+	}
+
+	trap_GetConfigstring(CS_MULTI_INFO, cs, sizeof(cs));
+
+	// NERVE - SMF - compare before setting, so we don't spam the clients during map_restart
+	if (Q_stricmp(Info_ValueForKey(cs, "overviewimage"), token)) {
+		Info_SetValueForKey(cs, "overviewimage", token);
+
+		trap_SetConfigstring(CS_MULTI_INFO, cs);
+	}
+
+	return qtrue;
+}
+
+/*
+===================
 G_ScriptAction_AxisRespawntime
 
   syntax: wm_axis_respawntime <seconds>
@@ -1462,6 +1491,53 @@ qboolean G_ScriptAction_ObjectiveAxisDesc( gentity_t* ent, char* params )
 
 /*
 ===================
+G_ScriptAction_ObjectiveShortAxisDesc
+
+syntax: wm_objective_short_axis_desc <objective_number "Description in quotes">
+
+NERVE - SMF - this is the short, one-line description shown in scoreboard
+===================
+*/
+qboolean G_ScriptAction_ObjectiveShortAxisDesc(gentity_t *ent, char *params) {
+	char *pString, *token;
+	char cs[MAX_STRING_CHARS];
+
+	int num, cs_obj = CS_MULTI_OBJECTIVE1;
+
+	pString = params;
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_ObjectiveShortAxisDesc: number parameter required\n");
+	}
+
+	num = atoi(token);
+	if (num < 1 || num > MAX_OBJECTIVES) {
+		G_Error("G_ScriptAction_ObjectiveShortAxisDesc: Invalid objective number\n");
+	}
+
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_ObjectiveShortAxisDesc: description parameter required\n");
+	}
+
+	// Move to correct objective config string
+	cs_obj += (num - 1);
+
+	trap_GetConfigstring(cs_obj, cs, sizeof(cs));
+
+	// NERVE - SMF - compare before setting, so we don't spam the clients during map_restart
+	if (Q_stricmp(Info_ValueForKey(cs, "short_axis_desc"), token)) {
+		Info_SetValueForKey(cs, "short_axis_desc", token);
+
+		trap_SetConfigstring(cs_obj, cs);
+	}
+
+	return qtrue;
+}
+
+
+/*
+===================
 G_ScriptAction_ObjectiveAlliedDesc
 
   syntax: wm_objective_allied_desc <objective_number "Description in quotes">
@@ -1503,6 +1579,97 @@ qboolean G_ScriptAction_ObjectiveAlliedDesc( gentity_t* ent, char* params )
     trap_SetConfigstring( cs_obj, cs );
     
     return qtrue;
+}
+
+/*
+===================
+G_ScriptAction_ObjectiveShortAlliedDesc
+
+syntax: wm_objective_short_allied_desc <objective_number "Description in quotes">
+
+NERVE - SMF - this is the short, one-line description shown in scoreboard
+===================
+*/
+qboolean G_ScriptAction_ObjectiveShortAlliedDesc(gentity_t *ent, char *params) {
+	char *pString, *token;
+	char cs[MAX_STRING_CHARS];
+
+	int num, cs_obj = CS_MULTI_OBJECTIVE1;
+
+	pString = params;
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_ObjectiveShortAlliedDesc: number parameter required\n");
+	}
+
+	num = atoi(token);
+	if (num < 1 || num > MAX_OBJECTIVES) {
+		G_Error("G_ScriptAction_ObjectiveShortAlliedDesc: Invalid objective number\n");
+	}
+
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_ObjectiveShortAlliedDesc: description parameter required\n");
+	}
+
+	// Move to correct objective config string
+	cs_obj += (num - 1);
+
+	trap_GetConfigstring(cs_obj, cs, sizeof(cs));
+
+	// NERVE - SMF - compare before setting, so we don't spam the clients during map_restart
+	if (Q_stricmp(Info_ValueForKey(cs, "short_allied_desc"), token)) {
+		Info_SetValueForKey(cs, "short_allied_desc", token);
+
+		trap_SetConfigstring(cs_obj, cs);
+	}
+
+	return qtrue;
+}
+
+
+/*
+===================
+G_ScriptAction_ObjectiveImage
+
+syntax: wm_objective_image <objective_number> <shadername>
+===================
+*/
+qboolean G_ScriptAction_ObjectiveImage(gentity_t *ent, char *params) {
+	char *pString, *token;
+	char cs[MAX_STRING_CHARS];
+
+	int num, cs_obj = CS_MULTI_OBJECTIVE1;
+
+	pString = params;
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_ObjectiveImage: number parameter required\n");
+	}
+
+	num = atoi(token);
+	if (num < 1 || num > MAX_OBJECTIVES) {
+		G_Error("G_ScriptAction_ObjectiveImage: Invalid objective number\n");
+	}
+
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_ObjectiveImage: shadername parameter required\n");
+	}
+
+	// Move to correct objective config string
+	cs_obj += (num - 1);
+
+	trap_GetConfigstring(cs_obj, cs, sizeof(cs));
+
+	// NERVE - SMF - compare before setting, so we don't spam the clients during map_restart
+	if (Q_stricmp(Info_ValueForKey(cs, "image"), token)) {
+		Info_SetValueForKey(cs, "image", token);
+
+		trap_SetConfigstring(cs_obj, cs);
+	}
+
+	return qtrue;
 }
 
 /*
@@ -1595,6 +1762,47 @@ qboolean G_ScriptAction_SetObjectiveStatus( gentity_t* ent, char* params )
     
     return qtrue;
 }
+
+/*
+===================
+G_ScriptAction_SetDefendingTeam
+
+syntax: wm_set_objective_status <status>
+
+status: 0==axis, 1==allies
+
+NERVE - SMF - sets defending team for stopwatch mode
+===================
+*/
+qboolean G_ScriptAction_SetDefendingTeam(gentity_t *ent, char *params) {
+	char *pString, *token;
+	char cs[MAX_STRING_CHARS];
+	int num;
+
+	if (level.intermissiontime) {
+		return qtrue;
+	}
+
+	pString = params;
+	token = COM_Parse(&pString);
+	if (!token[0]) {
+		G_Error("G_ScriptAction_SetDefendingTeam: number parameter required\n");
+	}
+
+	num = atoi(token);
+	if (num < 0 || num > 1) {
+		G_Error("G_ScriptAction_SetDefendingTeam: Invalid team number\n");
+	}
+
+	trap_GetConfigstring(CS_MULTI_INFO, cs, sizeof(cs));
+
+	Info_SetValueForKey(cs, "defender", token);
+
+	trap_SetConfigstring(CS_MULTI_INFO, cs);
+
+	return qtrue;
+}
+
 
 /*
 ===================
@@ -1742,3 +1950,18 @@ qboolean G_ScriptAction_SetHealth( gentity_t* ent, char* params )
     ent->health = atoi( params );
     return qtrue;
 }
+
+/*
+===================
+G_ScriptAction_RemoveEntity
+
+syntax: remove
+===================
+*/
+qboolean G_ScriptAction_RemoveEntity(gentity_t *ent, char *params) {
+	ent->think = G_FreeEntity;
+	ent->nextthink = level.time + FRAMETIME;
+
+	return qtrue;
+}
+
