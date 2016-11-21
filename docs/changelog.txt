@@ -5,6 +5,7 @@ Changelog
 	- Updated binary files
 	- Added support for "WP_SMOKE_GRENADE" and some support for multiplayer inside UI
 	- Added support for "WP_MEDKIT"
+	- Updated binary files
 
 11-20-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added missing script  multiplayer actions (G_ScriptAction_ObjectiveShortAxisDesc, G_ScriptAction_ObjectiveShortAlliedDesc, G_ScriptAction_SetDefendingTeam, G_ScriptAction_OverviewImage and G_ScriptAction_RemoveEntity)
