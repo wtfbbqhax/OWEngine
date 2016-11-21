@@ -1547,6 +1547,60 @@ qboolean InFieldOfVision( vec3_t viewangles, float fov, vec3_t angles )
 
 /*
 ==================
+BotEntInvisibleBySmokeBomb
+
+returns whether smoke from smoke bombs blocks vision from start to end
+==================
+*/
+#define MAX_SMOKE_RADIUS 320.0
+#define MAX_SMOKE_RADIUS_TIME 10000.0
+#define UNAFFECTED_BY_SMOKE_DIST SQR( 100 )
+
+qboolean BotEntInvisibleBySmokeBomb( vec3_t start, vec3_t end )
+{
+    gentity_t* ent = NULL;
+    vec3_t smokeCenter;
+    float smokeRadius;
+    
+    // if the target is close enough, vision is not affected by smoke bomb
+    if( DistanceSquared( start, end ) < UNAFFECTED_BY_SMOKE_DIST )
+    {
+        return qfalse;
+    }
+    
+    while( ( ent = G_FindSmokeBomb( ent ) ) )
+    {
+        if( ent->s.effect1Time == 16 )
+        {
+            // the smoke has not really started yet, see weapon_smokeBombExplode
+            // and CG_RenderSmokeGrenadeSmoke
+            continue;
+        }
+        // check the distance
+        VectorCopy( ent->s.pos.trBase, smokeCenter );
+        // raise the center to better match the position of the smoke, see
+        // CG_SpawnSmokeSprite().
+        smokeCenter[2] += 32;
+        // smoke sprite has a maximum radius of 640/2. and it takes a while for it to
+        // reach that size, so adjust the radius accordingly.
+        smokeRadius = MAX_SMOKE_RADIUS *
+                      ( ( level.time - ent->grenadeExplodeTime ) / MAX_SMOKE_RADIUS_TIME );
+        if( smokeRadius > MAX_SMOKE_RADIUS )
+        {
+            smokeRadius = MAX_SMOKE_RADIUS;
+        }
+        // if distance from line is short enough, vision is blocked by smoke
+        if( DistanceFromLineSquared( smokeCenter, start, end ) < smokeRadius * smokeRadius )
+        {
+            return qtrue;
+        }
+    }
+    
+    return qfalse;
+}
+
+/*
+==================
 BotEntityVisible
 
 returns visibility in the range [0, 1] taking fog and water surfaces into account
@@ -1654,7 +1708,13 @@ float BotEntityVisible( int viewer, vec3_t eye, vec3_t viewangles, float fov, in
             vis = 1 / ( ( fogdist * fogdist * 0.001 ) < 1 ? 1 : ( fogdist * fogdist * 0.001 ) );
             //if entering water visibility is reduced
             vis *= waterfactor;
-            //
+            
+            // are there smoke (from smoke bombs) blocking the sight?
+            if( vis > 0 && BotEntInvisibleBySmokeBomb( start, end ) )
+            {
+                vis = 0;
+            }
+            
             if( vis > bestvis )
             {
                 bestvis = vis;

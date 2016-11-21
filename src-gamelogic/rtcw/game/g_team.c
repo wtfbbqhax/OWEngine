@@ -168,6 +168,34 @@ qboolean OnSameTeam( gentity_t* ent1, gentity_t* ent2 )
     return qfalse;
 }
 
+gentity_t* G_FindMissile( gentity_t* start, weapon_t weap )
+{
+    int i = start ? ( start - g_entities ) + 1 : 0;
+    gentity_t* ent = &g_entities[i];
+    
+    for( ; i < level.num_entities; i++, ent++ )
+    {
+        if( ent->s.eType != ET_MISSILE )
+        {
+            continue;
+        }
+        
+        if( ent->s.weapon != weap )
+        {
+            continue;
+        }
+        
+        return ent;
+    }
+    
+    return NULL;
+}
+
+gentity_t* G_FindSmokeBomb( gentity_t* start )
+{
+    return G_FindMissile( start, WP_SMOKE_GRENADE || WP_GRENADE_SMOKE );
+}
+
 
 /*
 ================

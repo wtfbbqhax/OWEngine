@@ -1024,7 +1024,7 @@ void G_RunClient( gentity_t* ent );
 // g_team.c
 //
 qboolean OnSameTeam( gentity_t* ent1, gentity_t* ent2 );
-
+gentity_t* G_FindSmokeBomb( gentity_t* start );
 
 //
 // g_mem.c
