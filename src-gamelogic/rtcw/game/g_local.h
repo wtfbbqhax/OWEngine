@@ -526,6 +526,8 @@ typedef struct
     qboolean teamInfo;              // send team overlay updates?
 } clientPersistant_t;
 
+#define LT_SPECIAL_PICKUP_MOD    3  // # of times (minus one for modulo) LT must drop ammo before scoring a point
+#define MEDIC_SPECIAL_PICKUP_MOD 4  // same thing for medic
 
 // this structure is cleared on each ClientSpawn(),
 // except for 'client->pers' and 'client->sess'
@@ -614,6 +616,7 @@ struct gclient_s
     int sniperRifleFiredTime;         // JPW NERVE last time a sniper rifle was fired (for muzzle flip effects)
     float sniperRifleMuzzleYaw;       // JPW NERVE for time-dependent muzzle flip in multiplayer
     float sniperRifleMuzzlePitch;       // (SA) added
+    int PCSpecialPickedUpCount;         // JPW NERVE used to count # of times somebody's picked up this LTs ammo (or medic health) (for scoring)
     
     int saved_persistant[MAX_PERSISTANT];           // DHM - Nerve :: Save ps->persistant here during Limbo
 };

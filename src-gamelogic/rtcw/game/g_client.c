@@ -954,17 +954,36 @@ void SetWolfSpawnWeapons( gclient_t* client )
         COM_BitSet( client->ps.weapons, WP_DYNAMITE );
         client->ps.ammo[BG_FindAmmoForWeapon( WP_DYNAMITE )] = 0;
         client->ps.ammoclip[BG_FindClipForWeapon( WP_DYNAMITE )] = 1;
+        
+        // NERVE - SMF
+        COM_BitSet( client->ps.weapons, WP_PLIERS );
+        client->ps.ammoclip[BG_FindClipForWeapon( WP_PLIERS )] = 1;
+        client->ps.ammo[WP_PLIERS] = 1;
     }
     
-    // Lieutenant gets binoculars
+    // Lieutenant gets binoculars, ammo pack
     if( pc == PC_LT )
     {
         client->ps.stats[STAT_KEYS] |= ( 1 << INV_BINOCS );
-        /* no grenades for balance JPW NERVE
-        		COM_BitSet( client->ps.weapons, WP_GRENADE_LAUNCHER );
-        		client->ps.ammo[BG_FindAmmoForWeapon(WP_GRENADE_LAUNCHER)] = 2;
-        		client->ps.ammoclip[BG_FindClipForWeapon(WP_GRENADE_LAUNCHER)] = 1;
-        */
+        COM_BitSet( client->ps.weapons, WP_AMMO );
+        client->ps.ammo[BG_FindAmmoForWeapon( WP_AMMO )] = 0;
+        client->ps.ammoclip[BG_FindClipForWeapon( WP_AMMO )] = 1;
+        
+        switch( client->sess.sessionTeam )
+        {
+            case TEAM_BLUE:
+                COM_BitSet( client->ps.weapons, WP_GRENADE_PINEAPPLE );
+                client->ps.ammoclip[BG_FindClipForWeapon( WP_GRENADE_PINEAPPLE )] = 1;
+                break;
+            case TEAM_RED:
+                COM_BitSet( client->ps.weapons, WP_GRENADE_LAUNCHER );
+                client->ps.ammoclip[BG_FindClipForWeapon( WP_GRENADE_LAUNCHER )] = 1;
+                break;
+            default:
+                COM_BitSet( client->ps.weapons, WP_GRENADE_PINEAPPLE );
+                client->ps.ammoclip[BG_FindClipForWeapon( WP_GRENADE_PINEAPPLE )] = 1;
+                break;
+        }
     }
     
     // Everyone except the Soldier has a special weapon
@@ -998,10 +1017,8 @@ void SetWolfSpawnWeapons( gclient_t* client )
     // Everyone except Medic and LT get some grenades
     if( ( pc != PC_LT ) && ( pc != PC_MEDIC ) )    // JPW NERVE
     {
-    
         switch( client->sess.sessionTeam )    // was playerItem
         {
-        
             case TEAM_BLUE:
                 COM_BitSet( client->ps.weapons, WP_GRENADE_PINEAPPLE );
                 client->ps.ammo[BG_FindAmmoForWeapon( WP_GRENADE_PINEAPPLE )] = 4;

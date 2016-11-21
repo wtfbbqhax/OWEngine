@@ -68,6 +68,19 @@ extern vmCvar_t g_gametype;
 #define DELAY_SHOULDER  50  // rl
 #define DELAY_THROW     250 // grenades, dynamite
 
+// JPW NERVE -- moved this from cg_weapons.c 'cause I need it for a droplist for weapondrop command (wbuttons & (1 << 6))
+// JPW NERVE -- in mutiplayer, characters get knife/special on button 1, pistols on 2, 2-handed on 3
+int weapBanksMultiPlayer[MAX_WEAP_BANKS_MP][MAX_WEAPS_IN_BANK_MP] =
+{
+    { 0,                     0,                      0,          0,          0,          0,              0,          0 },  // empty bank '0'
+    { WP_KNIFE,              0,                      0,          0,          0,          0,              0,          0 },
+    { WP_LUGER,              WP_COLT,                0,          0,          0,          0,              0,          0 },
+    { WP_MP40,               WP_THOMPSON,            WP_STEN,    WP_MAUSER,  WP_GARAND,  WP_PANZERFAUST, WP_VENOM,   WP_FLAMETHROWER },
+    { WP_GRENADE_LAUNCHER,   WP_GRENADE_PINEAPPLE,   0,          0,          0,          0,              0,          0, },
+    { WP_DYNAMITE,           0,						0,			0,          0,          0,              0,          0 }
+};
+// jpw
+
 // [0] = maxammo		-	max player ammo carrying capacity.
 // [1] = uses			-	how many 'rounds' it takes/costs to fire one cycle.
 // [2] = maxclip		-	max 'rounds' in a clip.
@@ -139,7 +152,9 @@ ammotable_t ammoTable[] =
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_MONSTER_ATTACK1		// 33
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_MONSTER_ATTACK2		// 34
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_MONSTER_ATTACK3		// 35
-    {   999,            0,      999,    0,      50,             0,      0,      0,      0                       }   //	WP_GAUNTLET				// 36
+    {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_GAUNTLET				// 36
+    {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_PLIERS				// 37
+    {   1,              0,      1,      3000,   50,             1000,   0,      0,      MOD_AMMO,               },  //	WP_AMMO					// 38
 };
 
 
@@ -176,8 +191,11 @@ int weapAlts[] =
     WP_COLT,            // 27 WP_AKIMBO		//----(SA)	new
     WP_NONE,            // 28 WP_CLASS_SPECIAL
 //	WP_NONE,			// 29 WP_CROSS
-    WP_NONE             // 30 WP_DYNAMITE	//----(SA)	modified (not in rotation yet)
+    WP_NONE,            // 30 WP_DYNAMITE	//----(SA)	modified (not in rotation yet)
 //	WP_DYNAMITE			// 31 WP_DYNAMITE2	//----(SA)	new
+    WP_NONE,            // 32 WP_PLIERS
+    WP_NONE,            // 33 WP_AMMO
+    WP_NONE,            // 34 WP_AMMO
 };
 
 
@@ -1966,30 +1984,60 @@ gitem_t bg_itemlist[] =
     /*
     weapon_class_special (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
     */
-    /*
-    	{
-    		"weapon_class_special",
-    		"sound/misc/w_pkup.wav",
-    		{	"models/multiplayer/hammer/hammer.md3",
-    			"models/multiplayer/hammer/v_hammer.md3",
-    			"models/multiplayer/hammer/pu_hammer.md3",
-    			0, 0, },
-    
-    		"icons/iconw_hammer_1",	// icon
-    		"icons/ammo2",			// ammo icon
-    		"Special",				// pickup
-    		50, // this should never be picked up
-    		IT_WEAPON,
-    		WP_CLASS_SPECIAL,
-    		WP_CLASS_SPECIAL,
-    		WP_CLASS_SPECIAL,
-    		"",						// precache
-    		"",						// sounds
-    		{0,0,0,0}
-    	},
+    {
+        "weapon_class_special",
+        "sound/misc/w_pkup.wav",
+        {
+            "models/multiplayer/hammer/hammer.md3",
+            "models/multiplayer/hammer/v_hammer.md3",
+            "models/multiplayer/hammer/pu_hammer.md3",
+            0, 0,
+        },
+        
+        "icons/iconw_hammer_1",	// icon
+        "icons/ammo2",			// ammo icon
+        "Special",				// pickup
+        50, // this should never be picked up
+        IT_WEAPON,
+        WP_CLASS_SPECIAL,
+        WP_CLASS_SPECIAL,
+        WP_CLASS_SPECIAL,
+        "",						// precache
+        "",						// sounds
+        {0, 0, 0, 0}
+    },
     // jpw
-    */
     
+    /*
+    weapon_magicammo (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+    */
+    {
+        "weapon_magicammo",
+        "sound/misc/w_pkup.wav",
+        {
+            "models/multiplayer/ammopack/ammopack.md3",
+            "models/multiplayer/ammopack/v_ammopack.md3",
+            "models/multiplayer/ammopack/ammopack_pickup.md3",
+            0,
+            ""
+        },
+        
+        "icons/iconw_ammopack_1",    // icon
+        "icons/ammo2",           // ammo icon
+        "Ammo Pack",             // pickup
+        50, // this should never be picked up
+        IT_WEAPON,
+        WP_AMMO,
+        WP_AMMO,
+        WP_AMMO,
+        "",                      // precache
+        "sound/multiplayer/allies/a-aborting.wav sound/multiplayer/axis/g-aborting.wav sound/multiplayer/allies/a-affirmative_omw.wav sound/multiplayer/axis/g-affirmative_omw.wav",                     // sounds
+        { 0, 0, 0, 0 }
+    },
+    
+    /*
+    weapon_binoculars (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+    */
     {
         "weapon_binoculars",
         "sound/misc/w_pkup.wav",
@@ -3989,6 +4037,33 @@ qboolean BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime)
 */
 //----(SA)	end
 
+// DHM - Nerve :: returns qtrue if a weapon is indeed used in multiplayer
+qboolean BG_WeaponInWolfMP( int weapon )
+{
+
+    switch( weapon )
+    {
+        case WP_KNIFE:
+        case WP_LUGER:
+        case WP_COLT:
+        case WP_MP40:
+        case WP_THOMPSON:
+        case WP_STEN:
+        case WP_MAUSER:
+        case WP_SNIPERRIFLE:
+        case WP_GRENADE_LAUNCHER:
+        case WP_GRENADE_PINEAPPLE:
+        case WP_PANZERFAUST:
+        case WP_VENOM:
+        case WP_FLAMETHROWER:
+        case WP_AMMO:
+        case WP_PLIERS:
+        case WP_DYNAMITE:
+            return qtrue;
+        default:
+            return qfalse;
+    }
+}
 
 /*
 ============
@@ -4051,7 +4126,7 @@ qboolean isClipOnly( int weap )
 qboolean    BG_CanItemBeGrabbed( const entityState_t* ent, const playerState_t* ps )
 {
     gitem_t* item;
-    int ammoweap;
+    int ammoweap, weapbank;
     qboolean multiplayer = qfalse;
     
     if( ent->modelindex < 1 || ent->modelindex >= bg_numItems )
@@ -4076,37 +4151,54 @@ qboolean    BG_CanItemBeGrabbed( const entityState_t* ent, const playerState_t* 
     
         case IT_WEAPON:
             // JPW NERVE -- medics & engineers can only pick up same weapon type
-            if( multiplayer )
+            if( item->giTag == WP_AMMO )    // magic ammo for any two-handed weapon
             {
-                if( ( ps->stats[STAT_PLAYER_CLASS] == PC_MEDIC ) || ( ps->stats[STAT_PLAYER_CLASS] == PC_ENGINEER ) )
+                return qtrue;
+            }
+            if( ( ps->stats[STAT_PLAYER_CLASS] == PC_MEDIC ) || ( ps->stats[STAT_PLAYER_CLASS] == PC_ENGINEER ) )
+            {
+                if( !COM_BitCheck( ps->weapons, item->giTag ) )
                 {
-                    if( !COM_BitCheck( ps->weapons, item->giTag ) )
+                    return qfalse;
+                }
+                else
+                {
+                    return qtrue;
+                }
+            }
+            
+            if( ps->stats[STAT_PLAYER_CLASS] == PC_LT )
+            {
+                if( ( item->giTag != WP_MP40 ) && ( item->giTag != WP_THOMPSON ) && ( item->giTag != WP_STEN ) )
+                {
+                    return qfalse;
+                }
+            }
+            
+// JPW NERVE wolf multiplayer: other classes can only pick up weapon if weapon's bank is empty
+#ifdef GAMEDLL
+            if( g_gametype.integer >= GT_WOLF )
+#endif
+#ifdef CGAMEDLL
+                if( cg_gameType.integer >= GT_WOLF )
+#endif
+                {
+                    weapbank = 0;
+                    for( ammoweap = 0; ammoweap < MAX_WEAPS_IN_BANK_MP; ammoweap++ )
+                        if( item->giTag == weapBanksMultiPlayer[3][ammoweap] )
+                        {
+                            weapbank = 1;
+                        }
+                    if( !weapbank )
                     {
                         return qfalse;
                     }
-                }
-            }
-            else
-            {
-                if( COM_BitCheck( ps->weapons, item->giTag ) )                  // you have the weap
-                {
-                    if( isClipOnly( item->giTag ) )
-                    {
-                        if( ps->ammoclip[item->giAmmoIndex] >= ammoTable[item->giAmmoIndex].maxclip )
+                    for( ammoweap = 0; ammoweap < MAX_WEAPS_IN_BANK_MP; ammoweap++ )
+                        if( COM_BitCheck( ps->weapons, weapBanksMultiPlayer[3][ammoweap] ) )
                         {
                             return qfalse;
                         }
-                    }
-                    else
-                    {
-                        if( ps->ammo[item->giAmmoIndex] >= ammoTable[item->giAmmoIndex].maxammo )    // you are loaded with the ammo
-                        {
-                            return qfalse;
-                        }
-                    }
                 }
-            }
-            // JPW
             return qtrue;
             
         case IT_AMMO:

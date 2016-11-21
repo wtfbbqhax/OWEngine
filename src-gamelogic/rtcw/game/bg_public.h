@@ -609,11 +609,16 @@ typedef enum
     
     VERYBIGEXPLOSION,       // 31	// explosion effect for airplanes
     
-    WP_BINOCULARS,           // 32
-    WP_NUM_WEAPONS          // 33   NOTE: this cannot be larger than 64 for AI/player weapons!
+    WP_BINOCULARS,          // 32
+    WP_PLIERS,              // 33
+    WP_AMMO,                // 34
+    WP_NUM_WEAPONS          // 35   NOTE: this cannot be larger than 64 for AI/player weapons!
     
 } weapon_t;
 
+// JPW NERVE moved from cg_weapons (now used in g_active) for drop command, actual array in bg_misc.c
+extern int weapBanksMultiPlayer[MAX_WEAP_BANKS_MP][MAX_WEAPS_IN_BANK_MP];
+// jpw
 
 typedef struct ammotable_s
 {
@@ -1227,6 +1232,7 @@ typedef enum
     MOD_LT_AIRSTRIKE,
     MOD_ENGINEER,   // not sure if we'll use
     MOD_MEDIC,      // these like this or not
+    MOD_AMMO,
 //
     MOD_BAT
     

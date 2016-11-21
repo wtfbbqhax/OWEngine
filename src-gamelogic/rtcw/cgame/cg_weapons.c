@@ -75,22 +75,7 @@ int weapBanks[MAX_WEAP_BANKS][MAX_WEAPS_IN_BANK] =
     {WP_FLAMETHROWER,       0,                      0           },  //	9
     {WP_TESLA,              0,                      0           }   //	10
 };
-
-// JPW NERVE -- in mutiplayer, characters get knife/special on button 1, pistols on 2, 2-handed on 3
-int weapBanksMultiPlayer[MAX_WEAP_BANKS_MP][MAX_WEAPS_IN_BANK_MP] =
-{
-    {0,                     0,                      0,          0,          0,          0,              0,          0           },  // empty bank '0'
-    {WP_KNIFE,              0,                      0,          0,          0,          0,              0,          0           },
-    {WP_LUGER,              WP_COLT,                0,          0,          0,          0,              0,          0           },
-    {WP_MP40,               WP_THOMPSON,            WP_STEN,    WP_MAUSER,  WP_GARAND,  WP_PANZERFAUST, WP_VENOM,   WP_FLAMETHROWER     },
-    {WP_GRENADE_LAUNCHER,   WP_GRENADE_PINEAPPLE,   0,          0,          0,          0,              0,          0,          },
-    {WP_CLASS_SPECIAL,      0,                      0,          0,          0,          0,              0,          0,          },
-    {WP_DYNAMITE,           0,                      0,          0,          0,          0,              0,          0           }
-};
-// jpw
-
 //----(SA)	end
-
 
 /*
 ==============
@@ -1525,6 +1510,12 @@ void CG_RegisterWeapon( int weaponNum )
             weaponInfo->trailRadius         = 256;
             break;
 // jpw
+        case WP_AMMO:
+            weaponInfo->flashSound[0] = trap_S_RegisterSound( "sound/multiplayer/bag_toss.wav" );
+            break;
+        case WP_PLIERS:
+            break;
+            
 // DHM - Nerve - temp effects
         case WP_CLASS_SPECIAL:
         case WP_MEDIC_HEAL:
@@ -5237,6 +5228,16 @@ void CG_OutOfAmmoChange( void )
     //
     // trivial switching
     //
+    
+    if( cg.weaponSelect == WP_DYNAMITE )
+    {
+        if( CG_WeaponSelectable( WP_PLIERS ) )
+        {
+            cg.weaponSelect = WP_PLIERS;
+            CG_FinishWeaponChange( cg.predictedPlayerState.weapon, WP_PLIERS );
+            return;
+        }
+    }
     
     // if you're using an alt mode weapon, try switching back to the parent
     // otherwise, switch to the equivalent if you've got it

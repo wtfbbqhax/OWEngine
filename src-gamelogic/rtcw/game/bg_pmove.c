@@ -3218,10 +3218,12 @@ Generates weapon events and modifes the weapon counter
 #ifdef CGAMEDLL
 extern vmCvar_t cg_soldierChargeTime;
 extern vmCvar_t cg_engineerChargeTime;
+extern vmCvar_t cg_LTChargeTime;
 #endif
 #ifdef GAMEDLL
 extern vmCvar_t g_soldierChargeTime;
 extern vmCvar_t g_engineerChargeTime;
+extern vmCvar_t g_LTChargeTime;
 #endif
 // jpw
 
@@ -3632,6 +3634,13 @@ static void PM_Weapon( void )
                         return;
                     }
                 }
+                if( pm->ps->weapon == WP_AMMO )
+                {
+                    if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( g_LTChargeTime.integer * 0.25f ) )
+                    {
+                        return;
+                    }
+                }
                 if( pm->ps->weapon == WP_DYNAMITE )
                 {
                     if( pm->cmd.serverTime - pm->ps->classWeaponTime < g_engineerChargeTime.integer )           // had to use multiplier because chargetime is used elsewhere as bomb diffuse time FIXME not really but NOTE changing bomb diffuse time will require changing this time as well (intended function: new charge ready when old one explodes, ie every 30 seconds or so)
@@ -3648,6 +3657,13 @@ static void PM_Weapon( void )
                 if( pm->ps->weapon == WP_PANZERFAUST )
                 {
                     if( pm->cmd.serverTime - pm->ps->classWeaponTime < cg_soldierChargeTime.integer )
+                    {
+                        return;
+                    }
+                }
+                if( pm->ps->weapon == WP_AMMO )
+                {
+                    if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( cg_LTChargeTime.integer * 0.25f ) )
                     {
                         return;
                     }
@@ -3956,6 +3972,7 @@ static void PM_Weapon( void )
                 case WP_MP40:
                 case WP_THOMPSON:
                 case WP_STEN:
+                case WP_PLIERS:
                     PM_ContinueWeaponAnim( weapattackanim );
                     break;
                     
@@ -4125,6 +4142,14 @@ static void PM_Weapon( void )
                             addTime = 50;
                             break;
 // jpw
+                            // engineers disarm bomb "on the fly" (high sample rate)
+                            // but medics & LTs throw out health pack/smoke grenades slow
+                        case WP_AMMO:
+                            addTime = ammoTable[pm->ps->weapon].nextShotTime;
+                            break;
+                        case WP_PLIERS:
+                            addTime = 50;
+                            break;
                         case WP_MONSTER_ATTACK1:
                             switch( pm->ps->aiChar )
                             {

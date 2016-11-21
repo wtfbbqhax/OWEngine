@@ -709,6 +709,8 @@ static void CG_DrawPlayerAmmoValue( rectDef_t* rect, int font, float scale, vec4
     {
         case WP_KNIFE:
         case WP_CLASS_SPECIAL:              // DHM - Nerve
+        case WP_PLIERS:
+        case WP_AMMO:
             return;
             
         case WP_AKIMBO:
@@ -2677,8 +2679,11 @@ static void CG_DrawFatigue( rectDef_t* rect, vec4_t color, int align )
     //	vec4_t	color = {0, 1, 0, 1}, color2 = {1, 0, 0, 1};
     vec4_t colorBonus = {1, 1, 0, 0.45f};   // yellow (a little more solid for the 'bonus' stamina)
     float barFrac;  //, omBarFrac;
+    int weap = 0;
     int flags = 0;
+    qboolean fade = qfalse;
     float chargeTime;       // DHM - Nerve
+    vec4_t bgcolor = { 1.0f, 1.0f, 1.0f, 0.25f };
     
     barFrac = ( float )cg.snap->ps.sprintTime / SPRINTTIME;
 //	omBarFrac = 1.0f-barFrac;
@@ -2696,10 +2701,22 @@ static void CG_DrawFatigue( rectDef_t* rect, vec4_t color, int align )
     {
         CG_FilledBar( rect->x, rect->y, rect->w / 2, rect->h, colorBonus, NULL, NULL, cg.snap->ps.powerups[PW_NOFATIGUE] / BONUSTIME, flags );
     }
-// JPW NERVE -- added drawWeaponPercent in multiplayer, drawn to left
+    
+    // JPW NERVE -- added drawWeaponPercent in multiplayer, drawn to left
+    // Dushan - draw bar in every gametype what is not single player
     if( cgs.gametype != GT_SINGLE_PLAYER )
     {
-    
+        // DHM - Only draw bar if weapon uses it
+        weap = cg.snap->ps.weapon;
+        
+        if( !( cg.snap->ps.eFlags & EF_ZOOMING ) )
+        {
+            if( weap != WP_PANZERFAUST && weap != WP_DYNAMITE && weap != WP_PLIERS && weap != WP_AMMO )
+            {
+                fade = qtrue;
+            }
+        }
+        
         if( cg.snap->ps.stats[ STAT_PLAYER_CLASS ] == PC_ENGINEER )
         {
             chargeTime = cg_engineerChargeTime.value;
@@ -2728,7 +2745,17 @@ static void CG_DrawFatigue( rectDef_t* rect, vec4_t color, int align )
         color[1] = color[2] = barFrac;
         color[3] = 0.25 + barFrac * 0.5;
         
-        CG_FilledBar( rect->x - rect->w, rect->y, rect->w / 2, rect->h, color, NULL, NULL, barFrac, flags );
+        if( fade )
+        {
+            bgcolor[3] *= 0.4f;
+            color[3] *= 0.4;
+        }
+        
+        CG_FilledBar( rect->x, rect->y + 6, rect->w, rect->h * 0.84f, color, NULL, bgcolor, barFrac, flags );
+        
+        color[1] = color[2] = 1.0f;
+        color[3] = cg_hudAlpha.value;
+        trap_R_SetColor( color );
     }
 // jpw
 }

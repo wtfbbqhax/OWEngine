@@ -472,9 +472,102 @@ int Pickup_Weapon( gentity_t* ent, gentity_t* other )
 {
     int quantity;
     qboolean alreadyHave = qfalse;
-    int weapon;
+    int i, weapon;
     
-    weapon = ent->item->giTag;
+    // JPW NERVE -- magic ammo for any two-handed weapon
+    if( ent->item->giTag == WP_AMMO )
+    {
+        // if LT isn't giving ammo to self or another LT or the enemy, give him some props
+        if( other->client->ps.stats[STAT_PLAYER_CLASS] != PC_LT )
+        {
+            if( ent->parent )
+            {
+                if( other->client->sess.sessionTeam == ent->parent->client->sess.sessionTeam )
+                {
+                    if( ent->parent->client )
+                    {
+                        if( !( ent->parent->client->PCSpecialPickedUpCount % LT_SPECIAL_PICKUP_MOD ) )
+                        {
+                            AddScore( ent->parent, WOLF_AMMO_UP );
+                        }
+                        ent->parent->client->PCSpecialPickedUpCount++;
+                    }
+                }
+            }
+        }
+        
+        // everybody likes grenades -- abuse weapon var as grenade type and i as max # grenades class can carry
+        switch( other->client->ps.stats[STAT_PLAYER_CLASS] )
+        {
+            case PC_LT: // redundant but added for completeness/flexibility
+            case PC_MEDIC:
+                i = 1;
+                break;
+            case PC_SOLDIER:
+                i = 4;
+                break;
+            case PC_ENGINEER:
+                i = 8;
+                break;
+            default:
+                i = 1;
+                break;
+        }
+        if( other->client->sess.sessionTeam == TEAM_RED )
+        {
+            weapon = WP_GRENADE_LAUNCHER;
+        }
+        else
+        {
+            weapon = WP_GRENADE_PINEAPPLE;
+        }
+        if( other->client->ps.ammoclip[BG_FindClipForWeapon( weapon )] < i )
+        {
+            other->client->ps.ammoclip[BG_FindClipForWeapon( weapon )]++;
+        }
+        COM_BitSet( other->client->ps.weapons, weapon );
+        
+        // TTimo - add 8 pistol bullets
+        if( other->client->sess.sessionTeam == TEAM_RED )
+        {
+            weapon = WP_LUGER;
+        }
+        else
+        {
+            weapon = WP_COLT;
+        }
+        //		G_Printf("filling magazine for weapon %d colt/luger (%d rounds)\n", weapon, ammoTable[weapon].maxclip);
+        other->client->ps.ammo[BG_FindAmmoForWeapon( weapon )] += ammoTable[weapon].maxclip;
+        if( other->client->ps.ammo[BG_FindAmmoForWeapon( weapon )] > ammoTable[weapon].maxclip * 4 )
+        {
+            other->client->ps.ammo[BG_FindAmmoForWeapon( weapon )] = ammoTable[weapon].maxclip * 4;
+        }
+        
+        // and some two-handed ammo
+        for( i = 0; i < MAX_WEAPS_IN_BANK_MP; i++ )
+        {
+            weapon = weapBanksMultiPlayer[3][i];
+            if( COM_BitCheck( other->client->ps.weapons, weapon ) )
+            {
+                //				G_Printf("filling magazine for weapon %d (%d rounds)\n",weapon,ammoTable[weapon].maxclip);
+                if( weapon == WP_FLAMETHROWER )  // FT doesn't use magazines so refill tank
+                {
+                    other->client->ps.ammoclip[BG_FindAmmoForWeapon( WP_FLAMETHROWER )] = ammoTable[weapon].maxclip;
+                }
+                else
+                {
+                    other->client->ps.ammo[BG_FindAmmoForWeapon( weapon )] += ammoTable[weapon].maxclip;
+                    if( other->client->ps.ammo[BG_FindAmmoForWeapon( weapon )] > ammoTable[weapon].maxclip * 3 )
+                    {
+                        other->client->ps.ammo[BG_FindAmmoForWeapon( weapon )] = ammoTable[weapon].maxclip * 3;
+                    }
+                }
+                return RESPAWN_SP;
+            }
+        }
+        return RESPAWN_SP;
+    }
+    // jpw
     
     if( ent->count < 0 )
     {
@@ -587,6 +680,24 @@ int Pickup_Health( gentity_t* ent, gentity_t* other )
 {
     int max;
     int quantity = 0;
+    
+    if( other->client->ps.stats[STAT_PLAYER_CLASS] != PC_MEDIC )
+    {
+        if( ent->parent )
+        {
+            if( other->client->sess.sessionTeam == ent->parent->client->sess.sessionTeam )
+            {
+                if( ent->parent->client )
+                {
+                    if( !( ent->parent->client->PCSpecialPickedUpCount % MEDIC_SPECIAL_PICKUP_MOD ) )
+                    {
+                        AddScore( ent->parent, WOLF_HEALTH_UP );
+                    }
+                    ent->parent->client->PCSpecialPickedUpCount++;
+                }
+            }
+        }
+    }
     
     // small and mega healths will go over the max
     if( ent->item->quantity != 5 && ent->item->quantity != 100 )
