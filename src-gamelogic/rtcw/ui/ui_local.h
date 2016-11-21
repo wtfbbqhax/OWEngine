@@ -146,6 +146,9 @@ extern vmCvar_t ui_browserShowEmpty;
 extern vmCvar_t ui_serverStatusTimeOut;
 // -NERVE - SMF
 
+extern vmCvar_t ui_limboOptions;
+extern vmCvar_t ui_isSpectator;
+
 //
 // ui_qmenu.c
 //
@@ -713,7 +716,7 @@ typedef struct
     const char* date;
     
     qtime_t tm;
-    
+    const char*  name;
 } savegameInfo;
 //----(SA)	end
 
@@ -953,6 +956,8 @@ typedef struct
     const char*  glInfoLines[GLINFO_LINES];
     int numGlInfoLines;
     
+    int selectedObjective;
+    int activeFont;
 }   uiInfo_t;
 
 extern uiInfo_t uiInfo;

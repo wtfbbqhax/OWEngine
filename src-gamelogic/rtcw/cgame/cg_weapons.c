@@ -1510,6 +1510,14 @@ void CG_RegisterWeapon( int weaponNum )
             weaponInfo->trailRadius         = 256;
             break;
 // jpw
+        case WP_SMOKE_GRENADE:
+            weaponInfo->missileModel = trap_R_RegisterModel( "models/multiplayer/smokegrenade/smokegrenade.md3" );
+            weaponInfo->missileTrailFunc = CG_PyroSmokeTrail;
+            weaponInfo->missileDlight = 200;
+            weaponInfo->wiTrailTime = 4000;
+            weaponInfo->trailRadius = 256;
+            break;
+            
         case WP_AMMO:
             weaponInfo->flashSound[0] = trap_S_RegisterSound( "sound/multiplayer/bag_toss.wav" );
             break;

@@ -72,12 +72,12 @@ extern vmCvar_t g_gametype;
 // JPW NERVE -- in mutiplayer, characters get knife/special on button 1, pistols on 2, 2-handed on 3
 int weapBanksMultiPlayer[MAX_WEAP_BANKS_MP][MAX_WEAPS_IN_BANK_MP] =
 {
-    { 0,                     0,                      0,          0,          0,          0,              0,          0 },  // empty bank '0'
-    { WP_KNIFE,              0,                      0,          0,          0,          0,              0,          0 },
-    { WP_LUGER,              WP_COLT,                0,          0,          0,          0,              0,          0 },
-    { WP_MP40,               WP_THOMPSON,            WP_STEN,    WP_MAUSER,  WP_GARAND,  WP_PANZERFAUST, WP_VENOM,   WP_FLAMETHROWER },
-    { WP_GRENADE_LAUNCHER,   WP_GRENADE_PINEAPPLE,   0,          0,          0,          0,              0,          0, },
-    { WP_DYNAMITE,           0,						0,			0,          0,          0,              0,          0 }
+    { 0,                     0,                      0,						0,          0,          0,              0,          0 },  // empty bank '0'
+    { WP_KNIFE,              0,                      0,						0,          0,          0,              0,          0 },
+    { WP_LUGER,              WP_COLT,                0,						0,          0,          0,              0,          0 },
+    { WP_MP40,               WP_THOMPSON,            WP_STEN,				WP_MAUSER,  WP_GARAND,  WP_PANZERFAUST, WP_VENOM,   WP_FLAMETHROWER },
+    { WP_GRENADE_LAUNCHER,   WP_GRENADE_PINEAPPLE,   0,						0,          0,          0,              0,          0, },
+    { WP_DYNAMITE,           WP_PLIERS,	             WP_SMOKE_GRENADE,		0,          0,          0,              0,          0 }
 };
 // jpw
 
@@ -154,7 +154,8 @@ ammotable_t ammoTable[] =
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_MONSTER_ATTACK3		// 35
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_GAUNTLET				// 36
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_PLIERS				// 37
-    {   1,              0,      1,      3000,   50,             1000,   0,      0,      MOD_AMMO,               },  //	WP_AMMO					// 38
+    {   1,              0,      1,      3000,   50,             1000,   0,      0,      MOD_AMMO,               },  //	WP_AMMO	                // 38
+    {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_SMOKE_GRENADE		// 39
 };
 
 
@@ -196,6 +197,7 @@ int weapAlts[] =
     WP_NONE,            // 32 WP_PLIERS
     WP_NONE,            // 33 WP_AMMO
     WP_NONE,            // 34 WP_AMMO
+    WP_NONE,            // 35 WP_SMOKE_GRENAD
 };
 
 
@@ -1102,7 +1104,7 @@ gitem_t bg_itemlist[] =
         30,
         IT_WEAPON,
         WP_THOMPSON,
-        WP_COLT,
+        WP_THOMPSON,
         WP_THOMPSON,
         "",                  // precache
         "",                  // sounds
@@ -1503,55 +1505,57 @@ gitem_t bg_itemlist[] =
     /* JPW NERVE
     weapon_grenadesmoke
     */
-    /*	// just commented out to remove the registration errors in SP (we register every weapon in every map in SP)
-    	{
-    		"weapon_grenadesmoke",
-    		"sound/misc/w_pkup.wav",
-    		{	"models/multiplayer/smokegrenade/smokegrenade.md3",
-    			"models/multiplayer/smokegrenade/v_smokegrenade.md3",
-    			"models/multiplayer/smokegrenade/pu_smokegrenade.md3",
-    			0, 0},
-    
-    		"icons/iconw_smokegrenade_1",	// icon
-    		"icons/ammo2",	// ammo icon
-    		"smokeGrenade",				// pickup
-    		50,
-    		IT_WEAPON,
-    		WP_GRENADE_SMOKE,
-    		WP_GRENADE_SMOKE,
-    		WP_GRENADE_SMOKE,
-    		"",						// precache
-    		"sound/weapons/grenade/hgrenb1a.wav sound/weapons/grenade/hgrenb2a.wav",				// sounds
-    		{0,0,0,0}
-    	},
+    {
+        "weapon_grenadesmoke",
+        "sound/misc/w_pkup.wav",
+        {
+            "models/multiplayer/smokegrenade/smokegrenade.md3",
+            "models/multiplayer/smokegrenade/v_smokegrenade.md3",
+            "models/multiplayer/smokegrenade/pu_smokegrenade.md3",
+            0, 0
+        },
+        
+        "icons/iconw_smokegrenade_1",	// icon
+        "icons/ammo2",	// ammo icon
+        "smokeGrenade",				// pickup
+        50,
+        IT_WEAPON,
+        WP_GRENADE_SMOKE,
+        WP_GRENADE_SMOKE,
+        WP_GRENADE_SMOKE,
+        "",						// precache
+        "sound/weapons/grenade/hgrenb1a.wav sound/weapons/grenade/hgrenb2a.wav",				// sounds
+        {0, 0, 0, 0}
+    },
     // jpw
-    */
+    
 // DHM - Nerve
     /*
     weapon_medic_heal
     */
-    /*	{
-    		"weapon_medic_heal",
-    		"sound/misc/w_pkup.wav",
-    		{	"models/multiplayer/medpack/medpack.md3",
-    			"models/multiplayer/medpack/v_medpack.md3",
-    			"models/multiplayer/medpack/pu_medpack.md3",
-    			0, 0 },
-    
-    		"icons/iconw_medheal_1",	// icon
-    		"icons/ammo2",			// ammo icon
-    		"Medic Heal",			// pickup
-    		50,
-    		IT_WEAPON,
-    		WP_MEDIC_HEAL,
-    		WP_MEDIC_HEAL,
-    		WP_MEDIC_HEAL,
-    		"",						// precache
-    		"",						// sounds
-    		{0,0,0,0}
-    	},
-    // dhm
-    */
+    {
+        "weapon_medic_heal",
+        "sound/misc/w_pkup.wav",
+        {
+            "models/multiplayer/medpack/medpack.md3",
+            "models/multiplayer/medpack/v_medpack.md3",
+            "models/multiplayer/medpack/pu_medpack.md3",
+            0, 0
+        },
+        
+        "icons/iconw_medheal_1",	// icon
+        "icons/ammo2",			// ammo icon
+        "Medic Heal",			// pickup
+        50,
+        IT_WEAPON,
+        WP_MEDIC_HEAL,
+        WP_MEDIC_HEAL,
+        WP_MEDIC_HEAL,
+        "",						// precache
+        "",						// sounds
+        {0, 0, 0, 0}
+    },
+// dhm
     /*
     weapon_dynamite
     */
@@ -4058,6 +4062,7 @@ qboolean BG_WeaponInWolfMP( int weapon )
         case WP_FLAMETHROWER:
         case WP_AMMO:
         case WP_PLIERS:
+        case WP_SMOKE_GRENADE:
         case WP_DYNAMITE:
             return qtrue;
         default:

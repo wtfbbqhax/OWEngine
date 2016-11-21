@@ -52,6 +52,14 @@
 
 uiInfo_t uiInfo;
 
+#define AXIS_TEAM       0
+#define ALLIES_TEAM     1
+#define SPECT_TEAM      2
+
+extern qboolean g_waitingForKey;
+extern qboolean g_editingField;
+extern itemDef_t* g_editItem;
+
 static const char* MonthAbbrev[] =
 {
     "Jan", "Feb", "Mar",
@@ -4780,6 +4788,7 @@ typedef struct
     
     const char*  torso_anim;
     const char*  legs_anim;
+    const char*  large_shader;
 } weaponType_t;
 
 // NERVE - SMF - this is the weapon info list [what can and can't be used by character classes]
@@ -4871,6 +4880,272 @@ void WM_getWeaponAnim( const char** torso_anim, const char** legs_anim )
             *legs_anim = weaponTypes[i].legs_anim;
             return;
         }
+    }
+}
+
+void WM_setItemPic( char* name, const char* shader )
+{
+    menuDef_t* menu = Menu_GetFocused();
+    itemDef_t* item;
+    
+    item = Menu_FindItemByName( menu, name );
+    if( item )
+    {
+        item->window.background = DC->registerShaderNoMip( shader );
+    }
+}
+
+void WM_setVisibility( char* name, qboolean show )
+{
+    menuDef_t* menu = Menu_GetFocused();
+    itemDef_t* item;
+    
+    item = Menu_FindItemByName( menu, name );
+    if( item )
+    {
+        if( show )
+        {
+            item->window.flags |= WINDOW_VISIBLE;
+        }
+        else
+        {
+            item->window.flags &= ~WINDOW_VISIBLE;
+        }
+    }
+}
+
+void WM_setWeaponPics()
+{
+    itemDef_t* knifeDef, *pistolDef, *weaponDef, *grenadeDef, *item1Def, *item2Def;
+    menuDef_t* menu = Menu_GetFocused();
+    int playerType, team, weapon, pistol, item1, i;
+    const char* gunShader, *grenadeShader;
+    
+    knifeDef = Menu_FindItemByName( menu, "window_knife_pic" );
+    pistolDef = Menu_FindItemByName( menu, "window_pistol_pic" );
+    weaponDef = Menu_FindItemByName( menu, "window_weapon_pic" );
+    grenadeDef = Menu_FindItemByName( menu, "window_grenade_pic" );
+    item1Def = Menu_FindItemByName( menu, "window_item1_pic" );
+    item2Def = Menu_FindItemByName( menu, "window_item2_pic" );
+    
+    if( !knifeDef )
+    {
+        return;
+    }
+    
+    team = trap_Cvar_VariableValue( "mp_team" );
+    playerType = trap_Cvar_VariableValue( "mp_playerType" );
+    weapon = trap_Cvar_VariableValue( "mp_weapon" );
+    pistol = trap_Cvar_VariableValue( "mp_pistol" );
+    item1 = trap_Cvar_VariableValue( "mp_item1" );
+    
+    
+    knifeDef->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_knife.tga" );
+    
+    if( team == 0 )
+    {
+        pistolDef->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_luger.tga" );
+        gunShader = "ui_mp/assets/weapon_mp40.tga";
+        grenadeShader = "ui_mp/assets/weapon_grenade_ger.tga";
+    }
+    else
+    {
+        pistolDef->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_colt1911.tga" );
+        gunShader = "ui_mp/assets/weapon_thompson.tga";
+        grenadeShader = "ui_mp/assets/weapon_grenade.tga";
+    }
+    
+    weaponDef->window.background = DC->registerShaderNoMip( gunShader );
+    grenadeDef->window.background = DC->registerShaderNoMip( grenadeShader );
+    
+    if( playerType == 0 )         // soldier
+    {
+        item1Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/item_none.tga" );
+        item2Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/item_none.tga" );
+        
+        if( weapon )
+        {
+            for( i = 0; weaponTypes[i].name; i++ )
+                if( weaponTypes[i].value == weapon )
+                {
+                    weaponDef->window.background = DC->registerShaderNoMip( weaponTypes[i].name );
+                    break;
+                }
+        }
+    }
+    else if( playerType == 1 )  // medic
+    {
+        item1Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_syringe.tga" );
+        item2Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_medheal.tga" );
+    }
+    else if( playerType == 2 )  // engineer
+    {
+        item1Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_pliers.tga" );
+        item2Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_dynamite.tga" );
+    }
+    else if( playerType == 3 )  // lieut
+    {
+        item1Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_smokegrenade.tga" );
+        item2Def->window.background = DC->registerShaderNoMip( "ui_mp/assets/weapon_ammo.tga" );
+        
+        if( weapon )
+        {
+            for( i = 0; weaponTypes[i].name; i++ )
+                if( weaponTypes[i].value == weapon )
+                {
+                    weaponDef->window.background = DC->registerShaderNoMip( weaponTypes[i].name );
+                    break;
+                }
+        }
+    }
+    
+    // set button states
+    WM_setItemPic( "window_axisTeamButton", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_alliedTeamButton", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_specTeamButton", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_classSoldierButton", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_classMedicButton", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_classEngrButton", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_classLieutButton", "ui_mp/assets/button.tga" );
+    
+    if( team == 0 )
+    {
+        WM_setItemPic( "window_axisTeamButton", "ui_mp/assets/button_click.tga" );
+    }
+    else if( team == 1 )
+    {
+        WM_setItemPic( "window_alliedTeamButton", "ui_mp/assets/button_click.tga" );
+    }
+    else
+    {
+        WM_setItemPic( "window_specTeamButton", "ui_mp/assets/button_click.tga" );
+    }
+    
+    if( playerType == 0 )
+    {
+        WM_setItemPic( "window_classSoldierButton", "ui_mp/assets/button_click.tga" );
+    }
+    else if( playerType == 1 )
+    {
+        WM_setItemPic( "window_classMedicButton", "ui_mp/assets/button_click.tga" );
+    }
+    else if( playerType == 2 )
+    {
+        WM_setItemPic( "window_classEngrButton", "ui_mp/assets/button_click.tga" );
+    }
+    else
+    {
+        WM_setItemPic( "window_classLieutButton", "ui_mp/assets/button_click.tga" );
+    }
+    
+    // set objective states
+    WM_setItemPic( "window_objectiveButton0", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_objectiveButton1", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_objectiveButton2", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_objectiveButton3", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_objectiveButton4", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_objectiveButton5", "ui_mp/assets/button.tga" );
+    WM_setItemPic( "window_objectiveButton6", "ui_mp/assets/button.tga" );
+    
+    WM_setItemPic( va( "window_objectiveButton%d", uiInfo.selectedObjective ), "ui_mp/assets/button_click.tga" );
+    
+    // set player backgrounds
+    {
+        int val;
+        char* team_str = NULL; // TTimo: init
+        qboolean skip = qfalse;
+        
+        // set team background
+        val = trap_Cvar_VariableValue( "mp_team" );
+        
+        if( val == SPECT_TEAM )
+        {
+            WM_setItemPic( "modelselection_flag", "multi_spectator" );
+            WM_setItemPic( "modelselection_model", "multi_spectator" );
+            skip = qtrue;
+        }
+        else if( val == AXIS_TEAM )
+        {
+            WM_setItemPic( "modelselection_flag", "multi_axisflag" );
+            team_str = "axis";
+        }
+        else
+        {
+            WM_setItemPic( "modelselection_flag", "multi_alliedflag" );
+            team_str = "allied";
+        }
+        
+        if( !skip )
+        {
+            // set player type
+            val = trap_Cvar_VariableValue( "mp_playerType" );
+            
+            if( val == 0 )
+            {
+                WM_setItemPic( "modelselection_model", va( "%s_soldier", team_str ) );
+            }
+            else if( val == 1 )
+            {
+                WM_setItemPic( "modelselection_model", va( "%s_medic", team_str ) );
+            }
+            else if( val == 2 )
+            {
+                WM_setItemPic( "modelselection_model", va( "%s_eng", team_str ) );
+            }
+            else
+            {
+                WM_setItemPic( "modelselection_model", va( "%s_lt", team_str ) );
+            }
+            
+            // set weapon pics
+            if( weapon )
+            {
+                for( i = 0; weaponTypes[i].name; i++ )
+                    if( weaponTypes[i].value == weapon )
+                    {
+                        WM_setItemPic( "modelselection_weap", weaponTypes[i].large_shader );
+                        break;
+                    }
+            }
+        }
+    }
+    
+    // set feeder visibility
+    if( playerType == 0 )
+    {
+        WM_setVisibility( "window_feeder_soldierweap", qtrue );
+    }
+    else
+    {
+        WM_setVisibility( "window_feeder_soldierweap", qfalse );
+    }
+    
+    if( playerType == 3 )
+    {
+        WM_setVisibility( "window_feeder_lieutweap", qtrue );
+    }
+    else
+    {
+        WM_setVisibility( "window_feeder_lieutweap", qfalse );
+    }
+    
+    // don't allow spectators to cycle through menus
+    if( team == 2 )
+    {
+        WM_setVisibility( "window_pickTeamNext", qfalse );
+        WM_setVisibility( "window_pickTeamNextCmd", qfalse );
+        WM_setVisibility( "window_pickTeamNextDisabled", qtrue );
+        
+        if( ui_limboOptions.integer == 1 || ui_limboOptions.integer == 2 )
+        {
+            trap_Cvar_Set( "ui_limboOptions", "0" );
+        }
+    }
+    else
+    {
+        WM_setVisibility( "window_pickTeamNext", qtrue );
+        WM_setVisibility( "window_pickTeamNextCmd", qtrue );
+        WM_setVisibility( "window_pickTeamNextDisabled", qfalse );
     }
 }
 
@@ -4972,10 +5247,196 @@ void WM_HideItems()
     Menu_ShowItemByName( menu, "player_type", qfalse );
 }
 
+void WM_SetObjective( int objectiveIndex )
+{
+    char cs[MAX_STRING_CHARS], overviewImage[MAX_STRING_CHARS];
+    itemDef_t* def_pic, *def_desc, *def_button;
+    menuDef_t* menu = Menu_GetFocused();
+    int team, numobjectives, i;
+    char* s, *teamStr;
+    qboolean playRoq = qfalse;
+    
+    uiInfo.selectedObjective = objectiveIndex;
+    objectiveIndex--;
+    
+    // get item defs
+    def_pic = Menu_FindItemByName( menu, "window_objectivePic" );
+    def_desc = Menu_FindItemByName( menu, "window_objectiveDesc" );
+    if( !def_pic || !def_desc )
+    {
+        return;
+    }
+    
+    // set proper team
+    team = trap_Cvar_VariableValue( "mp_team" );
+    
+    if( team == AXIS_TEAM )
+    {
+        teamStr = "axis_desc";
+    }
+    else
+    {
+        teamStr = "allied_desc";
+    }
+    
+    // get config strings
+    trap_GetConfigString( CS_MULTI_INFO, cs, sizeof( cs ) );
+    s = Info_ValueForKey( cs, "numobjectives" );
+    if( !s || !strlen( s ) )
+    {
+        return;
+    }
+    numobjectives = atoi( s );
+    
+    // get map overview
+    s = Info_ValueForKey( cs, "overviewimage" );
+    if( s && strlen( s ) )
+    {
+        Q_strncpyz( overviewImage, s, MAX_STRING_CHARS );
+    }
+    else
+    {
+        Q_strncpyz( overviewImage, "menu/art/unknownmap", MAX_STRING_CHARS );
+    }
+    
+    // enable/disable buttons
+    for( i = 0; i < 6; i++ )
+    {
+        def_button = Menu_FindItemByName( menu, va( "window_objectiveButton%d", i + 1 ) );
+        
+        if( !def_button )
+        {
+            continue;
+        }
+        
+        if( i < numobjectives )
+        {
+            def_button->window.flags |= WINDOW_VISIBLE;
+        }
+        else
+        {
+            def_button->window.flags &= ~WINDOW_VISIBLE;
+        }
+    }
+    
+    if( numobjectives < objectiveIndex )
+    {
+        return;
+    }
+    
+    // see if we want to play a roq instead
+    if( strstr( overviewImage, ".roq" ) )
+    {
+        playRoq = qtrue;
+    }
+    
+    // we want overview info
+    if( objectiveIndex == -1 )
+    {
+        trap_GetConfigString( CS_MULTI_MAPDESC, cs, sizeof( cs ) );
+        trap_Cvar_Set( "ui_objective", va( "%i", cs ) );
+        
+        def_pic->window.flags |= WINDOW_VISIBLE;
+        
+        if( playRoq )
+        {
+            if( !atoi( UI_Cvar_VariableString( "r_inGameVideo" ) ) )
+            {
+                def_pic->window.style = WINDOW_STYLE_SHADER;
+                def_pic->window.background = DC->registerShaderNoMip( "menu/art/unknownmap" );
+            }
+            else
+            {
+                def_pic->window.style = WINDOW_STYLE_CINEMATIC;
+                def_pic->window.cinematic = -1;
+                def_pic->window.cinematicName = String_Alloc( overviewImage );
+            }
+        }
+        else
+        {
+            def_pic->window.style = WINDOW_STYLE_SHADER;
+            def_pic->window.background = DC->registerShaderNoMip( overviewImage );
+        }
+        WM_setWeaponPics();
+        return;
+    }
+    
+    trap_GetConfigString( CS_MULTI_OBJECTIVE1 + objectiveIndex, cs, sizeof( cs ) );
+    s = Info_ValueForKey( cs, teamStr );
+    
+    // set proper shader
+    s = Info_ValueForKey( cs, "image" );
+    
+    if( s && strlen( s ) )
+    {
+        def_pic->window.flags |= WINDOW_VISIBLE;
+        def_pic->window.style = WINDOW_STYLE_SHADER;
+        def_pic->window.background = DC->registerShaderNoMip( s );
+    }
+    else
+    {
+        def_pic->window.style = WINDOW_STYLE_SHADER;
+        def_pic->window.background = DC->registerShaderNoMip( overviewImage );
+    }
+    
+    WM_setWeaponPics();
+}
+
+void WM_SetDefaultWeapon()
+{
+    menuDef_t* menu = Menu_GetFocused();
+    itemDef_t* item;
+    int startPos, index = 0;
+    
+    if( trap_Cvar_VariableValue( "mp_team" ) == AXIS_TEAM )
+    {
+        index = WM_WEAPON_MP40;
+        trap_Cvar_Set( "mp_weapon", va( "%i", index ) );
+        startPos = 0;
+    }
+    else
+    {
+        index = WM_WEAPON_THOMPSON;
+        trap_Cvar_Set( "mp_weapon", va( "%i", index ) );
+        startPos = 1;
+    }
+    
+    item = Menu_FindItemByName( menu, "window_feeder_soldierweap" );
+    if( item )
+    {
+        listBoxDef_t* listPtr = ( listBoxDef_t* )item->typeData;
+        if( listPtr )
+        {
+            listPtr->startPos = 0;
+        }
+        
+        item->cursorPos = startPos;
+        UI_FeederSelection( FEEDER_SOLDIERWEAP, item->cursorPos );
+    }
+    
+    item = Menu_FindItemByName( menu, "window_feeder_lieutweap" );
+    if( item )
+    {
+        listBoxDef_t* listPtr = ( listBoxDef_t* )item->typeData;
+        if( listPtr )
+        {
+            listPtr->startPos = 0;
+        }
+        
+        item->cursorPos = startPos;
+        UI_FeederSelection( FEEDER_LIEUTWEAP, item->cursorPos );
+    }
+    
+    trap_Cvar_Set( weaponTypes[index].cvar, va( "%i", weaponTypes[index].value ) );
+    trap_Cvar_Set( "ui_weapon", va( "%i", weaponTypes[index].desc ) );
+    
+    WM_setWeaponPics();
+}
+
 void WM_PickItem( int selectionType, int itemIndex )
 {
     menuDef_t* menu = Menu_GetFocused();
-    int playerType;
+    int oldclass, newclass, playerType;
     
     if( selectionType == WM_SELECT_TEAM )
     {
@@ -4983,12 +5444,18 @@ void WM_PickItem( int selectionType, int itemIndex )
         {
             case WM_AXIS:
                 trap_Cvar_Set( "mp_team", "0" );
+                trap_Cvar_Set( "ui_team", "Axis" );
+                WM_SetDefaultWeapon();
                 break;
             case WM_ALLIES:
                 trap_Cvar_Set( "mp_team", "1" );
+                trap_Cvar_Set( "ui_team", "Allies" );
+                WM_SetDefaultWeapon();
                 break;
             case WM_SPECTATOR:
                 trap_Cvar_Set( "mp_team", "2" );
+                trap_Cvar_Set( "ui_team", "Spectator" );
+                WM_SetDefaultWeapon();
                 break;
         }
     }
@@ -5001,18 +5468,37 @@ void WM_PickItem( int selectionType, int itemIndex )
             case WM_SOLDIER:
                 trap_Cvar_Set( "mp_playerType", "0" );
                 trap_Cvar_Set( "mp_weapon", "0" );
+                trap_Cvar_Set( "ui_class", "Soldier" );
+                
+                if( oldclass != newclass )
+                {
+                    WM_SetDefaultWeapon();
+                }
                 break;
             case WM_MEDIC:
                 trap_Cvar_Set( "mp_playerType", "1" );
-                trap_Cvar_Set( "mp_weapon", "0" );
+                trap_Cvar_Set( "ui_class", "Medic" );
+                WM_SetDefaultWeapon();
+                break;
                 break;
             case WM_ENGINEER:
                 trap_Cvar_Set( "mp_playerType", "2" );
-                trap_Cvar_Set( "mp_weapon", "0" );
+                trap_Cvar_Set( "ui_class", "Engineer" );
+                WM_SetDefaultWeapon();
+                break;
                 break;
             case WM_LIEUTENANT:
+                oldclass = trap_Cvar_VariableValue( "mp_playerType" );
+                newclass = 3;
+                
                 trap_Cvar_Set( "mp_playerType", "3" );
-                trap_Cvar_Set( "mp_weapon", "0" );
+                trap_Cvar_Set( "ui_class", "Lieutenant" );
+                
+                if( oldclass != newclass )
+                {
+                    WM_SetDefaultWeapon();
+                }
+                break;
                 break;
         }
     }
@@ -5085,6 +5571,7 @@ void WM_PickItem( int selectionType, int itemIndex )
             Menu_ShowItemByName( menu, "grenade_*", qfalse );
         }
     }
+    WM_setWeaponPics();
 }
 
 void WM_LimboChat()
@@ -5101,9 +5588,6 @@ void WM_LimboChat()
     trap_Cvar_Set( "ui_cmd", "" );
 }
 
-extern qboolean g_waitingForKey;
-extern qboolean g_editingField;
-extern itemDef_t* g_editItem;
 
 void WM_ActivateLimboChat()
 {
@@ -6004,6 +6488,42 @@ static void UI_RunMenuScript( char** args )
                 WM_PickItem( selectType, itemIndex );
             }
         }
+        else if( Q_stricmp( name, "setLimboOptionMenu" ) == 0 )
+        {
+            int indexNum;
+            
+            if( String_Parse( args, &name ) )
+            {
+                indexNum = atoi( name );
+                trap_Cvar_Set( "ui_limboOptions", va( "%i", indexNum ) );
+            }
+        }
+        else if( Q_stricmp( name, "showSpawnWindow" ) == 0 )
+        {
+            int indexNum;
+            
+            if( String_Parse( args, &name ) )
+            {
+                int options, current;
+                
+                current = trap_Cvar_VariableValue( "ui_limboOptions" );
+                indexNum = atoi( name );
+                
+                if( indexNum && current != 3 )
+                {
+                    options = current;
+                    
+                    trap_Cvar_Set( "ui_limboOptions", "3" );
+                    trap_Cvar_Set( "ui_limboPrevOptions", va( "%i", options ) );
+                }
+                else if( !indexNum && current == 3 )
+                {
+                    options = trap_Cvar_VariableValue( "ui_limboPrevOptions" );
+                    
+                    trap_Cvar_Set( "ui_limboOptions", va( "%i", options ) );
+                }
+            }
+        }
         else if( Q_stricmp( name, "startMultiplayer" ) == 0 )
         {
             int team, playerType, weapon, pistol, item1, i;
@@ -6868,6 +7388,26 @@ static int UI_FeederCount( float feederID )
         return uiInfo.spawnCount;
     }
     // -NERVE - SMF
+    else if( feederID == FEEDER_SOLDIERWEAP )
+    {
+        int i, count;
+        for( i = 0, count = 0; weaponTypes[i].name; i++ )
+            if( weaponTypes[i].flags & PT_RIFLE )
+            {
+                count++;
+            }
+        return count;
+    }
+    else if( feederID == FEEDER_LIEUTWEAP )
+    {
+        int i, count;
+        for( i = 0, count = 0; weaponTypes[i].name; i++ )
+            if( weaponTypes[i].flags & PT_LIGHTONLY )
+            {
+                count++;
+            }
+        return count;
+    }
     return 0;
 }
 
@@ -7216,11 +7756,42 @@ static qhandle_t UI_FeederItemImage( float feederID, int index )
     {
         if( index >= 0 && index < uiInfo.savegameCount )
         {
-            if( uiInfo.savegameList[uiInfo.savegameStatus.displaySavegames[index]].sshotImage == -1 )
+            if( uiInfo.savegameList[index].sshotImage == -1 )
             {
-                uiInfo.savegameList[uiInfo.savegameStatus.displaySavegames[index]].sshotImage = trap_R_RegisterShaderNoMip( va( "levelshots/%s.tga", uiInfo.savegameList[uiInfo.savegameStatus.displaySavegames[index]].mapName ) );
+                uiInfo.savegameList[index].sshotImage = trap_R_RegisterShaderNoMip( va( "save/images/%s.tga", uiInfo.savegameList[index].name ) );
             }
-            return uiInfo.savegameList[uiInfo.savegameStatus.displaySavegames[index]].sshotImage;
+            return uiInfo.savegameList[index].sshotImage;
+        }
+        // NERVE - SMF
+    }
+    else if( feederID == FEEDER_SOLDIERWEAP )
+    {
+        int i, count;
+        for( i = 0, count = 0; weaponTypes[i].name; i++ )
+        {
+            if( weaponTypes[i].flags & PT_RIFLE )
+            {
+                count++;
+            }
+            if( count == index + 1 )
+            {
+                return trap_R_RegisterShaderNoMip( weaponTypes[i].name );
+            }
+        }
+    }
+    else if( feederID == FEEDER_LIEUTWEAP )
+    {
+        int i, count;
+        for( i = 0, count = 0; weaponTypes[i].name; i++ )
+        {
+            if( weaponTypes[i].flags & PT_LIGHTONLY )
+            {
+                count++;
+            }
+            if( count == index + 1 )
+            {
+                return trap_R_RegisterShaderNoMip( weaponTypes[i].name );
+            }
         }
     }
     
@@ -7366,6 +7937,43 @@ static void UI_FeederSelection( float feederID, int index )
     else if( feederID == FEEDER_PICKSPAWN )
     {
         trap_Cmd_ExecuteText( EXEC_NOW, va( "setspawnpt %i\n", index ) );
+    }
+    else if( feederID == FEEDER_SOLDIERWEAP )
+    {
+        int i, count;
+        for( i = 0, count = 0; weaponTypes[i].name; i++ )
+        {
+            if( weaponTypes[i].flags & PT_RIFLE )
+            {
+                count++;
+            }
+            if( count == index + 1 )
+            {
+                trap_Cvar_Set( weaponTypes[i].cvar, va( "%i", weaponTypes[i].value ) );
+                trap_Cvar_Set( "ui_weapon", va( "%i", weaponTypes[i].value ) );
+                WM_setWeaponPics();
+                
+                break;
+            }
+        }
+    }
+    else if( feederID == FEEDER_LIEUTWEAP )
+    {
+        int i, count;
+        for( i = 0, count = 0; weaponTypes[i].name; i++ )
+        {
+            if( weaponTypes[i].flags & PT_LIGHTONLY )
+            {
+                count++;
+            }
+            if( count == index + 1 )
+            {
+                trap_Cvar_Set( weaponTypes[i].cvar, va( "%i", weaponTypes[i].value ) );
+                trap_Cvar_Set( "ui_weapon", va( "%i", weaponTypes[i].value ) );
+                WM_setWeaponPics();
+                break;
+            }
+        }
     }
     // -NERVE - SMF
 }

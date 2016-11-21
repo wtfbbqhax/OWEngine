@@ -1553,3 +1553,36 @@ float Q_acos( float c )
 }
 
 // done.
+
+/*
+================
+DistanceFromLineSquared
+================
+*/
+float DistanceFromLineSquared( vec3_t p, vec3_t lp1, vec3_t lp2 )
+{
+    vec3_t proj, t;
+    int j;
+    
+    ProjectPointOntoVector( p, lp1, lp2, proj );
+    for( j = 0; j < 3; j++ )
+        if( ( proj[j] > lp1[j] && proj[j] > lp2[j] ) ||
+                ( proj[j] < lp1[j] && proj[j] < lp2[j] ) )
+        {
+            break;
+        }
+    if( j < 3 )
+    {
+        if( Q_fabs( proj[j] - lp1[j] ) < Q_fabs( proj[j] - lp2[j] ) )
+        {
+            VectorSubtract( p, lp1, t );
+        }
+        else
+        {
+            VectorSubtract( p, lp2, t );
+        }
+        return VectorLengthSquared( t );
+    }
+    VectorSubtract( p, proj, t );
+    return VectorLengthSquared( t );
+}

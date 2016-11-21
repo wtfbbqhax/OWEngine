@@ -115,6 +115,8 @@
 #define FEEDER_CINEMATICS           0x0f    // cinematics
 #define FEEDER_SAVEGAMES            0x10    // savegames
 #define FEEDER_PICKSPAWN            0x11    // NERVE - SMF - wolf mp pick spawn point
+#define FEEDER_SOLDIERWEAP          0x12    // NERVE - SMF - wolf mp soldier weapon list
+#define FEEDER_LIEUTWEAP            0x13    // NERVE - SMF - wolf mp lieutenant weapon list
 
 // display flags
 #define CG_SHOW_BLUE_TEAM_HAS_REDFLAG       0x00000001
@@ -266,6 +268,7 @@
 #define CG_CURSORHINT_STATUS        80  // like 'health' bar when pointing at a func_explosive
 #define CG_PLAYER_WEAPON_STABILITY  81  // shows aimSpreadScale value
 #define CG_NEWMESSAGE               82  // 'you got mail!'	//----(SA)	added
+#define CG_PLAYER_WEAPON_RECHARGE   83  // For various multiplayer weapons that have recharge times
 
 #define UI_OWNERDRAW_BASE           200
 #define UI_HANDICAP                 200

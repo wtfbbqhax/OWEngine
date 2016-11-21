@@ -2632,14 +2632,6 @@ static void CG_DrawCrosshair( void )
             break;
     }
     
-    // using binoculars
-    if( cg.zoomedBinoc )
-    {
-        CG_DrawBinocReticle();
-        return;
-    }
-    
-    
     // mauser only gets crosshair if you don't have the scope (I don't like this, but it's a test)
     if( cg.weaponSelect == WP_MAUSER )
     {

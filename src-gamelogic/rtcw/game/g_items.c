@@ -474,6 +474,8 @@ int Pickup_Weapon( gentity_t* ent, gentity_t* other )
     qboolean alreadyHave = qfalse;
     int i, weapon;
     
+    weapon = ent->item->giTag;
+    
     // JPW NERVE -- magic ammo for any two-handed weapon
     if( ent->item->giTag == WP_AMMO )
     {

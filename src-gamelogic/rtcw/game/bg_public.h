@@ -612,6 +612,7 @@ typedef enum
     WP_BINOCULARS,          // 32
     WP_PLIERS,              // 33
     WP_AMMO,                // 34
+    WP_SMOKE_GRENADE,       // 35
     WP_NUM_WEAPONS          // 35   NOTE: this cannot be larger than 64 for AI/player weapons!
     
 } weapon_t;
@@ -1233,6 +1234,7 @@ typedef enum
     MOD_ENGINEER,   // not sure if we'll use
     MOD_MEDIC,      // these like this or not
     MOD_AMMO,
+    MOD_SMOKEGRENADE,
 //
     MOD_BAT
     

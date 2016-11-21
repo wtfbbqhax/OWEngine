@@ -3243,7 +3243,7 @@ PM_Weapon
 */
 static void PM_Weapon( void )
 {
-    int addTime;
+    int addTime = 0;
     int ammoNeeded;
     qboolean delayedFire;       //----(SA)  true if the delay time has just expired and this is the frame to send the fire event
     int aimSpreadScaleAdd;
@@ -3649,6 +3649,13 @@ static void PM_Weapon( void )
                         return;
                     }
                 }
+                if( pm->ps->weapon == WP_SMOKE_GRENADE )
+                {
+                    if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( g_LTChargeTime.integer * 0.5f ) )
+                    {
+                        return;
+                    }
+                }
             }
 #endif
 #ifdef CGAMEDLL
@@ -3675,12 +3682,20 @@ static void PM_Weapon( void )
                         return;
                     }
                 }
+                if( pm->ps->weapon == WP_SMOKE_GRENADE )
+                {
+                    if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( cg_LTChargeTime.integer * 0.5f ) )
+                    {
+                        return;
+                    }
+                }
             }
 #endif
 // jpw
 
-// check for fire
-            if( !( pm->cmd.buttons & ( BUTTON_ATTACK | WBUTTON_ATTACK2 ) ) && !delayedFire )        // if not on fire button and there's not a delayed shot this frame...
+            // check for fire
+            // if not on fire button and there's not a delayed shot this frame...
+            if( !( pm->cmd.buttons & ( BUTTON_ATTACK | WBUTTON_ATTACK2 ) ) && !delayedFire )
             {
                 pm->ps->weaponTime  = 0;
                 pm->ps->weaponDelay = 0;
@@ -3745,6 +3760,8 @@ static void PM_Weapon( void )
                 case WP_VENOM:
                 case WP_FG42:
                 case WP_FG42SCOPE:
+                case WP_PLIERS:
+                case WP_SMOKE_GRENADE:
                     if( !weaponstateFiring )
                     {
                         if( pm->ps->aiChar && pm->ps->weapon == WP_VENOM )
@@ -3973,6 +3990,7 @@ static void PM_Weapon( void )
                 case WP_THOMPSON:
                 case WP_STEN:
                 case WP_PLIERS:
+                case WP_SMOKE_GRENADE:
                     PM_ContinueWeaponAnim( weapattackanim );
                     break;
                     
@@ -3983,7 +4001,25 @@ static void PM_Weapon( void )
                     break;
             }
             
-            
+            // in multiplayer, pfaust fires once then switches to pistol since it's useless for a while
+#ifdef CGAMEDLL
+            if( cg_gameType.integer != GT_SINGLE_PLAYER )
+            {
+                if( ( pm->ps->weapon == WP_PANZERFAUST ) || ( pm->ps->weapon == WP_SMOKE_GRENADE ) || ( pm->ps->weapon == WP_DYNAMITE ) )
+                {
+                    PM_AddEvent( EV_NOAMMO );
+                }
+            }
+#endif
+#ifdef GAMEDLL
+            if( g_gametype.integer != GT_SINGLE_PLAYER )
+            {
+                if( ( pm->ps->weapon == WP_PANZERFAUST ) || ( pm->ps->weapon == WP_SMOKE_GRENADE ) || ( pm->ps->weapon == WP_DYNAMITE ) )
+                {
+                    PM_AddEvent( EV_NOAMMO );
+                }
+            }
+#endif
             
             if( pm->ps->weapon == WP_AKIMBO )
             {
@@ -4007,8 +4043,6 @@ static void PM_Weapon( void )
                     PM_AddEvent( EV_FIRE_WEAPON );
                 }
             }
-            
-            
 // RF
             pm->ps->releasedFire = qfalse;
             pm->ps->lastFireTime = pm->cmd.serverTime;
@@ -4149,6 +4183,9 @@ static void PM_Weapon( void )
                             break;
                         case WP_PLIERS:
                             addTime = 50;
+                            break;
+                        case WP_SMOKE_GRENADE:
+                            addTime = 1000;
                             break;
                         case WP_MONSTER_ATTACK1:
                             switch( pm->ps->aiChar )
