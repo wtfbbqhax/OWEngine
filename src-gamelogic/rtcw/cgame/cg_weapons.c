@@ -1140,7 +1140,7 @@ void CG_RegisterWeapon( int weaponNum )
         
 // (SA) i don't know about these, but we don't have models for 'em
         case WP_GRENADE_SMOKE:
-        case WP_MEDIC_HEAL:
+        case WP_MEDKIT:
             return;
         default:
             break;
@@ -1519,6 +1519,7 @@ void CG_RegisterWeapon( int weaponNum )
             break;
             
         case WP_AMMO:
+        case WP_MEDKIT:
             weaponInfo->flashSound[0] = trap_S_RegisterSound( "sound/multiplayer/bag_toss.wav" );
             break;
         case WP_PLIERS:
@@ -1526,7 +1527,6 @@ void CG_RegisterWeapon( int weaponNum )
             
 // DHM - Nerve - temp effects
         case WP_CLASS_SPECIAL:
-        case WP_MEDIC_HEAL:
             weaponInfo->flashSound[0] = trap_S_RegisterSound( "sound/weapons/knife/knife_slash1.wav" );
             weaponInfo->flashSound[1] = trap_S_RegisterSound( "sound/weapons/knife/knife_slash2.wav" );
             break;
@@ -1661,10 +1661,11 @@ void CG_RegisterItemVisuals( int itemNum )
     {
         trap_R_RegisterModel( "models/mapobjects/vehicles/m109.md3" );
         CG_RegisterWeapon( WP_GRENADE_SMOKE ); // register WP_CLASS_SPECIAL visuals here
-        CG_RegisterWeapon( WP_MEDIC_HEAL );
+        CG_RegisterWeapon( WP_MEDKIT );
         maxWeapBanks = MAX_WEAP_BANKS_MP;
         maxWeapsInBank = MAX_WEAPS_IN_BANK_MP;
     }
+    
 // if player runs out of SMG ammunition, it shouldn't *also* deplete pistol ammunition.  If you change this, change
 // g_spawn.c as well
     if( cg_gameType.integer != GT_SINGLE_PLAYER )
@@ -2843,8 +2844,8 @@ void CG_AddPlayerWeapon( refEntity_t* parent, playerState_t* ps, centity_t* cent
                 weapon = &cg_weapons[WP_CLASS_SPECIAL];
                 break;
             case PC_MEDIC:
-                CG_RegisterWeapon( WP_MEDIC_HEAL );
-                weapon = &cg_weapons[WP_MEDIC_HEAL];
+                CG_RegisterWeapon( WP_MEDKIT );
+                weapon = &cg_weapons[WP_MEDKIT];
                 break;
             case PC_LT:
                 CG_RegisterWeapon( WP_GRENADE_SMOKE );
@@ -3486,8 +3487,8 @@ void CG_AddViewWeapon( playerState_t* ps )
                     weapon = &cg_weapons[ WP_CLASS_SPECIAL ];
                     break;
                 case PC_MEDIC:
-                    CG_RegisterWeapon( WP_MEDIC_HEAL );
-                    weapon = &cg_weapons[ WP_MEDIC_HEAL ];
+                    CG_RegisterWeapon( WP_MEDKIT );
+                    weapon = &cg_weapons[ WP_MEDKIT ];
                     break;
                 case PC_LT:
                     CG_RegisterWeapon( WP_GRENADE_SMOKE );
@@ -3689,7 +3690,7 @@ void CG_DrawWeaponSelect( void )
                         drawweap = WP_CLASS_SPECIAL;
                         break;
                     case PC_MEDIC:
-                        drawweap = WP_MEDIC_HEAL;
+                        drawweap = WP_MEDKIT;
                         break;
                     case PC_LT:
                         drawweap = WP_GRENADE_SMOKE;
@@ -3798,7 +3799,7 @@ void CG_DrawWeaponSelect( void )
                         drawweap = WP_CLASS_SPECIAL;
                         break;
                     case PC_MEDIC:
-                        drawweap = WP_MEDIC_HEAL;
+                        drawweap = WP_MEDKIT;
                         break;
                     case PC_LT:
                         drawweap = WP_GRENADE_SMOKE;
@@ -5617,47 +5618,57 @@ void CG_FireWeapon( centity_t* cent )
         fireEchosound = &weap->flashEchoSound[0];
     }
     
+    // special case medic tool
+    if( ent->weapon == WP_MEDKIT )
+    {
+        firesound = &cg_weapons[WP_MEDKIT].flashSound[0];
+    }
     
     // play a sound
-    for( c = 0 ; c < 4 ; c++ )
+    if( !( cent->currentState.eFlags & EF_ZOOMING ) )
     {
-        if( !firesound[c] )
+        // JPW NERVE -- don't play sounds or eject brass if zoomed in
+        // play a sound
+        for( c = 0; c < 4; c++ )
         {
-            break;
-        }
-    }
-    if( c > 0 )
-    {
-        c = rand() % c;
-        if( firesound[c] )
-        {
-            trap_S_StartSound( NULL, ent->number, CHAN_WEAPON, firesound[c] );
-            
-            if( fireEchosound && fireEchosound[c] )    // check for echo
+            if( !firesound[c] )
             {
-                centity_t*   cent;
-                vec3_t porg, gorg, norm;    // player/gun origin
-                float gdist;
+                break;
+            }
+        }
+        if( c > 0 )
+        {
+            c = rand() % c;
+            if( firesound[c] )
+            {
+                trap_S_StartSound( NULL, ent->number, CHAN_WEAPON, firesound[c] );
                 
-                cent = &cg_entities[ent->number];
-                VectorCopy( cent->currentState.pos.trBase, gorg );
-                VectorCopy( cg.refdef.vieworg, porg );
-                VectorSubtract( gorg, porg, norm );
-                gdist = VectorNormalize( norm );
-                if( gdist > 512 && gdist < 4096 )      // temp dist.  TODO: use numbers that are weapon specific
+                if( fireEchosound && fireEchosound[c] )  // check for echo
                 {
-                    // use gorg as the new sound origin
-                    VectorMA( cg.refdef.vieworg, 64, norm, gorg );    // sound-on-a-stick
-                    trap_S_StartSoundEx( gorg, ent->number, CHAN_WEAPON, fireEchosound[c], SND_NOCUT );
+                    centity_t*   cent;
+                    vec3_t porg, gorg, norm;    // player/gun origin
+                    float gdist;
+                    
+                    cent = &cg_entities[ent->number];
+                    VectorCopy( cent->currentState.pos.trBase, gorg );
+                    VectorCopy( cg.refdef.vieworg, porg );
+                    VectorSubtract( gorg, porg, norm );
+                    gdist = VectorNormalize( norm );
+                    if( gdist > 512 && gdist < 4096 )    // temp dist.  TODO: use numbers that are weapon specific
+                    {
+                        // use gorg as the new sound origin
+                        VectorMA( cg.refdef.vieworg, 64, norm, gorg );  // sound-on-a-stick
+                        trap_S_StartSoundEx( gorg, ent->number, CHAN_WEAPON, fireEchosound[c], SND_NOCUT );
+                    }
                 }
             }
         }
-    }
-    
-    // do brass ejection
-    if( weap->ejectBrassFunc && cg_brassTime.integer > 0 )
-    {
-        weap->ejectBrassFunc( cent );
+        
+        // do brass ejection
+        if( weap->ejectBrassFunc && cg_brassTime.integer > 0 )
+        {
+            weap->ejectBrassFunc( cent );
+        }
     }
 }
 

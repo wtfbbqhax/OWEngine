@@ -3219,11 +3219,13 @@ Generates weapon events and modifes the weapon counter
 extern vmCvar_t cg_soldierChargeTime;
 extern vmCvar_t cg_engineerChargeTime;
 extern vmCvar_t cg_LTChargeTime;
+extern vmCvar_t cg_medicChargeTime;
 #endif
 #ifdef GAMEDLL
 extern vmCvar_t g_soldierChargeTime;
 extern vmCvar_t g_engineerChargeTime;
 extern vmCvar_t g_LTChargeTime;
+extern vmCvar_t g_medicChargeTime;
 #endif
 // jpw
 
@@ -3649,6 +3651,13 @@ static void PM_Weapon( void )
                         return;
                     }
                 }
+                if( pm->ps->weapon == WP_MEDKIT )
+                {
+                    if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( g_medicChargeTime.integer * 0.25f ) )
+                    {
+                        return;
+                    }
+                }
                 if( pm->ps->weapon == WP_SMOKE_GRENADE )
                 {
                     if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( g_LTChargeTime.integer * 0.5f ) )
@@ -3685,6 +3694,13 @@ static void PM_Weapon( void )
                 if( pm->ps->weapon == WP_SMOKE_GRENADE )
                 {
                     if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( cg_LTChargeTime.integer * 0.5f ) )
+                    {
+                        return;
+                    }
+                }
+                if( pm->ps->weapon == WP_MEDKIT )
+                {
+                    if( pm->cmd.serverTime - pm->ps->classWeaponTime < ( cg_medicChargeTime.integer * 0.25f ) )
                     {
                         return;
                     }
@@ -3761,6 +3777,7 @@ static void PM_Weapon( void )
                 case WP_FG42:
                 case WP_FG42SCOPE:
                 case WP_PLIERS:
+                case WP_MEDKIT:
                 case WP_SMOKE_GRENADE:
                     if( !weaponstateFiring )
                     {
@@ -3990,6 +4007,7 @@ static void PM_Weapon( void )
                 case WP_THOMPSON:
                 case WP_STEN:
                 case WP_PLIERS:
+                case WP_MEDKIT:
                 case WP_SMOKE_GRENADE:
                     PM_ContinueWeaponAnim( weapattackanim );
                     break;
@@ -4183,6 +4201,9 @@ static void PM_Weapon( void )
                             break;
                         case WP_PLIERS:
                             addTime = 50;
+                            break;
+                        case WP_MEDKIT:
+                            addTime = 1000;
                             break;
                         case WP_SMOKE_GRENADE:
                             addTime = 1000;

@@ -992,7 +992,7 @@ void SetWolfSpawnWeapons( gclient_t* client )
         COM_BitSet( client->ps.weapons, WP_CLASS_SPECIAL );
         client->ps.ammo[WP_CLASS_SPECIAL] = 1;
         // ammo for other special weapons so that icons draw ok
-        client->ps.ammo[WP_MEDIC_HEAL] = 1;
+        client->ps.ammo[WP_MEDKIT] = 1;
         client->ps.ammo[WP_GRENADE_SMOKE] = 1;
     }
     
@@ -1036,6 +1036,30 @@ void SetWolfSpawnWeapons( gclient_t* client )
                 break;
         }
     }
+    
+    if( pc == PC_MEDIC )
+    {
+        COM_BitSet( client->ps.weapons, WP_MEDKIT );
+        client->ps.ammoclip[BG_FindClipForWeapon( WP_MEDKIT )] = 1;
+        client->ps.ammo[WP_MEDKIT] = 1;
+        
+        switch( client->sess.sessionTeam )  // was playerItem
+        {
+            case TEAM_BLUE:
+                COM_BitSet( client->ps.weapons, WP_GRENADE_PINEAPPLE );
+                client->ps.ammoclip[BG_FindClipForWeapon( WP_GRENADE_PINEAPPLE )] = 1;
+                break;
+            case TEAM_RED:
+                COM_BitSet( client->ps.weapons, WP_GRENADE_LAUNCHER );
+                client->ps.ammoclip[BG_FindClipForWeapon( WP_GRENADE_LAUNCHER )] = 1;
+                break;
+            default:
+                COM_BitSet( client->ps.weapons, WP_GRENADE_PINEAPPLE );
+                client->ps.ammoclip[BG_FindClipForWeapon( WP_GRENADE_PINEAPPLE )] = 1;
+                break;
+        }
+    }
+    // jpw
     
     // Soldiers and Lieutenants get a 2-handed weapon
     if( pc == PC_SOLDIER || pc == PC_LT )

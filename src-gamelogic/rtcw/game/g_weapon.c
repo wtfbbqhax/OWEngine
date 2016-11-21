@@ -2158,6 +2158,9 @@ void FireWeapon( gentity_t* ent )
             Weapon_Class_Special( ent );
             break;
 // jpw
+        case WP_MEDKIT:
+            Weapon_Medic( ent );
+            break;
         case WP_PLIERS:
             Weapon_Engineer( ent );
             break;

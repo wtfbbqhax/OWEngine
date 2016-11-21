@@ -334,7 +334,6 @@ static void CG_DrawPlayerWeaponIcon( rectDef_t* rect, qboolean drawHighlighted, 
     }
     
     // DHM - Nerve :: special case for WP_CLASS_SPECIAL
-    
     realweap = cg.predictedPlayerState.weapon;
     
     if( cgs.gametype == GT_WOLF && realweap == WP_CLASS_SPECIAL )
@@ -342,7 +341,7 @@ static void CG_DrawPlayerWeaponIcon( rectDef_t* rect, qboolean drawHighlighted, 
         switch( cg.predictedPlayerState.stats[ STAT_PLAYER_CLASS ] )
         {
             case PC_MEDIC:
-                realweap = WP_MEDIC_HEAL;
+                realweap = WP_MEDKIT;
                 break;
             case PC_LT:
                 realweap = WP_GRENADE_SMOKE;
@@ -672,8 +671,6 @@ static void CG_DrawMessageIcon( rectDef_t* rect )
     CG_DrawPic( rect->x, rect->y, rect->w, rect->h, icon );
 }
 
-
-
 /*
 ==============
 CG_DrawPlayerAmmoValue
@@ -711,6 +708,7 @@ static void CG_DrawPlayerAmmoValue( rectDef_t* rect, int font, float scale, vec4
         case WP_CLASS_SPECIAL:              // DHM - Nerve
         case WP_SMOKE_GRENADE:
         case WP_PLIERS:
+        case WP_MEDKIT:
         case WP_AMMO:
             return;
             
@@ -2712,7 +2710,7 @@ static void CG_DrawFatigue( rectDef_t* rect, vec4_t color, int align )
         
         if( !( cg.snap->ps.eFlags & EF_ZOOMING ) )
         {
-            if( weap != WP_PANZERFAUST && weap != WP_DYNAMITE && weap != WP_PLIERS && weap != WP_AMMO )
+            if( weap != WP_PANZERFAUST && weap != WP_DYNAMITE && weap != WP_MEDKIT && weap != WP_PLIERS && weap != WP_AMMO )
             {
                 fade = qtrue;
             }
@@ -2778,15 +2776,15 @@ static void CG_DrawWeapRecharge( rectDef_t* rect, vec4_t color, int align )
     flags |= 16;
     
     // JPW NERVE -- added drawWeaponPercent in multiplayer
-    if( cgs.gametype >= GT_WOLF )
+    if( cgs.gametype != GT_SINGLE_PLAYER )
     {
-    
         // DHM - Only draw bar if weapon uses it
         weap = cg.snap->ps.weapon;
         
         if( !( cg.snap->ps.eFlags & EF_ZOOMING ) )
         {
-            if( weap != WP_PANZERFAUST && weap != WP_DYNAMITE && weap != WP_SMOKE_GRENADE && weap != WP_PLIERS && weap != WP_AMMO )
+            if( weap != WP_PANZERFAUST && weap != WP_DYNAMITE && weap != WP_MEDKIT && weap != WP_SMOKE_GRENADE
+                    && weap != WP_PLIERS && weap != WP_AMMO )
             {
                 fade = qtrue;
             }

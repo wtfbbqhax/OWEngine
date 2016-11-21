@@ -604,7 +604,7 @@ typedef enum
     
     WP_SNIPER,              // 27
     WP_GRENADE_SMOKE,       // 28	// smoke grenade for LT multiplayer
-    WP_MEDIC_HEAL,          // 29	// DHM - Nerve :: Medic special weapon
+    WP_MEDKIT,              // 29	// DHM - Nerve :: Medic special weapon
     WP_MORTAR,              // 30
     
     VERYBIGEXPLOSION,       // 31	// explosion effect for airplanes
