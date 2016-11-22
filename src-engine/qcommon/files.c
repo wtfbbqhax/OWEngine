@@ -2984,7 +2984,7 @@ Sets fs_gamedir, adds the directory to the head of the path,
 then loads the zip headers
 ================
 */
-#define MAX_PAKFILES    1024
+#define MAX_PAKFILES 1024
 static void FS_AddGameDirectory( const char* path, const char* dir )
 {
     searchpath_t*    sp;
@@ -3031,50 +3031,28 @@ static void FS_AddGameDirectory( const char* path, const char* dir )
     {
         numfiles = MAX_PAKFILES;
     }
+    
     for( i = 0 ; i < numfiles ; i++ )
     {
         sorted[i] = pakfiles[i];
-        
-// JPW NERVE sp_* to _p_* so "sp_pak*" gets alphabetically sorted before "pak*"
-//----(SA)	SP mod
-
-        // (SA) sort order to be further clarified later (10/8/01)
-        if( !Q_strncmp( sorted[i], "sp_", 3 ) )  //	sort sp first
-        {
-            memcpy( sorted[i], "zz", 2 );
-        }
-        
     }
     
     qsort( sorted, numfiles, sizeof( char* ), paksort );
     
     for( i = 0 ; i < numfiles ; i++ )
     {
-    
-        if( Q_strncmp( sorted[i], "mp_", 3 ) )  // (SA) SP mod -- exclude mp_*
+        pakfile = FS_BuildOSPath( path, dir, sorted[i] );
+        if( ( pak = FS_LoadZipFile( pakfile, sorted[i] ) ) == 0 )
         {
-        
-// JPW NERVE KLUDGE: fix filenames broken in mp/sp/pak sort above
-//----(SA)	mod for SP
-            if( !Q_strncmp( sorted[i], "zz_", 3 ) )
-            {
-                memcpy( sorted[i], "sp", 2 );
-            }
-            
-// jpw
-            pakfile = FS_BuildOSPath( path, dir, sorted[i] );
-            if( ( pak = FS_LoadZipFile( pakfile, sorted[i] ) ) == 0 )
-            {
-                continue;
-            }
-            // store the game name for downloading
-            strcpy( pak->pakGamename, dir );
-            
-            search = Z_Malloc( sizeof( searchpath_t ) );
-            search->pack = pak;
-            search->next = fs_searchpaths;
-            fs_searchpaths = search;
+            continue;
         }
+        // store the game name for downloading
+        strcpy( pak->pakGamename, dir );
+        
+        search = Z_Malloc( sizeof( searchpath_t ) );
+        search->pack = pak;
+        search->next = fs_searchpaths;
+        fs_searchpaths = search;
     }
     
     // done
