@@ -106,6 +106,9 @@ vmCvar_t g_podiumDist;
 vmCvar_t g_podiumDrop;
 vmCvar_t g_allowVote;
 
+vmCvar_t g_fastres;
+vmCvar_t g_fastResMsec;
+
 vmCvar_t g_needpass;
 vmCvar_t g_weaponTeamRespawn;
 vmCvar_t g_doWarmup;
@@ -232,6 +235,9 @@ cvarTable_t gameCvarTable[] =
     
     { &g_allowVote, "g_allowVote", "1", 0, 0, qfalse },
     { &g_listEntity, "g_listEntity", "0", 0, 0, qfalse },
+    
+    { &g_fastres, "g_fastres", "0", CVAR_ARCHIVE, 0, qtrue }, // Fast Medic Resing
+    { &g_fastResMsec, "g_fastResMsec", "1000", CVAR_ARCHIVE, 0, qtrue }, //Fast Medic Resing
     
     { &g_enableBreath, "g_enableBreath", "1", CVAR_SERVERINFO, 0, qtrue},
     
@@ -562,13 +568,12 @@ void G_CheckForCursorHints( gentity_t* ent )
     //
     else if( tr->entityNum < MAX_CLIENTS )
     {
-    
         if( ent->s.weapon == WP_KNIFE )
         {
             vec3_t pforward, eforward;
             qboolean canKnife = qfalse;
             
-// only knife certain characters
+            // only knife certain characters
             if( G_canStealthStab( traceEnt->client->ps.aiChar ) )
             {
                 canKnife = qtrue;
@@ -611,6 +616,16 @@ void G_CheckForCursorHints( gentity_t* ent )
                         hintVal = 255;
                     }
                 }
+            }
+            
+            // Show medics a syringe if they can revive someone
+            if( traceEnt->client && traceEnt->client->sess.sessionTeam == ent->client->sess.sessionTeam
+                    && ps->stats[STAT_PLAYER_CLASS] == PC_MEDIC
+                    && traceEnt->client->ps.pm_type == PM_DEAD
+                    && !( traceEnt->client->ps.pm_flags & PMF_LIMBO ) )
+            {
+                hintDist = 48;
+                hintType = HINT_REVIVE;
             }
         }
         // dhm - Nerve

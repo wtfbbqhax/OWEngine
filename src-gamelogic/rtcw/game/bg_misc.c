@@ -72,12 +72,13 @@ extern vmCvar_t g_gametype;
 // JPW NERVE -- in mutiplayer, characters get knife/special on button 1, pistols on 2, 2-handed on 3
 int weapBanksMultiPlayer[MAX_WEAP_BANKS_MP][MAX_WEAPS_IN_BANK_MP] =
 {
-    { 0,                     0,                      0,						0,              0,          0,              0,          0 },  // empty bank '0'
-    { WP_KNIFE,              0,                      0,						0,              0,          0,              0,          0 },
-    { WP_LUGER,              WP_COLT,                0,						0,              0,          0,              0,          0 },
-    { WP_MP40,               WP_THOMPSON,            WP_STEN,				WP_MAUSER,      WP_GARAND,  WP_PANZERFAUST, WP_VENOM,   WP_FLAMETHROWER },
-    { WP_GRENADE_LAUNCHER,   WP_GRENADE_PINEAPPLE,   0,						0,              0,          0,              0,          0, },
-    { WP_DYNAMITE,           WP_PLIERS,	             WP_SMOKE_GRENADE,		WP_MEDKIT,      0,          0,              0,          0 }
+    { 0,                     0,                      0,          0,          0,          0,              0,          0 },  // empty bank '0'
+    { WP_KNIFE,              0,                      0,          0,          0,          0,              0,          0 },
+    { WP_LUGER,              WP_COLT,                0,          0,          0,          0,              0,          0 },
+    { WP_MP40,               WP_THOMPSON,            WP_STEN,    WP_MAUSER,  WP_GARAND,  WP_PANZERFAUST, WP_VENOM,   WP_FLAMETHROWER },
+    { WP_GRENADE_LAUNCHER,   WP_GRENADE_PINEAPPLE,   0,          0,          0,          0,              0,          0, },
+    { WP_MEDIC_SYRINGE,      WP_PLIERS,              WP_SMOKE_GRENADE,       0,          0,              0,          0,          0, },
+    { WP_DYNAMITE,           WP_MEDKIT,              WP_AMMO,    0,          0,          0,              0,          0 }
 };
 // jpw
 
@@ -157,6 +158,7 @@ ammotable_t ammoTable[] =
     {   1,              0,      1,      3000,   50,             1000,   0,      0,      MOD_AMMO,               },  //	WP_AMMO	                // 38
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_SMOKE_GRENADE		// 39
     {   999,            0,      999,    0,      50,             0,      0,      0,      0                       },  //	WP_MEDKIT				// 40
+    {   3,              1,      1,      1500,   50,             1000,   0,      0,      MOD_SYRINGE             },  //	WP_MEDIC_SYRINGE		// 41
 };
 
 
@@ -200,6 +202,7 @@ int weapAlts[] =
     WP_NONE,            // 34 WP_AMMO
     WP_NONE,            // 35 WP_SMOKE_GRENAD
     WP_NONE,            // 36 WP_MEDKIT
+    WP_NONE             // 37 WP_MEDIC_SYRINGE
 };
 
 
@@ -2013,6 +2016,33 @@ gitem_t bg_itemlist[] =
         {0, 0, 0, 0}
     },
     // jpw
+    
+    /*
+    weapon_medic_syringe (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+    */
+    {
+        "weapon_medic_syringe",
+        "sound/misc/w_pkup.wav",
+        {
+            "models/multiplayer/syringe/syringe.md3",
+            "models/multiplayer/syringe/v_syringe.md3",
+            0,
+            "models/multiplayer/syringe/v_syringe_axis.md3",
+            ""
+        },
+        
+        "icons/iconw_syringe_1", // icon
+        "icons/ammo2",           // ammo icon
+        "Syringe",               // pickup
+        50, // this should never be picked up
+        IT_WEAPON,
+        WP_MEDIC_SYRINGE,
+        WP_MEDIC_SYRINGE,
+        WP_MEDIC_SYRINGE,
+        "",                      // precache
+        "sound/multiplayer/vo_revive.wav",   // sounds
+        { 0, 0, 0, 0 }
+    },
     
     /*
     weapon_magicammo (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
@@ -4067,6 +4097,7 @@ qboolean BG_WeaponInWolfMP( int weapon )
         case WP_SMOKE_GRENADE:
         case WP_MEDKIT:
         case WP_DYNAMITE:
+        case WP_MEDIC_SYRINGE:
             return qtrue;
         default:
             return qfalse;

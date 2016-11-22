@@ -284,8 +284,9 @@ typedef enum
 #define PMF_SCOREBOARD      8192    // spectate as a scoreboard
 #define PMF_LIMBO           16384   // JPW NERVE limbo state, pm_time is time until reinforce
 #define PMF_TIME_LOAD       32768   // hold for this time after a load game, and prevent large thinks
+#define PMF_TIME_LOCKPLAYER 65536   // DHM - Nerve :: Lock all movement and view changes
 
-#define PMF_ALL_TIMES   ( PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_KNOCKBACK | PMF_TIME_LOAD )
+#define PMF_ALL_TIMES ( PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_KNOCKBACK | PMF_TIME_LOAD | PMF_TIME_LOCKPLAYER )
 
 #define MAXTOUCH    32
 typedef struct
@@ -613,7 +614,8 @@ typedef enum
     WP_PLIERS,              // 33
     WP_AMMO,                // 34
     WP_SMOKE_GRENADE,       // 35
-    WP_NUM_WEAPONS          // 35   NOTE: this cannot be larger than 64 for AI/player weapons!
+    WP_MEDIC_SYRINGE,       // 36
+    WP_NUM_WEAPONS          // 37   NOTE: this cannot be larger than 64 for AI/player weapons!
     
 } weapon_t;
 
@@ -1235,6 +1237,7 @@ typedef enum
     MOD_MEDIC,      // these like this or not
     MOD_AMMO,
     MOD_SMOKEGRENADE,
+    MOD_SYRINGE,
 //
     MOD_BAT
     
@@ -1444,6 +1447,7 @@ typedef enum
     HINT_PLYR_ENEMY,
     HINT_PLYR_UNKNOWN,      // 40
     HINT_BUILD,
+    HINT_REVIVE,
     
     HINT_BAD_USER,  // invisible user with no target
     
@@ -1543,10 +1547,10 @@ typedef enum
 // New Animation Scripting Defines
 
 #define MAX_ANIMSCRIPT_MODELS               32      // allocated dynamically, so limit is scalable
-#define MAX_ANIMSCRIPT_ITEMS_PER_MODEL      256
-#define MAX_MODEL_ANIMATIONS                256     // animations per model
+#define MAX_ANIMSCRIPT_ITEMS_PER_MODEL      2048
+#define MAX_MODEL_ANIMATIONS                512     // animations per model
 #define MAX_ANIMSCRIPT_ANIMCOMMANDS         8
-#define MAX_ANIMSCRIPT_ITEMS                32
+#define MAX_ANIMSCRIPT_ITEMS                128
 
 // NOTE: these must all be in sync with string tables in bg_animation.c
 

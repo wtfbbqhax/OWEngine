@@ -86,6 +86,7 @@ char* hintStrings[] =
     "HINT_PLYR_ENEMY",
     "HINT_PLYR_UNKNOWN",
     "HINT_BUILD",
+    "HINT_REVIVE",
     
     "",                  // HINT_BAD_USER
 };

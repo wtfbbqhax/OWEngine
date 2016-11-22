@@ -99,6 +99,7 @@ static animStringItem_t animMoveTypesStr[] =
     {"TURNLEFT", -1},
     {"CLIMBUP", -1},
     {"CLIMBDOWN", -1},
+    {"FALLEN", -1},
     
     {NULL, -1},
 };

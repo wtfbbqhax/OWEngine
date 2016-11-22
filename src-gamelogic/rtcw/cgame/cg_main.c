@@ -1309,6 +1309,8 @@ static void CG_RegisterGraphics( void )
     cgs.media.youGotMailShader      = trap_R_RegisterShader( "gfx/2d/yougotmail" );    //----(SA)	added
     cgs.media.youGotObjectiveShader = trap_R_RegisterShader( "gfx/2d/yougotobjective" );   //----(SA)	added
     
+    cgs.media.reviveHintShader      = trap_R_RegisterShader( "gfx/2d/reviveHint" );
+    
 //----(SA)	end
 
     for( i = 0 ; i < NUM_CROSSHAIRS ; i++ )

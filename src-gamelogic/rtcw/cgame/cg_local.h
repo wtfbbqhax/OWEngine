@@ -1140,6 +1140,8 @@ typedef struct
     qhandle_t youGotObjectiveShader;    // '<checkmark> - you completed objective
 //----(SA)	end
 
+    qhandle_t reviveHintShader;
+    
     // Rafael
     qhandle_t snowShader;
     qhandle_t oilParticle;

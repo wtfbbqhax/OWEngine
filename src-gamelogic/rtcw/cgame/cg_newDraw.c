@@ -558,6 +558,10 @@ static void CG_DrawCursorhint( rectDef_t* rect )
         case HINT_EXIT_FAR:
             break;
             
+        case HINT_REVIVE:
+            icon = cgs.media.reviveHintShader;
+            break;
+            
         case HINT_NOEXIT:
             redbar = qtrue;     // draw the status bar in red to show that you can't exit yet
         case HINT_EXIT:
