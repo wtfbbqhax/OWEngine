@@ -5,6 +5,7 @@ Changelog
 	- Added support for "WP_MEDIC_SYRINGE"
 	- register WolfMP models and skins
 	- Increased POOLSIZE for G_Alloc so maps can load
+	- Updated binary files
 
 11-21-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added support for "WP_AMMO" and "WP_PLIERS"
