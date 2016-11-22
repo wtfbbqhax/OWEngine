@@ -398,9 +398,6 @@ CG_ParseAnimationFiles
   Read in all the configuration and script files for this model.
 ======================
 */
-
-#if 0   // RF, this entire function not used anymore, since we now grab all this stuff from the server
-
 static qboolean CG_ParseAnimationFiles( const char* modelname, clientInfo_t* ci, int client )
 {
     char text[100000];
@@ -468,7 +465,6 @@ static qboolean CG_ParseAnimationFiles( const char* modelname, clientInfo_t* ci,
     BG_AnimParseAnimScript( ci->modelInfo, &cgs.animScriptData, ci->clientNum, filename, text );
     return qtrue;
 }
-#endif
 
 /*
 ==========================
@@ -602,6 +598,54 @@ CG_CheckForExistingModelInfo
 ==================
 */
 extern animScriptData_t* globalScriptData;
+qboolean CG_CheckForExistingModelInfo2( clientInfo_t* ci, char* modelName, animModelInfo_t** modelInfo )
+{
+    int i;
+    animModelInfo_t* trav;
+    
+    for( i = 0; i < MAX_ANIMSCRIPT_MODELS; i++ )
+    {
+        trav = cgs.animScriptData.modelInfo[i];
+        if( trav && trav->modelname[0] )
+        {
+            if( !Q_stricmp( trav->modelname, modelName ) )
+            {
+                // found a match, use this modelinfo
+                *modelInfo = trav;
+                cgs.animScriptData.clientModels[ci->clientNum] = i + 1;
+                return qtrue;
+            }
+        }
+        else
+        {
+            cgs.animScriptData.modelInfo[i] = malloc( sizeof( animModelInfo_t ) );
+            *modelInfo = cgs.animScriptData.modelInfo[i];
+            // clear the structure out ready for use
+            memset( *modelInfo, 0, sizeof( **modelInfo ) );
+            cgs.animScriptData.clientModels[ci->clientNum] = i + 1;
+            return qfalse;
+        }
+    }
+    
+    CG_Error( "unable to find a free modelinfo slot, cannot continue\n" );
+    // qfalse signifies that we need to parse the information from the script files
+    return qfalse;
+}
+
+qboolean CG_GetModelInfo( clientInfo_t* ci, char* modelName, animModelInfo_t** modelInfo )
+{
+    if( !CG_CheckForExistingModelInfo2( ci, modelName, modelInfo ) )
+    {
+        ci->modelInfo = *modelInfo;
+        if( !CG_ParseAnimationFiles( modelName, ci, ci->clientNum ) )
+        {
+            CG_Error( "Failed to load animation scripts for model %s\n", modelName );
+        }
+    }
+    
+    return qtrue;
+}
+
 qboolean CG_CheckForExistingModelInfo( clientInfo_t* ci, char* modelName, animModelInfo_t** modelInfo )
 {
     int i;
@@ -628,7 +672,7 @@ qboolean CG_CheckForExistingModelInfo( clientInfo_t* ci, char* modelName, animMo
             // if we fell down to here, then we have found a free slot
             
             // request it from the server (game module)
-            if( trap_GetModelInfo( ci->clientNum, modelName, &cgs.animScriptData.modelInfo[i] ) )
+            if( CG_GetModelInfo( ci, modelName, &cgs.animScriptData.modelInfo[i] ) )
             {
             
                 // success
@@ -651,7 +695,6 @@ qboolean CG_CheckForExistingModelInfo( clientInfo_t* ci, char* modelName, animMo
     return qfalse;
 }
 
-
 /*
 ==========================
 CG_RegisterClientModelname
@@ -659,8 +702,7 @@ CG_RegisterClientModelname
 */
 
 //----(SA) modified this for head separation
-
-static qboolean CG_RegisterClientModelname( clientInfo_t* ci, const char* modelName, const char* skinName )
+qboolean CG_RegisterClientModelname( clientInfo_t* ci, const char* modelName, const char* skinName )
 {
     char namefromskin[MAX_QPATH];
     char filename[MAX_QPATH];
@@ -1307,6 +1349,15 @@ static qboolean CG_RegisterClientModelname( clientInfo_t* ci, const char* modelN
         ci->partModels[8] = trap_R_RegisterModel( va( "models/players/%s/spinner.md3", modelName ) );
     }
     
+    //Dushan
+    if( cgs.gametype != GT_SINGLE_PLAYER )
+    {
+        if( !CG_ParseAnimationFiles( modelName, ci, ci->clientNum ) )
+        {
+            Com_Printf( "Failed to load animation file %s\n", filename );
+            return qfalse;
+        }
+    }
     
     return qtrue;
 }

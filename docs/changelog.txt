@@ -3,6 +3,7 @@ Changelog
 11-22-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed extractfuncs.bat
 	- Added support for "WP_MEDIC_SYRINGE"
+	- register WolfMP models and skins
 
 11-21-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added support for "WP_AMMO" and "WP_PLIERS"

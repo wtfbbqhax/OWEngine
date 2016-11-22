@@ -861,12 +861,11 @@ Forces a client's skin (for Wolfenstein teamplay)
 ===========
 */
 
-#define MULTIPLAYER_MODEL   "multi"
-
+#define MULTIPLAYER_ALLIEDMODEL "multi"
+#define MULTIPLAYER_AXISMODEL   "multi_axis"
 
 void SetWolfSkin( gclient_t* client, char* model )
 {
-
     switch( client->sess.sessionTeam )
     {
         case TEAM_RED:
@@ -1632,7 +1631,14 @@ void ClientUserinfoChanged( int clientNum )
         // To communicate it to cgame
         client->ps.stats[ STAT_PLAYER_CLASS ] = client->sess.playerType;
         
-        Q_strncpyz( model, MULTIPLAYER_MODEL, MAX_QPATH );
+        if( client->sess.sessionTeam == TEAM_BLUE )
+        {
+            Q_strncpyz( model, MULTIPLAYER_ALLIEDMODEL, MAX_QPATH );
+        }
+        else
+        {
+            Q_strncpyz( model, MULTIPLAYER_AXISMODEL, MAX_QPATH );
+        }
         Q_strcat( model, MAX_QPATH, "/" );
         
         SetWolfSkin( client, model );

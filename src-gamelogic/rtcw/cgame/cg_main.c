@@ -1147,7 +1147,8 @@ static void CG_RegisterSounds( void )
 
 //===================================================================================
 
-
+qboolean CG_RegisterClientSkin( clientInfo_t* ci, const char* modelName, const char* skinName );
+qboolean CG_RegisterClientModelname( clientInfo_t* ci, const char* modelName, const char* skinName );
 
 /*
 =================
@@ -1612,6 +1613,22 @@ static void CG_RegisterGraphics( void )
                 break;
             }
         }
+    }
+    
+    // register WolfMP models and skins
+    {
+        clientInfo_t ci;
+        memset( &ci, 0, sizeof( ci ) );
+        
+        CG_RegisterClientModelname( &ci, "multi_axis", "redsoldier1" );
+        CG_RegisterClientModelname( &ci, "multi_axis", "redengineer1" );
+        CG_RegisterClientModelname( &ci, "multi_axis", "redmedic1" );
+        CG_RegisterClientModelname( &ci, "multi_axis", "redlieutenant1" );
+        
+        CG_RegisterClientModelname( &ci, "multi", "bluesoldier1" );
+        CG_RegisterClientModelname( &ci, "multi", "blueengineer1" );
+        CG_RegisterClientModelname( &ci, "multi", "bluemedic1" );
+        CG_RegisterClientModelname( &ci, "multi", "bluelieutenant1" );
     }
     
 //	cgs.media.cursor = trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
