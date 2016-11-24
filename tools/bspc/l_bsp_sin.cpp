@@ -964,7 +964,7 @@ void    Sin_LoadBSPFileTexinfo( char* filename )
     FILE*        f;
     int length, ofs;
     
-    header = (sin_dheader_t*)GetMemory( sizeof( sin_dheader_t ) );
+    header = ( sin_dheader_t* )GetMemory( sizeof( sin_dheader_t ) );
     
     f = fopen( filename, "rb" );
     fread( header, sizeof( sin_dheader_t ), 1, f );

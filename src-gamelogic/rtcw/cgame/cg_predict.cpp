@@ -466,9 +466,9 @@ static void CG_TouchItem( centity_t* cent )
         }
 //----(SA)	end
 
-        if( !cg.predictedPlayerState.ammo[ BG_FindAmmoForWeapon( (weapon_t)weapon )] )
+        if( !cg.predictedPlayerState.ammo[ BG_FindAmmoForWeapon( ( weapon_t )weapon )] )
         {
-            cg.predictedPlayerState.ammo[ BG_FindAmmoForWeapon((weapon_t)weapon )] = 1;
+            cg.predictedPlayerState.ammo[ BG_FindAmmoForWeapon( ( weapon_t )weapon )] = 1;
         }
     }
     
@@ -734,7 +734,7 @@ void CG_PredictPlayerState( void )
     // RF, anim system
     if( cg_animState.integer )
     {
-        cg.predictedPlayerState.aiState = (aistateEnum_t)(cg_animState.integer - 1);
+        cg.predictedPlayerState.aiState = ( aistateEnum_t )( cg_animState.integer - 1 );
     }
     
     // run cmds

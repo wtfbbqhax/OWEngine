@@ -75,7 +75,7 @@ epair_t* ParseEpair( script_t* script )
     epair_t* e;
     token_t token;
     
-    e = (epair_t*)GetMemory( sizeof( epair_t ) );
+    e = ( epair_t* )GetMemory( sizeof( epair_t ) );
     memset( e, 0, sizeof( epair_t ) );
     
     PS_ExpectAnyToken( script, &token );
@@ -173,7 +173,7 @@ void    SetKeyValue( entity_t* ent, char* key, char* value )
             ep->value = copystring( value );
             return;
         }
-    ep = (epair_t*)GetMemory( sizeof( *ep ) );
+    ep = ( epair_t* )GetMemory( sizeof( *ep ) );
     ep->next = ent->epairs;
     ent->epairs = ep;
     ep->key = copystring( key );

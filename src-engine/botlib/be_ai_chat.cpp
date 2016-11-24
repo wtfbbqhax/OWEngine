@@ -1785,7 +1785,7 @@ bot_stringlist_t* BotCheckChatMessageIntegrety( char* message, bot_stringlist_t*
                         if( !BotFindStringInList( stringlist, temp ) )
                         {
                             Log_Write( "%s = {\"%s\"} //MISSING RANDOM\r\n", temp, temp );
-                            s = (bot_stringlist_t*)GetClearedMemory( sizeof( bot_stringlist_t ) + strlen( temp ) + 1 );
+                            s = ( bot_stringlist_t* )GetClearedMemory( sizeof( bot_stringlist_t ) + strlen( temp ) + 1 );
                             s->string = ( char* ) s + sizeof( bot_stringlist_t );
                             strcpy( s->string, temp );
                             s->next = stringlist;
@@ -2022,7 +2022,7 @@ bot_replychat_t* BotLoadReplyChat( char* filename )
             return NULL;
         } //end if
         //
-        replychat = (bot_replychat_t*)GetClearedHunkMemory( sizeof( bot_replychat_t ) );
+        replychat = ( bot_replychat_t* )GetClearedHunkMemory( sizeof( bot_replychat_t ) );
         replychat->keys = NULL;
         replychat->next = replychatlist;
         replychatlist = replychat;
@@ -3211,7 +3211,7 @@ int BotAllocChatState( void )
     {
         if( !botchatstates[i] )
         {
-            botchatstates[i] = (bot_chatstate_t*)GetClearedMemory( sizeof( bot_chatstate_t ) );
+            botchatstates[i] = ( bot_chatstate_t* )GetClearedMemory( sizeof( bot_chatstate_t ) );
             return i;
         } //end if
     } //end for

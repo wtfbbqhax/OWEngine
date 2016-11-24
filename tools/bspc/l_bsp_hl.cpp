@@ -266,10 +266,10 @@ FastChecksum
 int FastChecksum( void* buffer, int bytes )
 {
     int checksum = 0;
-	char *buf = (char*)buffer;
- 
-	while( bytes-- )
-		checksum = (checksum << 4) ^ *(buf++);
+    char* buf = ( char* )buffer;
+    
+    while( bytes-- )
+        checksum = ( checksum << 4 ) ^ *( buf++ );
         
     return checksum;
 }

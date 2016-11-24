@@ -207,7 +207,7 @@ void DumpReplaceFunctions( void )
         newbuf[newlen] = 0;
         fclose( f );
         
-        if( len != newlen || Q_stricmp( (const char*)buf, (const char*)newbuf ) )
+        if( len != newlen || Q_stricmp( ( const char* )buf, ( const char* )newbuf ) )
         {
             char newpath[_MAX_PATH];
             
@@ -272,7 +272,7 @@ void DumpReplaceFunctions( void )
         newbuf[newlen] = 0;
         fclose( f );
         
-        if( len != newlen || Q_stricmp((const char*)buf, (const char*)newbuf ) )
+        if( len != newlen || Q_stricmp( ( const char* )buf, ( const char* )newbuf ) )
         {
             char newpath[_MAX_PATH];
             
@@ -675,7 +675,7 @@ void main( int argc, char* argv[] )
         Error( "USAGE: screwup <file filter>\n" );
     } //end if
     
-    handle = (HWND)FindFirstFile( argv[1], &filedata );
+    handle = ( HWND )FindFirstFile( argv[1], &filedata );
     done = ( handle == INVALID_HANDLE_VALUE );
     while( !done )
     {

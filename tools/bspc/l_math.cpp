@@ -142,24 +142,24 @@ void AxisClear( vec3_t axis[3] )
     axis[2][2] = 1;
 }
 
-vec_t VectorLength(const vec3_t v)
+vec_t VectorLength( const vec3_t v )
 {
-	return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    return sqrt( v[0] * v[0] + v[1] * v[1] + v[2] * v[2] );
 }
 
-vec_t VectorLengthSquared(const vec3_t v)
+vec_t VectorLengthSquared( const vec3_t v )
 {
-	return (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    return ( v[0] * v[0] + v[1] * v[1] + v[2] * v[2] );
 }
 
-int VectorCompare(const vec3_t v1, const vec3_t v2)
+int VectorCompare( const vec3_t v1, const vec3_t v2 )
 {
-	if (v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2])
-	{
-		return 0;
-	}
-
-	return 1;
+    if( v1[0] != v2[0] || v1[1] != v2[1] || v1[2] != v2[2] )
+    {
+        return 0;
+    }
+    
+    return 1;
 }
 
 
@@ -317,82 +317,82 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs )
 // !!! if this is changed, it must be changed in asm code too !!!
 typedef struct cplane_s
 {
-	vec3_t normal;
-	float dist;
-	byte type;              // for fast side tests: 0,1,2 = axial, 3 = nonaxial
-	byte signbits;          // signx + (signy<<1) + (signz<<2), used as lookup during collision
-	byte pad[2];
+    vec3_t normal;
+    float dist;
+    byte type;              // for fast side tests: 0,1,2 = axial, 3 = nonaxial
+    byte signbits;          // signx + (signy<<1) + (signz<<2), used as lookup during collision
+    byte pad[2];
 } cplane_t;
 
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
+int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, struct cplane_s* p )
 {
-	float dist1, dist2;
-	int sides;
-
-	// fast axial cases
-	if (p->type < 3)
-	{
-		if (p->dist <= emins[p->type])
-		{
-			return 1;
-		}
-		if (p->dist >= emaxs[p->type])
-		{
-			return 2;
-		}
-		return 3;
-	}
-
-	// general case
-	switch (p->signbits)
-	{
-	case 0:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		break;
-	case 1:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		break;
-	case 2:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		break;
-	case 3:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		break;
-	case 4:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		break;
-	case 5:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		break;
-	case 6:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		break;
-	case 7:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		break;
-	default:
-		dist1 = dist2 = 0;      // shut up compiler
-		break;
-	}
-
-	sides = 0;
-	if (dist1 >= p->dist)
-	{
-		sides = 1;
-	}
-	if (dist2 < p->dist)
-	{
-		sides |= 2;
-	}
-
-	return sides;
+    float dist1, dist2;
+    int sides;
+    
+    // fast axial cases
+    if( p->type < 3 )
+    {
+        if( p->dist <= emins[p->type] )
+        {
+            return 1;
+        }
+        if( p->dist >= emaxs[p->type] )
+        {
+            return 2;
+        }
+        return 3;
+    }
+    
+    // general case
+    switch( p->signbits )
+    {
+        case 0:
+            dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+            dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+            break;
+        case 1:
+            dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+            dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+            break;
+        case 2:
+            dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+            dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+            break;
+        case 3:
+            dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+            dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+            break;
+        case 4:
+            dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+            dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+            break;
+        case 5:
+            dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+            dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+            break;
+        case 6:
+            dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+            dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+            break;
+        case 7:
+            dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+            dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+            break;
+        default:
+            dist1 = dist2 = 0;      // shut up compiler
+            break;
+    }
+    
+    sides = 0;
+    if( dist1 >= p->dist )
+    {
+        sides = 1;
+    }
+    if( dist2 < p->dist )
+    {
+        sides |= 2;
+    }
+    
+    return sides;
 }
 

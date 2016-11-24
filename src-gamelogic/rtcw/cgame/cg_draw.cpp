@@ -643,7 +643,7 @@ static void CG_DrawStatusBarKeys()
     
     for( i = 1; i < KEY_NUM_KEYS; i++ )
     {
-        gi = BG_FindItemForKey( (wkey_t)i, &itemnum );
+        gi = BG_FindItemForKey( ( wkey_t )i, &itemnum );
         // if i've got the key...
         
         if( cg.snap->ps.stats[STAT_KEYS] & ( 1 << gi->giTag ) )
@@ -816,8 +816,8 @@ static void CG_DrawStatusBar( void )
         float scale, halfScale;
         float wideOffset;
         
-        value = ps->ammo[BG_FindAmmoForWeapon((weapon_t)cent->currentState.weapon )];
-        inclip = ps->ammoclip[BG_FindClipForWeapon((weapon_t)cent->currentState.weapon )];
+        value = ps->ammo[BG_FindAmmoForWeapon( ( weapon_t )cent->currentState.weapon )];
+        inclip = ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )cent->currentState.weapon )];
         
         if( value > -1 )
         {
@@ -1356,7 +1356,7 @@ static float CG_DrawTeamOverlay( float y )
                 {
                     gitem_t* item;
                     
-                    item = BG_FindItemForPowerup( (powerup_t)j );
+                    item = BG_FindItemForPowerup( ( powerup_t )j );
                     
                     if( item != NULL )    // JPW NERVE added for invulnerability powerup at beginning of map
                     {
@@ -1644,7 +1644,7 @@ static float CG_DrawPowerups( float y )
     
         continue;   // (SA) FIXME: TEMP: as I'm getting powerup business going
         
-        item = BG_FindItemForPowerup((powerup_t)sorted[i] );
+        item = BG_FindItemForPowerup( ( powerup_t )sorted[i] );
         
         color = 1;
         
@@ -1881,7 +1881,7 @@ void CG_DrawHoldableItem_old( void )
         return;
     }
     
-    item    = BG_FindItemForHoldable( (holdable_t)cg.holdableSelect );
+    item    = BG_FindItemForHoldable( ( holdable_t )cg.holdableSelect );
     
     if( !item )
     {
@@ -2229,7 +2229,7 @@ void CG_CenterPrint( const char* str, int y, int charWidth )
     unsigned char*   s;
     
 //----(SA)	added translation lookup
-    Q_strncpyz((char*)cg.centerPrint, CG_translateString( ( char* )str ), sizeof( cg.centerPrint ) );
+    Q_strncpyz( ( char* )cg.centerPrint, CG_translateString( ( char* )str ), sizeof( cg.centerPrint ) );
 //----(SA)	end
 
 
@@ -2246,7 +2246,7 @@ void CG_CenterPrint( const char* str, int y, int charWidth )
         {
             cg.centerPrintLines++;
         }
-        if( !Q_strncmp((const char*)s, "\\n", 1 ) )
+        if( !Q_strncmp( ( const char* )s, "\\n", 1 ) )
         {
             cg.centerPrintLines++;
             s++;
@@ -2281,7 +2281,7 @@ static void CG_DrawCenterString( void )
     
     trap_R_SetColor( color );
     
-    start = (char*)cg.centerPrint;
+    start = ( char* )cg.centerPrint;
     
     y = cg.centerPrintY - cg.centerPrintLines * BIGCHAR_HEIGHT / 2;
     

@@ -661,7 +661,7 @@ void SP_misc_gamemodel( gentity_t* ent )
     
     if( ent->spawnflags & 1 )
     {
-        ent->s.apos.trType = (trType_t)1; // misc_gamemodels (since they have no movement) will use type = 0 for static models, type = 1 for auto-aligning models      
+        ent->s.apos.trType = ( trType_t )1; // misc_gamemodels (since they have no movement) will use type = 0 for static models, type = 1 for auto-aligning models
     }
     trap_LinkEntity( ent );
     
@@ -925,7 +925,7 @@ void InitShooter( gentity_t* ent, int weapon )
     // Rafael sniper
     if( weapon != WP_SNIPER )
     {
-        RegisterItem( BG_FindItemForWeapon((weapon_t)weapon ) );
+        RegisterItem( BG_FindItemForWeapon( ( weapon_t )weapon ) );
     }
     // done
     
@@ -2140,7 +2140,7 @@ void clamp_playerbehindgun( gentity_t* self, gentity_t* other, vec3_t dang )
     vec3_t _forward, _right, _up;
     vec3_t point;
     
-    AngleVectors( self->s.apos.trBase, _forward, _right, _up);
+    AngleVectors( self->s.apos.trBase, _forward, _right, _up );
     VectorMA( self->r.currentOrigin, -36, _forward, point );
     
     point[2] = other->r.currentOrigin[2];
@@ -3023,10 +3023,10 @@ void SP_misc_tagemitter( gentity_t* ent )
     }
     
     ent->target_ent = G_Spawn();    // spawn the emitter
-    ent->target_ent->tagName = (char*)G_Alloc( strlen( tagName ) + 1 );
+    ent->target_ent->tagName = ( char* )G_Alloc( strlen( tagName ) + 1 );
     Q_strncpyz( ent->target_ent->tagName, tagName, strlen( tagName ) + 1 );
     
-    ent->tagName = (char*)G_Alloc( strlen( tagName ) + 1 );
+    ent->tagName = ( char* )G_Alloc( strlen( tagName ) + 1 );
     Q_strncpyz( ent->tagName, tagName, strlen( tagName ) + 1 );
     
 }
@@ -3065,18 +3065,18 @@ void misc_firetrails_finishspawning( gentity_t* ent )
     trap_LinkEntity( left );
     
     // right fire trail
-	_right = G_Spawn();
-	_right->classname = "right_firetrail";
-	_right->r.contents = 0;
-	_right->s.eType = ET_RAMJET;
-	_right->s.modelindex = G_ModelIndex( "models/ammo/rocket/rocket.md3" );
-	_right->tagParent = airplane;
-	_right->tagName = "tag_engine2";  // tag to connect to
-	_right->use = firetrail_use;
-	_right->AIScript_AlertEntity = firetrail_die;
-	_right->targetname = ent->targetname;
-    G_ProcessTagConnect(_right, true );
-    trap_LinkEntity(_right);
+    _right = G_Spawn();
+    _right->classname = "right_firetrail";
+    _right->r.contents = 0;
+    _right->s.eType = ET_RAMJET;
+    _right->s.modelindex = G_ModelIndex( "models/ammo/rocket/rocket.md3" );
+    _right->tagParent = airplane;
+    _right->tagName = "tag_engine2";  // tag to connect to
+    _right->use = firetrail_use;
+    _right->AIScript_AlertEntity = firetrail_die;
+    _right->targetname = ent->targetname;
+    G_ProcessTagConnect( _right, true );
+    trap_LinkEntity( _right );
     
 }
 

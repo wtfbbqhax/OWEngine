@@ -279,9 +279,9 @@ void SV_InitReliableCommandsForClient( client_t* cl, int commands )
     }
     //
     cl->reliableCommands.bufSize = commands * RELIABLE_COMMANDS_CHARS;
-    cl->reliableCommands.buf = (char*)Z_Malloc( cl->reliableCommands.bufSize );
-    cl->reliableCommands.commandLengths = (int*)Z_Malloc( commands * sizeof( *cl->reliableCommands.commandLengths ) );
-    cl->reliableCommands.commands = (char**)Z_Malloc( commands * sizeof( *cl->reliableCommands.commands ) );
+    cl->reliableCommands.buf = ( char* )Z_Malloc( cl->reliableCommands.bufSize );
+    cl->reliableCommands.commandLengths = ( int* )Z_Malloc( commands * sizeof( *cl->reliableCommands.commandLengths ) );
+    cl->reliableCommands.commands = ( char** )Z_Malloc( commands * sizeof( *cl->reliableCommands.commands ) );
     //
     cl->reliableCommands.rover = cl->reliableCommands.buf;
 }
@@ -495,7 +495,7 @@ void SV_Startup( void )
     svs.clients = Z_Malloc( sizeof( client_t ) * sv_maxclients->integer );
 #else
     // RF, avoid trying to allocate large chunk on a fragmented zone
-    svs.clients = (client_t*)calloc( sizeof( client_t ) * sv_maxclients->integer, 1 );
+    svs.clients = ( client_t* )calloc( sizeof( client_t ) * sv_maxclients->integer, 1 );
     if( !svs.clients )
     {
         Com_Error( ERR_FATAL, "SV_Startup: unable to allocate svs.clients" );
@@ -562,7 +562,7 @@ void SV_ChangeMaxClients( void )
         }
     }
     
-    oldClients = (client_t*)Hunk_AllocateTempMemory( count * sizeof( client_t ) );
+    oldClients = ( client_t* )Hunk_AllocateTempMemory( count * sizeof( client_t ) );
     // copy the clients to hunk memory
     for( i = 0 ; i < count ; i++ )
     {
@@ -588,7 +588,7 @@ void SV_ChangeMaxClients( void )
     svs.clients = Z_Malloc( sv_maxclients->integer * sizeof( client_t ) );
 #else
     // RF, avoid trying to allocate large chunk on a fragmented zone
-    svs.clients = (client_t*)calloc( sizeof( client_t ) * sv_maxclients->integer, 1 );
+    svs.clients = ( client_t* )calloc( sizeof( client_t ) * sv_maxclients->integer, 1 );
     if( !svs.clients )
     {
         Com_Error( ERR_FATAL, "SV_Startup: unable to allocate svs.clients" );
@@ -834,7 +834,7 @@ void SV_SpawnServer( char* server, bool killBots )
     FS_ClearPakReferences( 0 );
     
     // allocate the snapshot entities on the hunk
-    svs.snapshotEntities = (entityState_t*)Hunk_Alloc( sizeof( entityState_t ) * svs.numSnapshotEntities, h_high );
+    svs.snapshotEntities = ( entityState_t* )Hunk_Alloc( sizeof( entityState_t ) * svs.numSnapshotEntities, h_high );
     svs.nextSnapshotEntities = 0;
     
     // toggle the server bit so clients can detect that a
@@ -924,7 +924,7 @@ void SV_SpawnServer( char* server, bool killBots )
             }
             
             // connect the client again
-            denied = (char*)VM_ExplicitArgPtr( gvm, VM_Call( gvm, GAME_CLIENT_CONNECT, i, false, isBot ) );   // firstTime = false
+            denied = ( char* )VM_ExplicitArgPtr( gvm, VM_Call( gvm, GAME_CLIENT_CONNECT, i, false, isBot ) ); // firstTime = false
             if( denied )
             {
                 // this generally shouldn't happen, because the client

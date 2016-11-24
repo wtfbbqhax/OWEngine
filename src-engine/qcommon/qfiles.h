@@ -357,7 +357,7 @@ MD4Anim file format
 //
 typedef struct
 {
-	idVec3		translate;
+    idVec3		translate;
     idVec4		rotation;
 } md4JointTransform_t;
 

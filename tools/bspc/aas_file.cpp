@@ -220,7 +220,7 @@ char* AAS_LoadAASLump( FILE* fp, int offset, int length, void* buf )
     if( !length )
     {
         printf( "lump size 0\n" );
-        return (char*)buf;
+        return ( char* )buf;
     } //end if
     //seek to the data
     if( fseek( fp, offset, SEEK_SET ) )
@@ -244,7 +244,7 @@ char* AAS_LoadAASLump( FILE* fp, int offset, int length, void* buf )
         fclose( fp );
         return NULL;
     } //end if
-    return (char*)buf;
+    return ( char* )buf;
 } //end of the function AAS_LoadAASLump
 //===========================================================================
 //

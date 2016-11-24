@@ -622,7 +622,7 @@ void Cmd_AddCommand( const char* cmd_name, xcommand_t function )
     }
     
     // use a small malloc to avoid zone fragmentation
-    cmd = (cmd_function_t*)Z_Malloc( sizeof( cmd_function_t ) );
+    cmd = ( cmd_function_t* )Z_Malloc( sizeof( cmd_function_t ) );
     cmd->name = CopyString( cmd_name );
     cmd->function = function;
     cmd->next = cmd_functions;

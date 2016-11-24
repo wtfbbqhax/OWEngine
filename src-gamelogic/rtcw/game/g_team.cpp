@@ -193,7 +193,7 @@ gentity_t* G_FindMissile( gentity_t* start, weapon_t weap )
 
 gentity_t* G_FindSmokeBomb( gentity_t* start )
 {
-    return G_FindMissile( start, (weapon_t)(WP_SMOKE_GRENADE || WP_GRENADE_SMOKE) );
+    return G_FindMissile( start, ( weapon_t )( WP_SMOKE_GRENADE || WP_GRENADE_SMOKE ) );
 }
 
 

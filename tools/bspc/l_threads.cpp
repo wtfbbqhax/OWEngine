@@ -337,7 +337,7 @@ void RunThreadsOn( int workcnt, bool showpacifier, void ( *func )( int ) )
                                   ( LPTHREAD_START_ROUTINE )func, // LPTHREAD_START_ROUTINE lpStartAddr,
                                   ( LPVOID )i, // LPVOID lpvThreadParm,
                                   0,          //   DWORD fdwCreate,
-                                  (LPDWORD)&threadid[i] );
+                                  ( LPDWORD )&threadid[i] );
 //			printf("started thread %d\n", i);
         } //end for
         
@@ -382,7 +382,7 @@ void AddThread( void ( *func )( int ) )
             return;
         } //end if
         //allocate new thread
-        thread = (thread_t*)GetMemory( sizeof( thread_t ) );
+        thread = ( thread_t* )GetMemory( sizeof( thread_t ) );
         if( !thread )
         {
             Error( "can't allocate memory for thread\n" );
@@ -396,7 +396,7 @@ void AddThread( void ( *func )( int ) )
                              ( LPTHREAD_START_ROUTINE )func,         // LPTHREAD_START_ROUTINE lpStartAddr,
                              ( LPVOID ) thread->threadid,                // LPVOID lpvThreadParm,
                              0,                              // DWORD fdwCreate,
-                             ( LPDWORD) &thread->id );
+                             ( LPDWORD ) &thread->id );
                              
         //add the thread to the end of the list
         thread->next = NULL;

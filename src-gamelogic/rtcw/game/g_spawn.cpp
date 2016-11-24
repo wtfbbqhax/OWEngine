@@ -775,7 +775,7 @@ char* G_NewString( const char* string )
     
     l = strlen( string ) + 1;
     
-    newb = (char*)G_Alloc( l );
+    newb = ( char* )G_Alloc( l );
     
     new_p = newb;
     

@@ -961,7 +961,7 @@ void Sys_LeaveCriticalSection( void* ptr );
 
 // general development dll loading for virtual machine testing
 void*   Sys_LoadDll( const char* name, intptr_t( * *entryPoint )( intptr_t, ... ),
-                             intptr_t ( * systemcalls )( intptr_t, ... ) );
+                     intptr_t ( * systemcalls )( intptr_t, ... ) );
 void    Sys_UnloadDll( void* dllHandle );
 
 void    Sys_UnloadGame( void );

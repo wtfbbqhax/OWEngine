@@ -441,7 +441,7 @@ char** Sys_ListFiles( const char* directory, const char* extension, char* filter
             return NULL;
         }
         
-        listCopy = (char**)Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
+        listCopy = ( char** )Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
         for( i = 0 ; i < nfiles ; i++ )
         {
             listCopy[i] = list[i];
@@ -505,7 +505,7 @@ char** Sys_ListFiles( const char* directory, const char* extension, char* filter
         return NULL;
     }
     
-    listCopy = (char**)Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
+    listCopy = ( char** )Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
     for( i = 0 ; i < nfiles ; i++ )
     {
         listCopy[i] = list[i];
@@ -643,9 +643,9 @@ char* Sys_GetClipboardData( void )
         
         if( ( hClipboardData = GetClipboardData( CF_TEXT ) ) != 0 )
         {
-            if( ( cliptext = (char*)GlobalLock( hClipboardData ) ) != 0 )
+            if( ( cliptext = ( char* )GlobalLock( hClipboardData ) ) != 0 )
             {
-                data = (char*)Z_Malloc( GlobalSize( hClipboardData ) + 1 );
+                data = ( char* )Z_Malloc( GlobalSize( hClipboardData ) + 1 );
                 Q_strncpyz( data, cliptext, GlobalSize( hClipboardData ) );
                 GlobalUnlock( hClipboardData );
                 
@@ -678,7 +678,7 @@ void Sys_UnloadDll( void* dllHandle )
     {
         return;
     }
-    if( !FreeLibrary( (HMODULE)dllHandle ) )
+    if( !FreeLibrary( ( HMODULE )dllHandle ) )
     {
         Com_Error( ERR_FATAL, "Sys_UnloadDll FreeLibrary failed" );
     }
@@ -694,7 +694,7 @@ Used to load a development dll instead of a virtual machine
 extern char*     FS_BuildOSPath( const char* base, const char* game, const char* qpath );
 
 void* Sys_LoadDll( const char* name, intptr_t( ** entryPoint )( intptr_t, ... ),
-                         intptr_t( * systemcalls )( intptr_t, ... ) )
+                   intptr_t( * systemcalls )( intptr_t, ... ) )
 {
     static int lastWarning = 0;
     HINSTANCE libHandle;
@@ -773,8 +773,8 @@ void* Sys_LoadDll( const char* name, intptr_t( ** entryPoint )( intptr_t, ... ),
     
 found_dll:
 
-    dllEntry = ( void ( * )( intptr_t( * )( intptr_t, ... ) ) )GetProcAddress( libHandle, "dllEntry" );
-    *entryPoint = ( intptr_t( * )( intptr_t, ... ) )GetProcAddress( libHandle, "vmMain" );
+    dllEntry = ( void (* )( intptr_t(* )( intptr_t, ... ) ) )GetProcAddress( libHandle, "dllEntry" );
+    *entryPoint = ( intptr_t(* )( intptr_t, ... ) )GetProcAddress( libHandle, "vmMain" );
     if( !*entryPoint || !dllEntry )
     {
         FreeLibrary( libHandle );
@@ -1260,7 +1260,7 @@ sysEvent_t Sys_GetEvent( void )
         int len;
         
         len = strlen( s ) + 1;
-        b = (char*)Z_Malloc( len );
+        b = ( char* )Z_Malloc( len );
         Q_strncpyz( b, s, len - 1 );
         Sys_QueEvent( 0, SE_CONSOLE, 0, 0, len, b );
     }
@@ -1275,7 +1275,7 @@ sysEvent_t Sys_GetEvent( void )
         // copy out to a seperate buffer for qeueing
         // the readcount stepahead is for SOCKS support
         len = sizeof( netadr_t ) + netmsg.cursize - netmsg.readcount;
-        buf = (netadr_t*)Z_Malloc( len );
+        buf = ( netadr_t* )Z_Malloc( len );
         *buf = adr;
         memcpy( buf + 1, &netmsg.data[netmsg.readcount], netmsg.cursize - netmsg.readcount );
         Sys_QueEvent( 0, SE_PACKET, 0, 0, len, buf );
@@ -1520,7 +1520,7 @@ static void Init_MCLibrary( void )
     mi.Print = Com_Printf;
     mi.Error = Com_Error;
     
-    GetMotContrAPI = (GetMotContrLibAPI_t)Sys_LoadFunction( motcontLib, "GetMotContrLibAPI" );
+    GetMotContrAPI = ( GetMotContrLibAPI_t )Sys_LoadFunction( motcontLib, "GetMotContrLibAPI" );
     if( !GetMotContrAPI )
     {
         Com_Error( ERR_FATAL, "Can't load symbol GetMotContrLibAPI: '%s'\n", Sys_DLLError() );

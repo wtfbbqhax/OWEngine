@@ -334,7 +334,7 @@ quakefile_t* FindQuakeFilesInZip( char* zipfile, char* filter )
         ConvertPath( filename_inzip );
         if( FileFilter( filter, filename_inzip, false ) )
         {
-            qf = (quakefile_t*)malloc( sizeof( quakefile_t ) );
+            qf = ( quakefile_t* )malloc( sizeof( quakefile_t ) );
             if( !qf )
             {
                 Error( "out of memory" );
@@ -465,7 +465,7 @@ quakefile_t* FindQuakeFilesInPak( char* pakfile, char* filter )
         ConvertPath( packfiles[i].name );
         if( FileFilter( filter, packfiles[i].name, false ) )
         {
-            qf = (quakefile_t*)malloc( sizeof( quakefile_t ) );
+            qf = ( quakefile_t* )malloc( sizeof( quakefile_t ) );
             if( !qf )
             {
                 Error( "out of memory" );
@@ -521,7 +521,7 @@ quakefile_t* FindQuakeFilesWithPakFilter( char* pakfilter, char* filter )
     if( pakfilter && strlen( pakfilter ) )
     {
 #if defined( WIN32 ) | defined( _WIN32 )
-        handle = (HWND)FindFirstFile( pakfilter, &filedata );
+        handle = ( HWND )FindFirstFile( pakfilter, &filedata );
         done = ( handle == INVALID_HANDLE_VALUE );
         while( !done )
         {
@@ -598,7 +598,7 @@ quakefile_t* FindQuakeFilesWithPakFilter( char* pakfilter, char* filter )
     else
     {
 #if defined( WIN32 ) | defined( _WIN32 )
-        handle = (HWND)FindFirstFile( filter, &filedata );
+        handle = ( HWND )FindFirstFile( filter, &filedata );
         done = ( handle == INVALID_HANDLE_VALUE );
         while( !done )
         {
@@ -613,7 +613,7 @@ quakefile_t* FindQuakeFilesWithPakFilter( char* pakfilter, char* filter )
             strcpy( filename, globbuf.gl_pathv[j] );
 #endif
             //
-            qf = (quakefile_t*)malloc( sizeof( quakefile_t ) );
+            qf = ( quakefile_t* )malloc( sizeof( quakefile_t ) );
             if( !qf )
             {
                 Error( "out of memory" );

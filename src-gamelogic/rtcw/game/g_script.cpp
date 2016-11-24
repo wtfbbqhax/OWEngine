@@ -306,7 +306,7 @@ void G_Script_ScriptLoad( void )
         return;
     }
     
-    level.scriptEntity = (char*)G_Alloc( len );
+    level.scriptEntity = ( char* )G_Alloc( len );
     trap_FS_Read( level.scriptEntity, len, f );
     
     trap_FS_FCloseFile( f );
@@ -440,7 +440,7 @@ void G_Script_ScriptParse( gentity_t* ent )
             
             if( strlen( params ) )    // copy the params into the event
             {
-                curEvent->params = (char*)G_Alloc( strlen( params ) + 1 );
+                curEvent->params = ( char* )G_Alloc( strlen( params ) + 1 );
                 Q_strncpyz( curEvent->params, params, strlen( params ) + 1 );
             }
             
@@ -511,7 +511,7 @@ void G_Script_ScriptParse( gentity_t* ent )
                 
                 if( strlen( params ) )    // copy the params into the event
                 {
-                    curEvent->stack.items[curEvent->stack.numItems].params = (char*)G_Alloc( strlen( params ) + 1 );
+                    curEvent->stack.items[curEvent->stack.numItems].params = ( char* )G_Alloc( strlen( params ) + 1 );
                     Q_strncpyz( curEvent->stack.items[curEvent->stack.numItems].params, params, strlen( params ) + 1 );
                 }
                 
@@ -552,7 +552,7 @@ void G_Script_ScriptParse( gentity_t* ent )
     // alloc and copy the events into the gentity_t for this cast
     if( numEventItems > 0 )
     {
-        ent->scriptEvents = (g_script_event_t*)G_Alloc( sizeof( g_script_event_t ) * numEventItems );
+        ent->scriptEvents = ( g_script_event_t* )G_Alloc( sizeof( g_script_event_t ) * numEventItems );
         memcpy( ent->scriptEvents, events, sizeof( g_script_event_t ) * numEventItems );
         ent->numScriptEvents = numEventItems;
     }

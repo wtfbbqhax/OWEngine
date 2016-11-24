@@ -113,7 +113,7 @@ void RB_SurfaceMD4Mesh( md4MeshSurface_t* surface )
     md4MeshWeight_t* weight;
     md4MeshJoint_t*  bones;
     short* indexes;
-	int i, w;//, j;
+    int i, w;//, j;
     
     header = ( md4MeshHeader_t* )surface->header;
     
@@ -248,7 +248,7 @@ void R_AddMD4MeshSurfaces( trRefEntity_t* ent )
     md4MeshHeader_t* header;
     md4MeshSurface_t* surface;
     shader_t*	shader;
-	int i, fogNum, j;//,cull;
+    int i, fogNum, j;//,cull;
     bool personalModel;
     
     fogNum = 0;

@@ -384,8 +384,8 @@ void SNDDMA_BeginPainting( void )
     reps = 0;
     dma.buffer = NULL;
     
-    while( ( hresult = pDSBuf->Lock( 0, gSndBufSize, (LPVOID *)&pbuf, &locksize,
-                       (LPVOID *)&pbuf2, &dwSize2, 0 ) ) != DS_OK )
+    while( ( hresult = pDSBuf->Lock( 0, gSndBufSize, ( LPVOID* )&pbuf, &locksize,
+                                     ( LPVOID* )&pbuf2, &dwSize2, 0 ) ) != DS_OK )
     {
         if( hresult != DSERR_BUFFERLOST )
         {

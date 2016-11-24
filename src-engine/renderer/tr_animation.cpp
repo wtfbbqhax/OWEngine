@@ -161,7 +161,7 @@ static int R_CullModel( mdsHeader_t* header, trRefEntity_t* ent )
     
     // compute frame pointers
     newFrame = ( mdsFrame_t* )( ( byte* ) header + header->ofsFrames + ent->e.frame * _frameSize );
-	_oldFrame = ( mdsFrame_t* )( ( byte* ) header + header->ofsFrames + ent->e.oldframe * _frameSize );
+    _oldFrame = ( mdsFrame_t* )( ( byte* ) header + header->ofsFrames + ent->e.oldframe * _frameSize );
     
     radScale = 1.0f;
     
@@ -200,13 +200,13 @@ static int R_CullModel( mdsHeader_t* header, trRefEntity_t* ent )
             int sphereCull, sphereCullB;
             
             sphereCull  = R_CullLocalPointAndRadius( newFrame->localOrigin, newFrame->radius * radScale );
-            if( newFrame == _oldFrame)
+            if( newFrame == _oldFrame )
             {
                 sphereCullB = sphereCull;
             }
             else
             {
-                sphereCullB = R_CullLocalPointAndRadius(_oldFrame->localOrigin, _oldFrame->radius * radScale );
+                sphereCullB = R_CullLocalPointAndRadius( _oldFrame->localOrigin, _oldFrame->radius * radScale );
             }
             
             if( sphereCull == sphereCullB )
@@ -597,17 +597,17 @@ __inline void Matrix4MultiplyInto3x3AndTranslation( /*const*/ vec4_t a[4], /*con
     dst[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0] + a[0][3] * b[3][0];
     dst[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1] + a[0][3] * b[3][1];
     dst[0][2] = a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2] + a[0][3] * b[3][2];
-	_t[0]     = a[0][0] * b[0][3] + a[0][1] * b[1][3] + a[0][2] * b[2][3] + a[0][3] * b[3][3];
+    _t[0]     = a[0][0] * b[0][3] + a[0][1] * b[1][3] + a[0][2] * b[2][3] + a[0][3] * b[3][3];
     
     dst[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0] + a[1][3] * b[3][0];
     dst[1][1] = a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1] + a[1][3] * b[3][1];
     dst[1][2] = a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2] + a[1][3] * b[3][2];
-	_t[1]     = a[1][0] * b[0][3] + a[1][1] * b[1][3] + a[1][2] * b[2][3] + a[1][3] * b[3][3];
+    _t[1]     = a[1][0] * b[0][3] + a[1][1] * b[1][3] + a[1][2] * b[2][3] + a[1][3] * b[3][3];
     
     dst[2][0] = a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0] + a[2][3] * b[3][0];
     dst[2][1] = a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1] + a[2][3] * b[3][1];
     dst[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2] + a[2][3] * b[3][2];
-	_t[2]     = a[2][0] * b[0][3] + a[2][1] * b[1][3] + a[2][2] * b[2][3] + a[2][3] * b[3][3];
+    _t[2]     = a[2][0] * b[0][3] + a[2][1] * b[1][3] + a[2][2] * b[2][3] + a[2][3] * b[3][3];
 }
 
 __inline void Matrix4Transpose( const vec4_t matrix[4], vec4_t transpose[4] )
@@ -1255,7 +1255,7 @@ void R_CalcBones( mdsHeader_t* header, const refEntity_t* refent, int* boneList,
     cBoneListTorso = torsoFrame->bones;
     
     boneInfo = ( mdsBoneInfo_t* )( ( byte* )header + header->ofsBones );
-	_boneRefs = boneList;
+    _boneRefs = boneList;
     //
     Matrix3Transpose( refent->torsoAxis, torsoAxis );
     
@@ -1283,7 +1283,7 @@ void R_CalcBones( mdsHeader_t* header, const refEntity_t* refent, int* boneList,
                 R_CalcBone( header, refent, boneInfo[*_boneRefs].parent );
             }
             
-            R_CalcBone( header, refent, *_boneRefs);
+            R_CalcBone( header, refent, *_boneRefs );
             
         }
         
@@ -1309,7 +1309,7 @@ void R_CalcBones( mdsHeader_t* header, const refEntity_t* refent, int* boneList,
                 R_CalcBoneLerp( header, refent, boneInfo[*_boneRefs].parent );
             }
             
-            R_CalcBoneLerp( header, refent, *_boneRefs);
+            R_CalcBoneLerp( header, refent, *_boneRefs );
         }
     }
     
@@ -1466,7 +1466,7 @@ void RB_SurfaceAnim( mdsSurface_t* surface )
     
     tess.numVertexes += render_count;
     
-    pIndexes = (short*)&tess.indexes[baseIndex];
+    pIndexes = ( short* )&tess.indexes[baseIndex];
     
 //DBG_SHOWTIME
 

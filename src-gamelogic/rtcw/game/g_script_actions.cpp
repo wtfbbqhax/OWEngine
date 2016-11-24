@@ -180,7 +180,7 @@ bool G_ScriptAction_GotoMarker( gentity_t* ent, char* params )
             if( trType != TR_LINEAR_STOP )    // allow for acceleration/decceleration
             {
                 ent->s.pos.trDuration = 1000.0 * dist / ( speed / 2.0 );
-                ent->s.pos.trType = (trType_t)trType;
+                ent->s.pos.trType = ( trType_t )trType;
             }
             ent->reached = NULL;
             
@@ -212,7 +212,7 @@ bool G_ScriptAction_GotoMarker( gentity_t* ent, char* params )
                 if( trType != TR_LINEAR_STOP )    // allow for acceleration/decceleration
                 {
                     ent->s.pos.trDuration = 1000.0 * dist / ( speed / 2.0 );
-                    ent->s.pos.trType = (trType_t)trType;
+                    ent->s.pos.trType = ( trType_t )trType;
                 }
             }
             
@@ -1108,7 +1108,7 @@ bool G_ScriptAction_FaceAngles( gentity_t* ent, char* params )
             {
                 ent->s.apos.trDelta[i] = 2.0 * 1000.0 * diff[i] / ( float )duration;
             }
-            ent->s.apos.trType = (trType_t)trType;
+            ent->s.apos.trType = ( trType_t )trType;
         }
         
     }
@@ -1189,7 +1189,7 @@ bool G_ScriptAction_TagConnect( gentity_t* ent, char* params )
     }
     
     ent->tagParent = parent;
-    ent->tagName = (char*)G_Alloc( strlen( token ) + 1 );
+    ent->tagName = ( char* )G_Alloc( strlen( token ) + 1 );
     Q_strncpyz( ent->tagName, token, strlen( token ) + 1 );
     
     G_ProcessTagConnect( ent, true );

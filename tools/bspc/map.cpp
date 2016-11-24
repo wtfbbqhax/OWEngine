@@ -100,54 +100,54 @@ PLANE FINDING
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-int PlaneSignBits(vec3_t normal)
+int PlaneSignBits( vec3_t normal )
 {
-	int i, signbits;
-
-	signbits = 0;
-	for (i = 2; i >= 0; i--)
-	{
-		signbits = (signbits << 1) + Sign(normal[i]);
-	} //end for
-	return signbits;
+    int i, signbits;
+    
+    signbits = 0;
+    for( i = 2; i >= 0; i-- )
+    {
+        signbits = ( signbits << 1 ) + Sign( normal[i] );
+    } //end for
+    return signbits;
 } //end of the function PlaneSignBits
-  //===========================================================================
-  //
-  // Parameter:				-
-  // Returns:					-
-  // Changes Globals:		-
-  //===========================================================================
-int PlaneTypeForNormal(vec3_t normal)
+//===========================================================================
+//
+// Parameter:				-
+// Returns:					-
+// Changes Globals:		-
+//===========================================================================
+int PlaneTypeForNormal( vec3_t normal )
 {
-	vec_t ax, ay, az;
-
-	// NOTE: should these have an epsilon around 1.0?
-	if (normal[0] == 1.0 || normal[0] == -1.0)
-	{
-		return PLANE_X;
-	}
-	if (normal[1] == 1.0 || normal[1] == -1.0)
-	{
-		return PLANE_Y;
-	}
-	if (normal[2] == 1.0 || normal[2] == -1.0)
-	{
-		return PLANE_Z;
-	}
-
-	ax = fabs(normal[0]);
-	ay = fabs(normal[1]);
-	az = fabs(normal[2]);
-
-	if (ax >= ay && ax >= az)
-	{
-		return PLANE_ANYX;
-	}
-	if (ay >= ax && ay >= az)
-	{
-		return PLANE_ANYY;
-	}
-	return PLANE_ANYZ;
+    vec_t ax, ay, az;
+    
+    // NOTE: should these have an epsilon around 1.0?
+    if( normal[0] == 1.0 || normal[0] == -1.0 )
+    {
+        return PLANE_X;
+    }
+    if( normal[1] == 1.0 || normal[1] == -1.0 )
+    {
+        return PLANE_Y;
+    }
+    if( normal[2] == 1.0 || normal[2] == -1.0 )
+    {
+        return PLANE_Z;
+    }
+    
+    ax = fabs( normal[0] );
+    ay = fabs( normal[1] );
+    az = fabs( normal[2] );
+    
+    if( ax >= ay && ax >= az )
+    {
+        return PLANE_ANYX;
+    }
+    if( ay >= ax && ay >= az )
+    {
+        return PLANE_ANYY;
+    }
+    return PLANE_ANYZ;
 } //end of the function PlaneTypeForNormal
 //===========================================================================
 //

@@ -1536,7 +1536,7 @@ void CG_AddFlameToScene( flameChunk_t* fHead )
                     }
                     else
                     {
-						_skip = true;
+                        _skip = true;
                         break;
                     }
                 }
@@ -1548,10 +1548,10 @@ void CG_AddFlameToScene( flameChunk_t* fHead )
             
             lifeFrac = ( lived - FLAME_SPRITE_START_BLUE_SCALE * f->blueLife ) / ( FLAME_LIFETIME - FLAME_SPRITE_START_BLUE_SCALE * f->blueLife );
             
-			_alpha = ( 1.0 - lifeFrac ) * 1.4;
-            if(_alpha > 1.0 )
+            _alpha = ( 1.0 - lifeFrac ) * 1.4;
+            if( _alpha > 1.0 )
             {
-				_alpha = 1.0;
+                _alpha = 1.0;
             }
             
             // should we draw this sprite?
@@ -1563,14 +1563,14 @@ void CG_AddFlameToScene( flameChunk_t* fHead )
                 vDist = VectorNormalize( v1 );
                 if( ( vDist / f->size ) * fDist * ( 0.1 + 0.9 * ( 1.0 - fabs( DotProduct( v1, v2 ) ) ) ) < ( 2.0 * ( f->size / 30.0 < 1.0 ? f->size / 30.0 : 1.0 ) ) )
                 {
-					_skip = true;
+                    _skip = true;
                 }
             }
             
-            if( !_skip)
+            if( !_skip )
             {
                 // draw the sprite
-                CG_AddFlameSpriteToScene( f, lifeFrac, _alpha);
+                CG_AddFlameSpriteToScene( f, lifeFrac, _alpha );
                 VectorCopy( f->org, lastDrawPos );
             }
             // update the sizeRate

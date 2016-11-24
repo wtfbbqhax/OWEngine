@@ -93,7 +93,7 @@ CG_LoadingString
 */
 void CG_LoadingString( const char* s )
 {
-    Q_strncpyz((char *)cg.infoScreenText, s, sizeof( cg.infoScreenText ) );
+    Q_strncpyz( ( char* )cg.infoScreenText, s, sizeof( cg.infoScreenText ) );
     
     if( s && s[0] != 0 )
     {

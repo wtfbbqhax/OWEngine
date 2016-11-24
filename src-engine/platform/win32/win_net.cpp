@@ -349,7 +349,7 @@ bool Sys_GetPacket( netadr_t* net_from, msg_t* net_message )
         
         fromlen = sizeof( from );
         recvfromCount++;        // performance check
-        ret = recvfrom( net_socket, (char*)net_message->data, net_message->maxsize, 0, ( struct sockaddr* )&from, &fromlen );
+        ret = recvfrom( net_socket, ( char* )net_message->data, net_message->maxsize, 0, ( struct sockaddr* )&from, &fromlen );
         if( ret == SOCKET_ERROR )
         {
             err = WSAGetLastError();
@@ -457,7 +457,7 @@ void Sys_SendPacket( int length, const void* data, netadr_t to )
     }
     else
     {
-        ret = sendto( net_socket, (const char*)data, length, 0, &addr, sizeof( addr ) );
+        ret = sendto( net_socket, ( const char* )data, length, 0, &addr, sizeof( addr ) );
     }
     if( ret == SOCKET_ERROR )
     {
@@ -617,7 +617,7 @@ int NET_IPSocket( char* net_interface, int port )
     }
     
     // make it non-blocking
-    if( ioctlsocket( newsocket, FIONBIO, (u_long*)&_true ) == SOCKET_ERROR )
+    if( ioctlsocket( newsocket, FIONBIO, ( u_long* )&_true ) == SOCKET_ERROR )
     {
         Com_Printf( "WARNING: UDP_OpenSocket: ioctl FIONBIO: %s\n", NET_ErrorString() );
         return 0;
@@ -650,7 +650,7 @@ int NET_IPSocket( char* net_interface, int port )
     
     address.sin_family = AF_INET;
     
-    if( bind( newsocket, (const sockaddr*)&address, sizeof( address ) ) == SOCKET_ERROR )
+    if( bind( newsocket, ( const sockaddr* )&address, sizeof( address ) ) == SOCKET_ERROR )
     {
         Com_Printf( "WARNING: UDP_OpenSocket: bind: %s\n", NET_ErrorString() );
         closesocket( newsocket );
@@ -736,7 +736,7 @@ void NET_OpenSocks( int port )
     {
         buf[2] = 2;     // method #2 - method id #02: username/password
     }
-    if( send( socks_socket, (const char*)buf, len, 0 ) == SOCKET_ERROR )
+    if( send( socks_socket, ( const char* )buf, len, 0 ) == SOCKET_ERROR )
     {
         err = WSAGetLastError();
         Com_Printf( "NET_OpenSocks: send: %s\n", NET_ErrorString() );
@@ -744,7 +744,7 @@ void NET_OpenSocks( int port )
     }
     
     // get the response
-    len = recv( socks_socket, (char*)buf, 64, 0 );
+    len = recv( socks_socket, ( char* )buf, 64, 0 );
     if( len == SOCKET_ERROR )
     {
         err = WSAGetLastError();
@@ -790,7 +790,7 @@ void NET_OpenSocks( int port )
         }
         
         // send it
-        if( send( socks_socket, (const char*)buf, 3 + ulen + plen, 0 ) == SOCKET_ERROR )
+        if( send( socks_socket, ( const char* )buf, 3 + ulen + plen, 0 ) == SOCKET_ERROR )
         {
             err = WSAGetLastError();
             Com_Printf( "NET_OpenSocks: send: %s\n", NET_ErrorString() );
@@ -798,7 +798,7 @@ void NET_OpenSocks( int port )
         }
         
         // get the response
-        len = recv( socks_socket, (char*)buf, 64, 0 );
+        len = recv( socks_socket, ( char* )buf, 64, 0 );
         if( len == SOCKET_ERROR )
         {
             err = WSAGetLastError();
@@ -824,7 +824,7 @@ void NET_OpenSocks( int port )
     buf[3] = 1;     // address type: IPV4
     *( int* )&buf[4] = INADDR_ANY;
     *( short* )&buf[8] = htons( ( short )port );    // port
-    if( send( socks_socket, (const char*)buf, 10, 0 ) == SOCKET_ERROR )
+    if( send( socks_socket, ( const char* )buf, 10, 0 ) == SOCKET_ERROR )
     {
         err = WSAGetLastError();
         Com_Printf( "NET_OpenSocks: send: %s\n", NET_ErrorString() );
@@ -832,7 +832,7 @@ void NET_OpenSocks( int port )
     }
     
     // get the response
-    len = recv( socks_socket, (char*)buf, 64, 0 );
+    len = recv( socks_socket, ( char* )buf, 64, 0 );
     if( len == SOCKET_ERROR )
     {
         err = WSAGetLastError();
@@ -974,7 +974,7 @@ int NET_IPXSocket( int port )
     }
     
     // make it non-blocking
-    if( ioctlsocket( newsocket, FIONBIO, (u_long*)&_true ) == SOCKET_ERROR )
+    if( ioctlsocket( newsocket, FIONBIO, ( u_long* )&_true ) == SOCKET_ERROR )
     {
         Com_Printf( "WARNING: IPX_Socket: ioctl FIONBIO: %s\n", NET_ErrorString() );
         return 0;
@@ -999,7 +999,7 @@ int NET_IPXSocket( int port )
         address.sa_socket = htons( ( short )port );
     }
     
-    if( bind( newsocket, (const sockaddr*)&address, sizeof( address ) ) == SOCKET_ERROR )
+    if( bind( newsocket, ( const sockaddr* )&address, sizeof( address ) ) == SOCKET_ERROR )
     {
         Com_Printf( "WARNING: IPX_Socket: bind: %s\n", NET_ErrorString() );
         closesocket( newsocket );

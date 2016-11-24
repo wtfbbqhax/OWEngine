@@ -2064,7 +2064,7 @@ void AICast_IdleReload( cast_state_t* cs )
     {
         return;
     }
-    if( !( ( cs->bs->cur_ps.ammoclip[BG_FindClipForWeapon((weapon_t)cs->bs->cur_ps.weapon )] < ( int )( 0.75 * ammoTable[cs->bs->cur_ps.weapon].maxclip ) ) && cs->bs->cur_ps.ammo[BG_FindAmmoForWeapon((weapon_t)cs->bs->cur_ps.weapon )] ) )
+    if( !( ( cs->bs->cur_ps.ammoclip[BG_FindClipForWeapon( ( weapon_t )cs->bs->cur_ps.weapon )] < ( int )( 0.75 * ammoTable[cs->bs->cur_ps.weapon].maxclip ) ) && cs->bs->cur_ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )cs->bs->cur_ps.weapon )] ) )
     {
         return;
     }

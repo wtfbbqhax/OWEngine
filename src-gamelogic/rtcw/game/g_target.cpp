@@ -563,7 +563,7 @@ void target_relay_use( gentity_t* self, gentity_t* other, gentity_t* activator )
                 return;
             }
             
-            item = BG_FindItemForKey( (wkey_t)self->key, 0 );
+            item = BG_FindItemForKey( ( wkey_t )self->key, 0 );
             
             if( item )
             {

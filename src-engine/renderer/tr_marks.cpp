@@ -818,7 +818,7 @@ int R_MarkFragments( int orientation, const vec3_t* points, const vec3_t project
                 RotatePointAroundVector( axis[2], axis[0], axis[1], ( float )orientation );
                 CrossProduct( axis[0], axis[2], axis[1] );
                 
-				_texCoordScale = 0.5 * 1.0 / radius;
+                _texCoordScale = 0.5 * 1.0 / radius;
                 
                 // create the full polygon
                 for( j = 0 ; j < 3 ; j++ )

@@ -967,7 +967,7 @@ void MatchTeam( gentity_t* teamLeader, int moverState, int time )
             slave->flags |= FL_SOFTACTIVATE;
         }
         
-        SetMoverState( slave, (moverState_t)moverState, time );
+        SetMoverState( slave, ( moverState_t )moverState, time );
     }
 }
 
@@ -995,7 +995,7 @@ void MatchTeamReverseAngleOnSlaves( gentity_t* teamLeader, int moverState, int t
             slave->flags |= FL_SOFTACTIVATE;
         }
         
-        SetMoverState( slave, (moverState_t)moverState, time );
+        SetMoverState( slave, ( moverState_t )moverState, time );
     }
 }
 
@@ -2559,7 +2559,7 @@ void G_TryDoor( gentity_t* ent, gentity_t* other, gentity_t* activator )
             {
                 if( ent->key > KEY_NONE && ent->key < KEY_NUM_KEYS )    // door requires key
                 {
-                    gitem_t* item = BG_FindItemForKey( (wkey_t)ent->key, 0 );
+                    gitem_t* item = BG_FindItemForKey( ( wkey_t )ent->key, 0 );
                     if( !( activator->client->ps.stats[STAT_KEYS] & ( 1 << item->giTag ) ) )
                     {
                         if( !walking )     // only send audible event if not trying to open slowly
@@ -5496,7 +5496,7 @@ void G_Activate( gentity_t* ent, gentity_t* activator )
         
         if( ent->key > KEY_NONE && ent->key < KEY_NUM_KEYS )    // ent requires key
         {
-            gitem_t* item = BG_FindItemForKey((wkey_t)ent->key, 0 );
+            gitem_t* item = BG_FindItemForKey( ( wkey_t )ent->key, 0 );
             if( !( activator->client->ps.stats[STAT_KEYS] & ( 1 << item->giTag ) ) )
             {
                 return;

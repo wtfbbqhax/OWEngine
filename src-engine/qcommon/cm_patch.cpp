@@ -1332,9 +1332,9 @@ static void CM_PatchCollideFromGrid( cGrid_t* grid, patchCollide_t* pf )
     // copy the results out
     pf->numPlanes = numPlanes;
     pf->numFacets = numFacets;
-    pf->facets = (facet_t*)Hunk_Alloc( numFacets * sizeof( *pf->facets ), h_high );
+    pf->facets = ( facet_t* )Hunk_Alloc( numFacets * sizeof( *pf->facets ), h_high );
     Com_Memcpy( pf->facets, facets, numFacets * sizeof( *pf->facets ) );
-    pf->planes = (patchPlane_t*)Hunk_Alloc( numPlanes * sizeof( *pf->planes ), h_high );
+    pf->planes = ( patchPlane_t* )Hunk_Alloc( numPlanes * sizeof( *pf->planes ), h_high );
     Com_Memcpy( pf->planes, planes, numPlanes * sizeof( *pf->planes ) );
 }
 
@@ -1398,7 +1398,7 @@ struct patchCollide_s*   CM_GeneratePatchCollide( int width, int height, vec3_t*
     // we now have a grid of points exactly on the curve
     // the aproximate surface defined by these points will be
     // collided against
-    pf = (patchCollide_t*)Hunk_Alloc( sizeof( *pf ), h_high );
+    pf = ( patchCollide_t* )Hunk_Alloc( sizeof( *pf ), h_high );
     ClearBounds( pf->bounds[0], pf->bounds[1] );
     for( i = 0 ; i < grid.width ; i++ )
     {
@@ -1462,7 +1462,7 @@ void CM_TracePointThroughPatchCollide( traceWork_t* tw, const struct patchCollid
 #endif
     
     // determine the trace's relationship to all planes
-	_planes = pc->planes;
+    _planes = pc->planes;
     for( i = 0 ; i < pc->numPlanes ; i++, _planes++ )
     {
         offset = DotProduct( tw->offsets[_planes->signbits ], _planes->plane );
@@ -1540,7 +1540,7 @@ void CM_TracePointThroughPatchCollide( traceWork_t* tw, const struct patchCollid
                 debugFacet = facet;
             }
 #endif //BSPC
-			_planes = &pc->planes[facet->surfacePlane];
+            _planes = &pc->planes[facet->surfacePlane];
             
             // calculate intersection with a slight pushoff
             offset = DotProduct( tw->offsets[_planes->signbits ], _planes->plane );
@@ -1553,7 +1553,7 @@ void CM_TracePointThroughPatchCollide( traceWork_t* tw, const struct patchCollid
                 tw->trace.fraction = 0;
             }
             
-            VectorCopy(_planes->plane,  tw->trace.plane.normal );
+            VectorCopy( _planes->plane,  tw->trace.plane.normal );
             tw->trace.plane.dist = _planes->plane[3];
         }
     }
@@ -1646,8 +1646,8 @@ void CM_TraceThroughPatchCollide( traceWork_t* tw, const struct patchCollide_s* 
         leaveFrac = 1.0;
         hitnum = -1;
         //
-		_planes = &pc->planes[ facet->surfacePlane ];
-        VectorCopy(_planes->plane, plane );
+        _planes = &pc->planes[ facet->surfacePlane ];
+        VectorCopy( _planes->plane, plane );
         plane[3] = _planes->plane[3];
         if( tw->sphere.use )
         {
@@ -1686,15 +1686,15 @@ void CM_TraceThroughPatchCollide( traceWork_t* tw, const struct patchCollide_s* 
         
         for( j = 0; j < facet->numBorders; j++ )
         {
-			_planes = &pc->planes[ facet->borderPlanes[j] ];
+            _planes = &pc->planes[ facet->borderPlanes[j] ];
             if( facet->borderInward[j] )
             {
-                VectorNegate(_planes->plane, plane );
+                VectorNegate( _planes->plane, plane );
                 plane[3] = -_planes->plane[3];
             }
             else
             {
-                VectorCopy(_planes->plane, plane );
+                VectorCopy( _planes->plane, plane );
                 plane[3] = _planes->plane[3];
             }
             if( tw->sphere.use )
@@ -1803,8 +1803,8 @@ bool CM_PositionTestInPatchCollide( traceWork_t* tw, const struct patchCollide_s
     facet = pc->facets;
     for( i = 0 ; i < pc->numFacets ; i++, facet++ )
     {
-		_planes = &pc->planes[ facet->surfacePlane ];
-        VectorCopy(_planes->plane, plane );
+        _planes = &pc->planes[ facet->surfacePlane ];
+        VectorCopy( _planes->plane, plane );
         plane[3] = _planes->plane[3];
         if( tw->sphere.use )
         {
@@ -1836,15 +1836,15 @@ bool CM_PositionTestInPatchCollide( traceWork_t* tw, const struct patchCollide_s
         
         for( j = 0; j < facet->numBorders; j++ )
         {
-			_planes = &pc->planes[ facet->borderPlanes[j] ];
+            _planes = &pc->planes[ facet->borderPlanes[j] ];
             if( facet->borderInward[j] )
             {
-                VectorNegate(_planes->plane, plane );
+                VectorNegate( _planes->plane, plane );
                 plane[3] = -_planes->plane[3];
             }
             else
             {
-                VectorCopy(_planes->plane, plane );
+                VectorCopy( _planes->plane, plane );
                 plane[3] = _planes->plane[3];
             }
             if( tw->sphere.use )

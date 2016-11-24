@@ -445,7 +445,7 @@ void CreateAASFilesForAllBSPFiles( char* quakepath )
     strcat( filter, "*" );
     
 #if defined( WIN32 ) | defined( _WIN32 )
-    handle = (HWND)FindFirstFile( filter, &filedata );
+    handle = ( HWND )FindFirstFile( filter, &filedata );
     done = ( handle == INVALID_HANDLE_VALUE );
     while( !done )
     {

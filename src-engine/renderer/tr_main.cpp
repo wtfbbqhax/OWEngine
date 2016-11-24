@@ -315,7 +315,7 @@ void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float 
         return;
     }
     
-    glfogNum = (glfogType_t)var1;
+    glfogNum = ( glfogType_t )var1;
     
     // transitioning to new fog, store the current values as the 'from'
     
@@ -1794,7 +1794,7 @@ void qsortFast(
     }
     stkptr = 0;                 /* initialize stack */
     
-    lo = (char*)base;
+    lo = ( char* )base;
     hi = ( char* )base + width * ( num - 1 );       /* initialize limits */
     
     /* this entry point is for pseudo-recursion calling: setting

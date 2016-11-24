@@ -511,7 +511,7 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
         if( !personalModel )
         {
 // GR - tessellate according to model capabilities
-            R_AddDrawSurf( (surfaceType_t* )surface, shader, fogNum, false, tr.currentModel->ATI_tess );
+            R_AddDrawSurf( ( surfaceType_t* )surface, shader, fogNum, false, tr.currentModel->ATI_tess );
         }
         
         surface = ( md3Surface_t* )( ( byte* )surface + surface->ofsEnd );

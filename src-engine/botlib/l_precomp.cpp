@@ -714,22 +714,22 @@ void PC_FreeDefine( define_t* define )
 //============================================================================
 struct builtin_t
 {
-	char* string;
-	int builtin;
+    char* string;
+    int builtin;
 };
-void PC_AddBuiltinDefines(source_t* source)
+void PC_AddBuiltinDefines( source_t* source )
 {
-	int i;
-	define_t* define;
-	builtin_t builtin[] =
-	{
-		{ "__LINE__",    BUILTIN_LINE },
-		{ "__FILE__",    BUILTIN_FILE },
-		{ "__DATE__",    BUILTIN_DATE },
-		{ "__TIME__",    BUILTIN_TIME },
-		//	{	"__STDC__", BUILTIN_STDC },
-		{ NULL, 0 }
-	};
+    int i;
+    define_t* define;
+    builtin_t builtin[] =
+    {
+        { "__LINE__",    BUILTIN_LINE },
+        { "__FILE__",    BUILTIN_FILE },
+        { "__DATE__",    BUILTIN_DATE },
+        { "__TIME__",    BUILTIN_TIME },
+        //	{	"__STDC__", BUILTIN_STDC },
+        { NULL, 0 }
+    };
     
     for( i = 0; builtin[i].string; i++ )
     {
@@ -789,7 +789,7 @@ int PC_ExpandBuiltinDefine( source_t* source, token_t* deftoken, define_t* defin
         case BUILTIN_DATE:
         {
             t = time( NULL );
-            curtime = ctime((const time_t*)&t );
+            curtime = ctime( ( const time_t* )&t );
             strcpy( token->string, "\"" );
             strncat( token->string, curtime + 4, 7 );
             strncat( token->string + 7, curtime + 20, 4 );
@@ -804,7 +804,7 @@ int PC_ExpandBuiltinDefine( source_t* source, token_t* deftoken, define_t* defin
         case BUILTIN_TIME:
         {
             t = time( NULL );
-            curtime = ctime( (const time_t*)&t );
+            curtime = ctime( ( const time_t* )&t );
             strcpy( token->string, "\"" );
             strncat( token->string, curtime + 11, 8 );
             strcat( token->string, "\"" );
@@ -1470,7 +1470,7 @@ define_t* PC_DefineFromString( char* string )
     strncpy( src.filename, "*extern", _MAX_PATH );
     src.scriptstack = script;
 #if DEFINEHASHING
-    src.definehash = (define_t**)GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
+    src.definehash = ( define_t** )GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
 #endif //DEFINEHASHING
     //create a define from the source
     res = PC_Directive_define( &src );
@@ -2209,7 +2209,7 @@ int PC_EvaluateTokens( source_t* source, token_t* tokens, int* intvalue,
 #ifdef DEBUG_EVAL
         if( integer )
         {
-            Log_Write( "operator %s, value1 = %d", PunctuationFromNum( source->scriptstack, o->_operator), v1->intvalue );
+            Log_Write( "operator %s, value1 = %d", PunctuationFromNum( source->scriptstack, o->_operator ), v1->intvalue );
             if( v2 )
             {
                 Log_Write( "value2 = %d", v2->intvalue );
@@ -2217,14 +2217,14 @@ int PC_EvaluateTokens( source_t* source, token_t* tokens, int* intvalue,
         } //end if
         else
         {
-            Log_Write( "operator %s, value1 = %f", PunctuationFromNum( source->scriptstack, o->_operator), v1->floatvalue );
+            Log_Write( "operator %s, value1 = %f", PunctuationFromNum( source->scriptstack, o->_operator ), v1->floatvalue );
             if( v2 )
             {
                 Log_Write( "value2 = %f", v2->floatvalue );
             }
         } //end else
 #endif //DEBUG_EVAL
-        switch( o->_operator)
+        switch( o->_operator )
         {
             case P_LOGIC_NOT:
                 v1->intvalue = !v1->intvalue;
@@ -3505,7 +3505,7 @@ source_t* LoadSourceFile( const char* filename )
     source->skip = 0;
     
 #if DEFINEHASHING
-    source->definehash = (define_t**)GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
+    source->definehash = ( define_t** )GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
 #endif //DEFINEHASHING
     PC_AddGlobalDefinesToSource( source );
     return source;
@@ -3541,7 +3541,7 @@ source_t* LoadSourceMemory( char* ptr, int length, char* name )
     source->skip = 0;
     
 #if DEFINEHASHING
-    source->definehash = (define_t**)GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
+    source->definehash = ( define_t** )GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
 #endif //DEFINEHASHING
     PC_AddGlobalDefinesToSource( source );
     return source;

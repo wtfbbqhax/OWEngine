@@ -492,7 +492,7 @@ void Q2_MoveBrushesToWorld( entity_t* mapent )
     newbrushes = mapent->numbrushes;
     worldbrushes = entities[0].numbrushes;
     
-    temp = (mapbrush_t*)GetMemory( newbrushes * sizeof( mapbrush_t ) );
+    temp = ( mapbrush_t* )GetMemory( newbrushes * sizeof( mapbrush_t ) );
     memcpy( temp, mapbrushes + mapent->firstbrush, newbrushes * sizeof( mapbrush_t ) );
     
 #if 0       // let them keep their original brush numbers

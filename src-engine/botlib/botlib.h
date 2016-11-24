@@ -233,7 +233,7 @@ typedef struct botlib_import_s
     //
     // Ridah, Cast AI stuff
     bool( *AICast_VisibleFromPos )( vec3_t srcpos, int srcnum,
-                                        vec3_t destpos, int destnum, bool updateVisPos );
+                                    vec3_t destpos, int destnum, bool updateVisPos );
     bool( *AICast_CheckAttackAtPos )( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld );
     // done.
 } botlib_import_t;

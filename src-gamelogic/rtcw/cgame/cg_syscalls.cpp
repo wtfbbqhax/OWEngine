@@ -42,7 +42,7 @@
 
 #include "cg_local.h"
 
-static intptr_t ( * syscall )( intptr_t arg, ... ) = ( intptr_t ( * )( intptr_t, ... ) ) - 1;
+static intptr_t ( * syscall )( intptr_t arg, ... ) = ( intptr_t (* )( intptr_t, ... ) ) - 1;
 
 // TTimo: guarding
 #if defined( __MACOS__ )
@@ -613,14 +613,14 @@ int trap_CIN_PlayCinematic( const char* arg0, int xpos, int ypos, int width, int
 // cinematics must be stopped in reverse order of when they are started
 e_status trap_CIN_StopCinematic( int handle )
 {
-    return (e_status)syscall( CG_CIN_STOPCINEMATIC, handle );
+    return ( e_status )syscall( CG_CIN_STOPCINEMATIC, handle );
 }
 
 
 // will run a frame of the cinematic but will not draw it.  Will return FMV_EOF if the end of the cinematic has been reached.
 e_status trap_CIN_RunCinematic( int handle )
 {
-    return (e_status)syscall( CG_CIN_RUNCINEMATIC, handle );
+    return ( e_status )syscall( CG_CIN_RUNCINEMATIC, handle );
 }
 
 

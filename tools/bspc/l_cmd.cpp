@@ -252,7 +252,7 @@ void qprintf( char* format, ... )
     va_end( argptr );
 } //end of the function qprintf
 
-void Com_Error(int level, const char* error, ...)
+void Com_Error( int level, const char* error, ... )
 {
     va_list argptr;
     char text[1024];
@@ -375,7 +375,7 @@ char* ExpandPathAndArchive( char* path )
 char* copystring( char* s )
 {
     char*    b;
-    b = (char*)GetMemory( strlen( s ) + 1 );
+    b = ( char* )GetMemory( strlen( s ) + 1 );
     strcpy( b, s );
     return b;
 }

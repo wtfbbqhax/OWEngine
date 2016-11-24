@@ -440,8 +440,8 @@ int WM_ScoreboardOverlay( int x, int y, float fade )
     {
         const char* _s, *buf;
         
-		_s = CG_ConfigString( CS_MULTI_INFO );
-        buf = Info_ValueForKey(_s, "winner" );
+        _s = CG_ConfigString( CS_MULTI_INFO );
+        buf = Info_ValueForKey( _s, "winner" );
         
         if( atoi( buf ) )
         {

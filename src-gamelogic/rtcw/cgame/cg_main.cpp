@@ -76,7 +76,7 @@ intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intpt
         case CG_GET_TAG:
             return CG_GetTag( arg0, ( char* )arg1, ( orientation_t* )arg2 );
         case CG_DRAW_ACTIVE_FRAME:
-            CG_DrawActiveFrame( arg0, (stereoFrame_t)arg1, arg2 );
+            CG_DrawActiveFrame( arg0, ( stereoFrame_t )arg1, arg2 );
             return 0;
         case CG_EVENT_HANDLING:
             CG_EventHandling( arg0 );
@@ -883,7 +883,7 @@ static void CG_LoadTranslationStrings( void )
         {
             break;
         }
-        translateStrings[i].localname = (char*)malloc( strlen( token ) + 1 );
+        translateStrings[i].localname = ( char* )malloc( strlen( token ) + 1 );
         strcpy( translateStrings[i].localname, token );
     }
 }
@@ -1561,8 +1561,8 @@ static void CG_RegisterGraphics( void )
         char _name[32];
         //Com_sprintf( _name, sizeof(_name), "textures/decals/blood%i", i+1 );
         //cgs.media.bloodMarkShaders[i] = trap_R_RegisterShader( _name );
-        Com_sprintf(_name, sizeof(_name), "blood_dot%i", i + 1 );
-        cgs.media.bloodDotShaders[i] = trap_R_RegisterShader(_name);
+        Com_sprintf( _name, sizeof( _name ), "blood_dot%i", i + 1 );
+        cgs.media.bloodDotShaders[i] = trap_R_RegisterShader( _name );
     }
     
     CG_LoadingString( " - inline models" );
@@ -1575,8 +1575,8 @@ static void CG_RegisterGraphics( void )
         vec3_t mins, maxs;
         int j;
         
-        Com_sprintf(_name, sizeof(_name), "*%i", i );
-        cgs.inlineDrawModel[i] = trap_R_RegisterModel(_name);
+        Com_sprintf( _name, sizeof( _name ), "*%i", i );
+        cgs.inlineDrawModel[i] = trap_R_RegisterModel( _name );
         trap_R_ModelBounds( cgs.inlineDrawModel[i], mins, maxs );
         for( j = 0 ; j < 3 ; j++ )
         {

@@ -2702,8 +2702,8 @@ static void PM_ReloadClip( int weapon )
 {
     int ammoreserve, ammoclip, ammomove;
     
-    ammoreserve = pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)weapon )];
-    ammoclip = pm->ps->ammoclip[BG_FindClipForWeapon( (weapon_t)weapon )];
+    ammoreserve = pm->ps->ammo[ BG_FindAmmoForWeapon( ( weapon_t )weapon )];
+    ammoclip = pm->ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )];
     
     ammomove = ammoTable[weapon].maxclip - ammoclip;
     
@@ -2714,8 +2714,8 @@ static void PM_ReloadClip( int weapon )
     
     if( ammomove )
     {
-        pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)weapon )] -= ammomove;
-        pm->ps->ammoclip[BG_FindClipForWeapon((weapon_t)weapon )] += ammomove;
+        pm->ps->ammo[ BG_FindAmmoForWeapon( ( weapon_t )weapon )] -= ammomove;
+        pm->ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )] += ammomove;
     }
     
     if( weapon == WP_AKIMBO )    // reload colt too
@@ -2771,8 +2771,8 @@ void PM_CheckForReload( int weapon )
             break;
     }
     
-    clipWeap = BG_FindClipForWeapon((weapon_t)weapon );
-    ammoWeap = BG_FindAmmoForWeapon((weapon_t)weapon );
+    clipWeap = BG_FindClipForWeapon( ( weapon_t )weapon );
+    ammoWeap = BG_FindAmmoForWeapon( ( weapon_t )weapon );
     
     // don't allow reloading for these weapons.  when the player hits 'reload' or 'fire'
     // when the weapon is empty, it will switch away to the primary.  (so player can see results of
@@ -2889,12 +2889,12 @@ static void PM_SwitchIfEmpty( void )
     }
     
     
-    if( pm->ps->ammoclip[ BG_FindClipForWeapon((weapon_t)pm->ps->weapon )] )    // still got ammo in clip
+    if( pm->ps->ammoclip[ BG_FindClipForWeapon( ( weapon_t )pm->ps->weapon )] ) // still got ammo in clip
     {
         return;
     }
     
-    if( pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)pm->ps->weapon )] )    // still got ammo in reserve
+    if( pm->ps->ammo[ BG_FindAmmoForWeapon( ( weapon_t )pm->ps->weapon )] ) // still got ammo in reserve
     {
         return;
     }
@@ -2930,14 +2930,14 @@ void PM_WeaponUseAmmo( int wp, int amount )
     
     if( pm->noWeapClips )
     {
-        pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)wp )] -= amount;
+        pm->ps->ammo[ BG_FindAmmoForWeapon( ( weapon_t )wp )] -= amount;
     }
     else
     {
-        takeweapon = BG_FindClipForWeapon((weapon_t)wp );
+        takeweapon = BG_FindClipForWeapon( ( weapon_t )wp );
         if( wp == WP_AKIMBO )
         {
-            if( !BG_AkimboFireSequence((weapon_t)wp, pm->ps->ammoclip[WP_AKIMBO], pm->ps->ammoclip[WP_COLT] ) )
+            if( !BG_AkimboFireSequence( ( weapon_t )wp, pm->ps->ammoclip[WP_AKIMBO], pm->ps->ammoclip[WP_COLT] ) )
             {
                 takeweapon = WP_COLT;
             }
@@ -2960,12 +2960,12 @@ int PM_WeaponAmmoAvailable( int wp )
     
     if( pm->noWeapClips )
     {
-        return pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)wp )];
+        return pm->ps->ammo[ BG_FindAmmoForWeapon( ( weapon_t )wp )];
     }
     else
     {
 //		return pm->ps->ammoclip[BG_FindClipForWeapon( wp )];
-        takeweapon = BG_FindClipForWeapon((weapon_t)wp );
+        takeweapon = BG_FindClipForWeapon( ( weapon_t )wp );
         if( wp == WP_AKIMBO )
         {
             if( !BG_AkimboFireSequence( pm->ps->weapon, pm->ps->ammoclip[WP_AKIMBO], pm->ps->ammoclip[WP_COLT] ) )
@@ -2988,14 +2988,14 @@ int PM_WeaponClipEmpty( int wp )
 {
     if( pm->noWeapClips )
     {
-        if( !( pm->ps->ammo[ BG_FindAmmoForWeapon((weapon_t)wp )] ) )
+        if( !( pm->ps->ammo[ BG_FindAmmoForWeapon( ( weapon_t )wp )] ) )
         {
             return 1;
         }
     }
     else
     {
-        if( !( pm->ps->ammoclip[BG_FindClipForWeapon((weapon_t)wp )] ) )
+        if( !( pm->ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )wp )] ) )
         {
             return 1;
         }
@@ -3359,7 +3359,7 @@ static void PM_Weapon( void )
             
             if( pm->cmd.holdable )
             {
-                item = BG_FindItemForHoldable( (holdable_t)pm->cmd.holdable );
+                item = BG_FindItemForHoldable( ( holdable_t )pm->cmd.holdable );
                 
                 if( item && ( pm->ps->holdable[pm->cmd.holdable] >= item->quantity ) ) // ->quantity being how much 'ammo' is taken per use
                 {
@@ -3881,7 +3881,7 @@ static void PM_Weapon( void )
                 if( ammoNeeded > ammoAvailable )
                 {
                 
-                    reloadingW = ( ammoNeeded <= pm->ps->ammo[BG_FindAmmoForWeapon((weapon_t)pm->ps->weapon )] ); // you have ammo for this, just not in the clip
+                    reloadingW = ( ammoNeeded <= pm->ps->ammo[BG_FindAmmoForWeapon( ( weapon_t )pm->ps->weapon )] ); // you have ammo for this, just not in the clip
                     
                     if( pm->ps->eFlags & EF_MELEE_ACTIVE )     // not going to be allowed to reload if holding a chair
                     {
@@ -4558,7 +4558,7 @@ static void PM_Weapon( void )
                         }
                         
                         tpm.trace = trace;
-
+                        
                         PM_UpdateLean( ps, cmd, &tpm );
                     }
                     

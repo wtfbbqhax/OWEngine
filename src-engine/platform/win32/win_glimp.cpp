@@ -995,7 +995,7 @@ void GLimp_Init( void )
     
     ri.Printf( PRINT_ALL, "Initializing OpenGL subsystem\n" );
     
-    g_wvPtr = (WinVars_t*)ri.Sys_GetSystemHandles();
+    g_wvPtr = ( WinVars_t* )ri.Sys_GetSystemHandles();
     if( !g_wvPtr )
     {
         ri.Error( ERR_FATAL, "GLimp_Init() - could not receive WinVars_t g_wv\n" );
@@ -1015,9 +1015,9 @@ void GLimp_Init( void )
     GLW_StartOpenGL();
     
     // get our config strings
-    Q_strncpyz( glConfig.vendor_string, (const char*)glGetString( GL_VENDOR ), sizeof( glConfig.vendor_string ) );
-    Q_strncpyz( glConfig.renderer_string, (const char*)glGetString( GL_RENDERER ), sizeof( glConfig.renderer_string ) );
-    Q_strncpyz( glConfig.version_string, (const char*)glGetString( GL_VERSION ), sizeof( glConfig.version_string ) );
+    Q_strncpyz( glConfig.vendor_string, ( const char* )glGetString( GL_VENDOR ), sizeof( glConfig.vendor_string ) );
+    Q_strncpyz( glConfig.renderer_string, ( const char* )glGetString( GL_RENDERER ), sizeof( glConfig.renderer_string ) );
+    Q_strncpyz( glConfig.version_string, ( const char* )glGetString( GL_VERSION ), sizeof( glConfig.version_string ) );
     glGetIntegerv( GL_NUM_EXTENSIONS, &exts );
     glConfig.extensions_string[0] = 0;
     for( i = 0; i < exts; i++ )
@@ -1244,7 +1244,7 @@ bool GLimp_SpawnRenderThread( void ( *function )( void ) )
                              ( LPTHREAD_START_ROUTINE )GLimp_RenderThreadWrapper, // LPTHREAD_START_ROUTINE lpStartAddr,
                              0,          // LPVOID lpvThreadParm,
                              0,          //   DWORD fdwCreate,
-                             (LPDWORD)&renderThreadId );
+                             ( LPDWORD )&renderThreadId );
                              
     if( !renderThreadHandle )
     {

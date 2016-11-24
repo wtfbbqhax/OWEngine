@@ -76,7 +76,7 @@ winding_t*   AllocWinding( int points )
     }
     
     s = sizeof( vec_t ) * 3 * points + sizeof( int );
-    w = (winding_t*)Z_Malloc( s );
+    w = ( winding_t* )Z_Malloc( s );
     Com_Memset( w, 0, s );
     return w;
 }

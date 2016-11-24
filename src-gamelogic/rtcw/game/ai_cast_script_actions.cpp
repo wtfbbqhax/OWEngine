@@ -985,7 +985,7 @@ bool AICast_ScriptAction_PlayAnim( cast_state_t* cs, char* params )
         if( cs->castScriptStatus.scriptFlags & SFL_FIRST_CALL )
         {
             // first time in here, play the anim
-            duration = BG_PlayAnimName( &( client->ps ), tokens[0], (animBodyPart_t)BG_IndexForString( tokens[1], animBodyPartsStr, false ), true, false, true );
+            duration = BG_PlayAnimName( &( client->ps ), tokens[0], ( animBodyPart_t )BG_IndexForString( tokens[1], animBodyPartsStr, false ), true, false, true );
             if( numLoops == -1 )
             {
                 cs->scriptAnimTime = 0x7fffffff;    // maximum time allowed
@@ -1273,7 +1273,7 @@ bool AICast_ScriptAction_SetAmmo( cast_state_t* cs, char* params )
         {
             int amt;
             amt = atoi( token );
-            if( amt > 50 + ammoTable[BG_FindAmmoForWeapon( (weapon_t)weapon )].maxammo )
+            if( amt > 50 + ammoTable[BG_FindAmmoForWeapon( ( weapon_t )weapon )].maxammo )
             {
                 amt = 999;  // unlimited
             }
@@ -1282,8 +1282,8 @@ bool AICast_ScriptAction_SetAmmo( cast_state_t* cs, char* params )
         else
         {
             // remove ammo for this weapon
-            g_entities[cs->entityNum].client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] = 0;
-            g_entities[cs->entityNum].client->ps.ammoclip[BG_FindClipForWeapon((weapon_t)weapon )] = 0;
+            g_entities[cs->entityNum].client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] = 0;
+            g_entities[cs->entityNum].client->ps.ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )] = 0;
         }
         
     }
@@ -1355,8 +1355,8 @@ bool AICast_ScriptAction_SetClip( cast_state_t* cs, char* params )
         if( spillover > 0 )
         {
             // there was excess, put it in storage and fill the clip
-            g_entities[cs->entityNum].client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] += spillover;
-            g_entities[cs->entityNum].client->ps.ammoclip[BG_FindClipForWeapon((weapon_t)weapon )] = ammoTable[weapon].maxclip;
+            g_entities[cs->entityNum].client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] += spillover;
+            g_entities[cs->entityNum].client->ps.ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )] = ammoTable[weapon].maxclip;
         }
         else
         {
@@ -1619,7 +1619,7 @@ bool AICast_ScriptAction_GiveWeapon( cast_state_t* cs, char* params )
         // knife gets infinite ammo too
         if( !Q_strncasecmp( params, "monsterattack", 13 ) || weapon == WP_KNIFE )
         {
-            g_entities[cs->entityNum].client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] = 999;
+            g_entities[cs->entityNum].client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] = 999;
             Fill_Clip( &g_entities[cs->entityNum].client->ps, weapon );      //----(SA)	added
         }
         // conditional flags
@@ -1709,7 +1709,7 @@ bool AICast_ScriptAction_TakeWeapon( cast_state_t* cs, char* params )
             clear = true;
             for( i = 0; i < WP_NUM_WEAPONS; i++ )
             {
-                if( BG_FindAmmoForWeapon((weapon_t)weapon ) != BG_FindAmmoForWeapon((weapon_t)i ) )
+                if( BG_FindAmmoForWeapon( ( weapon_t )weapon ) != BG_FindAmmoForWeapon( ( weapon_t )i ) )
                 {
                     continue;
                 }

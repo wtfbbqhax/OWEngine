@@ -1344,7 +1344,7 @@ static void ParseDeform( char** text )
         {
             n = 0;
         }
-        ds->deformation = (deform_t)(DEFORM_TEXT0 + n);
+        ds->deformation = ( deform_t )( DEFORM_TEXT0 + n );
         return;
     }
     
@@ -1920,7 +1920,7 @@ static bool ParseShader( char** text )
             }
             
             tokenLen = strlen( token ) + 1;
-            tr.sunShaderName = (char*)ri.Hunk_Alloc( sizeof( char ) * tokenLen, h_low );
+            tr.sunShaderName = ( char* )ri.Hunk_Alloc( sizeof( char ) * tokenLen, h_low );
             Q_strncpyz( tr.sunShaderName, token, tokenLen );
         }
         //----(SA)	added
@@ -2445,7 +2445,7 @@ static shader_t* GeneratePermanentShader( void )
     }
     
     // Ridah, caching system
-    newShader = (shader_t*)R_CacheShaderAlloc( sizeof( shader_t ) );
+    newShader = ( shader_t* )R_CacheShaderAlloc( sizeof( shader_t ) );
     
     *newShader = shader;
     
@@ -2474,7 +2474,7 @@ static shader_t* GeneratePermanentShader( void )
             break;
         }
         // Ridah, caching system
-        newShader->stages[i] = (shaderStage_t*)R_CacheShaderAlloc( sizeof( stages[i] ) );
+        newShader->stages[i] = ( shaderStage_t* )R_CacheShaderAlloc( sizeof( stages[i] ) );
         
         *newShader->stages[i] = stages[i];
         
@@ -2488,7 +2488,7 @@ static shader_t* GeneratePermanentShader( void )
             }
             size = newShader->stages[i]->bundle[b].numTexMods * sizeof( texModInfo_t );
             // Ridah, caching system
-            newShader->stages[i]->bundle[b].texMods = (texModInfo_t*)R_CacheShaderAlloc( size );
+            newShader->stages[i]->bundle[b].texMods = ( texModInfo_t* )R_CacheShaderAlloc( size );
             
             memcpy( newShader->stages[i]->bundle[b].texMods, stages[i].bundle[b].texMods, size );
         }
@@ -3427,16 +3427,16 @@ void    R_ShaderList_f( void )
     {
         if( ri.Cmd_Argc() > 1 )
         {
-			_shader = tr.sortedShaders[i];
+            _shader = tr.sortedShaders[i];
         }
         else
         {
-			_shader = tr.shaders[i];
+            _shader = tr.shaders[i];
         }
         
         ri.Printf( PRINT_ALL, "%i ", _shader->numUnfoggedPasses );
         
-        if(_shader->lightmapIndex >= 0 )
+        if( _shader->lightmapIndex >= 0 )
         {
             ri.Printf( PRINT_ALL, "L " );
         }
@@ -3444,15 +3444,15 @@ void    R_ShaderList_f( void )
         {
             ri.Printf( PRINT_ALL, "  " );
         }
-        if(_shader->multitextureEnv == GL_ADD )
+        if( _shader->multitextureEnv == GL_ADD )
         {
             ri.Printf( PRINT_ALL, "MT(a) " );
         }
-        else if(_shader->multitextureEnv == GL_MODULATE )
+        else if( _shader->multitextureEnv == GL_MODULATE )
         {
             ri.Printf( PRINT_ALL, "MT(m) " );
         }
-        else if(_shader->multitextureEnv == GL_DECAL )
+        else if( _shader->multitextureEnv == GL_DECAL )
         {
             ri.Printf( PRINT_ALL, "MT(d) " );
         }
@@ -3460,7 +3460,7 @@ void    R_ShaderList_f( void )
         {
             ri.Printf( PRINT_ALL, "      " );
         }
-        if(_shader->explicitlyDefined )
+        if( _shader->explicitlyDefined )
         {
             ri.Printf( PRINT_ALL, "E " );
         }
@@ -3469,19 +3469,19 @@ void    R_ShaderList_f( void )
             ri.Printf( PRINT_ALL, "  " );
         }
         
-        if(_shader->optimalStageIteratorFunc == RB_StageIteratorGeneric )
+        if( _shader->optimalStageIteratorFunc == RB_StageIteratorGeneric )
         {
             ri.Printf( PRINT_ALL, "gen " );
         }
-        else if(_shader->optimalStageIteratorFunc == RB_StageIteratorSky )
+        else if( _shader->optimalStageIteratorFunc == RB_StageIteratorSky )
         {
             ri.Printf( PRINT_ALL, "sky " );
         }
-        else if(_shader->optimalStageIteratorFunc == RB_StageIteratorLightmappedMultitexture )
+        else if( _shader->optimalStageIteratorFunc == RB_StageIteratorLightmappedMultitexture )
         {
             ri.Printf( PRINT_ALL, "lmmt" );
         }
-        else if(_shader->optimalStageIteratorFunc == RB_StageIteratorVertexLitTexture )
+        else if( _shader->optimalStageIteratorFunc == RB_StageIteratorVertexLitTexture )
         {
             ri.Printf( PRINT_ALL, "vlt " );
         }
@@ -3490,7 +3490,7 @@ void    R_ShaderList_f( void )
             ri.Printf( PRINT_ALL, "    " );
         }
         
-        if(_shader->defaultShader )
+        if( _shader->defaultShader )
         {
             ri.Printf( PRINT_ALL, ": %s (DEFAULTED)\n", _shader->name );
         }
@@ -3623,7 +3623,7 @@ static void ScanAndLoadShaderFiles( void )
     }
     
     // build single large buffer
-    s_shaderText = (char*)ri.Hunk_Alloc( sum + numShaders * 2, h_low );
+    s_shaderText = ( char* )ri.Hunk_Alloc( sum + numShaders * 2, h_low );
     
     // free in reverse order, so the temp files are all dumped
     for( i = numShaders - 1; i >= 0; i-- )

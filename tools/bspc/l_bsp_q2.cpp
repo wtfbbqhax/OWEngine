@@ -975,7 +975,7 @@ void  Q2_LoadBSPFileTexinfo( char* filename )
     FILE*        f;
     int length, ofs;
     
-    header = (dheader_t*)GetMemory( sizeof( dheader_t ) );
+    header = ( dheader_t* )GetMemory( sizeof( dheader_t ) );
     
     f = fopen( filename, "rb" );
     fread( header, sizeof( dheader_t ), 1, f );

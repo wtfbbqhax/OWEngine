@@ -740,11 +740,11 @@ void CG_AddParticleToScene( cparticle_t* p, vec3_t org, float alpha )
         vec3_t rotate_ang;
         float _alpha;
         
-		_alpha = p->alpha;
+        _alpha = p->alpha;
         
         if( cgs.glconfig.hardwareType == GLHW_RAGEPRO )
         {
-			_alpha = 1;
+            _alpha = 1;
         }
         
         if( p->roll )
@@ -818,17 +818,17 @@ void CG_AddParticleToScene( cparticle_t* p, vec3_t org, float alpha )
         time2 = p->endtime - p->time;
         ratio = time / time2;
         
-		_width = p->width + ( ratio * ( p->endwidth - p->width ) );
-		_height = p->height + ( ratio * ( p->endheight - p->height ) );
+        _width = p->width + ( ratio * ( p->endwidth - p->width ) );
+        _height = p->height + ( ratio * ( p->endheight - p->height ) );
         
-        if(_width > p->endwidth )
+        if( _width > p->endwidth )
         {
-			_width = p->endwidth;
+            _width = p->endwidth;
         }
         
-        if(_height > p->endheight )
+        if( _height > p->endheight )
         {
-			_height = p->endheight;
+            _height = p->endheight;
         }
         
         sinR = _height * sin( DEG2RAD( p->roll ) ) * sqrt( 2 );

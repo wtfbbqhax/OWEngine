@@ -150,10 +150,10 @@ void TossClientItems( gentity_t* self )
 //----(SA)	end
 
 
-    if( weapon > WP_NONE && weapon < WP_MONSTER_ATTACK1 && self->client->ps.ammo[ BG_FindAmmoForWeapon( (weapon_t)weapon )] )
+    if( weapon > WP_NONE && weapon < WP_MONSTER_ATTACK1 && self->client->ps.ammo[ BG_FindAmmoForWeapon( ( weapon_t )weapon )] )
     {
         // find the item type for this weapon
-        item = BG_FindItemForWeapon((weapon_t)weapon );
+        item = BG_FindItemForWeapon( ( weapon_t )weapon );
         // spawn the item
         
         // Rafael
@@ -178,7 +178,7 @@ void TossClientItems( gentity_t* self )
         {
             if( self->client->ps.powerups[ i ] > level.time )
             {
-                item = BG_FindItemForPowerup( (powerup_t)i );
+                item = BG_FindItemForPowerup( ( powerup_t )i );
                 if( !item )
                 {
                     continue;

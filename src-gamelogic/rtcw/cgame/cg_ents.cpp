@@ -808,7 +808,7 @@ void CG_DrawHoldableSelect( void )
             continue;
         }
         
-        item = BG_FindItemForHoldable( (holdable_t)i );
+        item = BG_FindItemForHoldable( ( holdable_t )i );
         if( !item )
         {
             continue;
@@ -850,7 +850,7 @@ void CG_DrawHoldableSelect( void )
     // draw the selected name
     if( cg.holdableSelect )
     {
-        item = BG_FindItemForHoldable((holdable_t)cg.holdableSelect );
+        item = BG_FindItemForHoldable( ( holdable_t )cg.holdableSelect );
         if( item )
         {
             name = cgs.itemPrintNames[ item - bg_itemlist ];
@@ -2274,15 +2274,15 @@ static void CG_Mover( centity_t* cent )
             refEntity_t flash;
             vec3_t _angles;
             
-			_angles[YAW] = 90;
-			_angles[ROLL] = random() * 90;
+            _angles[YAW] = 90;
+            _angles[ROLL] = random() * 90;
             
             memset( &flash, 0, sizeof( flash ) );
             flash.renderfx = ent.shadowPlane;
             //flash.hModel = cgs.media.mg42muzzleflash;
             flash.hModel = cgs.media.planemuzzleflash;
             
-            AnglesToAxis(_angles, flash.axis );
+            AnglesToAxis( _angles, flash.axis );
             CG_PositionRotatedEntityOnTag( &flash, &ent, "tag_gun1" );
             
             trap_R_AddRefEntityToScene( &flash );

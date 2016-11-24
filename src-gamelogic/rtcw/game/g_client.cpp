@@ -1392,7 +1392,7 @@ bool G_CheckForExistingModelInfo( gclient_t* cl, char* modelName, animModelInfo_
         }
         else
         {
-            level.animScriptData.modelInfo[i] = (animModelInfo_t*)G_Alloc( sizeof( animModelInfo_t ) );
+            level.animScriptData.modelInfo[i] = ( animModelInfo_t* )G_Alloc( sizeof( animModelInfo_t ) );
             *modelInfo = level.animScriptData.modelInfo[i];
             // clear the structure out ready for use
             memset( *modelInfo, 0, sizeof( **modelInfo ) );

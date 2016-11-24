@@ -618,7 +618,7 @@ bool CG_CheckForExistingModelInfo2( clientInfo_t* ci, char* modelName, animModel
         }
         else
         {
-            cgs.animScriptData.modelInfo[i] = (animModelInfo_t*)malloc( sizeof( animModelInfo_t ) );
+            cgs.animScriptData.modelInfo[i] = ( animModelInfo_t* )malloc( sizeof( animModelInfo_t ) );
             *modelInfo = cgs.animScriptData.modelInfo[i];
             // clear the structure out ready for use
             memset( *modelInfo, 0, sizeof( **modelInfo ) );
@@ -1765,7 +1765,7 @@ void CG_NewClientInfo( int clientNum )
     
     // team
     v = Info_ValueForKey( configstring, "t" );
-    newInfo.team = (team_t)atoi( v );
+    newInfo.team = ( team_t )atoi( v );
     
 //----(SA) modified this for head separation
 
@@ -5238,11 +5238,11 @@ void CG_AddRefEntityWithPowerups( refEntity_t* ent, int powerups, int team, enti
     {
         float _alpha;
         
-		_alpha = ( 400.0 - ( float )( cg.time - cg_entities[es->number].pe.teslaDamagedTime ) ) / 400.0;
+        _alpha = ( 400.0 - ( float )( cg.time - cg_entities[es->number].pe.teslaDamagedTime ) ) / 400.0;
         
-        ent->shaderRGBA[0] = ( unsigned char )( 50.0 * _alpha);
-        ent->shaderRGBA[1] = ( unsigned char )( 130.0 * _alpha);
-        ent->shaderRGBA[2] = ( unsigned char )( 255.0 * _alpha);
+        ent->shaderRGBA[0] = ( unsigned char )( 50.0 * _alpha );
+        ent->shaderRGBA[1] = ( unsigned char )( 130.0 * _alpha );
+        ent->shaderRGBA[2] = ( unsigned char )( 255.0 * _alpha );
         
         if( ( cg.time / 50 ) % ( 2 + ( cg.time % 2 ) ) == 0 )
         {

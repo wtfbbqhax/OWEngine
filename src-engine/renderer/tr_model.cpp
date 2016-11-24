@@ -2014,7 +2014,7 @@ int R_FindBone( model_t* model, md4AnimHeader_t* anim, orientation_t* tag, int f
     md4JointTransform_t* jointTransform;
     
 //    short* indexes;
-	int i;// , w, j;
+    int i;// , w, j;
     int animHandle;
     
     header = ( md4MeshHeader_t* )model->md4mesh;

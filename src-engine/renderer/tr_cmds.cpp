@@ -282,7 +282,7 @@ void R_AddDrawSurfCmd( drawSurf_t* drawSurfs, int numDrawSurfs )
 {
     drawSurfsCommand_t*  cmd;
     
-    cmd = (drawSurfsCommand_t*)R_GetCommandBuffer( sizeof( *cmd ) );
+    cmd = ( drawSurfsCommand_t* )R_GetCommandBuffer( sizeof( *cmd ) );
     if( !cmd )
     {
         return;
@@ -308,7 +308,7 @@ void RE_SetColor( const float* rgba )
 {
     setColorCommand_t* cmd;
     
-    cmd = (setColorCommand_t*)R_GetCommandBuffer( sizeof( *cmd ) );
+    cmd = ( setColorCommand_t* )R_GetCommandBuffer( sizeof( *cmd ) );
     if( !cmd )
     {
         return;
@@ -338,7 +338,7 @@ void RE_StretchPic( float x, float y, float w, float h,
 {
     stretchPicCommand_t* cmd;
     
-    cmd = (stretchPicCommand_t*)R_GetCommandBuffer( sizeof( *cmd ) );
+    cmd = ( stretchPicCommand_t* )R_GetCommandBuffer( sizeof( *cmd ) );
     if( !cmd )
     {
         return;
@@ -367,7 +367,7 @@ void RE_StretchPicGradient( float x, float y, float w, float h,
 {
     stretchPicCommand_t* cmd;
     
-    cmd = (stretchPicCommand_t*)R_GetCommandBuffer( sizeof( *cmd ) );
+    cmd = ( stretchPicCommand_t* )R_GetCommandBuffer( sizeof( *cmd ) );
     if( !cmd )
     {
         return;
@@ -531,11 +531,11 @@ void RE_BeginFrame( stereoFrame_t stereoFrame )
     //
     // draw buffer stuff
     //
-    if( !( cmd = (drawBufferCommand_t*)R_GetCommandBuffer( sizeof( *cmd ) ) ) )
-	{
+    if( !( cmd = ( drawBufferCommand_t* )R_GetCommandBuffer( sizeof( *cmd ) ) ) )
+    {
         return;
-	}
-        
+    }
+    
     cmd->commandId = RC_DRAW_BUFFER;
     
     if( stereoFrame == STEREO_LEFT )
@@ -639,7 +639,7 @@ void RE_EndFrame( int* frontEndMsec, int* backEndMsec )
     {
         return;
     }
-    cmd = (swapBuffersCommand_t*)R_GetCommandBuffer( sizeof( *cmd ) );
+    cmd = ( swapBuffersCommand_t* )R_GetCommandBuffer( sizeof( *cmd ) );
     if( !cmd )
     {
         return;

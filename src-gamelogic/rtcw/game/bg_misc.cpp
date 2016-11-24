@@ -508,7 +508,7 @@ gitem_t bg_itemlist[] =
         NULL,   // ammo icon
         NULL,   // pickup
         0,
-        (itemType_t)0,
+        ( itemType_t )0,
         0,
         0,          // ammotype
         0,          // cliptype
@@ -3815,12 +3815,12 @@ weapon_t BG_FindClipForWeapon( weapon_t weapon )
     {
         for( i = 0; i < NUM_TABLE_ELEMENTS; i++ )
         {
-            lookupTable[i] = (weapon_t)0; // default value for no match found
+            lookupTable[i] = ( weapon_t )0; // default value for no match found
             for( it = bg_itemlist + 1 ; it->classname ; it++ )
             {
                 if( it->giType == IT_WEAPON && it->giTag == i )
                 {
-                    lookupTable[i] = (weapon_t)it->giClipIndex;
+                    lookupTable[i] = ( weapon_t )it->giClipIndex;
                 }
             }
         }
@@ -3856,12 +3856,12 @@ weapon_t BG_FindAmmoForWeapon( weapon_t weapon )
     {
         for( i = 0; i < NUM_TABLE_ELEMENTS; i++ )
         {
-            lookupTable[i] = (weapon_t)0; // default value for no match found
+            lookupTable[i] = ( weapon_t )0; // default value for no match found
             for( it = bg_itemlist + 1 ; it->classname ; it++ )
             {
                 if( it->giType == IT_WEAPON && it->giTag == i )
                 {
-                    lookupTable[i] = (weapon_t)it->giAmmoIndex;
+                    lookupTable[i] = ( weapon_t )it->giAmmoIndex;
                 }
             }
         }
@@ -4241,7 +4241,7 @@ bool    BG_CanItemBeGrabbed( const entityState_t* ent, const playerState_t* ps )
             return true;
             
         case IT_AMMO:
-            ammoweap = BG_FindAmmoForWeapon((weapon_t)item->giTag );
+            ammoweap = BG_FindAmmoForWeapon( ( weapon_t )item->giTag );
             
             if( isClipOnly( ammoweap ) )
             {

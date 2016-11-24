@@ -295,9 +295,9 @@ void SourceWarning( source_t* source, char* str, ... )
 //============================================================================
 void PC_PushIndent( source_t* source, int type, int skip )
 {
-	indent_t* indent;
+    indent_t* indent;
     
-    indent = (indent_t* ) GetMemory( sizeof( indent_t ) );
+    indent = ( indent_t* ) GetMemory( sizeof( indent_t ) );
     indent->type = type;
     indent->script = source->scriptstack;
     indent->skip = ( skip != 0 );
@@ -313,7 +313,7 @@ void PC_PushIndent( source_t* source, int type, int skip )
 //============================================================================
 void PC_PopIndent( source_t* source, int* type, int* skip )
 {
-	indent_t* indent;
+    indent_t* indent;
     
     *type = 0;
     *skip = 0;
@@ -817,22 +817,22 @@ void PC_FreeDefine( define_t* define )
 //============================================================================
 struct builtin_t
 {
-	char* string;
-	int builtin;
+    char* string;
+    int builtin;
 };
-void PC_AddBuiltinDefines(source_t* source)
+void PC_AddBuiltinDefines( source_t* source )
 {
-	int i;
-	define_t* define;
-	builtin_t builtin[] =
-	{
-		{ "__LINE__",    BUILTIN_LINE },
-		{ "__FILE__",    BUILTIN_FILE },
-		{ "__DATE__",    BUILTIN_DATE },
-		{ "__TIME__",    BUILTIN_TIME },
-		//		{ "__STDC__", BUILTIN_STDC },
-		{ NULL, 0 }
-	};
+    int i;
+    define_t* define;
+    builtin_t builtin[] =
+    {
+        { "__LINE__",    BUILTIN_LINE },
+        { "__FILE__",    BUILTIN_FILE },
+        { "__DATE__",    BUILTIN_DATE },
+        { "__TIME__",    BUILTIN_TIME },
+        //		{ "__STDC__", BUILTIN_STDC },
+        { NULL, 0 }
+    };
     
     for( i = 0; builtin[i].string; i++ )
     {
@@ -892,7 +892,7 @@ int PC_ExpandBuiltinDefine( source_t* source, define_t* define,
         case BUILTIN_DATE:
         {
             t = time( NULL );
-            curtime = ctime( (const time_t*)&t );
+            curtime = ctime( ( const time_t* )&t );
             strcpy( token.string, "\"" );
             strncat( token.string, curtime + 4, 7 );
             strncat( token.string + 7, curtime + 20, 4 );
@@ -907,7 +907,7 @@ int PC_ExpandBuiltinDefine( source_t* source, define_t* define,
         case BUILTIN_TIME:
         {
             t = time( NULL );
-            curtime = ctime( (const time_t*)&t );
+            curtime = ctime( ( const time_t* )&t );
             strcpy( token.string, "\"" );
             strncat( token.string, curtime + 11, 8 );
             strcat( token.string, "\"" );
@@ -1573,7 +1573,7 @@ define_t* PC_DefineFromString( char* string )
     strncpy( src.filename, "*extern", _MAX_PATH );
     src.scriptstack = script;
 #if DEFINEHASHING
-    src.definehash = (define_t**)GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
+    src.definehash = ( define_t** )GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
 #endif //DEFINEHASHING
     //create a define from the source
     res = PC_Directive_define( &src );
@@ -2321,7 +2321,7 @@ int PC_EvaluateTokens( source_t* source, token_t* tokens, signed long int* intva
             }
         } //end else
 #endif //DEBUG_EVAL
-        switch( o->_operator)
+        switch( o->_operator )
         {
             case P_LOGIC_NOT:
                 v1->intvalue = !v1->intvalue;
@@ -3580,7 +3580,7 @@ source_t* LoadSourceFile( char* filename )
     source->skip = 0;
     
 #if DEFINEHASHING
-    source->definehash = (define_t**)GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
+    source->definehash = ( define_t** )GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
 #endif //DEFINEHASHING
     PC_AddGlobalDefinesToSource( source );
     return source;
@@ -3616,7 +3616,7 @@ source_t* LoadSourceMemory( char* ptr, int length, char* name )
     source->skip = 0;
     
 #if DEFINEHASHING
-    source->definehash = (define_t**)GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
+    source->definehash = ( define_t** )GetClearedMemory( DEFINEHASHSIZE * sizeof( define_t* ) );
 #endif //DEFINEHASHING
     PC_AddGlobalDefinesToSource( source );
     return source;
@@ -3632,7 +3632,7 @@ void FreeSource( source_t* source )
     script_t* script;
     token_t* token;
     define_t* define;
-	indent_t* indent;
+    indent_t* indent;
     int i;
     
     //PC_PrintDefineHashTable(source->definehash);

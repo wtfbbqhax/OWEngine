@@ -447,7 +447,7 @@ static void DrawSkySide( struct image_s* image, const int mins[2], const int max
     unsigned short* indicies;
     
     size = ( maxs[1] - mins[1] ) * ( maxs[0] - mins[0] + 1 );
-    indicies = (unsigned short*)ri.Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
+    indicies = ( unsigned short* )ri.Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
     
     GL_Bind( image );
     
@@ -475,7 +475,7 @@ static void DrawSkySideInner( struct image_s* image, const int mins[2], const in
     unsigned short* indicies;
     
     size = ( maxs[1] - mins[1] ) * ( maxs[0] - mins[0] + 1 );
-    indicies = (unsigned short*)ri.Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
+    indicies = ( unsigned short* )ri.Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
     
     GL_Bind( image );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );

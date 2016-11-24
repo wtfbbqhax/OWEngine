@@ -112,7 +112,7 @@ typedef struct _source_s
     token_t* tokens;                        //tokens to read first
     define_t* defines;                      //list with macro definitions
     define_t** definehash;                  //hash chain with defines
-	indent_t* indentstack;                  //stack with indents
+    indent_t* indentstack;                  //stack with indents
     int skip;                               // > 0 if skipping conditional code
     token_t token;                          //last read token
 } source_t;

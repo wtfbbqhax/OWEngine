@@ -1226,7 +1226,7 @@ void CG_RegisterWeapon( int weaponNum )
     
     for( ammo = bg_itemlist + 1 ; ammo->classname ; ammo++ )
     {
-        if( ( ammo->giType == IT_AMMO && ammo->giTag == BG_FindAmmoForWeapon((weapon_t)weaponNum ) ) )
+        if( ( ammo->giType == IT_AMMO && ammo->giTag == BG_FindAmmoForWeapon( ( weapon_t )weaponNum ) ) )
         {
             break;
         }
@@ -2795,8 +2795,8 @@ void CG_AddPlayerWeapon( refEntity_t* parent, playerState_t* ps, centity_t* cent
     // (SA) might as well have this check consistant throughout the routine
     isPlayer = ( bool )( cent->currentState.clientNum == cg.snap->ps.clientNum );
     
-    weaponNum = (weapon_t)cent->currentState.weapon;
-    weapSelect = (weapon_t)cg.weaponSelect;
+    weaponNum = ( weapon_t )cent->currentState.weapon;
+    weapSelect = ( weapon_t )cg.weaponSelect;
     
     if( ps && cg.cameraMode )
     {
@@ -3337,7 +3337,7 @@ void CG_AddPlayerWeapon( refEntity_t* parent, playerState_t* ps, centity_t* cent
             if( weaponNum == WP_FLAMETHROWER )
             {
                 vec3_t _angles;
-                AxisToAngles( flash.axis, _angles);
+                AxisToAngles( flash.axis, _angles );
                 CG_FireFlameChunks( cent, flash.origin, _angles, 1.0, false, 0 );
             }
         }
@@ -3359,7 +3359,7 @@ void CG_AddPlayerFoot( refEntity_t* parent, playerState_t* ps, centity_t* cent )
         return;
     }
     
-    weaponNum = (weapon_t)cent->currentState.weapon;
+    weaponNum = ( weapon_t )cent->currentState.weapon;
     weapon = &cg_weapons[weaponNum];
     
     memset( &wolfkick, 0, sizeof( wolfkick ) );
@@ -3846,8 +3846,8 @@ CG_WeaponHasAmmo
 */
 static bool CG_WeaponHasAmmo( int i )
 {
-    if( !( cg.predictedPlayerState.ammo[BG_FindAmmoForWeapon( (weapon_t)i )] ) &&
-            !( cg.predictedPlayerState.ammoclip[BG_FindClipForWeapon((weapon_t)i )] ) )
+    if( !( cg.predictedPlayerState.ammo[BG_FindAmmoForWeapon( ( weapon_t )i )] ) &&
+            !( cg.predictedPlayerState.ammoclip[BG_FindClipForWeapon( ( weapon_t )i )] ) )
     {
         return false;
     }
@@ -5650,8 +5650,8 @@ void CG_FireWeapon( centity_t* cent )
                     vec3_t porg, gorg, norm;    // player/gun origin
                     float gdist;
                     
-					_cent = &cg_entities[ent->number];
-                    VectorCopy(_cent->currentState.pos.trBase, gorg );
+                    _cent = &cg_entities[ent->number];
+                    VectorCopy( _cent->currentState.pos.trBase, gorg );
                     VectorCopy( cg.refdef.vieworg, porg );
                     VectorSubtract( gorg, porg, norm );
                     gdist = VectorNormalize( norm );

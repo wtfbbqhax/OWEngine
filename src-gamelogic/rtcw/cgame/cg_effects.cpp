@@ -432,8 +432,8 @@ void CG_Bleed( vec3_t origin, int entityNum )
             float len;
             vec3_t _vec;
             
-            VectorSubtract( bOrigin, vhead, _vec);
-            len = VectorLength(_vec);
+            VectorSubtract( bOrigin, vhead, _vec );
+            len = VectorLength( _vec );
             
             if( len > 8 )
             {

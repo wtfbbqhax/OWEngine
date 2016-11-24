@@ -365,13 +365,13 @@ srfGridMesh_t* R_CreateSurfaceGridMesh( int width, int height,
     size = ( width * height - 1 ) * sizeof( srfVert_t ) + sizeof( *grid );
     
 #ifdef PATCH_STITCHING
-    grid = (srfGridMesh_t*)malloc( size );
+    grid = ( srfGridMesh_t* )malloc( size );
     Com_Memset( grid, 0, size );
     
-    grid->widthLodError = (float*)malloc( width * 4 );
+    grid->widthLodError = ( float* )malloc( width * 4 );
     memcpy( grid->widthLodError, errorTable[0], width * 4 );
     
-    grid->heightLodError = (float*)malloc( height * 4 );
+    grid->heightLodError = ( float* )malloc( height * 4 );
     memcpy( grid->heightLodError, errorTable[1], height * 4 );
 #else
     grid = ri.Hunk_Alloc( size, h_low );
@@ -481,10 +481,10 @@ srfGridMesh_t* R_SubdividePatchToGrid( int width, int height, srfVert_t points[M
                 // texture warping, but it gives a lot less polygons than
                 // dist-from-midpoint
                 VectorSubtract( midxyz, ctrl[i][j].xyz, midxyz );
-                VectorSubtract( ctrl[i][j + 2].xyz, ctrl[i][j].xyz, _dir);
-                VectorNormalize(_dir);
+                VectorSubtract( ctrl[i][j + 2].xyz, ctrl[i][j].xyz, _dir );
+                VectorNormalize( _dir );
                 
-                d = DotProduct( midxyz, _dir);
+                d = DotProduct( midxyz, _dir );
                 VectorScale( _dir, d, projected );
                 VectorSubtract( midxyz, projected, midxyz );
                 len = VectorLengthSquared( midxyz );            // we will do the sqrt later

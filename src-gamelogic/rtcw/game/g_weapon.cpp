@@ -1797,9 +1797,9 @@ void VenomPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t* ent )
     
     // derive the right and up vectors from the forward vector, because
     // the client won't have any other information
-    VectorNormalize2( origin2, _forward);
-    PerpendicularVector(_right, _forward);
-    CrossProduct(_forward, _right, _up);
+    VectorNormalize2( origin2, _forward );
+    PerpendicularVector( _right, _forward );
+    CrossProduct( _forward, _right, _up );
     
     oldScore = ent->client->ps.persistant[PERS_SCORE];
     

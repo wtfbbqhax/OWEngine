@@ -946,7 +946,7 @@ char* CopyString( const char* in )
 {
     char* out;
     
-    out = (char*)Z_Malloc( strlen( in ) + 1 );
+    out = ( char* )Z_Malloc( strlen( in ) + 1 );
     strcpy( out, in );
     return out;
 }
@@ -1250,7 +1250,7 @@ void Com_InitHunkMemory( void )
     }
     
     
-    s_hunkData = (byte*)malloc( s_hunkTotal + 31 );
+    s_hunkData = ( byte* )malloc( s_hunkTotal + 31 );
     if( !s_hunkData )
     {
         Com_Error( ERR_FATAL, "Hunk data failed to allocate %i megs", s_hunkTotal / ( 1024 * 1024 ) );
@@ -2882,7 +2882,7 @@ static void ConcatRemaining( const char* src, const char* start )
 {
     char* str;
     
-    str = (char*)strstr( src, start );
+    str = ( char* )strstr( src, start );
     if( !str )
     {
         keyConcatArgs();

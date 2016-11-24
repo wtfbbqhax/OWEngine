@@ -738,11 +738,11 @@ static void CG_DrawPlayerAmmoValue( rectDef_t* rect, int font, float scale, vec4
     
     if( type == 0 )    // ammo
     {
-        value = cg.snap->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weap )];
+        value = cg.snap->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weap )];
     }
     else            // clip
     {
-        value = ps->ammoclip[BG_FindClipForWeapon( (weapon_t)weap )];
+        value = ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )weap )];
         if( special )
         {
             value2 = value;
@@ -1052,7 +1052,7 @@ static void CG_DrawHoldableItem( rectDef_t* rect, int font, float scale, bool dr
     int value;
     gitem_t* item;
     
-    item    = BG_FindItemForHoldable( (holdable_t)cg.holdableSelect );
+    item    = BG_FindItemForHoldable( ( holdable_t )cg.holdableSelect );
     
     if( !item )
     {
@@ -1093,7 +1093,7 @@ void flubfoo()
         return;
     }
     
-    item    = BG_FindItemForHoldable( (holdable_t)cg.holdableSelect );
+    item    = BG_FindItemForHoldable( ( holdable_t )cg.holdableSelect );
     
     if( !item )
     {
@@ -1182,7 +1182,7 @@ static void CG_DrawSelectedPlayerPowerup( rectDef_t* rect, bool draw2D )
             if( ci->powerups & ( 1 << j ) )
             {
                 gitem_t* item;
-                item = BG_FindItemForPowerup( (powerup_t)j );
+                item = BG_FindItemForPowerup( ( powerup_t )j );
                 if( item )
                 {
                     CG_DrawPic( x, y, rect->w, rect->h, trap_R_RegisterShader( item->icon ) );
@@ -1660,7 +1660,7 @@ static void CG_DrawAreaPowerUp( rectDef_t* rect, int align, float spacing, int f
     // draw the icons and timers
     for( i = 0 ; i < active ; i++ )
     {
-        item = BG_FindItemForPowerup( (powerup_t)sorted[i] );
+        item = BG_FindItemForPowerup( ( powerup_t )sorted[i] );
         
         if( item )
         {
@@ -1720,12 +1720,12 @@ float CG_GetValue( int ownerDraw, int type )
             {
                 if( type == RANGETYPE_RELATIVE )
                 {
-                    int weap = BG_FindAmmoForWeapon((weapon_t)cent->currentState.weapon );
+                    int weap = BG_FindAmmoForWeapon( ( weapon_t )cent->currentState.weapon );
                     return ( float )ps->ammo[weap] / ( float )ammoTable[weap].maxammo;
                 }
                 else
                 {
-                    return ps->ammo[BG_FindAmmoForWeapon((weapon_t)cent->currentState.weapon )];
+                    return ps->ammo[BG_FindAmmoForWeapon( ( weapon_t )cent->currentState.weapon )];
                 }
             }
             break;
@@ -1734,11 +1734,11 @@ float CG_GetValue( int ownerDraw, int type )
             {
                 if( type == RANGETYPE_RELATIVE )
                 {
-                    return ( float )ps->ammoclip[BG_FindClipForWeapon((weapon_t)cent->currentState.weapon )] / ( float )ammoTable[cent->currentState.weapon].maxclip;
+                    return ( float )ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )cent->currentState.weapon )] / ( float )ammoTable[cent->currentState.weapon].maxclip;
                 }
                 else
                 {
-                    return ps->ammoclip[BG_FindClipForWeapon((weapon_t)cent->currentState.weapon )];
+                    return ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )cent->currentState.weapon )];
                 }
             }
             break;
@@ -2109,12 +2109,12 @@ static void CG_DrawAreaChat( rectDef_t* rect, int font, float scale, vec4_t colo
 
 const char* CG_GetKillerText()
 {
-    const unsigned char* s = (const unsigned char*)"";
+    const unsigned char* s = ( const unsigned char* )"";
     if( cg.killerName[0] )
     {
-        s = (const unsigned char*)(va( "Fragged by %s", cg.killerName ));
+        s = ( const unsigned char* )( va( "Fragged by %s", cg.killerName ) );
     }
-    return (char*)s;
+    return ( char* )s;
 }
 
 
@@ -2154,30 +2154,30 @@ static void CG_Draw2ndPlace( rectDef_t* rect, int font, float scale, vec4_t colo
 
 const char* CG_GetGameStatusText()
 {
-    const unsigned char* s = (const unsigned char*)"";
+    const unsigned char* s = ( const unsigned char* )"";
     if( cgs.gametype < GT_TEAM )
     {
         if( cg.snap->ps.persistant[PERS_TEAM] != TEAM_SPECTATOR )
         {
-            s = (const unsigned char*)va( "%s place with %i", CG_PlaceString( cg.snap->ps.persistant[PERS_RANK] + 1 ), cg.snap->ps.persistant[PERS_SCORE] );
+            s = ( const unsigned char* )va( "%s place with %i", CG_PlaceString( cg.snap->ps.persistant[PERS_RANK] + 1 ), cg.snap->ps.persistant[PERS_SCORE] );
         }
     }
     else
     {
         if( cg.teamScores[0] == cg.teamScores[1] )
         {
-            s = (const unsigned char*)va( "Teams are tied at %i", cg.teamScores[0] );
+            s = ( const unsigned char* )va( "Teams are tied at %i", cg.teamScores[0] );
         }
         else if( cg.teamScores[0] >= cg.teamScores[1] )
         {
-            s = (const unsigned char*)va( "Red leads Blue, %i to %i", cg.teamScores[0], cg.teamScores[1] );
+            s = ( const unsigned char* )va( "Red leads Blue, %i to %i", cg.teamScores[0], cg.teamScores[1] );
         }
         else
         {
-            s = (const unsigned char*)va( "Blue leads Red, %i to %i", cg.teamScores[1], cg.teamScores[0] );
+            s = ( const unsigned char* )va( "Blue leads Red, %i to %i", cg.teamScores[1], cg.teamScores[0] );
         }
     }
-    return (char*)s;
+    return ( char* )s;
 }
 
 static void CG_DrawGameStatus( rectDef_t* rect, int font, float scale, vec4_t color, qhandle_t shader, int textStyle )
@@ -2227,7 +2227,7 @@ static void CG_Text_Paint_Limit( float* maxX, float x, float y, int font, float 
     glyphInfo_t* glyph;
     if( text )
     {
-        const unsigned char* s = (const unsigned char*)text;
+        const unsigned char* s = ( const unsigned char* )text;
         float max = *maxX;
         float useScale;
         
@@ -2278,7 +2278,7 @@ static void CG_Text_Paint_Limit( float* maxX, float x, float y, int font, float 
             else
             {
                 float yadj = useScale * glyph->top;
-                if( CG_Text_Width( (const char*)s, font, useScale, 1 ) + x > max )
+                if( CG_Text_Width( ( const char* )s, font, useScale, 1 ) + x > max )
                 {
                     *maxX = 0;
                     break;

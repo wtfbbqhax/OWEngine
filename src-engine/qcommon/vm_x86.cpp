@@ -280,7 +280,7 @@ void VM_Compile( vm_t* vm, vmHeader_t* header )
     
     // allocate a very large temp buffer, we will shrink it later
     maxLength = header->codeLength * 8;
-    buf = (byte*)Z_Malloc( maxLength );
+    buf = ( byte* )Z_Malloc( maxLength );
     
     // translate all instructions
     pc = 0;
@@ -723,7 +723,7 @@ void VM_Compile( vm_t* vm, vmHeader_t* header )
     
     // copy to an exact size buffer on the hunk
     vm->codeLength = compiledOfs;
-    vm->codeBase = (byte*)Hunk_Alloc( compiledOfs, h_low );
+    vm->codeBase = ( byte* )Hunk_Alloc( compiledOfs, h_low );
     memcpy( vm->codeBase, buf, compiledOfs );
     Z_Free( buf );
     Com_Printf( "VM file %s compiled to %i bytes of code\n", vm->name, compiledOfs );

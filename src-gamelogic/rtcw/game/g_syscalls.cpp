@@ -45,7 +45,7 @@
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
 
-static intptr_t ( * syscall )( intptr_t arg, ... ) = ( intptr_t ( * )( intptr_t, ... ) ) - 1;
+static intptr_t ( * syscall )( intptr_t arg, ... ) = ( intptr_t (* )( intptr_t, ... ) ) - 1;
 
 #if defined( __MACOS__ )
 #pragma export on

@@ -323,7 +323,7 @@ Fill_Clip
 void Fill_Clip( playerState_t* ps, int weapon )
 {
     int inclip, maxclip, ammomove;
-    int ammoweap = BG_FindAmmoForWeapon((weapon_t)weapon );
+    int ammoweap = BG_FindAmmoForWeapon( ( weapon_t )weapon );
     
     if( weapon < WP_LUGER || weapon >= WP_NUM_WEAPONS )
     {
@@ -335,7 +335,7 @@ void Fill_Clip( playerState_t* ps, int weapon )
         return;
     }
     
-    inclip  = ps->ammoclip[BG_FindClipForWeapon((weapon_t)weapon )];
+    inclip  = ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )];
     maxclip = ammoTable[weapon].maxclip;
     
     ammomove = maxclip - inclip;    // max amount that can be moved into the clip
@@ -352,7 +352,7 @@ void Fill_Clip( playerState_t* ps, int weapon )
         {
             ps->ammo[ammoweap] -= ammomove;
         }
-        ps->ammoclip[BG_FindClipForWeapon((weapon_t)weapon )] += ammomove;
+        ps->ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )] += ammomove;
     }
 }
 
@@ -367,7 +367,7 @@ Add_Ammo
 */
 void Add_Ammo( gentity_t* ent, int weapon, int count, bool fillClip )
 {
-    int ammoweap = BG_FindAmmoForWeapon((weapon_t)weapon );
+    int ammoweap = BG_FindAmmoForWeapon( ( weapon_t )weapon );
     bool noPack = false;       // no extra ammo in your 'pack'
     
     ent->client->ps.ammo[ammoweap] += count;
@@ -523,9 +523,9 @@ int Pickup_Weapon( gentity_t* ent, gentity_t* other )
         {
             weapon = WP_GRENADE_PINEAPPLE;
         }
-        if( other->client->ps.ammoclip[BG_FindClipForWeapon((weapon_t)weapon )] < i )
+        if( other->client->ps.ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )] < i )
         {
-            other->client->ps.ammoclip[BG_FindClipForWeapon((weapon_t)weapon )]++;
+            other->client->ps.ammoclip[BG_FindClipForWeapon( ( weapon_t )weapon )]++;
         }
         COM_BitSet( other->client->ps.weapons, weapon );
         
@@ -539,10 +539,10 @@ int Pickup_Weapon( gentity_t* ent, gentity_t* other )
             weapon = WP_COLT;
         }
         //		G_Printf("filling magazine for weapon %d colt/luger (%d rounds)\n", weapon, ammoTable[weapon].maxclip);
-        other->client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] += ammoTable[weapon].maxclip;
-        if( other->client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] > ammoTable[weapon].maxclip * 4 )
+        other->client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] += ammoTable[weapon].maxclip;
+        if( other->client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] > ammoTable[weapon].maxclip * 4 )
         {
-            other->client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] = ammoTable[weapon].maxclip * 4;
+            other->client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] = ammoTable[weapon].maxclip * 4;
         }
         
         // and some two-handed ammo
@@ -558,10 +558,10 @@ int Pickup_Weapon( gentity_t* ent, gentity_t* other )
                 }
                 else
                 {
-                    other->client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] += ammoTable[weapon].maxclip;
-                    if( other->client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] > ammoTable[weapon].maxclip * 3 )
+                    other->client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] += ammoTable[weapon].maxclip;
+                    if( other->client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] > ammoTable[weapon].maxclip * 3 )
                     {
-                        other->client->ps.ammo[BG_FindAmmoForWeapon((weapon_t)weapon )] = ammoTable[weapon].maxclip * 3;
+                        other->client->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )weapon )] = ammoTable[weapon].maxclip * 3;
                     }
                 }
                 return RESPAWN_SP;

@@ -913,24 +913,24 @@ char* AIFunc_Heinrich_MeleeStart( cast_state_t* cs )
     // decide which attack to use
     if( VectorDistance( ent->r.currentOrigin, enemy->r.currentOrigin ) < 60 )
     {
-		_rnd_ = 0;    // sword slash up close
+        _rnd_ = 0;    // sword slash up close
     }
     else if( VectorDistance( ent->r.currentOrigin, enemy->r.currentOrigin ) >= HEINRICH_SLASH_RANGE )
     {
-		_rnd_ = 1;    // too far away, stomp
+        _rnd_ = 1;    // too far away, stomp
     }
     else
     {
         // pick at random
-		_rnd_ = rand() % 2;
+        _rnd_ = rand() % 2;
     }
     //
-    switch(_rnd_)
+    switch( _rnd_ )
     {
         case 0:
         {
             int _rnd = rand() % 3;
-            switch(_rnd)
+            switch( _rnd )
             {
                 case 0:
                     return AIFunc_Heinrich_SwordSideSlashStart( cs );

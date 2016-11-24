@@ -1439,11 +1439,11 @@ void AIChar_spawn( gentity_t* ent )
         COM_BitSet( weaponInfo.startingWeapons, aiCharDefaults->weapons[i] );
         if( aiCharDefaults->weapons[i] == WP_GRENADE_LAUNCHER )    // give them a bunch of grenades, but not an unlimited supply
         {
-            weaponInfo.startingAmmo[BG_FindAmmoForWeapon((weapon_t)aiCharDefaults->weapons[i] )] = 6;
+            weaponInfo.startingAmmo[BG_FindAmmoForWeapon( ( weapon_t )aiCharDefaults->weapons[i] )] = 6;
         }
         else
         {
-            weaponInfo.startingAmmo[BG_FindAmmoForWeapon( (weapon_t)aiCharDefaults->weapons[i] )] = 999;
+            weaponInfo.startingAmmo[BG_FindAmmoForWeapon( ( weapon_t )aiCharDefaults->weapons[i] )] = 999;
         }
     }
     //

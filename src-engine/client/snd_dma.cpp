@@ -1273,7 +1273,7 @@ void S_ByteSwapRawSamples( int samples, int width, int _s_channels, short* data 
     }
 #endif
     //DAJ use a faster loop technique
-    if(_s_channels == 2 )
+    if( _s_channels == 2 )
     {
         i = samples << 1;
     }
@@ -1335,7 +1335,7 @@ void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte
     
     scale = ( float )rate / dma.speed;
     
-    if(_s_channels == 2 && width == 2 )
+    if( _s_channels == 2 && width == 2 )
     {
         if( scale == 1.0 )    // optimized case
         {
@@ -1363,7 +1363,7 @@ void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte
             }
         }
     }
-    else if(_s_channels == 1 && width == 2 )
+    else if( _s_channels == 1 && width == 2 )
     {
         for( i = 0; ; i++ )
         {
@@ -1378,7 +1378,7 @@ void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte
             s_rawsamples[streamingIndex][dst].right = ( ( short* )data )[src] * intVolumeR;
         }
     }
-    else if(_s_channels == 2 && width == 1 )
+    else if( _s_channels == 2 && width == 1 )
     {
         intVolumeL *= 256;
         intVolumeR *= 256;
@@ -1396,7 +1396,7 @@ void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte
             s_rawsamples[streamingIndex][dst].right = ( ( char* )data )[src * 2 + 1] * intVolumeR;
         }
     }
-    else if(_s_channels == 1 && width == 1 )
+    else if( _s_channels == 1 && width == 1 )
     {
         intVolumeL *= 256;
         intVolumeR *= 256;

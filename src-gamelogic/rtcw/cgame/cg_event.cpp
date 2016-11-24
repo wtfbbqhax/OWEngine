@@ -448,7 +448,7 @@ static void CG_UseItem( centity_t* cent )
         }
         else
         {
-            item = BG_FindItemForHoldable( (holdable_t)itemNum );
+            item = BG_FindItemForHoldable( ( holdable_t )itemNum );
             
             if( item )
             {
@@ -1154,7 +1154,7 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
             // RF, debris rocks last longer in the boss map (is thee a better way of doing this at this late stage?)
             if( snd == LEBS_ROCK && damage )
             {
-                snd = (leBounceSoundType_t)0;
+                snd = ( leBounceSoundType_t )0;
                 if( damage )
                 {
                     le->leFlags |= LEF_PLAYER_DAMAGE;
@@ -1195,7 +1195,7 @@ void CG_Explodef( vec3_t origin, vec3_t dir, int mass, int type, qhandle_t sound
             
             le->lifeRate    = 1.0 / ( le->endTime - le->startTime );
             le->leFlags     |= LEF_TUMBLE;
-            le->leMarkType  = (leMarkType_t)0;
+            le->leMarkType  = ( leMarkType_t )0;
             
             VectorCopy( origin, re->origin );
             AxisCopy( axisDefault, re->axis );
@@ -1527,7 +1527,7 @@ void CG_Shard( centity_t* cent, vec3_t origin, vec3_t dir )
         le->leFlags             |= LEF_TUMBLE;
         le->bounceFactor        = 0.4;
         // le->leBounceSoundType	= LEBS_WOOD;
-        le->leMarkType          = (leMarkType_t)0;
+        le->leMarkType          = ( leMarkType_t )0;
         
         VectorCopy( origin, re->origin );
         AxisCopy( axisDefault, re->axis );
@@ -1662,7 +1662,7 @@ void CG_ShardJunk( centity_t* cent, vec3_t origin, vec3_t dir )
     le->lifeRate            = 1.0 / ( le->endTime - le->startTime );
     le->leFlags             |= LEF_TUMBLE;
     le->bounceFactor        = 0.4;
-    le->leMarkType          = (leMarkType_t)0;
+    le->leMarkType          = ( leMarkType_t )0;
     
     VectorCopy( origin, re->origin );
     AxisCopy( axisDefault, re->axis );

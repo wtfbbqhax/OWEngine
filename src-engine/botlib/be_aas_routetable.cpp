@@ -358,7 +358,7 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     pretime = Sys_MilliSeconds();
 #endif
     
-	_routetable = ( *aasworld ).routetable;
+    _routetable = ( *aasworld ).routetable;
     
     doswap = ( LittleLong( 1 ) != 1 );
     
@@ -402,9 +402,9 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     
     // children
     botimport.FS_Read( &_routetable->numChildren, sizeof( int ), fp );
-	_routetable->numChildren = LittleLong(_routetable->numChildren );
-	_routetable->children = ( aas_rt_child_t* ) AAS_RT_GetClearedMemory(_routetable->numChildren * sizeof( aas_rt_child_t ) );
-    botimport.FS_Read(_routetable->children, _routetable->numChildren * sizeof( aas_rt_child_t ), fp );
+    _routetable->numChildren = LittleLong( _routetable->numChildren );
+    _routetable->children = ( aas_rt_child_t* ) AAS_RT_GetClearedMemory( _routetable->numChildren * sizeof( aas_rt_child_t ) );
+    botimport.FS_Read( _routetable->children, _routetable->numChildren * sizeof( aas_rt_child_t ), fp );
     child = &_routetable->children[0];
     if( doswap )
     {
@@ -418,9 +418,9 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     
     // parents
     botimport.FS_Read( &_routetable->numParents, sizeof( int ), fp );
-	_routetable->numParents = LittleLong(_routetable->numParents );
-	_routetable->parents = ( aas_rt_parent_t* ) AAS_RT_GetClearedMemory(_routetable->numParents * sizeof( aas_rt_parent_t ) );
-    botimport.FS_Read(_routetable->parents, _routetable->numParents * sizeof( aas_rt_parent_t ), fp );
+    _routetable->numParents = LittleLong( _routetable->numParents );
+    _routetable->parents = ( aas_rt_parent_t* ) AAS_RT_GetClearedMemory( _routetable->numParents * sizeof( aas_rt_parent_t ) );
+    botimport.FS_Read( _routetable->parents, _routetable->numParents * sizeof( aas_rt_parent_t ), fp );
     parent = &_routetable->parents[0];
     if( doswap )
     {
@@ -436,9 +436,9 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     
     // parentChildren
     botimport.FS_Read( &_routetable->numParentChildren, sizeof( int ), fp );
-	_routetable->numParentChildren = LittleLong(_routetable->numParentChildren );
-	_routetable->parentChildren = ( unsigned short int* ) AAS_RT_GetClearedMemory(_routetable->numParentChildren * sizeof( unsigned short int ) );
-    botimport.FS_Read(_routetable->parentChildren, _routetable->numParentChildren * sizeof( unsigned short int ), fp );
+    _routetable->numParentChildren = LittleLong( _routetable->numParentChildren );
+    _routetable->parentChildren = ( unsigned short int* ) AAS_RT_GetClearedMemory( _routetable->numParentChildren * sizeof( unsigned short int ) );
+    botimport.FS_Read( _routetable->parentChildren, _routetable->numParentChildren * sizeof( unsigned short int ), fp );
     psi = &_routetable->parentChildren[0];
     if( doswap )
     {
@@ -450,9 +450,9 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     
     // visibleParents
     botimport.FS_Read( &_routetable->numVisibleParents, sizeof( int ), fp );
-	_routetable->numVisibleParents = LittleLong(_routetable->numVisibleParents );
-	_routetable->visibleParents = ( unsigned short int* ) AAS_RT_GetClearedMemory(_routetable->numVisibleParents * sizeof( unsigned short int ) );
-    botimport.FS_Read(_routetable->visibleParents, _routetable->numVisibleParents * sizeof( unsigned short int ), fp );
+    _routetable->numVisibleParents = LittleLong( _routetable->numVisibleParents );
+    _routetable->visibleParents = ( unsigned short int* ) AAS_RT_GetClearedMemory( _routetable->numVisibleParents * sizeof( unsigned short int ) );
+    botimport.FS_Read( _routetable->visibleParents, _routetable->numVisibleParents * sizeof( unsigned short int ), fp );
     psi = &_routetable->visibleParents[0];
     if( doswap )
     {
@@ -464,9 +464,9 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     
     // parentLinks
     botimport.FS_Read( &_routetable->numParentLinks, sizeof( int ), fp );
-	_routetable->numParentLinks = LittleLong(_routetable->numParentLinks );
-	_routetable->parentLinks = ( aas_rt_parent_link_t* ) AAS_RT_GetClearedMemory(_routetable->numParentLinks * sizeof( aas_rt_parent_link_t ) );
-    botimport.FS_Read(_routetable->parentLinks, _routetable->numParentLinks * sizeof( aas_parent_link_t ), fp );
+    _routetable->numParentLinks = LittleLong( _routetable->numParentLinks );
+    _routetable->parentLinks = ( aas_rt_parent_link_t* ) AAS_RT_GetClearedMemory( _routetable->numParentLinks * sizeof( aas_rt_parent_link_t ) );
+    botimport.FS_Read( _routetable->parentLinks, _routetable->numParentLinks * sizeof( aas_parent_link_t ), fp );
     plink = &_routetable->parentLinks[0];
     if( doswap )
     {
@@ -478,11 +478,11 @@ bool AAS_RT_ReadRouteTable( fileHandle_t fp )
     }
     
     // build the areaChildIndexes
-	_routetable->areaChildIndexes = ( unsigned short int* ) AAS_RT_GetClearedMemory( ( *aasworld ).numareas * sizeof( unsigned short int ) );
+    _routetable->areaChildIndexes = ( unsigned short int* ) AAS_RT_GetClearedMemory( ( *aasworld ).numareas * sizeof( unsigned short int ) );
     child = _routetable->children;
     for( i = 0; i < _routetable->numChildren; i++, child++ )
     {
-		_routetable->areaChildIndexes[child->areanum] = i + 1;
+        _routetable->areaChildIndexes[child->areanum] = i + 1;
     }
     
     botimport.Print( PRT_MESSAGE, "Total Parents: %d\n", _routetable->numParents );
@@ -923,15 +923,15 @@ void AAS_RT_BuildRouteTable( void )
         // children
         rt->numChildren = childcount;
         rt->children = ( aas_rt_child_t* ) AAS_RT_GetClearedMemory( rt->numChildren * sizeof( aas_rt_child_t ) );
-		_child = rt->children;
+        _child = rt->children;
         for( i = 0; i < childcount; i++, _child++ )
         {
             chloc = area_childlocaldata[i];
             
-			_child->areanum = chloc->areanum;
-			_child->numParentLinks = AAS_RT_NumParentLinks( chloc );
+            _child->areanum = chloc->areanum;
+            _child->numParentLinks = AAS_RT_NumParentLinks( chloc );
             
-			_child->startParentLinks = parentLinkCount;
+            _child->startParentLinks = parentLinkCount;
             
             parentLinkCount += _child->numParentLinks;
         }

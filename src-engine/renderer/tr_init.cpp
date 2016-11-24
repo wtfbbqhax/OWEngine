@@ -731,7 +731,7 @@ void R_TakeScreenshot( int x, int y, int width, int height, char* fileName )
         printf( "R_TakeScreenshot out of bounds\n" );
     }
     
-    buffer = (byte*)ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 3 + 18 );
+    buffer = ( byte* )ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 3 + 18 );
     
     memset( buffer, 0, 18 );
     buffer[2] = 2;      // uncompressed type
@@ -773,7 +773,7 @@ void R_TakeScreenshotJPEG( int x, int y, int width, int height, char* fileName )
 {
     byte* buffer;
     
-    buffer = (byte*)ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 4 );
+    buffer = ( byte* )ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 4 );
     
     glReadPixels( x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
     
@@ -864,9 +864,9 @@ void R_LevelShot( void )
     
     sprintf( checkname, "levelshots/%s.tga", tr.world->baseName );
     
-    source = (byte*)ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 3 );
+    source = ( byte* )ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight * 3 );
     
-    buffer = (byte*)ri.Hunk_AllocateTempMemory( 128 * 128 * 3 + 18 );
+    buffer = ( byte* )ri.Hunk_AllocateTempMemory( 128 * 128 * 3 + 18 );
     memset( buffer, 0, 18 );
     buffer[2] = 2;      // uncompressed type
     buffer[12] = 128;
@@ -1574,12 +1574,12 @@ void R_Init( void )
     max_polys = MAX_POLYS;
     max_polyverts = MAX_POLYVERTS;
     
-    backEndData[0] = (backEndData_t*)ri.Hunk_Alloc( sizeof( backEndData_t ), h_low );
+    backEndData[0] = ( backEndData_t* )ri.Hunk_Alloc( sizeof( backEndData_t ), h_low );
 //	backEndData[0] = ri.Hunk_Alloc( sizeof( *backEndData[0] ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
 
     if( r_smp->integer )
     {
-        backEndData[1] = (backEndData_t*)ri.Hunk_Alloc( sizeof( *backEndData[1] ), h_low );
+        backEndData[1] = ( backEndData_t* )ri.Hunk_Alloc( sizeof( *backEndData[1] ), h_low );
 //        backEndData[1] = ri.Hunk_Alloc( sizeof( *backEndData[1] ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
     }
     else

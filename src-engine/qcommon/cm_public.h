@@ -62,12 +62,12 @@ char* CM_EntityString( void );
 int CM_PointContents( const vec3_t p, clipHandle_t model );
 int CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles );
 void CM_BoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
-                         const vec3_t mins, const vec3_t maxs,
-                         clipHandle_t model, int brushmask, int capsule );
+                  const vec3_t mins, const vec3_t maxs,
+                  clipHandle_t model, int brushmask, int capsule );
 void CM_TransformedBoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
-                                    const vec3_t mins, const vec3_t maxs,
-                                    clipHandle_t model, int brushmask,
-                                    const vec3_t origin, const vec3_t angles, int capsule );
+                             const vec3_t mins, const vec3_t maxs,
+                             clipHandle_t model, int brushmask,
+                             const vec3_t origin, const vec3_t angles, int capsule );
 byte* CM_ClusterPVS( int cluster );
 int CM_PointLeafnum( const vec3_t p );
 // only returns non-solid leafs
@@ -77,7 +77,7 @@ int CM_LeafCluster( int leafnum );
 int CM_LeafArea( int leafnum );
 bool CM_AreasConnected( int area1, int area2 );
 int CM_WriteAreaBits( byte* buffer, int area );
-void CM_AdjustAreaPortalState(int area1, int area2, bool open);
+void CM_AdjustAreaPortalState( int area1, int area2, bool open );
 void CM_DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) );
 
 #endif // !__CM_PUBLIC_H__

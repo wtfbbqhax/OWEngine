@@ -209,7 +209,7 @@ tree_t* Tree_Alloc( void )
 {
     tree_t*  tree;
     
-    tree = (tree_t*)GetMemory( sizeof( *tree ) );
+    tree = ( tree_t* )GetMemory( sizeof( *tree ) );
     memset( tree, 0, sizeof( *tree ) );
     ClearBounds( tree->mins, tree->maxs );
     

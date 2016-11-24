@@ -460,7 +460,7 @@ node_t* AllocNode( void )
 {
     node_t*  node;
     
-    node = (node_t*)GetMemory( sizeof( *node ) );
+    node = ( node_t* )GetMemory( sizeof( *node ) );
     memset( node, 0, sizeof( *node ) );
     if( numthreads == 1 )
     {
@@ -480,7 +480,7 @@ bspbrush_t* AllocBrush( int numsides )
     int c;
     
     c = ( int ) & ( ( ( bspbrush_t* )0 )->sides[numsides] );
-    bb = (bspbrush_t*)GetMemory( c );
+    bb = ( bspbrush_t* )GetMemory( c );
     memset( bb, 0, c );
     if( numthreads == 1 )
     {

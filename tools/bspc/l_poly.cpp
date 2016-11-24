@@ -93,7 +93,7 @@ winding_t* AllocWinding( int points )
     int s;
     
     s = sizeof( vec_t ) * 3 * points + sizeof( int );
-    w = (winding_t*)GetMemory( s );
+    w = ( winding_t* )GetMemory( s );
     memset( w, 0, s );
     
     if( numthreads == 1 )

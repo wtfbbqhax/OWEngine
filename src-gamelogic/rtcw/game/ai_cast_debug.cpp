@@ -180,7 +180,7 @@ void AICast_DBG_Spawn_f( gclient_t* client, char* cmd )
     vec3_t dir;
     
     ent = G_Spawn();
-    ent->classname = (char*)G_Alloc( strlen( cmd ) + 1 );
+    ent->classname = ( char* )G_Alloc( strlen( cmd ) + 1 );
     strcpy( ent->classname, cmd );
     AngleVectors( client->ps.viewangles, dir, NULL, NULL );
     VectorMA( client->ps.origin, 96, dir, ent->s.origin );

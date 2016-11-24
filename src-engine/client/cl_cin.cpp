@@ -139,8 +139,8 @@ typedef struct
     byte*               gray;
     unsigned int xsize, ysize, maxsize, minsize;
     
-	bool half, smootheddouble;
-	int inMemory;
+    bool half, smootheddouble;
+    int inMemory;
     long normalBuffer0;
     long roq_flags;
     long roqF0;
@@ -2046,7 +2046,7 @@ void CIN_DrawCinematic( int handle )
         }
         
         buf3 = ( int* )buf;
-        buf2 = (int*)Hunk_AllocateTempMemory( 256 * 256 * 4 );
+        buf2 = ( int* )Hunk_AllocateTempMemory( 256 * 256 * 4 );
         if( xm == 2 && ym == 2 )
         {
             byte* bc2, *bc3;

@@ -94,7 +94,7 @@ void CG_CheckAmmo( void )
             case WP_MAUSER:
             case WP_GARAND:
             default:
-                total += cg.snap->ps.ammo[BG_FindAmmoForWeapon( (weapon_t)i )] * 1000;
+                total += cg.snap->ps.ammo[BG_FindAmmoForWeapon( ( weapon_t )i )] * 1000;
 //				break;
 //			default:
 //				total += cg.snap->ps.ammo[BG_FindAmmoForWeapon(i)] * 200;

@@ -73,7 +73,7 @@ extern "C" {
 // cinematics and voice-over-network will send raw samples
 // 1.0 volume will be direct output of source samples
     void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte* data, float lvol, float rvol, int streamingIndex );
-                       
+    
 // stop all sounds and the background track
     void S_StopAllSounds( void );
     

@@ -173,7 +173,7 @@ int AICast_SetupClient( int client )
     
     if( !botstates[client] )
     {
-        botstates[client] = (bot_state_t*)G_Alloc( sizeof( bot_state_t ) );
+        botstates[client] = ( bot_state_t* )G_Alloc( sizeof( bot_state_t ) );
         memset( botstates[client], 0, sizeof( bot_state_t ) );
     }
     bs = botstates[client];
@@ -543,7 +543,7 @@ void AICast_Init( void )
     
     aicast_skillscale = ( float )trap_Cvar_VariableIntegerValue( "g_gameSkill" ) / ( float )GSKILL_MAX;
     
-    caststates = (cast_state_t*)G_Alloc( aicast_maxclients * sizeof( cast_state_t ) );
+    caststates = ( cast_state_t* )G_Alloc( aicast_maxclients * sizeof( cast_state_t ) );
     memset( caststates, 0, sizeof( caststates ) );
     for( i = 0; i < MAX_CLIENTS; i++ )
     {
@@ -728,7 +728,7 @@ void AICast_DelayedSpawnCast( gentity_t* ent, int castType )
 //----(SA)	make sure client registers the default weapons for this char
     for( i = 0; aiDefaults[ent->aiCharacter].weapons[i]; i++ )
     {
-        RegisterItem( BG_FindItemForWeapon( (weapon_t)aiDefaults[ent->aiCharacter].weapons[i] ) );
+        RegisterItem( BG_FindItemForWeapon( ( weapon_t )aiDefaults[ent->aiCharacter].weapons[i] ) );
     }
 //----(SA)	end
 

@@ -1131,7 +1131,7 @@ static void ConcatRemaining( const char* src, const char* start )
 {
     char* str;
     
-    str = (char*)strstr( src, start );
+    str = ( char* )strstr( src, start );
     if( !str )
     {
         keyConcatArgs();

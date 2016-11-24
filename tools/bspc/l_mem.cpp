@@ -105,7 +105,7 @@ int MemorySize( void* ptr )
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void* GetClearedMemory(unsigned long size )
+void* GetClearedMemory( unsigned long size )
 {
     void* ptr;
     
@@ -452,9 +452,9 @@ typedef struct memhunk_s
 
 typedef enum
 {
-	h_high,
-	h_low,
-	h_dontcare
+    h_high,
+    h_low,
+    h_dontcare
 } ha_pref;
 
 memhunk_t* memhunk_high;
@@ -486,7 +486,7 @@ void Hunk_ClearHigh( void )
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void* Hunk_Alloc(int size, ha_pref preference)
+void* Hunk_Alloc( int size, ha_pref preference )
 {
     memhunk_t* h;
     
@@ -495,7 +495,7 @@ void* Hunk_Alloc(int size, ha_pref preference)
         return ( void* ) memhunk_high_size;
     }
     //
-    h = (memhunk_t*)GetClearedMemory( size + sizeof( memhunk_t ) );
+    h = ( memhunk_t* )GetClearedMemory( size + sizeof( memhunk_t ) );
     h->ptr = ( char* ) h + sizeof( memhunk_t );
     h->next = memhunk_high;
     memhunk_high = h;

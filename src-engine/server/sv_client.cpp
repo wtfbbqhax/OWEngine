@@ -936,7 +936,7 @@ void SV_WriteDownloadToClient( client_t* cl, msg_t* msg )
         
         if( !cl->downloadBlocks[curindex] )
         {
-            cl->downloadBlocks[curindex] = (unsigned char*)Z_Malloc( MAX_DOWNLOAD_BLKSIZE );
+            cl->downloadBlocks[curindex] = ( unsigned char* )Z_Malloc( MAX_DOWNLOAD_BLKSIZE );
         }
         
         cl->downloadBlockSize[curindex] = FS_Read( cl->downloadBlocks[curindex], MAX_DOWNLOAD_BLKSIZE, cl->download );

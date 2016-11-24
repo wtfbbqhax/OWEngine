@@ -591,7 +591,7 @@ void Com_Parse3DMatrix( const char * ( *buf_p ), int z, int y, int x, float* m )
 
 //=====================================================================================
 void Com_sprintf( char* dest, int size, const char* fmt, ... );
-       
+
 // mode parm for FS_FOpenFile
 typedef enum
 {
@@ -600,21 +600,21 @@ typedef enum
     FS_APPEND,
     FS_APPEND_SYNC
 } fsMode_t;
-    
+
 typedef enum
 {
     FS_SEEK_CUR,
     FS_SEEK_END,
     FS_SEEK_SET
 } fsOrigin_t;
-    
+
 //=============================================
 
 int Q_isprint( int c );
 int Q_islower( int c );
 int Q_isupper( int c );
 int Q_isalpha( int c );
-    
+
 // portable case insensitive compare
 int     Q_stricmp( const char* s1, const char* s2 );
 int     Q_strncmp( const char* s1, const char* s2, int n );
@@ -622,20 +622,20 @@ int     Q_stricmpn( const char* s1, const char* s2, int n );
 char*    Q_strlwr( char* s1 );
 char*    Q_strupr( char* s1 );
 char*    Q_strrchr( const char* string, int c );
-    
+
 // buffer size safe library replacements
 void    Q_strncpyz( char* dest, const char* src, int destsize );
 void    Q_strcat( char* dest, int size, const char* src );
-    
+
 // strlen that discounts Quake color sequences
 int Q_PrintStrlen( const char* string );
 // removes color sequences from string
 char* Q_CleanStr( char* string );
-    
+
 int         Com_Filter( const char* filter, const char* name, int casesensitive );
 const char* Com_StringContains( const char* str1, const char* str2, int casesensitive );
-    
-    
+
+
 //=============================================
 
 short   BigShort( short l );
@@ -644,10 +644,10 @@ int     BigLong( int l );
 int     LittleLong( int l );
 float   BigFloat( float l );
 float   LittleFloat( float l );
-    
+
 void    Swap_Init( void );
 char*   va( char* format, ... );
-    
+
 //=============================================
 //
 // mapfile parsing

@@ -688,7 +688,7 @@ void SV_BotInitBotLib( void )
 #endif	/* _WIN32 */
     }
     
-    GetBotAPI = (GetBotLibAPI)Sys_LoadFunction( botLib, "GetBotLibraryAPI" );
+    GetBotAPI = ( GetBotLibAPI )Sys_LoadFunction( botLib, "GetBotLibraryAPI" );
     if( !GetBotAPI )
     {
         Com_Error( ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_DLLError() );

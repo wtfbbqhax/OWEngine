@@ -246,7 +246,7 @@ intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intpt
             return _UI_IsFullscreen();
             
         case UI_SET_ACTIVE_MENU:
-            _UI_SetActiveMenu( (uiMenuCommand_t)arg0 );
+            _UI_SetActiveMenu( ( uiMenuCommand_t )arg0 );
             return 0;
             
         case UI_GET_ACTIVE_MENU:
@@ -404,7 +404,7 @@ int Text_Height( const char* text, int font, float scale, int limit )
     float max;
     glyphInfo_t* glyph;
     float useScale;
-    const unsigned char* s = (const unsigned char*)text;
+    const unsigned char* s = ( const unsigned char* )text;
     
     fontInfo_t* fnt = &uiInfo.uiDC.Assets.textFont;
     if( font == UI_FONT_DEFAULT )
@@ -507,7 +507,7 @@ void Text_Paint( float x, float y, int font, float scale, vec4_t color, const ch
     useScale = scale * fnt->glyphScale;
     if( text )
     {
-        const unsigned char* s = (const unsigned char*)text;
+        const unsigned char* s = ( const unsigned char* )text;
         trap_R_SetColor( color );
         memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
         len = strlen( text );
@@ -606,7 +606,7 @@ void Text_PaintWithCursor( float x, float y, int font, float scale, vec4_t color
     useScale = scale * fnt->glyphScale;
     if( text )
     {
-        const unsigned char* s = (const unsigned char*)text;
+        const unsigned char* s = ( const unsigned char* )text;
         trap_R_SetColor( color );
         memcpy( &newColor[0], &color[0], sizeof( vec4_t ) );
         len = strlen( text );
@@ -1329,7 +1329,7 @@ static void UI_LoadTranslationStrings( void )
         {
             break;
         }
-        translateStrings[i].localname = (char*)malloc( strlen( token ) + 1 );
+        translateStrings[i].localname = ( char* )malloc( strlen( token ) + 1 );
         strcpy( translateStrings[i].localname, token );
     }
 }
@@ -2122,7 +2122,7 @@ static void UI_DrawPlayerModel( rectDef_t* rect )
 #else
         UI_PlayerInfo_SetModel( &info, model );
 #endif  // MISSIONPACK
-        UI_PlayerInfo_SetInfo( &info, LEGS_IDLE, TORSO_STAND, viewangles, moveangles, (weapon_t)-1, false );
+        UI_PlayerInfo_SetInfo( &info, LEGS_IDLE, TORSO_STAND, viewangles, moveangles, ( weapon_t ) - 1, false );
         //		UI_RegisterClientModelname( &info, model, head, team);
         updateModel = false;
     }
@@ -5167,11 +5167,11 @@ static void WM_ChangePlayerType()
         
         if( i == playerType )
         {
-            Menu_ShowItemByName( (menuDef_t*)itemdef->parent, playerTypes[i].name, true );
+            Menu_ShowItemByName( ( menuDef_t* )itemdef->parent, playerTypes[i].name, true );
         }
         else
         {
-            Menu_ShowItemByName((menuDef_t*)itemdef->parent, playerTypes[i].name, false );
+            Menu_ShowItemByName( ( menuDef_t* )itemdef->parent, playerTypes[i].name, false );
         }
         
         // selected only settings

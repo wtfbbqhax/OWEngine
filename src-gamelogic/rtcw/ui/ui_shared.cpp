@@ -309,7 +309,7 @@ const char* String_Alloc( const char* p )
             str = str->next;
         }
         
-        str = (stringDef_t*)UI_Alloc( sizeof( stringDef_t ) );
+        str = ( stringDef_t* )UI_Alloc( sizeof( stringDef_t ) );
         str->next = NULL;
         str->str = &strPool[ph];
         if( last )
@@ -986,7 +986,7 @@ void Item_UpdatePosition( itemDef_t* item )
         return;
     }
     
-    menu = (menuDef_t*)item->parent;
+    menu = ( menuDef_t* )item->parent;
     
     x = menu->window.rect.x;
     y = menu->window.rect.y;
@@ -1093,7 +1093,7 @@ int Menu_ItemsMatchingGroup( menuDef_t* menu, const char* name )
     int wildcard = -1;  // if wildcard is set, it's value is the number of characters to compare
     
     
-    pdest = (char*)strstr( name, "*" ); // allow wildcard strings (ex.  "hide nb_*" would translate to "hide nb_pg1; hide nb_extra" etc)
+    pdest = ( char* )strstr( name, "*" ); // allow wildcard strings (ex.  "hide nb_*" would translate to "hide nb_pg1; hide nb_extra" etc)
     if( pdest )
     {
         wildcard = pdest - name;
@@ -1127,7 +1127,7 @@ itemDef_t* Menu_GetMatchingItemByNumber( menuDef_t* menu, int index, const char*
     char* pdest;
     int wildcard = -1;  // if wildcard is set, it's value is the number of characters to compare
     
-    pdest = (char*)strstr( name, "*" ); // allow wildcard strings (ex.  "hide nb_*" would translate to "hide nb_pg1; hide nb_extra" etc)
+    pdest = ( char* )strstr( name, "*" ); // allow wildcard strings (ex.  "hide nb_*" would translate to "hide nb_pg1; hide nb_extra" etc)
     if( pdest )
     {
         wildcard = pdest - name;
@@ -1274,7 +1274,7 @@ void Script_SetItemColor( itemDef_t* item, char** args )
     {
         itemDef_t* item2;
         int j;
-        int count = Menu_ItemsMatchingGroup((menuDef_t*)item->parent, itemname );
+        int count = Menu_ItemsMatchingGroup( ( menuDef_t* )item->parent, itemname );
         
         if( !Color_Parse( args, &color ) )
         {
@@ -1283,7 +1283,7 @@ void Script_SetItemColor( itemDef_t* item, char** args )
         
         for( j = 0; j < count; j++ )
         {
-            item2 = Menu_GetMatchingItemByNumber((menuDef_t*)item->parent, j, itemname );
+            item2 = Menu_GetMatchingItemByNumber( ( menuDef_t* )item->parent, j, itemname );
             if( item2 != NULL )
             {
                 out = NULL;
@@ -1429,7 +1429,7 @@ void Script_Show( itemDef_t* item, char** args )
     const char* name;
     if( String_Parse( args, &name ) )
     {
-        Menu_ShowItemByName((menuDef_t*)item->parent, name, true );
+        Menu_ShowItemByName( ( menuDef_t* )item->parent, name, true );
     }
 }
 
@@ -1438,7 +1438,7 @@ void Script_Hide( itemDef_t* item, char** args )
     const char* name;
     if( String_Parse( args, &name ) )
     {
-        Menu_ShowItemByName((menuDef_t*)item->parent, name, false );
+        Menu_ShowItemByName( ( menuDef_t* )item->parent, name, false );
     }
 }
 
@@ -1447,7 +1447,7 @@ void Script_FadeIn( itemDef_t* item, char** args )
     const char* name;
     if( String_Parse( args, &name ) )
     {
-        Menu_FadeItemByName((menuDef_t*)item->parent, name, false );
+        Menu_FadeItemByName( ( menuDef_t* )item->parent, name, false );
     }
 }
 
@@ -1456,7 +1456,7 @@ void Script_FadeOut( itemDef_t* item, char** args )
     const char* name;
     if( String_Parse( args, &name ) )
     {
-        Menu_FadeItemByName((menuDef_t*)item->parent, name, true );
+        Menu_FadeItemByName( ( menuDef_t* )item->parent, name, true );
     }
 }
 
@@ -1492,7 +1492,7 @@ void Script_Clipboard( itemDef_t* item, char** args )
 {
     char curscript[64];
     DC->getCVarString( "cg_clipboardName", curscript, sizeof( curscript ) ); // grab the string the client set
-    Menu_ShowItemByName((menuDef_t*)item->parent, curscript, true );
+    Menu_ShowItemByName( ( menuDef_t* )item->parent, curscript, true );
 }
 
 
@@ -1608,21 +1608,21 @@ void Script_NotebookShowpage( itemDef_t* item, char** args )
         
         // hide all the pages
 //		Menu_ShowItemByName(item->parent, "page_*", false);
-        Menu_ShowItemByName((menuDef_t*)item->parent, "cover", false );
+        Menu_ShowItemByName( ( menuDef_t* )item->parent, "cover", false );
         for( i = 1; i <= NOTEBOOK_MAX_PAGES; i++ )
         {
-            Menu_ShowItemByName((menuDef_t*)item->parent, va( "page%d", i ), false );
+            Menu_ShowItemByName( ( menuDef_t* )item->parent, va( "page%d", i ), false );
         }
         
         // show the visible one
         
         if( curpage )
         {
-            Menu_ShowItemByName((menuDef_t*)item->parent, va( "page%d", curpage ), true );
+            Menu_ShowItemByName( ( menuDef_t* )item->parent, va( "page%d", curpage ), true );
         }
         else
         {
-            Menu_ShowItemByName((menuDef_t*)item->parent, "cover", true );
+            Menu_ShowItemByName( ( menuDef_t* )item->parent, "cover", true );
         }
         
         DC->setCVar( "ui_notebookCurrentPage", va( "%d", curpage ) ); // store new current page
@@ -1667,7 +1667,7 @@ void Script_Transition( itemDef_t* item, char** args )
     {
         if( Rect_Parse( args, &rectFrom ) && Rect_Parse( args, &rectTo ) && Int_Parse( args, &time ) && Float_Parse( args, &amt ) )
         {
-            Menu_TransitionItemByName( (menuDef_t*)item->parent, name, rectFrom, rectTo, time, amt );
+            Menu_TransitionItemByName( ( menuDef_t* )item->parent, name, rectFrom, rectTo, time, amt );
         }
     }
 }
@@ -1705,7 +1705,7 @@ void Script_Orbit( itemDef_t* item, char** args )
     {
         if( Float_Parse( args, &x ) && Float_Parse( args, &y ) && Float_Parse( args, &cx ) && Float_Parse( args, &cy ) && Int_Parse( args, &time ) )
         {
-            Menu_OrbitItemByName((menuDef_t*)item->parent, name, x, y, cx, cy, time );
+            Menu_OrbitItemByName( ( menuDef_t* )item->parent, name, x, y, cx, cy, time );
         }
     }
 }
@@ -1719,10 +1719,10 @@ void Script_SetFocus( itemDef_t* item, char** args )
     
     if( String_Parse( args, &name ) )
     {
-        focusItem = Menu_FindItemByName((menuDef_t*)item->parent, name );
+        focusItem = Menu_FindItemByName( ( menuDef_t* )item->parent, name );
         if( focusItem && !( focusItem->window.flags & WINDOW_DECORATION ) && !( focusItem->window.flags & WINDOW_HASFOCUS ) )
         {
-            Menu_ClearFocus((menuDef_t*)item->parent );
+            Menu_ClearFocus( ( menuDef_t* )item->parent );
             focusItem->window.flags |= WINDOW_HASFOCUS;
             if( focusItem->onFocus )
             {
@@ -1801,7 +1801,7 @@ void Script_AddListItem( itemDef_t* item, char** args )
     
     if( String_Parse( args, &itemname ) && String_Parse( args, &val ) && String_Parse( args, &name ) )
     {
-        t = Menu_FindItemByName((menuDef_t*)item->parent, itemname );
+        t = Menu_FindItemByName( ( menuDef_t* )item->parent, itemname );
         if( t && t->special )
         {
             DC->feederAddItem( t->special, name, atoi( val ) );
@@ -1960,7 +1960,7 @@ bool Item_SetFocus( itemDef_t* item, float x, float y )
         return false;
     }
     
-    oldFocus = Menu_ClearFocus((menuDef_t*)item->parent );
+    oldFocus = Menu_ClearFocus( ( menuDef_t* )item->parent );
     
     if( item->type == ITEM_TYPE_TEXT )
     {
@@ -2118,7 +2118,7 @@ int Item_ListBox_ThumbDrawPosition( itemDef_t* item )
 float Item_Slider_ThumbPosition( itemDef_t* item )
 {
     float value, range, x;
-    editFieldDef_t* editDef = (editFieldDef_t*)item->typeData;
+    editFieldDef_t* editDef = ( editFieldDef_t* )item->typeData;
     
     if( item->text )
     {
@@ -2988,7 +2988,7 @@ bool Item_TextField_HandleKey( itemDef_t* item, int key )
         
         if( key == K_TAB || key == K_DOWNARROW || key == K_KP_DOWNARROW )
         {
-            newItem = Menu_SetNextCursorItem((menuDef_t*)item->parent );
+            newItem = Menu_SetNextCursorItem( ( menuDef_t* )item->parent );
             if( newItem && ( newItem->type == ITEM_TYPE_EDITFIELD || newItem->type == ITEM_TYPE_NUMERICFIELD || newItem->type == ITEM_TYPE_VALIDFILEFIELD ) )
             {
                 g_editItem = newItem;
@@ -2997,7 +2997,7 @@ bool Item_TextField_HandleKey( itemDef_t* item, int key )
         
         if( key == K_UPARROW || key == K_KP_UPARROW )
         {
-            newItem = Menu_SetPrevCursorItem((menuDef_t*)item->parent );
+            newItem = Menu_SetPrevCursorItem( ( menuDef_t* )item->parent );
             if( newItem && ( newItem->type == ITEM_TYPE_EDITFIELD || newItem->type == ITEM_TYPE_NUMERICFIELD || newItem->type == ITEM_TYPE_VALIDFILEFIELD ) )
             {
                 g_editItem = newItem;
@@ -3123,7 +3123,7 @@ static void Scroll_Slider_ThumbFunc( void* p )
 {
     float x, value, cursorx;
     scrollInfo_t* si = ( scrollInfo_t* )p;
-    editFieldDef_t* editDef = (editFieldDef_t*)si->item->typeData;
+    editFieldDef_t* editDef = ( editFieldDef_t* )si->item->typeData;
     
     if( si->item->text )
     {
@@ -3219,7 +3219,7 @@ bool Item_Slider_HandleKey( itemDef_t* item, int key, bool down )
     {
         if( key == K_MOUSE1 || key == K_ENTER || key == K_MOUSE2 || key == K_MOUSE3 )
         {
-            editFieldDef_t* editDef = (editFieldDef_t*)item->typeData;
+            editFieldDef_t* editDef = ( editFieldDef_t* )item->typeData;
             if( editDef )
             {
                 rectDef_t testRect;
@@ -7301,7 +7301,7 @@ bool MenuParse_itemDef( itemDef_t* item, int handle )
     menuDef_t* menu = ( menuDef_t* )item;
     if( menu->itemCount < MAX_MENUITEMS )
     {
-        menu->items[menu->itemCount] = (itemDef_t*)UI_Alloc( sizeof( itemDef_t ) );
+        menu->items[menu->itemCount] = ( itemDef_t* )UI_Alloc( sizeof( itemDef_t ) );
         Item_Init( menu->items[menu->itemCount] );
         if( !Item_Parse( handle, menu->items[menu->itemCount] ) )
         {
@@ -7535,7 +7535,7 @@ void* Display_CaptureItem( int x, int y )
 bool Display_MouseMove( void* p, int x, int y )
 {
     int i;
-    menuDef_t* menu = (menuDef_t*)p;
+    menuDef_t* menu = ( menuDef_t* )p;
     
     if( menu == NULL )
     {
@@ -7583,7 +7583,7 @@ int Display_CursorType( int x, int y )
 
 void Display_HandleKey( int key, bool down, int x, int y )
 {
-    menuDef_t* menu = (menuDef_t*)Display_CaptureItem( x, y );
+    menuDef_t* menu = ( menuDef_t* )Display_CaptureItem( x, y );
     if( menu == NULL )
     {
         menu = Menu_GetFocused();

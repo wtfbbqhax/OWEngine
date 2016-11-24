@@ -77,7 +77,7 @@ bool loadCamera( int camNum, const char* name )
     // TTimo static_cast confused gcc, went for C-style casting
     return ( bool )( camera[camNum].load( name ) );
 }
-    
+
 bool getCameraInfo( int camNum, int time, float* origin, float* angles, float* fov )
 {
     idVec3 dir, org;
@@ -99,7 +99,7 @@ bool getCameraInfo( int camNum, int time, float* origin, float* angles, float* f
     }
     return false;
 }
-    
+
 void startCamera( int camNum, int time )
 {
     if( camNum < 0 || camNum >= MAX_CAMERAS )

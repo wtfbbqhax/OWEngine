@@ -479,7 +479,7 @@ void R_AddMDCSurfaces( trRefEntity_t* ent )
                 && shader->sort == SS_OPAQUE )
         {
 // GR - tessellate according to model capabilities
-            R_AddDrawSurf( (surfaceType_t* )surface, tr.shadowShader, 0, false, tr.currentModel->ATI_tess );
+            R_AddDrawSurf( ( surfaceType_t* )surface, tr.shadowShader, 0, false, tr.currentModel->ATI_tess );
         }
         
 //----(SA)

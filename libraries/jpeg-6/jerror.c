@@ -19,7 +19,7 @@
 #include "jversion.h"
 #include "jerror.h"
 
-#include "../../src-engine/renderer/tr_local.h"
+//#include "../../src-engine/renderer/tr_local.h"
 
 #ifndef EXIT_FAILURE        /* define exit() codes if not provided */
 #define EXIT_FAILURE  1
@@ -69,7 +69,8 @@ error_exit( j_common_ptr cinfo ) {
 	/* Let the memory manager delete any temp files before we die */
 	jpeg_destroy( cinfo );
 
-	ri.Error( ERR_FATAL, "%s\n", buffer );
+	//ri.Error( ERR_FATAL, "%s\n", buffer );
+	exit(EXIT_FAILURE);
 }
 
 
@@ -87,7 +88,8 @@ output_message( j_common_ptr cinfo ) {
 	( *cinfo->err->format_message )( cinfo, buffer );
 
 	/* Send it to stderr, adding a newline */
-	ri.Printf( PRINT_ALL, "%s\n", buffer );
+	//ri.Printf( PRINT_ALL, "%s\n", buffer );
+	fprintf(stderr, "%s\n", buffer);
 }
 
 

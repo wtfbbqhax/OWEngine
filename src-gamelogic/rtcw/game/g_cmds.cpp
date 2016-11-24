@@ -757,7 +757,7 @@ void SetTeam( gentity_t* ent, char* s )
         client->sess.spectatorTime = level.time;
     }
     
-    client->sess.sessionTeam = (team_t)team;
+    client->sess.sessionTeam = ( team_t )team;
     client->sess.spectatorState = specState;
     client->sess.spectatorClient = specClient;
     
@@ -1931,7 +1931,7 @@ int Cmd_WolfKick_f( gentity_t* ent )
 //			if(traceEnt->key > 0) {	// door requires key
             if( traceEnt->key > KEY_NONE && traceEnt->key < KEY_NUM_KEYS )
             {
-                gitem_t* item = BG_FindItemForKey( (wkey_t)traceEnt->key, 0 );
+                gitem_t* item = BG_FindItemForKey( ( wkey_t )traceEnt->key, 0 );
                 if( !( ent->client->ps.stats[STAT_KEYS] & ( 1 << item->giTag ) ) )
                 {
                     //----(SA)	play kick "hit" sound
@@ -2336,34 +2336,34 @@ void Cmd_EntityCount_f( gentity_t* ent )
         monsters[0] = monsters[1] = 0;
         for( i = 0; i < MAX_CLIENTS; i++ )
         {
-			_ent = &g_entities[i];
+            _ent = &g_entities[i];
             
             if( !_ent->inuse )
             {
                 continue;
             }
             
-            if( !(_ent->r.svFlags & SVF_CASTAI ) )
+            if( !( _ent->r.svFlags & SVF_CASTAI ) )
             {
                 continue;
             }
             
-            if(_ent->aiTeam == AITEAM_ALLIES )
+            if( _ent->aiTeam == AITEAM_ALLIES )
             {
                 continue;
             }
             
             kills[1]++;
             
-            if(_ent->health <= 0 )
+            if( _ent->health <= 0 )
             {
                 kills[0]++;
             }
             
-            if(_ent->aiTeam == AITEAM_NAZI )
+            if( _ent->aiTeam == AITEAM_NAZI )
             {
                 nazis[1]++;
-                if(_ent->health <= 0 )
+                if( _ent->health <= 0 )
                 {
                     nazis[0]++;
                 }
@@ -2371,7 +2371,7 @@ void Cmd_EntityCount_f( gentity_t* ent )
             else
             {
                 monsters[1]++;
-                if(_ent->health <= 0 )
+                if( _ent->health <= 0 )
                 {
                     monsters[0]++;
                 }
