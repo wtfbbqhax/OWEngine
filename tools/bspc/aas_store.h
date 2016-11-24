@@ -124,7 +124,7 @@ extern aas_t* aasworld;
 //stores the AAS file from the temporary AAS
 void AAS_StoreFile( char* filename );
 //returns a number of the given plane
-qboolean AAS_FindPlane( vec3_t normal, float dist, int* planenum );
+bool AAS_FindPlane( vec3_t normal, float dist, int* planenum );
 //allocates the maximum AAS memory for storage
 void AAS_AllocMaxAAS( void );
 //frees the maximum AAS memory for storage

@@ -40,6 +40,15 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __AI_MAIN_H__
+#define __AI_MAIN_H__
+
+#include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/botlib/be_aas.h"
+#include "../../../src-engine/botlib/be_ai_goal.h"
+#include "../../../src-engine/botlib/botlib.h"
+#include "botai.h"
+
 //#define DEBUG
 #define CTF
 
@@ -239,9 +248,11 @@ void AICast_StartFrame( int time );
 // done.
 
 // from the game source
-void QDECL BotAI_Print( int type, char* fmt, ... );
-void QDECL QDECL BotAI_BotInitialChat( bot_state_t* bs, char* type, ... );
-void    BotAI_Trace( bsp_trace_t* bsptrace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask );
-int     BotAI_GetClientState( int clientNum, playerState_t* state );
-int     BotAI_GetEntityState( int entityNum, entityState_t* state );
-int     BotAI_GetSnapshotEntity( int clientNum, int sequence, entityState_t* state );
+void BotAI_Print( int type, char* fmt, ... );
+void BotAI_BotInitialChat( bot_state_t* bs, char* type, ... );
+void BotAI_Trace( bsp_trace_t* bsptrace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask );
+int BotAI_GetClientState( int clientNum, playerState_t* state );
+int BotAI_GetEntityState( int entityNum, entityState_t* state );
+int BotAI_GetSnapshotEntity( int clientNum, int sequence, entityState_t* state );
+
+#endif // !__AI_MAIN_H__

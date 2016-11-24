@@ -15,34 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_syscalls.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_syscalls.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c">
+    <ClCompile Include="..\..\qcommon\q_shared.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
+    <ClCompile Include="..\..\qcommon\q_math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\q_math.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\q_shared.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

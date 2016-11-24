@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __UNZIP_H__
+#define __UNZIP_H__
+
 #if defined( STRICTUNZIP ) || defined( STRICTZIPUNZIP )
 /* like the STRICT of WIN32, we define a pointer that cannot be converted
 	from (void*) without cast */
@@ -356,3 +359,5 @@ extern int unzGetLocalExtrafield( unzFile file, void* buf, unsigned len );
   the return value is the number of unsigned chars copied in buf, or (if <0)
 	the error code
 */
+
+#endif // !__UNZIP_H__

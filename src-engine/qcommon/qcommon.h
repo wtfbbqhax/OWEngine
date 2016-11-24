@@ -41,8 +41,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _QCOMMON_H_
-#define _QCOMMON_H_
+#ifndef __QCOMMON_H__
+#define __QCOMMON_H__
 
 #include "../qcommon/cm_public.h"
 #include <stdint.h>
@@ -54,9 +54,9 @@
 //
 typedef struct
 {
-    qboolean allowoverflow;     // if false, do a Com_Error
-    qboolean overflowed;        // set to true if the buffer size failed (with allowoverflow set)
-    qboolean oob;               // set to true if the buffer size failed (with allowoverflow set)
+    bool allowoverflow;     // if false, do a Com_Error
+    bool overflowed;        // set to true if the buffer size failed (with allowoverflow set)
+    bool oob;               // set to true if the buffer size failed (with allowoverflow set)
     byte*    data;
     int maxsize;
     int cursize;
@@ -111,7 +111,7 @@ void MSG_WriteDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* 
 void MSG_ReadDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* to );
 
 void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entityState_s* to
-                           , qboolean force );
+                           , bool force );
 void MSG_ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to,
                           int number );
 
@@ -186,22 +186,21 @@ typedef struct
     unsigned short port;
 } netadr_t;
 
-void        NET_Init( void );
-void        NET_Shutdown( void );
-void        NET_Restart( void );
-void        NET_Config( qboolean enableNetworking );
+void NET_Init( void );
+void NET_Shutdown( void );
+void NET_Restart( void );
+void NET_Config( bool enableNetworking );
 
-void        NET_SendPacket( netsrc_t sock, int length, const void* data, netadr_t to );
-void QDECL NET_OutOfBandPrint( netsrc_t net_socket, netadr_t adr, const char* format, ... );
+void NET_SendPacket( netsrc_t sock, int length, const void* data, netadr_t to );
+void NET_OutOfBandPrint( netsrc_t net_socket, netadr_t adr, const char* format, ... );
 
-qboolean    NET_CompareAdr( netadr_t a, netadr_t b );
-qboolean    NET_CompareBaseAdr( netadr_t a, netadr_t b );
-qboolean    NET_IsLocalAddress( netadr_t adr );
+bool NET_CompareAdr( netadr_t a, netadr_t b );
+bool NET_CompareBaseAdr( netadr_t a, netadr_t b );
+bool NET_IsLocalAddress( netadr_t adr );
 const char*  NET_AdrToString( netadr_t a );
-qboolean    NET_StringToAdr( const char* s, netadr_t* a );
-qboolean    NET_GetLoopPacket( netsrc_t sock, netadr_t* net_from, msg_t* net_message );
-void        NET_Sleep( int msec );
-
+bool NET_StringToAdr( const char* s, netadr_t* a );
+bool NET_GetLoopPacket( netsrc_t sock, netadr_t* net_from, msg_t* net_message );
+void NET_Sleep( int msec );
 
 //----(SA)	increased for larger submodel entity counts
 #define MAX_MSGLEN              32768       // max length of a message, which may
@@ -209,7 +208,6 @@ void        NET_Sleep( int msec );
 // be fragmented into multiple packets
 #define MAX_DOWNLOAD_WINDOW         8       // max of eight download frames
 #define MAX_DOWNLOAD_BLKSIZE        2048    // 2048 byte block chunks
-
 
 /*
 Netchan handles packet fragmentation and out of order / duplicate suppression
@@ -235,19 +233,19 @@ typedef struct
     
     // outgoing fragment buffer
     // we need to space out the sending of large fragmented messages
-    qboolean unsentFragments;
+    bool unsentFragments;
     int unsentFragmentStart;
     int unsentLength;
     byte unsentBuffer[MAX_MSGLEN];
 } netchan_t;
 
 void Netchan_Init( int qport );
-void Netchan_Setup( netsrc_t sock, netchan_t* chan, netadr_t adr, int qport );
+void Netchan_Setup( netsrc_t sock, netchan_t* chan, netadr_t adr, int _qport );
 
 void Netchan_Transmit( netchan_t* chan, int length, const byte* data );
 void Netchan_TransmitNextFragment( netchan_t* chan );
 
-qboolean Netchan_Process( netchan_t* chan, msg_t* msg );
+bool Netchan_Process( netchan_t* chan, msg_t* msg );
 
 
 
@@ -357,7 +355,7 @@ void    VM_Free( vm_t* vm );
 void    VM_Clear( void );
 vm_t*    VM_Restart( vm_t* vm );
 
-intptr_t QDECL VM_Call( vm_t* vm, intptr_t callNum, ... );
+intptr_t VM_Call( vm_t* vm, intptr_t callNum, ... );
 
 void    VM_Debug( int level );
 
@@ -505,7 +503,7 @@ void    Cvar_Reset( const char* var_name );
 void    Cvar_SetCheatState( void );
 // reset all testing vars to a safe value
 
-qboolean Cvar_Command( void );
+bool Cvar_Command( void );
 // called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
 // command.  Returns true if the command was a variable reference that
 // was handled. (print or change)
@@ -552,12 +550,12 @@ issues.
 
 #define MAX_FILE_HANDLES    64
 
-qboolean FS_Initialized();
+bool FS_Initialized();
 
 void    FS_InitFilesystem( void );
-void    FS_Shutdown( qboolean closemfp );
+void    FS_Shutdown( bool closemfp );
 
-qboolean    FS_ConditionalRestart( int checksumFeed );
+bool    FS_ConditionalRestart( int checksumFeed );
 void    FS_Restart( int checksumFeed );
 // shutdown and restart the filesystem so changes to fs_gamedir can take effect
 
@@ -568,7 +566,7 @@ char**    FS_ListFiles( const char* directory, const char* extension, int* numfi
 
 void    FS_FreeFileList( char** list );
 
-qboolean FS_FileExists( const char* file );
+bool FS_FileExists( const char* file );
 
 int     FS_LoadStack();
 
@@ -582,7 +580,7 @@ int     FS_filelength( fileHandle_t f );
 fileHandle_t FS_SV_FOpenFileWrite( const char* filename );
 int     FS_SV_FOpenFileRead( const char* filename, fileHandle_t* fp );
 void    FS_SV_Rename( const char* from, const char* to );
-int     FS_FOpenFileRead( const char* qpath, fileHandle_t* file, qboolean uniqueFILE );
+int     FS_FOpenFileRead( const char* qpath, fileHandle_t* file, bool uniqueFILE );
 // if uniqueFILE is true, then a new FILE will be fopened even if the file
 // is found in an already open pak file.  If uniqueFILE is false, you must call
 // FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
@@ -627,7 +625,7 @@ int     FS_FTell( fileHandle_t f );
 
 void    FS_Flush( fileHandle_t f );
 
-void QDECL FS_Printf( fileHandle_t f, const char* fmt, ... );
+void FS_Printf( fileHandle_t f, const char* fmt, ... );
 // like fprintf
 
 int     FS_FOpenFileByMode( const char* qpath, fileHandle_t* f, fsMode_t mode );
@@ -636,7 +634,7 @@ int     FS_FOpenFileByMode( const char* qpath, fileHandle_t* f, fsMode_t mode );
 int     FS_Seek( fileHandle_t f, int offset, int origin );
 // seek on a file (doesn't work for zip files!!!!!!!!)
 
-qboolean FS_FilenameCompare( const char* s1, const char* s2 );
+bool FS_FilenameCompare( const char* s1, const char* s2 );
 
 const char* FS_GamePureChecksum( void );
 // Returns the checksum of the pk3 from which the server loaded the qagame.qvm
@@ -664,8 +662,8 @@ void FS_PureServerSetLoadedPaks( const char* pakSums, const char* pakNames );
 // separated checksums will be checked for files, with the
 // sole exception of .cfg files.
 
-qboolean FS_idPak( char* pak, char* base );
-qboolean FS_ComparePaks( char* neededpaks, int len, qboolean dlstring );
+bool FS_idPak( char* pak, char* base );
+bool FS_ComparePaks( char* neededpaks, int len, bool dlstring );
 
 void FS_Rename( const char* from, const char* to );
 
@@ -711,31 +709,29 @@ MISC
 
 #define CPUID_AMD_3DNOW         0x30            // AMD K6 3DNOW!
 
-
-char*        CopyString( const char* in );
-void        Info_Print( const char* s );
+char* CopyString( const char* in );
+void Info_Print( const char* s );
 
 void Com_BeginRedirect( char* buffer, int buffersize, void ( *flush )( char* ) );
-void        Com_EndRedirect( void );
-void QDECL Com_Printf( const char* fmt, ... );
-void QDECL Com_DPrintf( const char* fmt, ... );
-void QDECL Com_Error( int code, const char* fmt, ... );
-void        Com_Quit_f( void );
-int         Com_EventLoop( void );
-int         Com_Milliseconds( void );   // will be journaled properly
-unsigned    Com_BlockChecksum( const void* buffer, int length );
-unsigned    Com_BlockChecksumKey( void* buffer, int length, int key );
-int         Com_Filter( char* filter, char* name, int casesensitive );
-int         Com_FilterPath( char* filter, char* name, int casesensitive );
-int         Com_RealTime( qtime_t* qtime );
-qboolean    Com_SafeMode( void );
+void Com_EndRedirect( void );
+void Com_Printf( const char* fmt, ... );
+void Com_DPrintf( const char* fmt, ... );
+void Com_Error( int code, const char* fmt, ... );
+void Com_Quit_f( void );
+int Com_EventLoop( void );
+int Com_Milliseconds( void );   // will be journaled properly
+unsigned Com_BlockChecksum( void* buffer, int length );
+unsigned Com_BlockChecksumKey( void* buffer, int length, int key );
+int Com_Filter( char* filter, char* name, int casesensitive );
+int Com_FilterPath( char* filter, char* name, int casesensitive );
+int Com_RealTime( qtime_t* qtime );
+bool Com_SafeMode( void );
 
-void        Com_StartupVariable( const char* match );
-void        Com_SetRecommended( qboolean vid_restart );
+void Com_StartupVariable( const char* match );
+void Com_SetRecommended( bool vid_restart );
 // checks for and removes command line "+set var arg" constructs
 // if match is NULL, all set commands will be executed, otherwise
 // only a set with the exact name.  Only used during startup.
-
 
 extern cvar_t*  com_developer;
 extern cvar_t*  com_dedicated;
@@ -762,7 +758,7 @@ extern int time_backend;            // renderer backend time
 extern int com_frameTime;
 extern int com_frameMsec;
 
-extern qboolean com_errorEntered;
+extern bool com_errorEntered;
 
 extern fileHandle_t com_journalFile;
 extern fileHandle_t com_journalDataFile;
@@ -808,7 +804,7 @@ void Z_FreeTags( int tag );
 void Hunk_Clear( void );
 void Hunk_ClearToMark( void );
 void Hunk_SetMark( void );
-qboolean Hunk_CheckMark( void );
+bool Hunk_CheckMark( void );
 //void *Hunk_Alloc( int size );
 // void *Hunk_Alloc( int size, ha_pref preference );
 void Hunk_ClearTempMemory( void );
@@ -842,11 +838,11 @@ void CL_InitKeyCommands( void );
 // config files, but the rest of client startup will happen later
 
 void CL_Init( void );
-void CL_Disconnect( qboolean showMainMenu );
+void CL_Disconnect( bool showMainMenu );
 void CL_Shutdown( void );
 void CL_Frame( int msec );
-qboolean CL_GameCommand( void );
-void CL_KeyEvent( int key, qboolean down, unsigned time );
+bool CL_GameCommand( void );
+void CL_KeyEvent( int key, bool down, unsigned time );
 
 void CL_CharEvent( int key );
 // char events are for field typing, not game control
@@ -892,7 +888,7 @@ void CL_StartHunkUsers( void );
 void Key_WriteBindings( fileHandle_t f );
 // for writing the config files
 
-void S_ClearSoundBuffer( qboolean killStreaming );  //----(SA)	modified
+void S_ClearSoundBuffer( bool killStreaming );  //----(SA)	modified
 // call before filesystem access
 
 void SCR_DebugGraph( float value, int color );   // FIXME: move logging to common?
@@ -905,14 +901,14 @@ void SV_Init( void );
 void SV_Shutdown( char* finalmsg );
 void SV_Frame( int msec );
 void SV_PacketEvent( netadr_t from, msg_t* msg );
-qboolean SV_GameCommand( void );
+bool SV_GameCommand( void );
 
 
 //
 // UI interface
 //
-qboolean UI_GameCommand( void );
-qboolean UI_usesUniqueCDKey();
+bool UI_GameCommand( void );
+bool UI_usesUniqueCDKey();
 
 /*
 ==============================================================
@@ -964,8 +960,8 @@ void Sys_EnterCriticalSection( void* ptr );
 void Sys_LeaveCriticalSection( void* ptr );
 
 // general development dll loading for virtual machine testing
-void*     QDECL Sys_LoadDll( const char* name, intptr_t( QDECL * *entryPoint )( intptr_t, ... ),
-                             intptr_t ( QDECL* systemcalls )( intptr_t, ... ) );
+void*   Sys_LoadDll( const char* name, intptr_t( * *entryPoint )( intptr_t, ... ),
+                             intptr_t ( * systemcalls )( intptr_t, ... ) );
 void    Sys_UnloadDll( void* dllHandle );
 
 void    Sys_UnloadGame( void );
@@ -988,7 +984,7 @@ void*    Sys_GetBotLibAPI( void* parms );
 
 char*    Sys_GetCurrentUser( void );
 
-void QDECL Sys_Error( const char* error, ... );
+void Sys_Error( const char* error, ... );
 void    Sys_Quit( void );
 char*    Sys_GetClipboardData( void );  // note that this isn't journaled...
 
@@ -1002,7 +998,7 @@ int     Sys_Milliseconds( void );
 void    Sys_SnapVector( float* v );
 
 // the system console is shown when a dedicated server is running
-void    Sys_DisplaySystemConsole( qboolean show );
+void    Sys_DisplaySystemConsole( bool show );
 
 int     Sys_GetProcessorId( void );
 
@@ -1011,18 +1007,18 @@ void    Sys_EndStreamedFile( fileHandle_t f );
 int     Sys_StreamedRead( void* buffer, int size, int count, fileHandle_t f );
 void    Sys_StreamSeek( fileHandle_t f, int offset, int origin );
 
-void    Sys_ShowConsole( int level, qboolean quitOnClose );
+void    Sys_ShowConsole( int level, bool quitOnClose );
 void    Sys_SetErrorText( const char* text );
 
 void    Sys_SendPacket( int length, const void* data, netadr_t to );
 
-qboolean    Sys_StringToAdr( const char* s, netadr_t* a );
+bool    Sys_StringToAdr( const char* s, netadr_t* a );
 //Does NOT parse port numbers, only base addresses.
 
-qboolean    Sys_IsLANAddress( netadr_t adr );
+bool    Sys_IsLANAddress( netadr_t adr );
 void        Sys_ShowIP( void );
 
-qboolean    Sys_CheckCD( void );
+bool    Sys_CheckCD( void );
 
 void* Sys_LoadLibrary( const char* name );
 void* Sys_LoadFunction( void* handle, const char* name );
@@ -1036,20 +1032,20 @@ char*    Sys_DefaultBasePath( void );
 char*    Sys_DefaultInstallPath( void );
 char*    Sys_DefaultHomePath( void );
 
-char** Sys_ListFiles( const char* directory, const char* extension, char* filter, int* numfiles, qboolean wantsubs );
+char** Sys_ListFiles( const char* directory, const char* extension, char* filter, int* numfiles, bool wantsubs );
 void    Sys_FreeFileList( char** list );
 
 void    Sys_BeginProfiling( void );
 void    Sys_EndProfiling( void );
 
-qboolean Sys_LowPhysicalMemory();
+bool Sys_LowPhysicalMemory();
 unsigned int Sys_ProcessorCount();
 
-void Sys_StartProcess( char* exeName, qboolean doexit );            // NERVE - SMF
+void Sys_StartProcess( char* exeName, bool doexit );            // NERVE - SMF
 // TTimo
 // show_bug.cgi?id=447
-//int Sys_ShellExecute(char *op, char *file, qboolean doexit, char *params, char *dir);	//----(SA) added
-void Sys_OpenURL( char* url, qboolean doexit );                     // NERVE - SMF
+//int Sys_ShellExecute(char *op, char *file, bool doexit, char *params, char *dir);	//----(SA) added
+void Sys_OpenURL( char* url, bool doexit );                     // NERVE - SMF
 int Sys_GetHighQualityCPU();
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data
@@ -1109,4 +1105,4 @@ extern huffman_t clientHuffTables;
 #define CL_ENCODE_START     12
 #define CL_DECODE_START     4
 
-#endif // _QCOMMON_H_
+#endif // !__QCOMMON_H__

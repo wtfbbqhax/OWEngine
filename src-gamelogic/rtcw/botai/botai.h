@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __BOTAI_H__
+#define __BOTAI_H__
+
 #include "../../../src-engine/qcommon/q_shared.h"
 
 //debug line colors
@@ -67,6 +70,14 @@
 #define MAX_FILEPATH            144
 #define MAX_CHARACTERNAME       144
 
+//bot settings
+typedef struct bot_settings_s
+{
+	char characterfile[MAX_FILEPATH];
+	float skill;
+	char team[MAX_FILEPATH];
+} bot_settings_t;
+
 #ifndef BSPTRACE
 
 //bsp_trace_t hit surface
@@ -81,8 +92,8 @@ typedef struct bsp_surface_s
 //a trace is returned when a box is swept through the world
 typedef struct bsp_trace_s
 {
-    qboolean allsolid;          // if true, plane is not valid
-    qboolean startsolid;        // if true, the initial point was in a solid area
+    bool allsolid;          // if true, plane is not valid
+    bool startsolid;        // if true, the initial point was in a solid area
     float fraction;             // time completed, 1.0 = didn't hit anything
     vec3_t endpos;          // final position
     cplane_t plane;             // surface normal at impact
@@ -96,22 +107,4 @@ typedef struct bsp_trace_s
 #define BSPTRACE
 #endif  // BSPTRACE
 
-//
-// imported functions used for the BotAI
-//
-
-
-// from the server
-/*
-void	trap_Cvar_Register( vmCvar_t *cvar, const char *var_name, const char *value, int flags );
-void	trap_Cvar_Update( vmCvar_t *cvar );
-void	trap_Cvar_Set( const char *var_name, const char *value );
-int		trap_Cvar_VariableIntegerValue( const char *var_name );
-void	trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize );
-void	trap_GetConfigstring( int num, char *buffer, int bufferSize );
-void	trap_GetServerinfo( char *buffer, int bufferSize );
-int		trap_PointContents( const vec3_t point, int passEntityNum );
-qboolean trap_InPVS( const vec3_t p1, const vec3_t p2 );
-int		trap_BotAllocateClient( void );
-void	trap_BotFreeClient( int clientNum );
-*/
+#endif // !__BOTAI_H__

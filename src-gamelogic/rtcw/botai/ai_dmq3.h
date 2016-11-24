@@ -40,6 +40,15 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __AI_DMQ3_H__
+#define __AI_DMQ3_H__
+
+#include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/botlib/be_aas.h"
+#include "../../../src-engine/botlib/be_ai_goal.h"
+#include "../../../src-engine/botlib/botlib.h"
+#include "ai_main.h"
+
 //setup the deathmatch AI
 void BotSetupDeathmatchAI( void );
 //shutdown the deathmatch AI
@@ -59,21 +68,21 @@ void BotUpdateBattleInventory( bot_state_t* bs, int enemy );
 //use holdable items during battle
 void BotBattleUseItems( bot_state_t* bs );
 //return true if the bot is dead
-qboolean BotIsDead( bot_state_t* bs );
+bool BotIsDead( bot_state_t* bs );
 //returns true if the bot is in observer mode
-qboolean BotIsObserver( bot_state_t* bs );
+bool BotIsObserver( bot_state_t* bs );
 //returns true if the bot is in the intermission
-qboolean BotIntermission( bot_state_t* bs );
+bool BotIntermission( bot_state_t* bs );
 //returns true if the bot is in lava
-qboolean BotInLava( bot_state_t* bs );
+bool BotInLava( bot_state_t* bs );
 //returns true if the bot is in slime
-qboolean BotInSlime( bot_state_t* bs );
+bool BotInSlime( bot_state_t* bs );
 //returns true if the entity is dead
-qboolean EntityIsDead( aas_entityinfo_t* entinfo );
+bool EntityIsDead( aas_entityinfo_t* entinfo );
 //returns true if the entity is invisible
-qboolean EntityIsInvisible( aas_entityinfo_t* entinfo );
+bool EntityIsInvisible( aas_entityinfo_t* entinfo );
 //returns true if the entity is shooting
-qboolean EntityIsShooting( aas_entityinfo_t* entinfo );
+bool EntityIsShooting( aas_entityinfo_t* entinfo );
 //returns the name of the client
 char* ClientName( int client, char* name, int size );
 //returns an simplyfied client name
@@ -159,3 +168,5 @@ extern vmCvar_t bot_testrchat;
 extern bot_goal_t ctf_redflag;
 extern bot_goal_t ctf_blueflag;
 
+
+#endif // !__AI_DMQ3_H__

@@ -51,8 +51,8 @@ GROWLISTS
 */
 
 // malloc / free all in one place for debugging
-extern "C" void* Com_Allocate( int bytes );
-extern "C" void Com_Dealloc( void* ptr );
+void* Com_Allocate( int bytes );
+void Com_Dealloc( void* ptr );
 
 void Com_InitGrowList( growList_t* list, int maxElements )
 {
@@ -212,7 +212,7 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
                 ptr = Com_StringContains( name, buf, casesensitive );
                 if( !ptr )
                 {
-                    return qfalse;
+                    return false;
                 }
                 name = ptr + strlen( buf );
             }
@@ -229,7 +229,7 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
         else if( *filter == '[' )
         {
             filter++;
-            found = qfalse;
+            found = false;
             while( *filter && !found )
             {
                 if( *filter == ']' && *( filter + 1 ) != ']' )
@@ -242,7 +242,7 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
                     {
                         if( *name >= *filter && *name <= *( filter + 2 ) )
                         {
-                            found = qtrue;
+                            found = true;
                         }
                     }
                     else
@@ -250,7 +250,7 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
                         if( toupper( *name ) >= toupper( *filter ) &&
                                 toupper( *name ) <= toupper( *( filter + 2 ) ) )
                         {
-                            found = qtrue;
+                            found = true;
                         }
                     }
                     filter += 3;
@@ -261,14 +261,14 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
                     {
                         if( *filter == *name )
                         {
-                            found = qtrue;
+                            found = true;
                         }
                     }
                     else
                     {
                         if( toupper( *filter ) == toupper( *name ) )
                         {
-                            found = qtrue;
+                            found = true;
                         }
                     }
                     filter++;
@@ -276,7 +276,7 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
             }
             if( !found )
             {
-                return qfalse;
+                return false;
             }
             while( *filter )
             {
@@ -295,21 +295,21 @@ int Com_Filter( const char* filter, const char* name, int casesensitive )
             {
                 if( *filter != *name )
                 {
-                    return qfalse;
+                    return false;
                 }
             }
             else
             {
                 if( toupper( *filter ) != toupper( *name ) )
                 {
-                    return qfalse;
+                    return false;
                 }
             }
             filter++;
             name++;
         }
     }
-    return qtrue;
+    return true;
 }
 
 
@@ -849,7 +849,7 @@ char* Q_CleanStr( char* string )
 }
 
 
-void QDECL Com_sprintf( char* dest, int size, const char* fmt, ... )
+void Com_sprintf( char* dest, int size, const char* fmt, ... )
 {
     unsigned int len;
     va_list argptr;
@@ -879,7 +879,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char*     QDECL va( char* format, ... )
+char* va( char* format, ... )
 {
     va_list argptr;
     static char string[2][32000];       // in case va is called by nested functions
@@ -1096,17 +1096,17 @@ Some characters are illegal in info strings because they
 can mess up the server's parsing
 ==================
 */
-qboolean Info_Validate( const char* s )
+bool Info_Validate( const char* s )
 {
     if( strchr( s, '\"' ) )
     {
-        return qfalse;
+        return false;
     }
     if( strchr( s, ';' ) )
     {
-        return qfalse;
+        return false;
     }
-    return qtrue;
+    return true;
 }
 
 /*

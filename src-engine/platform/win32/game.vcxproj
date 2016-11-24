@@ -161,61 +161,61 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_chat.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_cmd.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_dmnet.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_dmq3.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_main.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_team.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_characters.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_debug.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_events.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_fight.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_funcs.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_func_attack.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_func_boss1.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_script.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_script_actions.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_script_ents.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_sight.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_think.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_animation.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_chat.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_cmd.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_dmnet.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_dmq3.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_main.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\botai\ai_team.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_characters.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_debug.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_events.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_fight.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_funcs.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_func_attack.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_func_boss1.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_script.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_script_actions.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_script_ents.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_sight.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_think.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_animation.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_pmove.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_slidemove.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_active.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_alarm.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_bot.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_client.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_cmds.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_combat.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_items.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_main.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_mem.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_misc.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_missile.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_mover.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_props.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_save.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_script.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_script_actions.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_session.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_spawn.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_svcmds.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_syscalls.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_target.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_team.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_tramcar.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_trigger.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_utils.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_weapon.c" />
-    <ClCompile Include="..\..\qcommon\q_math.c" />
-    <ClCompile Include="..\..\qcommon\q_shared.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_pmove.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_slidemove.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_active.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_alarm.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_bot.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_client.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_cmds.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_combat.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_items.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_main.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_mem.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_misc.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_missile.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_mover.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_props.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_save.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_script.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_script_actions.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_session.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_spawn.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_svcmds.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_syscalls.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_target.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_team.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_tramcar.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_trigger.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_utils.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\g_weapon.cpp" />
+    <ClCompile Include="..\..\qcommon\q_math.cpp" />
+    <ClCompile Include="..\..\qcommon\q_shared.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src-gamelogic\rtcw\game\game.def" />
@@ -250,7 +250,7 @@
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\g_public.h" />
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\g_team.h" />
     <ClInclude Include="..\..\qcommon\q_shared.h" />
-    <ClInclude Include="..\..\..\src-gamelogic\rtcw\game\surfaceflags.h" />
+    <ClInclude Include="..\..\qcommon\surfaceflags.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="extractfuncs.vcxproj">

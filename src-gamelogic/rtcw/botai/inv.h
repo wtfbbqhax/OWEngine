@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __INV_H__
+#define __INV_H__
+
 #define INVENTORY_NONE              0
 //armor
 #define INVENTORY_ARMOR             1
@@ -131,4 +134,4 @@
 #define MODELINDEX_REDFLAG          34
 #define MODELINDEX_BLUEFLAG         35
 
-
+#endif // !__INV_H__

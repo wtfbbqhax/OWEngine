@@ -40,6 +40,11 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __SND_PUBLIC_H__
+#define __SND_PUBLIC_H__
+
+#include "../qcommon/q_shared.h"
+
 #ifdef DOOMSOUND    ///// (SA) DOOMSOUND
 #ifdef __cplusplus
 extern "C" {
@@ -67,15 +72,14 @@ extern "C" {
     
 // cinematics and voice-over-network will send raw samples
 // 1.0 volume will be direct output of source samples
-    void S_RawSamples( int samples, int rate, int width, int s_channels,
-                       const byte* data, float lvol, float rvol, int streamingIndex );
+    void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte* data, float lvol, float rvol, int streamingIndex );
                        
 // stop all sounds and the background track
     void S_StopAllSounds( void );
     
 // all continuous looping sounds must be added before calling S_Update
     void S_ClearLoopingSounds( void );
-    void S_ClearSounds( qboolean clearStreaming, qboolean clearMusic ); //----(SA)	modified
+    void S_ClearSounds( bool clearStreaming, bool clearMusic ); //----(SA)	modified
     void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfxHandle, int volume );
     void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfx );
     void S_StopLoopingSound( int entityNum );
@@ -102,7 +106,7 @@ extern "C" {
 #ifdef DOOMSOUND    ///// (SA) DOOMSOUND
     sfxHandle_t S_RegisterSound( const char* sample );
 #else
-    sfxHandle_t S_RegisterSound( const char* sample, qboolean compressed );
+    sfxHandle_t S_RegisterSound( const char* sample, bool compressed );
 #endif ///// (SA) DOOMSOUND
     
     void S_DisplayFreeMemory( void );
@@ -116,3 +120,5 @@ extern "C" {
 }
 #endif
 #endif  ///// (SA) DOOMSOUND
+
+#endif // !__SND_PUBLIC_H__

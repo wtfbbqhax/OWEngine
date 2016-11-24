@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __WIN_LOCAL_H__
+#define __WIN_LOCAL_H__
+
 #if defined ( _MSC_VER ) && ( _MSC_VER >= 1200 )
 #pragma warning(disable : 4201)
 #pragma warning( push )
@@ -79,7 +82,7 @@ extern "C" {
     
     char*    Sys_ConsoleInput( void );
     
-    qboolean    Sys_GetPacket( netadr_t* net_from, msg_t* net_message );
+    bool    Sys_GetPacket( netadr_t* net_from, msg_t* net_message );
     
 // Input subsystem
 
@@ -92,7 +95,7 @@ extern "C" {
 
     void    IN_DeactivateWin32Mouse( void );
     
-    void    IN_Activate( qboolean active );
+    void    IN_Activate( bool active );
     void    IN_Frame( void );
     
 // window procedure
@@ -109,20 +112,19 @@ extern "C" {
     
     typedef struct
     {
-    
         HINSTANCE reflib_library;           // Handle to refresh DLL
-        qboolean reflib_active;
+        bool reflib_active;
         
         HWND hWnd;
         HINSTANCE hInstance;
-        qboolean activeApp;
-        qboolean isMinimized;
+        bool activeApp;
+        bool isMinimized;
         OSVERSIONINFO osversion;
         
         // when we get a windows message, we store the time off so keyboard processing
         // can know the exact time of an event
         unsigned sysMsgTime;
-        qboolean classRegistered;
+        bool classRegistered;
     } WinVars_t;
     
     extern WinVars_t g_wv;
@@ -135,4 +137,4 @@ extern "C" {
 #endif
 #endif  ///// (SA) DOOMSOUND
 
-
+#endif // !__WIN_LOCAL_H__

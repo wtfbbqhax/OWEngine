@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __AI_CHAT_H__
+#define __AI_CHAT_H__
+
 //
 int BotChat_EnterGame( bot_state_t* bs );
 //
@@ -69,3 +72,4 @@ int BotValidChatPosition( bot_state_t* bs );
 // test the initial bot chats
 void BotChatTest( bot_state_t* bs );
 
+#endif // !__AI_CHAT_H__

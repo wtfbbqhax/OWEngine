@@ -40,6 +40,11 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __L_PRECOMPH__
+#define __L_PRECOMPH__
+
+#include "l_script.h"
+
 #ifndef _MAX_PATH
 #define MAX_PATH            MAX_QPATH
 #endif
@@ -58,7 +63,6 @@
 #define PATHSEPERATOR_CHAR      '/'
 #endif
 #endif
-
 
 #define DEFINE_FIXED            0x0001
 
@@ -99,7 +103,7 @@ typedef struct indent_s
 } indent_t;
 
 //source file
-typedef struct source_s
+typedef struct _source_s
 {
     char filename[_MAX_PATH];               //file name of the script
     char includepath[_MAX_PATH];            //path to include files
@@ -108,11 +112,10 @@ typedef struct source_s
     token_t* tokens;                        //tokens to read first
     define_t* defines;                      //list with macro definitions
     define_t** definehash;                  //hash chain with defines
-    indent_t* indentstack;                  //stack with indents
+	indent_t* indentstack;                  //stack with indents
     int skip;                               // > 0 if skipping conditional code
     token_t token;                          //last read token
 } source_t;
-
 
 //read a token from the source
 int PC_ReadToken( source_t* source, token_t* token );
@@ -157,7 +160,8 @@ source_t* LoadSourceMemory( char* ptr, int length, char* name );
 //free the given source
 void FreeSource( source_t* source );
 //print a source error
-void QDECL SourceError( source_t* source, char* str, ... );
+void SourceError( source_t* source, char* str, ... );
 //print a source warning
-void QDECL SourceWarning( source_t* source, char* str, ... );
+void SourceWarning( source_t* source, char* str, ... );
 
+#endif // !__L_PRECOMPH__

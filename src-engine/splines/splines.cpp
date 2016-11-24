@@ -43,17 +43,15 @@
 #include "q_splineshared.h"
 #include "splines.h"
 
-extern "C" {
-    int FS_Write( const void* buffer, int len, fileHandle_t h );
-    int FS_ReadFile( const char* qpath, void** buffer );
-    void FS_FreeFile( void* buffer );
-    fileHandle_t FS_FOpenFileWrite( const char* filename );
-    void FS_FCloseFile( fileHandle_t f );
-    void Cbuf_AddText( const char* text );
-    void Cbuf_Execute( void );
-}
+int FS_Write( const void* buffer, int len, fileHandle_t h );
+int FS_ReadFile( const char* qpath, void** buffer );
+void FS_FreeFile( void* buffer );
+fileHandle_t FS_FOpenFileWrite( const char* filename );
+void FS_FCloseFile( fileHandle_t f );
+void Cbuf_AddText( const char* text );
+void Cbuf_Execute( void );
 
-float Q_fabs( float f )
+static float Q_fabs( float f )
 {
     int tmp = *( int* ) &f;
     tmp &= 0x7FFFFFFF;
@@ -69,51 +67,47 @@ float Q_fabs( float f )
 
 idCameraDef camera[MAX_CAMERAS];
 
-extern "C" {
-    qboolean loadCamera( int camNum, const char* name )
+bool loadCamera( int camNum, const char* name )
+{
+    if( camNum < 0 || camNum >= MAX_CAMERAS )
     {
-        if( camNum < 0 || camNum >= MAX_CAMERAS )
-        {
-            return qfalse;
-        }
-        camera[camNum].clear();
-        // TTimo static_cast confused gcc, went for C-style casting
-        return ( qboolean )( camera[camNum].load( name ) );
+        return false;
     }
-    
-    qboolean getCameraInfo( int camNum, int time, float* origin, float* angles, float* fov )
-    {
-        idVec3 dir, org;
-        if( camNum < 0 || camNum >= MAX_CAMERAS )
-        {
-            return qfalse;
-        }
-        org[0] = origin[0];
-        org[1] = origin[1];
-        org[2] = origin[2];
-        if( camera[camNum].getCameraInfo( time, org, dir, fov ) )
-        {
-            origin[0] = org[0];
-            origin[1] = org[1];
-            origin[2] = org[2];
-            angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
-            angles[0] = asin( dir[2] ) * 180 / 3.14159;
-            return qtrue;
-        }
-        return qfalse;
-    }
-    
-    void startCamera( int camNum, int time )
-    {
-        if( camNum < 0 || camNum >= MAX_CAMERAS )
-        {
-            return;
-        }
-        camera[camNum].startCamera( time );
-    }
-    
+    camera[camNum].clear();
+    // TTimo static_cast confused gcc, went for C-style casting
+    return ( bool )( camera[camNum].load( name ) );
 }
-
+    
+bool getCameraInfo( int camNum, int time, float* origin, float* angles, float* fov )
+{
+    idVec3 dir, org;
+    if( camNum < 0 || camNum >= MAX_CAMERAS )
+    {
+        return false;
+    }
+    org[0] = origin[0];
+    org[1] = origin[1];
+    org[2] = origin[2];
+    if( camera[camNum].getCameraInfo( time, org, dir, fov ) )
+    {
+        origin[0] = org[0];
+        origin[1] = org[1];
+        origin[2] = org[2];
+        angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
+        angles[0] = asin( dir[2] ) * 180 / 3.14159;
+        return true;
+    }
+    return false;
+}
+    
+void startCamera( int camNum, int time )
+{
+    if( camNum < 0 || camNum >= MAX_CAMERAS )
+    {
+        return;
+    }
+    camera[camNum].startCamera( time );
+}
 
 //#include "../shared/windings.h"
 //#include "../qcommon/qcommon.h"

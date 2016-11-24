@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __MATCH_H__
+#define __MATCH_H__
+
 //match template contexts
 #define MTCONTEXT_ENTERGAME             2
 #define MTCONTEXT_INITIALTEAMCHAT       4
@@ -135,4 +138,4 @@
 #define NAME                            6
 #define MORE                            6
 
-
+#endif // !__MATCH_H__

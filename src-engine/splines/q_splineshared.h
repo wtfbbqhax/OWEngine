@@ -102,18 +102,11 @@
 #define id386   0
 #endif
 
-// for windows fastcall option
-
-#define QDECL
-
 //======================= WIN32 DEFINES =================================
 
 #ifdef WIN32
 
 #define MAC_STATIC
-
-#undef QDECL
-#define QDECL   __cdecl
 
 // buildstring will be incorporated into the version string
 #ifdef NDEBUG
@@ -161,16 +154,8 @@
 #define ALIGN_ON        # pragma align( 16 )
 #define ALIGN_OFF       # pragma align()
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    void* osxAllocateMemory( long size );
-    void osxFreeMemory( void* pointer );
-    
-#ifdef __cplusplus
-}
-#endif
+void* osxAllocateMemory( long size );
+void osxFreeMemory( void* pointer );
 
 #endif
 
@@ -199,9 +184,6 @@ void Sys_PumpEvents( void );
 
 void Sys_PumpEvents( void );
 
-#undef QDECL
-#define QDECL   __cdecl
-
 #define _alloca alloca
 #endif
 
@@ -226,10 +208,6 @@ void Sys_PumpEvents( void );
 #endif
 
 //=============================================================
-
-
-
-typedef enum {qfalse, qtrue}    qboolean;
 
 typedef unsigned char byte;
 
@@ -340,7 +318,6 @@ MATHLIB
 
 ==============================================================
 */
-#ifdef __cplusplus          // so we can include this in C code
 #define SIDE_FRONT      0
 #define SIDE_BACK       1
 #define SIDE_ON         2
@@ -524,7 +501,7 @@ void vectoangles( vec3_c value1, angles_p angles );
 void AnglesToAxis( angles_c angles, mat3_p axis );
 
 void AxisCopy( mat3_c in, mat3_p out );
-qboolean AxisRotated( mat3_c in );          // assumes a non-degenerate axis
+bool AxisRotated( mat3_c in );          // assumes a non-degenerate axis
 
 int SignbitsForNormal( vec3_c normal );
 int BoxOnPlaneSide( const Bounds& b, struct cplane_s* p );
@@ -538,7 +515,7 @@ float AngleNormalize360( float angle );
 float AngleNormalize180( float angle );
 float AngleDelta( float angle1, float angle2 );
 
-qboolean PlaneFromPoints( idVec4& plane, vec3_c a, vec3_c b, vec3_c c );
+bool PlaneFromPoints( idVec4& plane, vec3_c a, vec3_c b, vec3_c c );
 void ProjectPointOnPlane( vec3_p dst, vec3_c p, vec3_c normal );
 void RotatePointAroundVector( vec3_p dst, vec3_c dir, vec3_c point, float degrees );
 void RotateAroundDirection( mat3_p axis, float yaw );
@@ -555,8 +532,6 @@ void AngleVectors( angles_c angles, vec3_p forward, vec3_p right, vec3_p up );
 void PerpendicularVector( vec3_p dst, vec3_c src );
 
 float TriangleArea( vec3_c a, vec3_c b, vec3_c c );
-#endif                                      // __cplusplus
-
 //=============================================
 
 float Com_Clamp( float min, float max, float value );
@@ -599,11 +574,7 @@ const char* Com_ParseRestOfLine( const char * ( *data_p ) );
 
 void Com_UngetToken( void );
 
-#ifdef __cplusplus
-void Com_MatchToken( const char * ( *buf_p ), const char* match, qboolean warning = qfalse );
-#else
-void Com_MatchToken( const char * ( *buf_p ), const char* match, qboolean warning );
-#endif
+void Com_MatchToken( const char * ( *buf_p ), const char* match, bool warning = false );
 
 void Com_ScriptError( const char* msg, ... );
 void Com_ScriptWarning( const char* msg, ... );
@@ -619,76 +590,65 @@ void Com_Parse2DMatrix( const char * ( *buf_p ), int y, int x, float* m );
 void Com_Parse3DMatrix( const char * ( *buf_p ), int z, int y, int x, float* m );
 
 //=====================================================================================
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    void QDECL Com_sprintf( char* dest, int size, const char* fmt, ... );
-    
-    
+void Com_sprintf( char* dest, int size, const char* fmt, ... );
+       
 // mode parm for FS_FOpenFile
-    typedef enum
-    {
-        FS_READ,
-        FS_WRITE,
-        FS_APPEND,
-        FS_APPEND_SYNC
-    } fsMode_t;
+typedef enum
+{
+    FS_READ,
+    FS_WRITE,
+    FS_APPEND,
+    FS_APPEND_SYNC
+} fsMode_t;
     
-    typedef enum
-    {
-        FS_SEEK_CUR,
-        FS_SEEK_END,
-        FS_SEEK_SET
-    } fsOrigin_t;
+typedef enum
+{
+    FS_SEEK_CUR,
+    FS_SEEK_END,
+    FS_SEEK_SET
+} fsOrigin_t;
     
 //=============================================
 
-    int Q_isprint( int c );
-    int Q_islower( int c );
-    int Q_isupper( int c );
-    int Q_isalpha( int c );
+int Q_isprint( int c );
+int Q_islower( int c );
+int Q_isupper( int c );
+int Q_isalpha( int c );
     
 // portable case insensitive compare
-    int     Q_stricmp( const char* s1, const char* s2 );
-    int     Q_strncmp( const char* s1, const char* s2, int n );
-    int     Q_stricmpn( const char* s1, const char* s2, int n );
-    char*    Q_strlwr( char* s1 );
-    char*    Q_strupr( char* s1 );
-    char*    Q_strrchr( const char* string, int c );
+int     Q_stricmp( const char* s1, const char* s2 );
+int     Q_strncmp( const char* s1, const char* s2, int n );
+int     Q_stricmpn( const char* s1, const char* s2, int n );
+char*    Q_strlwr( char* s1 );
+char*    Q_strupr( char* s1 );
+char*    Q_strrchr( const char* string, int c );
     
 // buffer size safe library replacements
-    void    Q_strncpyz( char* dest, const char* src, int destsize );
-    void    Q_strcat( char* dest, int size, const char* src );
+void    Q_strncpyz( char* dest, const char* src, int destsize );
+void    Q_strcat( char* dest, int size, const char* src );
     
 // strlen that discounts Quake color sequences
-    int Q_PrintStrlen( const char* string );
+int Q_PrintStrlen( const char* string );
 // removes color sequences from string
-    char* Q_CleanStr( char* string );
+char* Q_CleanStr( char* string );
     
-    int         Com_Filter( const char* filter, const char* name, int casesensitive );
-    const char* Com_StringContains( const char* str1, const char* str2, int casesensitive );
+int         Com_Filter( const char* filter, const char* name, int casesensitive );
+const char* Com_StringContains( const char* str1, const char* str2, int casesensitive );
     
     
 //=============================================
 
-    short   BigShort( short l );
-    short   LittleShort( short l );
-    int     BigLong( int l );
-    int     LittleLong( int l );
-    float   BigFloat( float l );
-    float   LittleFloat( float l );
+short   BigShort( short l );
+short   LittleShort( short l );
+int     BigLong( int l );
+int     LittleLong( int l );
+float   BigFloat( float l );
+float   LittleFloat( float l );
     
-    void    Swap_Init( void );
-    char*     QDECL va( char* format, ... );
+void    Swap_Init( void );
+char*   va( char* format, ... );
     
-#ifdef __cplusplus
-}
-#endif
-
-
 //=============================================
-#ifdef __cplusplus
 //
 // mapfile parsing
 //
@@ -766,7 +726,7 @@ void WriteMapFile( const mapFile_t* mapFile, FILE* f );
 // key names are case-insensitive
 const char*  ValueForMapEntityKey( const mapEntity_t* ent, const char* key );
 float   FloatForMapEntityKey( const mapEntity_t* ent, const char* key );
-qboolean    GetVectorForMapEntityKey( const mapEntity_t* ent, const char* key, idVec3& vec );
+bool    GetVectorForMapEntityKey( const mapEntity_t* ent, const char* key, idVec3& vec );
 
 typedef struct
 {
@@ -786,26 +746,16 @@ typedef struct
 // Tesselate a map patch into smoothed, drawable vertexes
 // MaxError of around 4 is reasonable
 drawVertMesh_t* SubdivideMapPatch( const mapPatch_t* patch, float maxError );
-#endif          // __cplusplus
 
 //=========================================
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    void QDECL Com_Error( int level, const char* error, ... );
-    void QDECL Com_Printf( const char* msg, ... );
-    void QDECL Com_DPrintf( const char* msg, ... );
-    
-#ifdef __cplusplus
-}
-#endif
-
+void Com_Error( int level, const char* error, ... );
+void Com_Printf( const char* msg, ... );
+void Com_DPrintf( const char* msg, ... );
 
 typedef struct
 {
-    qboolean frameMemory;
+    bool frameMemory;
     int currentElements;
     int maxElements;            // will reallocate and move when exceeded
     void**    elements;
@@ -825,7 +775,7 @@ int         Com_IndexForGrowListElement( const growList_t* list, const void* ele
 char* Info_ValueForKey( const char* s, const char* key );
 void Info_RemoveKey( char* s, const char* key );
 void Info_SetValueForKey( char* s, const char* key, const char* value );
-qboolean Info_Validate( const char* s );
+bool Info_Validate( const char* s );
 void Info_NextPair( const char * ( *s ), char key[MAX_INFO_KEY], char value[MAX_INFO_VALUE] );
 
 // get cvar defs, collision defs, etc
@@ -834,13 +784,11 @@ void Info_NextPair( const char * ( *s ), char key[MAX_INFO_KEY], char value[MAX_
 // get key code numbers for events
 //#include "../shared/keycodes.h"
 
-#ifdef __cplusplus
 // get the polygon winding functions
 //#include "../shared/windings.h"
 
 // get the flags class
 //#include "../shared/idflags.h"
-#endif  // __cplusplus
 
 #endif  // __Q_SHARED_H
 

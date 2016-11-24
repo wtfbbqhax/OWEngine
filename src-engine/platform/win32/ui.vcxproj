@@ -151,18 +151,18 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.c" />
-    <ClCompile Include="..\..\qcommon\q_math.c" />
-    <ClCompile Include="..\..\qcommon\q_shared.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.c" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_syscalls.c" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp" />
+    <ClCompile Include="..\..\qcommon\q_math.cpp" />
+    <ClCompile Include="..\..\qcommon\q_shared.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_syscalls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src-gamelogic\rtcw\ui\ui.def" />

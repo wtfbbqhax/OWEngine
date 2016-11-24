@@ -76,6 +76,7 @@
       <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
@@ -113,6 +114,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BrowseInformation>true</BrowseInformation>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
@@ -132,111 +134,111 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\botlib\be_aas_bspq3.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\be_aas_bspq3.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_cluster.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\be_aas_cluster.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_move.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\be_aas_move.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_optimize.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\be_aas_optimize.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_reach.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\be_aas_reach.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_sample.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\be_aas_sample.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\l_libvar.c" />
-    <ClCompile Include="..\..\botlib\l_precomp.c" />
-    <ClCompile Include="..\..\botlib\l_script.c" />
-    <ClCompile Include="..\..\botlib\l_struct.c" />
-    <ClCompile Include="..\..\qcommon\cm_load.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\botlib\l_libvar.cpp" />
+    <ClCompile Include="..\..\botlib\l_precomp.cpp" />
+    <ClCompile Include="..\..\botlib\l_script.cpp" />
+    <ClCompile Include="..\..\botlib\l_struct.cpp" />
+    <ClCompile Include="..\..\qcommon\cm_load.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\cm_patch.c" />
-    <ClCompile Include="..\..\qcommon\cm_test.c" />
-    <ClCompile Include="..\..\qcommon\cm_trace.c" />
-    <ClCompile Include="..\..\qcommon\md4.c" />
-    <ClCompile Include="..\..\qcommon\unzip.c" />
-    <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\qcommon\cm_patch.cpp" />
+    <ClCompile Include="..\..\qcommon\cm_test.cpp" />
+    <ClCompile Include="..\..\qcommon\cm_trace.cpp" />
+    <ClCompile Include="..\..\qcommon\md4.cpp" />
+    <ClCompile Include="..\..\qcommon\unzip.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_cfg.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_cfg.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_create.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_create.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_edgemelting.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_edgemelting.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_facemerging.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_facemerging.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_file.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_file.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_gsubdiv.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_gsubdiv.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_map.c" />
-    <ClCompile Include="..\..\..\tools\bspc\aas_prunenodes.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_map.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\aas_prunenodes.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_store.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\aas_store.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\be_aas_bspc.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\be_aas_bspc.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\brushbsp.c" />
-    <ClCompile Include="..\..\..\tools\bspc\bspc.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\brushbsp.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\bspc.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\csg.c" />
-    <ClCompile Include="..\..\..\tools\bspc\faces.c" />
-    <ClCompile Include="..\..\..\tools\bspc\glfile.c" />
-    <ClCompile Include="..\..\..\tools\bspc\leakfile.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_ent.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\csg.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\faces.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\glfile.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\leakfile.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_ent.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_hl.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q1.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q2.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q3.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_hl.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q1.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q2.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q3.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_sin.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_cmd.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_log.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_math.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_mem.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_poly.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_qfiles.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_threads.c" />
-    <ClCompile Include="..\..\..\tools\bspc\l_utils.c" />
-    <ClCompile Include="..\..\..\tools\bspc\map.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_sin.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_cmd.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_log.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_math.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_mem.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_poly.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_qfiles.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_threads.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\l_utils.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\map.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_hl.c" />
-    <ClCompile Include="..\..\..\tools\bspc\map_q1.c" />
-    <ClCompile Include="..\..\..\tools\bspc\map_q2.c" />
-    <ClCompile Include="..\..\..\tools\bspc\map_q3.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\map_hl.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\map_q1.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\map_q2.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\map_q3.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_sin.c" />
-    <ClCompile Include="..\..\..\tools\bspc\nodraw.c" />
-    <ClCompile Include="..\..\..\tools\bspc\portals.c" />
-    <ClCompile Include="..\..\..\tools\bspc\prtfile.c" />
-    <ClCompile Include="..\..\..\tools\bspc\textures.c" />
-    <ClCompile Include="..\..\..\tools\bspc\tree.c" />
-    <ClCompile Include="..\..\..\tools\bspc\writebsp.c" />
-    <ClCompile Include="..\..\..\tools\bspc\_files.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    <ClCompile Include="..\..\..\tools\bspc\map_sin.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\nodraw.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\portals.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\prtfile.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\textures.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\tree.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\writebsp.cpp" />
+    <ClCompile Include="..\..\..\tools\bspc\_files.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,7 +268,10 @@
     <ClInclude Include="..\..\botlib\l_script.h" />
     <ClInclude Include="..\..\botlib\l_struct.h" />
     <ClInclude Include="..\..\botlib\l_utils.h" />
-    <ClInclude Include="..\..\qcommon\q_shared.h" />
+    <ClInclude Include="..\..\qcommon\q_shared.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\qcommon\surfaceflags.h" />
     <ClInclude Include="..\..\qcommon\cm_local.h" />
     <ClInclude Include="..\..\qcommon\cm_patch.h" />

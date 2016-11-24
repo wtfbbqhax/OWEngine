@@ -40,6 +40,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __BE_EA_H__
+#define __BE_EA_H__
+
+#ifndef __BOTLIB_H__
+#include "botlib.h"
+#endif
+
 //ClientCommand elementary actions
 void EA_Say( int client, char* str );
 void EA_SayTeam( int client, char* str );
@@ -75,3 +82,5 @@ void EA_ResetInput( int client, bot_input_t* init );
 //setup and shutdown routines
 int EA_Setup( void );
 void EA_Shutdown( void );
+
+#endif // !__BE_EA_H__

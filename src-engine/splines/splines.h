@@ -43,13 +43,7 @@
 #ifndef __SPLINES_H
 #define __SPLINES_H
 
-extern "C" {
-#ifdef Q3RADIANT
-#include "../qgl.h"
-#else
 #include "../renderer/qgl.h"
-#endif
-}
 #include "util_list.h"
 #include "util_str.h"
 #include "math_vector.h"

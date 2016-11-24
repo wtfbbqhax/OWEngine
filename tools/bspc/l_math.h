@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////////////
 //
 //  This file is part of OWEngine source code.
 //  Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
@@ -76,16 +76,17 @@ extern vec3_t vec3_origin;
 
 #define EQUAL_EPSILON   0.001
 
-qboolean VectorCompare( vec3_t v1, vec3_t v2 );
+int VectorCompare(const vec3_t v1, const vec3_t v2);
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
 
-#define DotProduct( x,y )         ( x[0] * y[0] + x[1] * y[1] + x[2] * y[2] )
-#define VectorSubtract( a,b,c )   {c[0] = a[0] - b[0]; c[1] = a[1] - b[1]; c[2] = a[2] - b[2];}
-#define VectorAdd( a,b,c )        {c[0] = a[0] + b[0]; c[1] = a[1] + b[1]; c[2] = a[2] + b[2];}
-#define VectorCopy( a,b )         {b[0] = a[0]; b[1] = a[1]; b[2] = a[2];}
-#define Vector4Copy( a,b )        {b[0] = a[0]; b[1] = a[1]; b[2] = a[2]; b[3] = a[3];}
+#define DotProduct( x,y )         ( ( x )[0] * ( y )[0] + ( x )[1] * ( y )[1] + ( x )[2] * ( y )[2] )
+#define VectorSubtract( a,b,c )   ( ( c )[0] = ( a )[0] - ( b )[0],( c )[1] = ( a )[1] - ( b )[1],( c )[2] = ( a )[2] - ( b )[2] )
+#define VectorAdd( a,b,c )        ( ( c )[0] = ( a )[0] + ( b )[0],( c )[1] = ( a )[1] + ( b )[1],( c )[2] = ( a )[2] + ( b )[2] )
+#define VectorCopy( a,b )         ( ( b )[0] = ( a )[0],( b )[1] = ( a )[1],( b )[2] = ( a )[2] )
+#define Vector4Copy( a,b )        ( ( b )[0] = ( a )[0],( b )[1] = ( a )[1],( b )[2] = ( a )[2],( b )[3] = ( a )[3] )
 #define VectorScale( v, s, o )    ( ( o )[0] = ( v )[0] * ( s ),( o )[1] = ( v )[1] * ( s ),( o )[2] = ( v )[2] * ( s ) )
-#define VectorClear( x )          {x[0] = x[1] = x[2] = 0;}
-#define VectorNegate( x, y )      {y[0] = -x[0]; y[1] = -x[1]; y[2] = -x[2];}
+#define VectorClear( a )          ( ( a )[0] = ( a )[1] = ( a )[2] = 0 )
+#define VectorNegate( a,b )       ( ( b )[0] = -( a )[0],( b )[1] = -( a )[1],( b )[2] = -( a )[2] )
 #define VectorMA( v, s, b, o )    ( ( o )[0] = ( v )[0] + ( b )[0] * ( s ),( o )[1] = ( v )[1] + ( b )[1] * ( s ),( o )[2] = ( v )[2] + ( b )[2] * ( s ) )
 
 vec_t Q_rint( vec_t in );
@@ -96,7 +97,7 @@ void _VectorCopy( vec3_t in, vec3_t out );
 void _VectorScale( vec3_t v, vec_t scale, vec3_t out );
 void _VectorMA( vec3_t va, double scale, vec3_t vb, vec3_t vc );
 
-double VectorLength( vec3_t v );
+vec_t VectorLength(const vec3_t v);
 void CrossProduct( const vec3_t v1, const vec3_t v2, vec3_t cross );
 vec_t VectorNormalize( vec3_t inout );
 vec_t ColorNormalize( vec3_t in, vec3_t out );
@@ -108,7 +109,8 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs );
 
 void AngleVectors( const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up );
 void R_ConcatRotations( float in1[3][3], float in2[3][3], float out[3][3] );
-void RotatePoint( vec3_t point, float matrix[3][3] );
-void CreateRotationMatrix( vec3_t angles, float matrix[3][3] );
+void RotatePoint(vec3_t point, /*const*/ vec3_t matrix[3]);
+void CreateRotationMatrix(const vec3_t angles, vec3_t matrix[3]);
+vec_t VectorLengthSquared(const vec3_t v);
 
 #endif

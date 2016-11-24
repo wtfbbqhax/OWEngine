@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TR_PUBLIC_H
-#define __TR_PUBLIC_H
+#ifndef __TR_PUBLIC_H__
+#define __TR_PUBLIC_H__
 
 #include "tr_types.h"
 
@@ -53,9 +53,9 @@
 typedef struct
 {
     // called before the library is unloaded
-    // if the system is just reconfiguring, pass destroyWindow = qfalse,
+    // if the system is just reconfiguring, pass destroyWindow = false,
     // which will keep the screen from flashing to the desktop.
-    void ( *Shutdown )( qboolean destroyWindow );
+    void ( *Shutdown )( bool destroyWindow );
     
     // All data that will be used in a level should be
     // registered before rendering any frames to prevent disk hits,
@@ -72,7 +72,7 @@ typedef struct
     qhandle_t ( *RegisterShader )( const char* name );
     qhandle_t ( *RegisterShaderNoMip )( const char* name );
     void ( *LoadWorld )( const char* name );
-    qboolean( *GetSkinModel )( qhandle_t skinid, const char* type, char* name );     //----(SA)	added
+    bool( *GetSkinModel )( qhandle_t skinid, const char* type, char* name );     //----(SA)	added
     qhandle_t ( *GetShaderFromModel )( qhandle_t modelid, int surfnum, int withlightmap );                //----(SA)	added
     
     // the vis data is a large enough block of data that we go to the trouble
@@ -106,8 +106,8 @@ typedef struct
                                       float s1, float t1, float s2, float t2, qhandle_t hShader, const float* gradientColor, int gradientType );
                                       
     // Draw images for cinematic rendering, pass as 32 bit rgba
-    void ( *DrawStretchRaw )( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, qboolean dirty );
-    void ( *UploadCinematic )( int w, int h, int cols, int rows, const byte* data, int client, qboolean dirty );
+    void ( *DrawStretchRaw )( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, bool dirty );
+    void ( *UploadCinematic )( int w, int h, int cols, int rows, const byte* data, int client, bool dirty );
     
     void ( *BeginFrame )( stereoFrame_t stereoFrame );
     
@@ -130,7 +130,7 @@ typedef struct
     // RF
     void ( *ZombieFXAddNewHit )( int entityNum, const vec3_t hitPos, const vec3_t hitDir );
     
-    qboolean( *GetEntityToken )( char* buffer, int size );
+    bool( *GetEntityToken )( char* buffer, int size );
     qhandle_t( *LoadAnim )( qhandle_t modelHandle, const char* name );
 } refexport_t;
 
@@ -140,10 +140,10 @@ typedef struct
 typedef struct
 {
     // print message on the local console
-    void ( QDECL* Printf )( int printLevel, const char* fmt, ... );
+    void ( * Printf )( int printLevel, const char* fmt, ... );
     
     // abort the game
-    void ( QDECL* Error )( int errorLevel, const char* fmt, ... );
+    void ( * Error )( int errorLevel, const char* fmt, ... );
     
     // milliseconds should only be used for profiling, never
     // for anything game related.  Get time from the refdef
@@ -182,7 +182,7 @@ typedef struct
     char** ( *FS_ListFiles )( const char* name, const char* extension, int* numfilesfound );
     void ( *FS_FreeFileList )( char** filelist );
     void ( *FS_WriteFile )( const char* qpath, const void* buffer, int size );
-    qboolean( *FS_FileExists )( const char* file );
+    bool( *FS_FileExists )( const char* file );
     
     // cinematic stuff
     void ( *CIN_UploadCinematic )( int handle );
@@ -202,4 +202,4 @@ typedef struct
 // returned.
 typedef refexport_t* ( *GetRefAPI_t )( int apiVersion, refimport_t* rimp );
 
-#endif  // __TR_PUBLIC_H
+#endif  // !__TR_PUBLIC_H__

@@ -1,5 +1,8 @@
 Changelog
 
+11-24-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Ported whole engine, gamelogic and tools to C++
+
 11-22-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed extractfuncs.bat
 	- Added support for "WP_MEDIC_SYRINGE"
@@ -16,7 +19,7 @@ Changelog
 	- Updated binary files
 
 11-20-2016 Dusan Jocic <dusanjocic@msn.com>
-	- Added missing script  multiplayer actions (G_ScriptAction_ObjectiveShortAxisDesc, G_ScriptAction_ObjectiveShortAlliedDesc, G_ScriptAction_SetDefendingTeam, G_ScriptAction_OverviewImage and G_ScriptAction_RemoveEntity)
+	- Added missing script multiplayer actions (G_ScriptAction_ObjectiveShortAxisDesc, G_ScriptAction_ObjectiveShortAlliedDesc, G_ScriptAction_SetDefendingTeam, G_ScriptAction_OverviewImage and G_ScriptAction_RemoveEntity)
 	- Added support for "Binoculars"
 
 11-13-2016 Dusan Jocic <dusanjocic@msn.com>

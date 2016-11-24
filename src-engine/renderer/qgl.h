@@ -39,8 +39,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef QGL_H
-#define QGL_H
+#ifndef __QGL_H__
+#define __QGL_H__
 
 #if defined( __LINT__ )
 
@@ -2939,4 +2939,4 @@ static inline void qglPointSizePointerOES( GLenum type, GLsizei stride, const GL
 #define glViewport CALL_THE_QGL_VERSION_OF_glViewport
 #define glPointSizePointerOES CALL_THE_QGL_VERSION_OF_glPointSizePointerOES
 
-#endif
+#endif //!__QGL_H__

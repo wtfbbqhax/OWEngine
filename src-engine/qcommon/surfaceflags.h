@@ -43,6 +43,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __SURFACEFLAGS_H__
+#define __SURFACEFLAGS_H__
+
 #define CONTENTS_SOLID          1       // an eye is never valid in a solid
 
 #define CONTENTS_LIGHTGRID      4   //----(SA)	added
@@ -133,3 +136,4 @@
 #define SURF_MONSLICK_E         0x20000000
 #define SURF_MONSLICK_S         0x40000000
 
+#endif //!__SURFACEFLAGS_H__

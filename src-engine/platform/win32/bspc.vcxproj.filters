@@ -15,184 +15,184 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\botlib\be_aas_cluster.c">
+    <ClCompile Include="..\..\..\tools\bspc\writebsp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_bspq3.c">
+    <ClCompile Include="..\..\qcommon\unzip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_move.c">
+    <ClCompile Include="..\..\..\tools\bspc\tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_optimize.c">
+    <ClCompile Include="..\..\..\tools\bspc\textures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_reach.c">
+    <ClCompile Include="..\..\..\tools\bspc\prtfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\be_aas_sample.c">
+    <ClCompile Include="..\..\..\tools\bspc\portals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\cm_load.c">
+    <ClCompile Include="..\..\..\tools\bspc\nodraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\cm_patch.c">
+    <ClCompile Include="..\..\qcommon\md4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\cm_test.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_sin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\cm_trace.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_q3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\l_libvar.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_q2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\l_precomp.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_q1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\l_script.c">
+    <ClCompile Include="..\..\..\tools\bspc\map_hl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\md4.c">
+    <ClCompile Include="..\..\..\tools\bspc\map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\unzip.c">
+    <ClCompile Include="..\..\..\tools\bspc\leakfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\writebsp.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\tree.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_threads.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\textures.c">
+    <ClCompile Include="..\..\botlib\l_struct.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\prtfile.c">
+    <ClCompile Include="..\..\botlib\l_script.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\portals.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_qfiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\nodraw.c">
+    <ClCompile Include="..\..\botlib\l_precomp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_sin.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_poly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_q3.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_mem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_q2.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_q1.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map_hl.c">
+    <ClCompile Include="..\..\botlib\l_libvar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\map.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_sin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\leakfile.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_cmd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_utils.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_threads.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\botlib\l_struct.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_qfiles.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_hl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_poly.c">
+    <ClCompile Include="..\..\..\tools\bspc\l_bsp_ent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_mem.c">
+    <ClCompile Include="..\..\..\tools\bspc\glfile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_math.c">
+    <ClCompile Include="..\..\..\tools\bspc\faces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_log.c">
+    <ClCompile Include="..\..\..\tools\bspc\csg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_cmd.c">
+    <ClCompile Include="..\..\qcommon\cm_trace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_sin.c">
+    <ClCompile Include="..\..\qcommon\cm_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q3.c">
+    <ClCompile Include="..\..\qcommon\cm_patch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q2.c">
+    <ClCompile Include="..\..\qcommon\cm_load.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_q1.c">
+    <ClCompile Include="..\..\..\tools\bspc\bspc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_hl.c">
+    <ClCompile Include="..\..\..\tools\bspc\brushbsp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\l_bsp_ent.c">
+    <ClCompile Include="..\..\botlib\be_aas_sample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\glfile.c">
+    <ClCompile Include="..\..\botlib\be_aas_reach.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\faces.c">
+    <ClCompile Include="..\..\botlib\be_aas_optimize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\csg.c">
+    <ClCompile Include="..\..\botlib\be_aas_move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\bspc.c">
+    <ClCompile Include="..\..\botlib\be_aas_cluster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\brushbsp.c">
+    <ClCompile Include="..\..\botlib\be_aas_bspq3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\be_aas_bspc.c">
+    <ClCompile Include="..\..\..\tools\bspc\be_aas_bspc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_store.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_store.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_prunenodes.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_prunenodes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_map.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_gsubdiv.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_gsubdiv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_file.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_facemerging.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_facemerging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_edgemelting.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_edgemelting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_create.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_create.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_cfg.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_cfg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.c">
+    <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\_files.c">
+    <ClCompile Include="..\..\..\tools\bspc\_files.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -45,7 +45,7 @@
 extern aas_t( *aasworld );
 
 //AAS error message
-void QDECL AAS_Error( char* fmt, ... );
+void AAS_Error( char* fmt, ... );
 //set AAS initialized
 void AAS_SetInitialized( void );
 //setup AAS with the given number of entities and clients

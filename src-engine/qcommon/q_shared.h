@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __Q_SHARED_H
-#define __Q_SHARED_H
+#ifndef __Q_SHARED_H__
+#define __Q_SHARED_H__
 
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
@@ -131,18 +131,11 @@
 
 #define id386   0
 
-// for windows fastcall option
-
-#define QDECL
-
 //======================= WIN32 DEFINES =================================
 
 #ifdef WIN32
 
 #define MAC_STATIC
-
-#undef QDECL
-#define QDECL   __cdecl
 
 // buildstring will be incorporated into the version string
 #ifdef NDEBUG
@@ -237,11 +230,6 @@ void Sys_PumpEvents( void );
 
 
 typedef unsigned char byte;
-
-typedef enum {qfalse, qtrue}    qboolean;
-#if defined( __MACOS__ )
-#define qboolean int    //DAJ
-#endif
 
 typedef int qhandle_t;
 typedef int sfxHandle_t;
@@ -488,7 +476,7 @@ extern vec4_t g_color_table[8];
 #define MAKERGB( v, r, g, b ) v[0] = r; v[1] = g; v[2] = b
 #define MAKERGBA( v, r, g, b, a ) v[0] = r; v[1] = g; v[2] = b; v[3] = a
 
-#define DEG2RAD( a ) ( ( ( a ) * M_PI ) / 180.0F )
+#define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 #define RAD2DEG( a ) ( ( ( a ) * 180.0f ) / M_PI )
 
 struct cplane_s;
@@ -628,7 +616,7 @@ float AngleNormalize360( float angle );
 float AngleNormalize180( float angle );
 float AngleDelta( float angle1, float angle2 );
 
-qboolean PlaneFromPoints( vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c );
+bool PlaneFromPoints( vec4_t plane, const vec3_t a, const vec3_t b, const vec3_t c );
 void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal );
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );
 void RotateAroundDirection( vec3_t axis[3], float yaw );
@@ -663,13 +651,13 @@ void    COM_RestoreParseSession( char** data_p );
 void    COM_SetCurrentParseLine( int line );
 int     COM_GetCurrentParseLine( void );
 char*    COM_Parse( char** data_p );
-char*    COM_ParseExt( char** data_p, qboolean allowLineBreak );
+char*    COM_ParseExt( char** data_p, bool allowLineBreak );
 int     COM_Compress( char* data_p );
 void    COM_ParseError( char* format, ... );
 void    COM_ParseWarning( char* format, ... );
 
 // TTimo
-qboolean COM_BitCheck( const int array[], int bitNum );
+bool COM_BitCheck( const int array[], int bitNum );
 void COM_BitSet( int array[], int bitNum );
 void COM_BitClear( int array[], int bitNum );
 int Com_HashKey( char* string, int maxlen );
@@ -705,7 +693,7 @@ void Parse1DMatrix( char** buf_p, int x, float* m );
 void Parse2DMatrix( char** buf_p, int y, int x, float* m );
 void Parse3DMatrix( char** buf_p, int z, int y, int x, float* m );
 
-void QDECL Com_sprintf( char* dest, int size, const char* fmt, ... );
+void Com_sprintf( char* dest, int size, const char* fmt, ... );
 
 
 // mode parm for FS_FOpenFile
@@ -759,7 +747,7 @@ char* Q_CleanStr( char* string );
 // Ridah
 int Q_strncasecmp( char* s1, char* s2, int n );
 int Q_strcasecmp( char* s1, char* s2 );
-qboolean Q_strreplace( char* dest, int destsize, const char* find, const char* replace );
+bool Q_strreplace( char* dest, int destsize, const char* find, const char* replace );
 // done.
 //=============================================
 
@@ -789,8 +777,8 @@ float   BigFloat( float l );
 float   LittleFloat( float l );
 
 void    Swap_Init( void );
-char*     QDECL va( char* format, ... );
-float*   tv( float x, float y, float z );
+char*   va( char* format, ... );
+float*  tv( float x, float y, float z );
 
 //=============================================
 
@@ -802,7 +790,7 @@ void Info_RemoveKey( char* s, const char* key );
 void Info_RemoveKey_big( char* s, const char* key );
 void Info_SetValueForKey( char* s, const char* key, const char* value );
 void Info_SetValueForKey_Big( char* s, const char* key, const char* value );
-qboolean Info_Validate( const char* s );
+bool Info_Validate( const char* s );
 void Info_NextPair( const char** s, char* key, char* value );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
@@ -885,7 +873,7 @@ typedef struct cvar_s
     char*        resetString;       // cvar_restart will reset to this value
     char*        latchedString;     // for CVAR_LATCH vars
     int flags;
-    qboolean modified;              // set each time the cvar is changed
+    bool modified;              // set each time the cvar is changed
     int modificationCount;          // incremented each time the cvar is changed
     float value;                    // atof( string )
     int integer;                    // atoi( string )
@@ -949,8 +937,8 @@ typedef struct cplane_s
 // a trace is returned when a box is swept through the world
 typedef struct
 {
-    qboolean allsolid;      // if true, plane is not valid
-    qboolean startsolid;    // if true, the initial point was in a solid area
+    bool allsolid;      // if true, plane is not valid
+    bool startsolid;    // if true, the initial point was in a solid area
     float fraction;         // time completed, 1.0 = didn't hit anything
     vec3_t endpos;          // final position
     cplane_t plane;         // surface normal at impact, transformed to world space
@@ -1272,7 +1260,7 @@ typedef struct playerState_s
     int weapAnimTimer;              // don't change low priority animations until this runs out
     int weapAnim;               // mask off ANIM_TOGGLEBIT
     
-    qboolean releasedFire;
+    bool releasedFire;
     
     float aimSpreadScaleFloat;          // (SA) the server-side aimspreadscale that lets it track finer changes but still only
     // transmit the 8bit int to the client
@@ -1592,4 +1580,4 @@ typedef enum
 
 #define SQR( a ) ( ( a ) * ( a ) )
 
-#endif  // __Q_SHARED_H
+#endif  //!__Q_SHARED_H__

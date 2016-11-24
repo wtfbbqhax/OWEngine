@@ -45,7 +45,7 @@
 
 #ifndef MEMDEBUG
 
-void* GetClearedMemory( int size );
+void* GetClearedMemory(unsigned long size);
 void* GetMemory( unsigned long size );
 
 #else

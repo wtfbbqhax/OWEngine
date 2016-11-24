@@ -46,7 +46,7 @@ typedef struct libvar_s
     char*        name;
     char*        string;
     int flags;
-    qboolean modified;      // set each time the cvar is changed
+    bool modified;      // set each time the cvar is changed
     float value;
     struct  libvar_s* next;
 } libvar_t;
@@ -68,7 +68,7 @@ char* LibVarString( char* var_name, char* value );
 //sets the library variable
 void LibVarSet( char* var_name, char* value );
 //returns true if the library variable has been modified
-qboolean LibVarChanged( char* var_name );
+bool LibVarChanged( char* var_name );
 //sets the library variable to unmodified
 void LibVarSetNotModified( char* var_name );
 

@@ -40,18 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Ridah, can't get it to compile without this
-#ifndef QDECL
-
-// for windows fastcall option
-#define QDECL
-//======================= WIN32 DEFINES =================================
-#ifdef WIN32
-#undef QDECL
-#define QDECL   __cdecl
-#endif
-#endif
-// done.
+#ifndef __LSCRIPT_H__
+#define __LSCRIPT_H__
 
 //undef if binary numbers of the form 0b... or 0B... are not allowed
 #define BINARYNUMBERS
@@ -264,8 +254,8 @@ script_t* LoadScriptMemory( char* ptr, int length, char* name );
 //free a script
 void FreeScript( script_t* script );
 //print a script error with filename and line number
-void QDECL ScriptError( script_t* script, char* str, ... );
+void ScriptError( script_t* script, char* str, ... );
 //print a script warning with filename and line number
-void QDECL ScriptWarning( script_t* script, char* str, ... );
+void ScriptWarning( script_t* script, char* str, ... );
 
-
+#endif // !__LSCRIPT_H__

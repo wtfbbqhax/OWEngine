@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __MOTIONCONTROLLERS_H__
+#define __MOTIONCONTROLLERS_H__
+
 #define MOTLIB_API_VERSION 1
 
 struct OculusVR_HMDInfo
@@ -81,9 +84,9 @@ struct OculusVR_StereoCfg
 typedef struct motcontr_import_s
 {
     //print messages from the bot library
-    void ( QDECL* Print )( char* fmt, ... );
+    void ( *Print )( const char* fmt, ... );
     //Dushan
-    void ( QDECL* Error )( int errorLevel, const char* fmt, ... );
+    void ( *Error )( int errorLevel, const char* fmt, ... );
 } motcontr_import_t;
 
 //bot AI library imported functions
@@ -100,3 +103,5 @@ typedef struct motcontr_export_s
 
 //linking library
 typedef motcontr_export_t* ( *GetMotContrLibAPI_t )( int apiVersion, motcontr_import_t* rimp );
+
+#endif // !__MOTIONCONTROLLERS_H__

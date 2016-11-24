@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __VM_LOCAL_H__
+#define __VM_LOCAL_H__
+
 #include "q_shared.h"
 #include "qcommon.h"
 
@@ -157,12 +160,12 @@ struct vm_s
     
     // for dynamic linked modules
     void*        dllHandle;
-    intptr_t ( QDECL* entryPoint )( intptr_t callNum, ... );
+    intptr_t ( * entryPoint )( intptr_t callNum, ... );
     
     // for interpreted modules
-    qboolean currentlyInterpreting;
+    bool currentlyInterpreting;
     
-    qboolean compiled;
+    bool compiled;
     byte*        codeBase;
     int codeLength;
     
@@ -197,3 +200,4 @@ int VM_SymbolToValue( vm_t* vm, const char* symbol );
 const char* VM_ValueToSymbol( vm_t* vm, int value );
 void VM_LogSyscalls( intptr_t* args );
 
+#endif // !__VM_LOCAL_H__

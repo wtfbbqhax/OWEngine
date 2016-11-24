@@ -40,6 +40,12 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __AI_TEAM_H__
+#define __AI_TEAM_H__
+
+#include "ai_main.h"
+
 void BotTeamAI( bot_state_t* bs );
 
+#endif // !__AI_TEAM_H__
 

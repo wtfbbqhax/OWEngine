@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __CM_POLYLIB_H__
+#define __CM_POLYLIB_H__
+
 typedef struct
 {
     int numpoints;
@@ -85,3 +88,5 @@ void    ChopWindingInPlace( winding_t** w, vec3_t normal, vec_t dist, vec_t epsi
 // frees the original if clipped
 
 void pw( winding_t* w );
+
+#endif // !__CM_POLYLIB_H__

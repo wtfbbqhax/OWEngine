@@ -40,6 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __MENUDEF_H__
+#define __MENUDEF_H__
 
 #define ITEM_TYPE_TEXT              0       // simple text
 #define ITEM_TYPE_BUTTON            1       // button, basically text with a border
@@ -409,3 +411,5 @@
 #define WM_PINEAPPLE_GRENADE    11
 #define WM_STICK_GRENADE        12
 // -NERVE - SMF
+
+#endif // !__MENUDEF_H__

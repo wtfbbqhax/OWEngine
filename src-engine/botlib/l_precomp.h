@@ -159,14 +159,14 @@ source_t* LoadSourceMemory( char* ptr, int length, char* name );
 //free the given source
 void FreeSource( source_t* source );
 //print a source error
-void QDECL SourceError( source_t* source, char* str, ... );
+void SourceError( source_t* source, char* str, ... );
 //print a source warning
-void QDECL SourceWarning( source_t* source, char* str, ... );
+void SourceWarning( source_t* source, char* str, ... );
 
 #ifdef BSPC
 // some of BSPC source does include game/q_shared.h and some does not
 // we define pc_token_s pc_token_t if needed (yes, it's ugly)
-#ifndef __Q_SHARED_H
+#ifndef __Q_SHARED_H__
 #define MAX_TOKENLENGTH         1024
 typedef struct pc_token_s
 {

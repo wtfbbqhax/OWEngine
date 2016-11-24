@@ -43,6 +43,9 @@
 #ifndef __QFILES_H__
 #define __QFILES_H__
 
+#include "q_shared.h"
+#include "../splines/math_vector.h"
+
 //
 // qfiles.h: quake file formats
 // This file must be identical in the quake and utils directories
@@ -79,7 +82,6 @@ typedef struct
     int litLength;              // ( dataLength - litLength ) should be byteswapped on load
     int bssLength;              // zero filled memory appended to datalength
 } vmHeader_t;
-
 
 /*
 ========================================================================
@@ -355,8 +357,8 @@ MD4Anim file format
 //
 typedef struct
 {
-    vec3_t		translate;
-    vec4_t		rotation;
+	idVec3		translate;
+    idVec4		rotation;
 } md4JointTransform_t;
 
 //
@@ -846,4 +848,4 @@ typedef struct
 } drsurfaceInternal_t;
 //----(SA) end
 
-#endif
+#endif //!__QFILES_H__

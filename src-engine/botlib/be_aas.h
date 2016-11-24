@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __BE_AAS_H__
+#define __BE_AAS_H__
+
 #define MAX_AAS_WORLDS      2   // one for each bounding box type
 
 #ifndef MAX_STRINGFIELD
@@ -96,7 +99,7 @@ typedef enum
 //a trace is returned when a box is swept through the AAS world
 typedef struct aas_trace_s
 {
-    qboolean startsolid;    // if true, the initial point was in a solid area
+    bool startsolid;    // if true, the initial point was in a solid area
     float fraction;         // time completed, 1.0 = didn't hit anything
     vec3_t endpos;          // final position
     int ent;                // entity blocking the trace
@@ -118,8 +121,8 @@ typedef struct bsp_surface_s
 //a trace is returned when a box is swept through the BSP world
 typedef struct bsp_trace_s
 {
-	qboolean		allsolid;	// if true, plane is not valid
-	qboolean		startsolid;	// if true, the initial point was in a solid area
+	bool		allsolid;	// if true, plane is not valid
+	bool		startsolid;	// if true, the initial point was in a solid area
 	float			fraction;	// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;		// final position
 	cplane_t		plane;		// surface normal at impact
@@ -197,3 +200,5 @@ typedef struct aas_altroutegoal_s
     unsigned short goaltraveltime;
     unsigned short extratraveltime;
 } aas_altroutegoal_t;
+
+#endif // !__BE_AAS_H__

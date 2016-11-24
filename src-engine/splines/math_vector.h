@@ -170,7 +170,7 @@ public:
     float operator[]( const int index ) const;
     float&           operator[]( const int index );
     
-    void            set( const float x, const float y, const float z );
+    void            set( const float _x, const float _y, const float _z );
     
     idVec3 operator-() const;
     
@@ -249,11 +249,11 @@ ID_INLINE idVec3& idVec3::operator=( const idVec3& a )
     return *this;
 }
 
-ID_INLINE void idVec3::set( const float x, const float y, const float z )
+ID_INLINE void idVec3::set( const float _x, const float _y, const float _z )
 {
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    this->x = _x;
+    this->y = _y;
+    this->z = _z;
 }
 
 ID_INLINE idVec3 idVec3::operator-( const idVec3& a ) const

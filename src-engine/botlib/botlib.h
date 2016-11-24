@@ -40,6 +40,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __BOTLIB_H__
+#define __BOTLIB_H__
+
 #define BOTLIB_API_VERSION      3
 
 struct aas_clientmove_s;
@@ -149,8 +152,8 @@ typedef struct bsp_surface_s
 //a trace is returned when a box is swept through the world
 typedef struct bsp_trace_s
 {
-    qboolean allsolid;          // if true, plane is not valid
-    qboolean startsolid;        // if true, the initial point was in a solid area
+    bool allsolid;          // if true, plane is not valid
+    bool startsolid;        // if true, the initial point was in a solid area
     float fraction;             // time completed, 1.0 = didn't hit anything
     vec3_t endpos;              // final position
     cplane_t plane;             // surface normal at impact
@@ -193,9 +196,9 @@ typedef struct bot_entitystate_s
 typedef struct botlib_import_s
 {
     //print messages from the bot library
-    void ( QDECL* Print )( int type, char* fmt, ... );
+    void ( * Print )( int type, char* fmt, ... );
     //Dushan
-    void ( QDECL* Error )( int errorLevel, const char* fmt, ... );
+    void ( * Error )( int errorLevel, const char* fmt, ... );
     //trace a bbox through the world
     void ( *Trace )( bsp_trace_t* trace, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int passent, int contentmask );
     //trace a bbox against a specific entity
@@ -229,9 +232,9 @@ typedef struct botlib_import_s
     void ( *DebugPolygonDelete )( int id );
     //
     // Ridah, Cast AI stuff
-    qboolean( *AICast_VisibleFromPos )( vec3_t srcpos, int srcnum,
-                                        vec3_t destpos, int destnum, qboolean updateVisPos );
-    qboolean( *AICast_CheckAttackAtPos )( int entnum, int enemy, vec3_t pos, qboolean ducking, qboolean allowHitWorld );
+    bool( *AICast_VisibleFromPos )( vec3_t srcpos, int srcnum,
+                                        vec3_t destpos, int destnum, bool updateVisPos );
+    bool( *AICast_CheckAttackAtPos )( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld );
     // done.
 } botlib_import_t;
 
@@ -286,10 +289,10 @@ typedef struct aas_export_s
     // be_aas_routetable.c
     //--------------------------------------------
     void ( *AAS_RT_ShowRoute )( vec3_t srcpos, int srcnum, int destnum );
-    qboolean( *AAS_RT_GetHidePos )( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
+    bool( *AAS_RT_GetHidePos )( vec3_t srcpos, int srcnum, int srcarea, vec3_t destpos, int destnum, int destarea, vec3_t returnPos );
     int ( *AAS_FindAttackSpotWithinRange )( int srcnum, int rangenum, int enemynum, float rangedist, int travelflags, float* outpos );
-    qboolean( *AAS_GetRouteFirstVisPos )( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
-    void ( *AAS_SetAASBlockingEntity )( vec3_t absmin, vec3_t absmax, qboolean blocking );
+    bool( *AAS_GetRouteFirstVisPos )( vec3_t srcpos, vec3_t destpos, int travelflags, vec3_t retpos );
+    void ( *AAS_SetAASBlockingEntity )( vec3_t absmin, vec3_t absmax, bool blocking );
     // done.
     
     // Ridah
@@ -525,3 +528,4 @@ name:						default:			module(s):			description:
 
 */
 
+#endif // __BOTLIB_H__
