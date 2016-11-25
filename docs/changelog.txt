@@ -3,6 +3,12 @@ Changelog
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c
 	- Added OpenCL library files
+	- Added "GPUWorkers" for renderer engine
+		NOTE: Idea was simple. Adding possibility to use OpenCL along OpenGL for calculating algorithms, ... etc.
+		      Engine and renderer is expecting files from the "renderWorkerProgs" folder with ".renderworkerprog" extension.
+			  If GPU device is not "somehow" supporting OpenCL, engine will choose CPU as default device.
+	- Updated binary files
+			  
 
 11-24-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Ported whole engine, gamelogic and tools to C++

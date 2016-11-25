@@ -349,7 +349,7 @@ MD4Anim file format
 ==============================================================================
 */
 #define MD4ANIM_IDENT           ( ( 'A' << 24 ) + ( '4' << 16 ) + ( 'D' << 8 ) + 'M' )
-#define MD4ANIM_VERSION         2
+#define MD4ANIM_VERSION         1
 #define MD4ANIM_JOINTNAMESIZE	32
 
 //

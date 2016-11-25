@@ -48,6 +48,7 @@
 #include "../qcommon/qcommon.h"
 #include "tr_public.h"
 #include <GL/glew.h>
+#include "gpuworker/GpuWorker.h"
 
 #if !defined( __ANDROID__ )
 #include <motioncontrollers.h>

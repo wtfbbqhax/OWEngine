@@ -584,6 +584,8 @@ static void InitOpenGL( void )
         glConfig.oculusTexId = glGetUniformLocation( glConfig.oculusProgId, "renderedTexture" );
     }
 #endif
+    
+    gpuWorker->Init();
 }
 
 /*
@@ -1620,7 +1622,6 @@ RE_Shutdown
 */
 void RE_Shutdown( bool destroyWindow )
 {
-
     ri.Printf( PRINT_ALL, "RE_Shutdown( %i )\n", destroyWindow );
     
     ri.Cmd_RemoveCommand( "modellist" );
@@ -1675,6 +1676,8 @@ void RE_Shutdown( bool destroyWindow )
     }
     
     R_DoneFreeType();
+    
+    gpuWorker->Shutdown();
     
     // shut down platform specific OpenGL stuff
     if( destroyWindow )

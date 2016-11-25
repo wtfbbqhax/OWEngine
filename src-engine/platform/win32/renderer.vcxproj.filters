@@ -40,6 +40,9 @@
     <Filter Include="libraries\glew\Source Files">
       <UniqueIdentifier>{aa24162e-d41a-4fc4-b83e-063df3add80d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GpuWorker">
+      <UniqueIdentifier>{da759807-e104-43a5-9305-fff75e9e7cf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\libraries\ft2\ahangles.c">
@@ -339,6 +342,15 @@
     <ClCompile Include="win_gamma.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker.cpp">
+      <Filter>GpuWorker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Error.cpp">
+      <Filter>GpuWorker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Program.cpp">
+      <Filter>GpuWorker</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\win32\resource.h">
@@ -577,6 +589,18 @@
     </ClInclude>
     <ClInclude Include="..\..\renderer\tr_types.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libraries\cl\cl\cl_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker_Program.h">
+      <Filter>GpuWorker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker.h">
+      <Filter>GpuWorker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker_Local.h">
+      <Filter>GpuWorker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
