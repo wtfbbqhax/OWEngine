@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

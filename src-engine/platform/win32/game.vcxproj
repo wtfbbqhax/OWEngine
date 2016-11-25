@@ -181,10 +181,6 @@
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_sight.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\ai_cast_think.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_animation.cpp" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_pmove.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_slidemove.cpp" />

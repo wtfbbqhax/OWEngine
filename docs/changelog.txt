@@ -1,5 +1,8 @@
 Changelog
 
+11-25-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Removed bg_lib.c
+
 11-24-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Ported whole engine, gamelogic and tools to C++
 	- Reformatted code with AStyle to match global indenting and formatting

@@ -153,9 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_animation.cpp" />
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_pmove.cpp" />
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_slidemove.cpp" />

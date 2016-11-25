@@ -42,9 +42,6 @@
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_lib.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.h">
