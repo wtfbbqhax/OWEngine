@@ -2,6 +2,7 @@ Changelog
 
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c
+	- Added OpenCL library files
 
 11-24-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Ported whole engine, gamelogic and tools to C++
