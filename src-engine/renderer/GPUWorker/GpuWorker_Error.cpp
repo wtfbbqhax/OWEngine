@@ -39,7 +39,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../tr_local.h"
+#include "../r_local.h"
 #include <cl/cl.h>
 
 const char* owGPUWorkerProgram::clErrorString( cl_int err )

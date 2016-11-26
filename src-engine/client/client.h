@@ -45,7 +45,7 @@
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-#include "../renderer/tr_public.h"
+#include "../renderer/r_public.h"
 #include "../../src-gamelogic/rtcw/ui/ui_public.h"
 #include "keys.h"
 #include "snd_public.h"

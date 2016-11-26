@@ -30,19 +30,18 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_mesh.c
+//  File name:   r_cmesh.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
-//  Description: triangle model functions
+//  Description: Compressed triangle model functions
+//               This is ripped from tr_mesh.c, and converted to use the compressed mesh format
 // -------------------------------------------------------------------------
 //  History:
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-// !!! NOTE: Any changes made here must be duplicated in tr_cmesh.c for MDC support
-
-#include "tr_local.h"
+#include "r_local.h"
 
 static float ProjectRadius( float r, vec3_t location )
 {
@@ -100,7 +99,7 @@ static float ProjectRadius( float r, vec3_t location )
 R_CullModel
 =============
 */
-static int R_CullModel( md3Header_t* header, trRefEntity_t* ent )
+static int R_CullModel( mdcHeader_t* header, trRefEntity_t* ent )
 {
     vec3_t bounds[2];
     md3Frame_t*  oldFrame, *newFrame;
@@ -214,7 +213,7 @@ R_ComputeLOD
 
 =================
 */
-int R_ComputeLOD( trRefEntity_t* ent )
+static int R_ComputeLOD( trRefEntity_t* ent )
 {
     float radius;
     float flod, lodscale;
@@ -238,7 +237,7 @@ int R_ComputeLOD( trRefEntity_t* ent )
             return ( tr.currentModel->numLods - 1 );
         }
         
-        frame = ( md3Frame_t* )( ( ( unsigned char* ) tr.currentModel->md3[0] ) + tr.currentModel->md3[0]->ofsFrames );
+        frame = ( md3Frame_t* )( ( ( unsigned char* ) tr.currentModel->mdc[0] ) + tr.currentModel->mdc[0]->ofsFrames );
         
         frame += ent->e.frame;
         
@@ -302,7 +301,7 @@ R_ComputeFogNum
 
 =================
 */
-static int R_ComputeFogNum( md3Header_t* header, trRefEntity_t* ent )
+static int R_ComputeFogNum( mdcHeader_t* header, trRefEntity_t* ent )
 {
     int i, j;
     fog_t*           fog;
@@ -342,15 +341,15 @@ static int R_ComputeFogNum( md3Header_t* header, trRefEntity_t* ent )
 
 /*
 =================
-R_AddMD3Surfaces
+R_AddMDCSurfaces
 
 =================
 */
-void R_AddMD3Surfaces( trRefEntity_t* ent )
+void R_AddMDCSurfaces( trRefEntity_t* ent )
 {
     int i;
-    md3Header_t*     header = 0;
-    md3Surface_t*    surface = 0;
+    mdcHeader_t*     header = 0;
+    mdcSurface_t*    surface = 0;
     md3Shader_t*     md3Shader = 0;
     shader_t*        shader = 0;
     int cull;
@@ -363,8 +362,8 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
     
     if( ent->e.renderfx & RF_WRAP_FRAMES )
     {
-        ent->e.frame %= tr.currentModel->md3[0]->numFrames;
-        ent->e.oldframe %= tr.currentModel->md3[0]->numFrames;
+        ent->e.frame %= tr.currentModel->mdc[0]->numFrames;
+        ent->e.oldframe %= tr.currentModel->mdc[0]->numFrames;
     }
     
     //
@@ -373,12 +372,12 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
     // when the surfaces are rendered, they don't need to be
     // range checked again.
     //
-    if( ( ent->e.frame >= tr.currentModel->md3[0]->numFrames )
+    if( ( ent->e.frame >= tr.currentModel->mdc[0]->numFrames )
             || ( ent->e.frame < 0 )
-            || ( ent->e.oldframe >= tr.currentModel->md3[0]->numFrames )
+            || ( ent->e.oldframe >= tr.currentModel->mdc[0]->numFrames )
             || ( ent->e.oldframe < 0 ) )
     {
-        ri.Printf( PRINT_DEVELOPER, "R_AddMD3Surfaces: no such frame %d to %d for '%s'\n",
+        ri.Printf( PRINT_DEVELOPER, "R_AddMDCSurfaces: no such frame %d to %d for '%s'\n",
                    ent->e.oldframe, ent->e.frame,
                    tr.currentModel->name );
         ent->e.frame = 0;
@@ -390,7 +389,7 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
     //
     lod = R_ComputeLOD( ent );
     
-    header = tr.currentModel->md3[lod];
+    header = tr.currentModel->mdc[lod];
     
     //
     // cull the entire model if merged bounding box of both frames
@@ -418,20 +417,20 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
     //
     // draw all surfaces
     //
-    surface = ( md3Surface_t* )( ( byte* )header + header->ofsSurfaces );
+    surface = ( mdcSurface_t* )( ( byte* )header + header->ofsSurfaces );
     for( i = 0 ; i < header->numSurfaces ; i++ )
     {
         int j;
         
 //----(SA)	blink will change to be an overlay rather than replacing the head texture.
 //		think of it like batman's mask.  the polygons that have eye texture are duplicated
-//		and the 'lids' rendered with polygonoffset shader parm over the top of the open eyes.  this gives
+//		and the 'lids' rendered with polygonoffset over the top of the open eyes.  this gives
 //		minimal overdraw/alpha blending/texture use without breaking the model and causing seams
         if( !Q_stricmp( surface->name, "h_blink" ) )
         {
             if( !( ent->e.renderfx & RF_BLINK ) )
             {
-                surface = ( md3Surface_t* )( ( byte* )surface + surface->ofsEnd );
+                surface = ( mdcSurface_t* )( ( byte* )surface + surface->ofsEnd );
                 continue;
             }
         }
@@ -457,15 +456,6 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
                     shader = skin->surfaces[j]->shader;
                     break;
                 }
-            }
-            
-            if( shader == tr.defaultShader )
-            {
-                ri.Printf( PRINT_DEVELOPER, "WARNING: no shader for surface %s in skin %s\n", surface->name, skin->name );
-            }
-            else if( shader->defaultShader )
-            {
-                ri.Printf( PRINT_DEVELOPER, "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
             }
         }
         else if( surface->numShaders <= 0 )
@@ -493,6 +483,8 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
             R_AddDrawSurf( ( surfaceType_t* )surface, tr.shadowShader, 0, false, tr.currentModel->ATI_tess );
         }
         
+//----(SA)
+
         // projection shadows work fine with personal models
 //		if ( r_shadows->integer == 3
 //			&& fogNum == 0
@@ -501,11 +493,11 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
 //			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, false );
 //		}
 
-
-        // for testing polygon shadows (on /all/ models)
+//----(SA)	for testing polygon shadows (on /all/ models)
 //		if ( r_shadows->integer == 4)
 //			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, false );
 
+//----(SA)	done testing
 
         // don't add third_person objects if not viewing through a portal
         if( !personalModel )
@@ -514,7 +506,7 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
             R_AddDrawSurf( ( surfaceType_t* )surface, shader, fogNum, false, tr.currentModel->ATI_tess );
         }
         
-        surface = ( md3Surface_t* )( ( byte* )surface + surface->ofsEnd );
+        surface = ( mdcSurface_t* )( ( byte* )surface + surface->ofsEnd );
     }
     
 }

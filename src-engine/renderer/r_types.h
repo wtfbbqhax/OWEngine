@@ -40,8 +40,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TR_TYPES_H__
-#define __TR_TYPES_H__
+#ifndef __R_TYPES_H__
+#define __R_TYPES_H__
 
 #define MAX_CORONAS     32          //----(SA)	not really a reason to limit this other than trying to keep a reasonable count
 #define MAX_DLIGHTS     32          // can't be increased, because bit flags are used on surfaces
@@ -375,4 +375,4 @@ typedef struct
 
 #endif  // !defined _WIN32
 
-#endif  // !__TR_TYPES_H__
+#endif  // !__R_TYPES_H__

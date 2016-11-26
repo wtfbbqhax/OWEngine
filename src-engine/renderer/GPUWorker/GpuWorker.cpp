@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "../tr_local.h"
+#include "../r_local.h"
 #include "../../splines/util_list.h"
 #include "../../splines/util_str.h"
 #include "GpuWorker_Local.h"

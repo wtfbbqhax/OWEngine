@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_shade_calc.c
+//  File name:   r_shade_calc.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -41,7 +41,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "tr_local.h"
+#include "r_local.h"
 
 #define WAVEVALUE( table, base, amplitude, phase, freq )  ( ( base ) + table[ myftol( ( ( ( phase ) + tess.shaderTime * ( freq ) ) * FUNCTABLE_SIZE ) ) & FUNCTABLE_MASK ] * ( amplitude ) )
 

@@ -50,7 +50,7 @@
 
 #include <assert.h>
 #include <GL/glew.h>
-#include "../../renderer/tr_local.h"
+#include "../../renderer/r_local.h"
 #include "../../qcommon/qcommon.h"
 #include "win_local.h"
 #include "resource.h"

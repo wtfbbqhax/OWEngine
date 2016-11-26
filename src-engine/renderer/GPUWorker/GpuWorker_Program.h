@@ -43,7 +43,7 @@
 #ifndef __GPUWORKER_PROGGRAM_H__
 #define __GPUWORKER_PROGGRAM_H__
 
-#include "../tr_local.h"
+#include "../r_local.h"
 #include "../../splines/util_str.h"
 #include <cl/cl_platform.h>
 

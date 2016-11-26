@@ -44,7 +44,7 @@
 #define __CM_PUBLIC_H__
 
 #include "qfiles.h"
-#include "../renderer/tr_types.h"
+#include "../renderer/r_types.h"
 #include"q_shared.h"
 
 void CM_LoadMap( const char* name, bool clientload, int* checksum );

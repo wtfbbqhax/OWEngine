@@ -20,7 +20,7 @@
 #include "jpeglib.h"
 #include "jmemsys.h"     /* import the system-dependent declarations */
 
-//#include "../../src-engine/renderer/tr_local.h"
+//#include "../../src-engine/renderer/r_local.h"
 
 /*
  * Memory allocation and ri.Freeing are controlled by the regular library

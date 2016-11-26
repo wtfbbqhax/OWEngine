@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_backend.c
+//  File name:   r_backend.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 
 backEndData_t*   backEndData[SMP_FRAMES];
 backEndState_t backEnd;

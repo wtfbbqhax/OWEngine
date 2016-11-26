@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_curve.c
+//  File name:   r_curve.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -48,7 +48,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 
 /*
 ============

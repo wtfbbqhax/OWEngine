@@ -9,6 +9,7 @@ Changelog
 	- Changed GPUWorkers extension to ".opencl"
 	- Added possibility to read a block of memory from the graphics card in OpenCL
 	- Updated binary files
+	- Renamed all tr_* files into r_*
 
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c

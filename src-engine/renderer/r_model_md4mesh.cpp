@@ -31,7 +31,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_model_md4mesh.c
+//  File name:   r_model_md4mesh.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -41,7 +41,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 
 #define X 0
 #define Y 1

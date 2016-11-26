@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_local.h
+//  File name:   r_local.h
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -40,13 +40,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TR_LOCAL_H__
-#define __TR_LOCAL_H__
+#ifndef __R_LOCAL_H__
+#define __R_LOCAL_H__
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qfiles.h"
 #include "../qcommon/qcommon.h"
-#include "tr_public.h"
+#include "r_public.h"
 #include <GL/glew.h>
 #include "gpuworker/GpuWorker.h"
 
@@ -1471,7 +1471,7 @@ skin_t*  R_GetSkinByHandle( qhandle_t hSkin );
 
 
 //
-// tr_shader.c
+// r_shader.c
 //
 qhandle_t        RE_RegisterShaderLightMap( const char* name, int lightmapIndex );
 qhandle_t        RE_RegisterShader( const char* name );
@@ -2005,4 +2005,4 @@ void RenderProgsInitialization( void );
 void RenderProgs_ShutdownPrograms( void );
 void RenderProgs_ShutdownShaders( void );
 
-#endif //TR_LOCAL_H (THIS MUST BE LAST!!)
+#endif //R_LOCAL_H (THIS MUST BE LAST!!)

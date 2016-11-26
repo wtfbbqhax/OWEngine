@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_sky.c
+//  File name:   r_sky.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 
 #define SKY_SUBDIVISIONS        8
 #define HALF_SKY_SUBDIVISIONS   ( SKY_SUBDIVISIONS / 2 )

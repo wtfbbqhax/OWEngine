@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_light.c
+//  File name:   r_light.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 
 #define DLIGHT_AT_RADIUS        16
 // at the edge of a dlight's influence, this amount of light will be added

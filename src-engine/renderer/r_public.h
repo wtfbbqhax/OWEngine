@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_public.h
+//  File name:   r_public.h
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -40,10 +40,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TR_PUBLIC_H__
-#define __TR_PUBLIC_H__
+#ifndef __R_PUBLIC_H__
+#define __R_PUBLIC_H__
 
-#include "tr_types.h"
+#include "r_types.h"
 
 #define REF_API_VERSION     9
 
@@ -202,4 +202,4 @@ typedef struct
 // returned.
 typedef refexport_t* ( *GetRefAPI_t )( int apiVersion, refimport_t* rimp );
 
-#endif  // !__TR_PUBLIC_H__
+#endif  // !__R_PUBLIC_H__

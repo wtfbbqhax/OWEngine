@@ -44,7 +44,7 @@
 #define __UI_SHARED_H
 
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/renderer/tr_types.h"
+#include "../../../src-engine/renderer/r_types.h"
 #include "keycodes.h"
 
 #include "menudef.h"

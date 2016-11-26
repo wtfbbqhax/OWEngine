@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   r_glsl.cpp
+//  File name:   r_renderProgs.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:   Visual Studio 2015
@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 #include "../splines/math_matrix.h"
 #include "../splines/math_vector.h"
 

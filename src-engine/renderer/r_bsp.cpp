@@ -30,7 +30,7 @@
 //  Suite 120, Rockville, Maryland 20850 USA.
 //
 // -------------------------------------------------------------------------
-//  File name:   tr_bsp.c
+//  File name:   r_bsp.cpp
 //  Version:     v1.00
 //  Created:
 //  Compilers:
@@ -42,7 +42,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "tr_local.h"
+#include "r_local.h"
 
 static world_t s_worldData;
 static byte*        fileBase;
