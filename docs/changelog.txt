@@ -15,6 +15,7 @@ Changelog
 	- Fix crash from reading past end of tr.refdef.drawSurfs
 	- Roll up Bugfixes
 	- R_LoadCacheImages takes 4 parameters
+	- Misc fixes
 
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c

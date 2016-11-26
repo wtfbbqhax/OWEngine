@@ -168,15 +168,15 @@ void DumpReplaceFunctions( void )
     char path[_MAX_PATH];
     FILE*    f;
     int len, newlen;
-    unsigned char* buf, *newbuf;
+    unsigned char* buf, *newbuf = NULL;
     int updated;
     
     updated = 0;
     
     // dump the function header
-    strcpy( path, "." );
-    strcat( path, PATHSEPERATOR_STR );
-    strcat( path, "g_funcs.tmp" );
+    strncpy( path, ".", sizeof( path ) );
+    strncat( path, PATHSEPERATOR_STR, sizeof( path ) );
+    strncat( path, "g_funcs.tmp", sizeof( path ) );
     Log_Open( path );
     for( rf = replacefuncs; rf; rf = rf->next )
     {
@@ -186,17 +186,20 @@ void DumpReplaceFunctions( void )
     Log_Close();
     
     // if it's different, rename the file over the real header
-    strcpy( path, "g_funcs.tmp" );
+    strncpy( path, "g_funcs.tmp", sizeof( path ) );
     f = fopen( path, "rb" );
+    if( !f )
+        Error( "Could not open %s\n", path );
     fseek( f, 0, SEEK_END );
     len = ftell( f );
     buf = ( unsigned char* ) malloc( len + 1 );
     fseek( f, 0, SEEK_SET );
     fread( buf, len, 1, f );
     buf[len] = 0;
-    fclose( f );
-    
-    strcpy( path, func_filename );
+    if( f )
+        fclose( f );
+        
+    strncpy( path, func_filename, sizeof( path ) );
     if( f = fopen( path, "rb" ) )
     {
         fseek( f, 0, SEEK_END );
@@ -205,17 +208,18 @@ void DumpReplaceFunctions( void )
         fseek( f, 0, SEEK_SET );
         fread( newbuf, newlen, 1, f );
         newbuf[newlen] = 0;
-        fclose( f );
-        
+        if( f )
+            fclose( f );
+            
         if( len != newlen || Q_stricmp( ( const char* )buf, ( const char* )newbuf ) )
         {
             char newpath[_MAX_PATH];
             
             // delete the old file, rename the new one
-            strcpy( path, func_filename );
+            strncpy( path, func_filename, sizeof( path ) );
             remove( path );
             
-            strcpy( newpath, "g_funcs.tmp" );
+            strncpy( newpath, "g_funcs.tmp", sizeof( newpath ) );
             rename( newpath, path );
             
             // make g_save recompile itself
@@ -229,20 +233,22 @@ void DumpReplaceFunctions( void )
         else
         {
             // delete the old file
-            strcpy( path, "g_funcs.tmp" );
+            strncpy( path, "g_funcs.tmp", sizeof( path ) );
             remove( path );
         }
+        if( newbuf )
+            free( newbuf );
     }
     else
     {
         rename( "g_funcs.tmp", func_filename );
     }
     
-    free( buf );
-    free( newbuf );
-    
+    if( buf )
+        free( buf );
+        
     // dump the function declarations
-    strcpy( path, "g_func_decs.tmp" );
+    strncpy( path, "g_func_decs.tmp", sizeof( path ) );
     Log_Open( path );
     for( rf = replacefuncs; rf; rf = rf->next )
     {
@@ -251,17 +257,20 @@ void DumpReplaceFunctions( void )
     Log_Close();
     
     // if it's different, rename the file over the real header
-    strcpy( path, "g_func_decs.tmp" );
+    strncpy( path, "g_func_decs.tmp", sizeof( path ) );
     f = fopen( path, "rb" );
+    if( !f )
+        Error( "Could not open %s for writing.", path );
     fseek( f, 0, SEEK_END );
     len = ftell( f );
     buf = ( unsigned char* ) malloc( len + 1 );
     fseek( f, 0, SEEK_SET );
     fread( buf, len, 1, f );
     buf[len] = 0;
-    fclose( f );
-    
-    strcpy( path, func_filedesc );
+    if( f )
+        fclose( f );
+        
+    strncpy( path, func_filedesc, sizeof( path ) );
     if( f = fopen( path, "rb" ) )
     {
         fseek( f, 0, SEEK_END );
@@ -270,17 +279,18 @@ void DumpReplaceFunctions( void )
         fseek( f, 0, SEEK_SET );
         fread( newbuf, newlen, 1, f );
         newbuf[newlen] = 0;
-        fclose( f );
-        
+        if( f )
+            fclose( f );
+            
         if( len != newlen || Q_stricmp( ( const char* )buf, ( const char* )newbuf ) )
         {
             char newpath[_MAX_PATH];
             
             // delete the old file, rename the new one
-            strcpy( path, func_filedesc );
+            strncpy( path, func_filedesc, sizeof( path ) );
             remove( path );
             
-            strcpy( newpath, "g_func_decs.tmp" );
+            strncpy( newpath, "g_func_decs.tmp", sizeof( path ) );
             rename( newpath, path );
             
             // make g_save recompile itself
@@ -295,18 +305,20 @@ void DumpReplaceFunctions( void )
         else
         {
             // delete the old file
-            strcpy( path, "g_func_decs.tmp" );
+            strncpy( path, "g_func_decs.tmp", sizeof( path ) );
             remove( path );
         }
+        if( newbuf )
+            free( newbuf );
     }
     else
     {
         rename( "g_func_decs.tmp", func_filedesc );
     }
     
-    free( buf );
-    free( newbuf );
-    
+    if( buf )
+        free( buf );
+        
     if( updated )
     {
         printf( "Updated the function table, recompile required.\n" );
@@ -318,6 +330,9 @@ replacefunc_t* FindFunctionName( char* funcname )
 {
     replacefunc_t* f;
     
+    if( !replacefuncs )
+        printf( "WARNING: replacefuncs is null! @0x%p\n", replacefuncs );
+        
     for( f = replacefuncs; f; f = f->next )
     {
         if( !strcmp( f->name, funcname ) )
@@ -480,12 +495,6 @@ void GetFunctionNamesFromFile( char* filename )
     int indent = 0, brace;
     int isStatic = 0;
     tokenList_t* listHead;
-    
-    // filter some files out
-    if( !Q_stricmp( filename, "bg_lib.c" ) )
-    {
-        return;
-    }
     
     listHead = NULL;
     source = LoadSourceFile( filename );
@@ -657,7 +666,8 @@ void ScrewUpFile( char* oldfile, char* newfile )
     } //end while
     WriteWhiteSpace( fp, script );
     FreeMemory( script );
-    fclose( fp );
+    if( fp )
+        fclose( fp );
 } //end of the function ScrewUpFile
 
 int verbose = 0;
@@ -688,6 +698,7 @@ void main( int argc, char* argv[] )
         done = !FindNextFile( handle, &filedata );
     } //end while
     DumpReplaceFunctions();
+    return;
 } //end of the function main
 
 #else
@@ -729,6 +740,7 @@ int main( int argc, char* argv[] )
         GetFunctionNamesFromFile( argv[i] );
     }
     DumpReplaceFunctions();
+    return 0;
 }
 
 #endif

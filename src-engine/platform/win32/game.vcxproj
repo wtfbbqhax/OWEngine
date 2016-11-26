@@ -248,11 +248,6 @@
     <ClInclude Include="..\..\qcommon\q_shared.h" />
     <ClInclude Include="..\..\qcommon\surfaceflags.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="extractfuncs.vcxproj">
-      <Project>{0fc559fd-6dcd-4a81-b286-688f79286aef}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

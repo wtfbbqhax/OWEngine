@@ -1,2 +1,3 @@
 cd ..\..\src-gamelogic\rtcw\game
-..\..\..\compiled\binaries\extractfuncs *.cpp
+..\..\..\compiled\binaries\extractfuncs.exe *.cpp
+cd ..
