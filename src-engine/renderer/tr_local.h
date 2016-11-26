@@ -81,7 +81,6 @@ long myftol( float f );
 
 // can't be increased without changing bit packing for drawsurfs
 
-
 // a trRefEntity_t has all the information passed in by
 // the client game, as well as some locally derived info
 typedef struct
@@ -467,6 +466,12 @@ typedef struct shader_s
     struct shader_s* remappedShader;                    // current shader this one is remapped too
     
     int shaderStates[MAX_STATES_PER_SHADER];            // index to valid shader states
+    
+    //Dushan
+    bool compiled;
+    GLenum type;
+    int	references;
+    unsigned int shaderId;
     
     struct shader_s* next;
 } shader_t;
@@ -979,6 +984,7 @@ typedef struct
 {
     int currenttextures[2];
     int currenttmu;
+    GLhandleARB program;
     bool finishCalled;
     int texEnv[2];
     int faceCulling;
@@ -1018,6 +1024,8 @@ typedef struct
     byte color2D[4];
     bool vertexes2D;        // shader needs to be finished
     trRefEntity_t entity2D;     // currentEntity will point at this when doing 2D rendering
+    // our OpenGL state deltas
+    glstate_t glState;
 } backEndState_t;
 
 /*
@@ -1977,5 +1985,24 @@ extern int drawskyboxportal;
 void* R_Hunk_Begin( void );
 void R_Hunk_End( void );
 void R_FreeImageBuffer( void );
+
+//Dushan
+#define MAX_PROGRAMS            256
+#define MAX_PROGRAM_UNIFORMS    64
+#define MAX_UNIFORM_NAME_LENGTH 64
+
+typedef struct shaderProgram_s
+{
+    char                    name[MAX_OSPATH];
+    bool                    linked;
+    unsigned int            program; // program = vertex + fragment + geometry shader
+    shader_t*               vertexShader;
+    shader_t*               fragmentShader;
+    shader_t*               geometryShader;
+} shaderProgram_t;
+
+void RenderProgsInitialization( void );
+void RenderProgs_ShutdownPrograms( void );
+void RenderProgs_ShutdownShaders( void );
 
 #endif //TR_LOCAL_H (THIS MUST BE LAST!!)

@@ -214,6 +214,7 @@
     <ClCompile Include="..\..\renderer\gpuworker\GpuWorker.cpp" />
     <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Error.cpp" />
     <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Program.cpp" />
+    <ClCompile Include="..\..\renderer\r_renderProgs.cpp" />
     <ClCompile Include="..\..\renderer\tr_model_md4mesh.cpp" />
     <ClCompile Include="win_gamma.cpp" />
     <ClCompile Include="win_glimp.cpp" />

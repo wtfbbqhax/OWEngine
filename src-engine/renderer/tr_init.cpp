@@ -586,6 +586,7 @@ static void InitOpenGL( void )
 #endif
     
     gpuWorker->Init();
+    RenderProgsInitialization();
 }
 
 /*
@@ -1677,7 +1678,10 @@ void RE_Shutdown( bool destroyWindow )
     
     R_DoneFreeType();
     
+    //Dushan
     gpuWorker->Shutdown();
+    RenderProgs_ShutdownPrograms();
+    RenderProgs_ShutdownShaders();
     
     // shut down platform specific OpenGL stuff
     if( destroyWindow )

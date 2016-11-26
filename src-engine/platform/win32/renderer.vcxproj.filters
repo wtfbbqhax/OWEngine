@@ -351,6 +351,9 @@
     <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Program.cpp">
       <Filter>GpuWorker</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\renderer\r_renderProgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\win32\resource.h">

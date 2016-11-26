@@ -46,6 +46,9 @@
 #include <cl/Opencl.h>
 #include "../../splines/util_list.h"
 
+#define ID_GPUWORKER_CALLAPI( x )	owGpuWorkerLocal::clError = x
+#define ID_GPUWORKER_HASERROR		owGpuWorkerLocal::clError != CL_SUCCESS
+
 //
 // owGpuWorkerLocal
 //
@@ -77,7 +80,7 @@ public:
     static cl_int					clError;
 private:
 
-    cl_platform_id*                 platform;
+    cl_platform_id                  platform;
     cl_context                      context;
     cl_command_queue                queue;
     cl_device_id                    device;

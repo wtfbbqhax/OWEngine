@@ -70,63 +70,11 @@ void owGpuWorkerLocal::Init( void )
     ri.Printf( PRINT_ALL, "----------- R_GPUWorker_Init ----------\n" );
     ri.Printf( PRINT_ALL, "Init OpenCL...\n" );
     ri.Printf( PRINT_ALL, "...Getting Device Platform ID.\n" );
-    
-    int i, j;
-    char* info;
-    size_t infoSize;
-    cl_uint platformCount;
-    const char* attributeNames[5] = { "Name", "Vendor", "Version", "Profile", "Extensions" };
-    const cl_platform_info attributeTypes[5] = { CL_PLATFORM_NAME, CL_PLATFORM_VENDOR,
-            CL_PLATFORM_VERSION, CL_PLATFORM_PROFILE, CL_PLATFORM_EXTENSIONS
-                                               };
-    const int attributeCount = sizeof( attributeNames ) / sizeof( char* );
-    
-    // get platform count
-    clGetPlatformIDs( 5, NULL, &platformCount );
-    
-    // get all platforms
-    platform = ( cl_platform_id* )malloc( sizeof( cl_platform_id ) * platformCount );
-    clGetPlatformIDs( platformCount, platform, NULL );
-    
-    // for each platform print all attributes
-    for( i = 0; i < platformCount; i++ )
-    {
-        ri.Printf( PRINT_ALL, "\n %d. Platform\n", i + 1 );
-        
-        for( j = 0; j < attributeCount; j++ )
-        {
-            // get platform attribute value size
-            clGetPlatformInfo( platform[i], attributeTypes[j], 0, NULL, &infoSize );
-            info = ( char* )malloc( infoSize );
-            
-            // get platform attribute value
-            clGetPlatformInfo( platform[i], attributeTypes[j], infoSize, info, NULL );
-            
-            ri.Printf( PRINT_ALL, "  %d.%d %-11s: %s\n", i + 1, j + 1, attributeNames[j], info );
-            free( info );
-        }
-        ri.Printf( PRINT_ALL, "\n" );
-    }
+    ID_GPUWORKER_CALLAPI( clGetPlatformIDs( 1, &platform, NULL ) );
     
     // Get all the device ids
     ri.Printf( PRINT_ALL, "...Getting Device ID.\n" );
-    cl_uint numDevices;
-    cl_device_id* devices = 0;
-    clGetDeviceIDs( platform[i], CL_DEVICE_TYPE_ALL, sizeof( devices ), devices, &numDevices );
-    if( numDevices == 0 )
-    {
-        ri.Printf( PRINT_ALL, S_COLOR_RED "No OpenCL GPU device available.\n" );
-        ri.Printf( PRINT_ALL, S_COLOR_RED "Choose CPU as default device.\n" );
-        clGetDeviceIDs( platform[i], CL_DEVICE_TYPE_CPU, 0, NULL, &numDevices );
-        devices = ( cl_device_id* )malloc( numDevices * sizeof( cl_device_id ) );
-        clGetDeviceIDs( platform[i], CL_DEVICE_TYPE_CPU, numDevices, devices, NULL );
-    }
-    else
-    {
-        ri.Printf( PRINT_ALL, "OpenCL GPU device available.\n" );
-        devices = ( cl_device_id* )malloc( numDevices * sizeof( cl_device_id ) );
-        clGetDeviceIDs( platform[i], CL_DEVICE_TYPE_GPU, numDevices, devices, NULL );
-    }
+    ID_GPUWORKER_CALLAPI( clGetDeviceIDs( platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL ) );
     
     cl_context_properties properties[] =
     {

@@ -1,5 +1,12 @@
 Changelog
 
+11-26-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added initial integration of GLSL backend for OpenGL renderer
+		NOTE: Supported are "vertex", "fragment" and "geometry" shaders
+			  Engine and renderer is expecting files from the "renderProgs" folder with "vertex", ".fragment" and "geometry" extensions.
+	- Misc fixes
+	- Updated binary files
+
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c
 	- Added OpenCL library files

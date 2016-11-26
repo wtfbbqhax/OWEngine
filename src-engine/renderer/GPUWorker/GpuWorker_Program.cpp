@@ -77,7 +77,7 @@ void owGPUWorkerProgram::LoadWorkerProgram( const char* qpath )
     deviceHandle = clCreateProgramWithSource( gpuWorkerLocal.GetDeviceContext(), 1, &buffer, &bufferSize, &deviceError );
     
     // Check to see if there was a error creating the program.
-    if( deviceHandle == NULL || owGpuWorkerLocal::clError != CL_SUCCESS )
+    if( deviceHandle == NULL || ID_GPUWORKER_HASERROR )
     {
         ri.Printf( PRINT_ALL, "Failed to create GPU worker program %s -- Error %s\n", fullPath.c_str(), clErrorString( owGpuWorkerLocal::clError ) );
         return;
@@ -86,7 +86,7 @@ void owGPUWorkerProgram::LoadWorkerProgram( const char* qpath )
     // Build the program -- this is were it does all the compilation(syntax checking, etc), and linking.
     deviceError = clBuildProgram( ( cl_program )deviceHandle, 1, &deviceId, NULL, NULL, NULL );
     
-    if( owGpuWorkerLocal::clError != CL_SUCCESS )
+    if( ID_GPUWORKER_HASERROR )
     {
         static char* deviceErrorLog;
         size_t log_size;
@@ -130,7 +130,7 @@ gpuWorkerKernelHandle_t	owGPUWorkerProgram::CreateKernel( const char* kernelName
     cl_kernel kernel;
     
     kernel = clCreateKernel( ( cl_program )deviceHandle, kernelName, &owGpuWorkerLocal::clError );
-    if( kernel == NULL || owGpuWorkerLocal::clError != CL_SUCCESS )
+    if( kernel == NULL || ID_GPUWORKER_HASERROR )
     {
         ri.Error( PRINT_ALL, "Failed to create kernel %s\n", kernelName );
     }
