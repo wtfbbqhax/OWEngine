@@ -127,13 +127,13 @@ owGPUWorkerProgram::ReadMemory
 Reads a block of memory from the graphics card.
 ========================
 */
-void owGPUWorkerProgram::ReadMemory(gpuWorkerMemoryPtr_t memhandle, void* data, int size)
+void owGPUWorkerProgram::ReadMemory( gpuWorkerMemoryPtr_t memhandle, void* data, int size )
 {
-	// Force blocking right now.
-	if (clEnqueueReadBuffer(gpuWorkerLocal.GetCommandQueue(), (cl_mem)memhandle, true, 0, size, data, NULL, NULL, NULL) <= 0)
-	{
-		ri.Error(PRINT_ALL, "Downloading GPU Memory block failed.\n");
-	}
+    // Force blocking right now.
+    if( clEnqueueReadBuffer( gpuWorkerLocal.GetCommandQueue(), ( cl_mem )memhandle, true, 0, size, data, NULL, NULL, NULL ) <= 0 )
+    {
+        ri.Error( PRINT_ALL, "Downloading GPU Memory block failed.\n" );
+    }
 }
 
 /*

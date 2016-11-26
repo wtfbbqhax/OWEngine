@@ -78,7 +78,7 @@ protected:
     // Uploads memory to the GPU.
     virtual void					UploadMemory( gpuWorkerMemoryPtr_t memhandle, void* data, int size );
     // Read memory from the GPU.
-    virtual void                    ReadMemory(gpuWorkerMemoryPtr_t memhandle, void* data, int size );
+    virtual void                    ReadMemory( gpuWorkerMemoryPtr_t memhandle, void* data, int size );
     // Creates a kernel handle(a kernel a function were going to execute at some point).
     virtual gpuWorkerKernelHandle_t	CreateKernel( const char* kernelName );
 private:

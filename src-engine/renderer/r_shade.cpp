@@ -207,7 +207,6 @@ static bool setArraysOnce;
 /*
 =================
 R_BindAnimatedImage
-
 =================
 */
 static void R_BindAnimatedImage( textureBundle_t* bundle )
@@ -1747,6 +1746,141 @@ void RB_StageIteratorLightmappedMultitexture( void )
     
 }
 
+void R_CalcTBNForTriangle( vec3_t tangent, vec3_t binormal, vec3_t normal, const vec3_t v1, const vec3_t v2, const vec3_t v3, const vec2_t t1, const vec2_t t2, const vec2_t t3 )
+{
+    vec3_t			v2v1;
+    vec3_t			v3v1;
+    
+    float			c2c1_T;
+    float			c2c1_B;
+    
+    float			c3c1_T;
+    float			c3c1_B;
+    
+    float			denominator;
+    float			scale1, scale2;
+    
+    vec3_t			T, B, N, C;
+    
+    
+    // Calculate the tangent basis for each vertex of the triangle
+    // UPDATE: In the 3rd edition of the accompanying article, the for-loop located here has
+    // been removed as it was redundant (the entire TBN matrix was calculated three times
+    // instead of just one).
+    //
+    // Please note, that this function relies on the fact that the input geometry are triangles
+    // and the tangent basis for each vertex thus is identical!
+    //
+    
+    // Calculate the vectors from the current vertex to the two other vertices in the triangle
+    VectorSubtract( v2, v1, v2v1 );
+    VectorSubtract( v3, v1, v3v1 );
+    
+    // The equation presented in the article states that:
+    // c2c1_T = V2.texcoord.x – V1.texcoord.x
+    // c2c1_B = V2.texcoord.y – V1.texcoord.y
+    // c3c1_T = V3.texcoord.x – V1.texcoord.x
+    // c3c1_B = V3.texcoord.y – V1.texcoord.y
+    
+    // Calculate c2c1_T and c2c1_B
+    c2c1_T = t2[0] - t1[0];
+    c2c1_B = t2[1] - t2[1];
+    
+    // Calculate c3c1_T and c3c1_B
+    c3c1_T = t3[0] - t1[0];
+    c3c1_B = t3[1] - t1[1];
+    
+    denominator = c2c1_T * c3c1_B - c3c1_T * c2c1_B;
+    //if(ROUNDOFF(fDenominator) == 0.0f)
+    if( denominator == 0.0f )
+    {
+        // We won't risk a divide by zero, so set the tangent matrix to the identity matrix
+        VectorSet( tangent, 1, 0, 0 );
+        VectorSet( binormal, 0, 1, 0 );
+        VectorSet( normal, 0, 0, 1 );
+    }
+    else
+    {
+        // Calculate the reciprocal value once and for all (to achieve speed)
+        scale1 = 1.0f / denominator;
+        
+        // T and B are calculated just as the equation in the article states
+        VectorSet( T, ( c3c1_B * v2v1[0] - c2c1_B * v3v1[0] ) * scale1,
+                   ( c3c1_B * v2v1[1] - c2c1_B * v3v1[1] ) * scale1,
+                   ( c3c1_B * v2v1[2] - c2c1_B * v3v1[2] ) * scale1 );
+                   
+        VectorSet( B, ( -c3c1_T * v2v1[0] + c2c1_T * v3v1[0] ) * scale1,
+                   ( -c3c1_T * v2v1[1] + c2c1_T * v3v1[1] ) * scale1,
+                   ( -c3c1_T * v2v1[2] + c2c1_T * v3v1[2] ) * scale1 );
+                   
+        // The normal N is calculated as the cross product between T and B
+        CrossProduct( T, B, N );
+        
+#if 0
+        VectorCopy( T, tangent );
+        VectorCopy( B, binormal );
+        VectorCopy( N, normal );
+#else
+        // Calculate the reciprocal value once and for all (to achieve speed)
+        scale2 = 1.0f / ( ( T[0] * B[1] * N[2] - T[2] * B[1] * N[0] ) +
+                          ( B[0] * N[1] * T[2] - B[2] * N[1] * T[0] ) +
+                          ( N[0] * T[1] * B[2] - N[2] * T[1] * B[0] ) );
+        
+        // Calculate the inverse if the TBN matrix using the formula described in the article.
+        // We store the basis vectors directly in the provided TBN matrix: pvTBNMatrix
+        CrossProduct( B, N, C );
+        tangent[0] = C[0] * scale2;
+        CrossProduct( N, T, C );
+        tangent[1] = -C[0] * scale2;
+        CrossProduct( T, B, C );
+        tangent[2] = C[0] * scale2;
+        VectorNormalize( tangent );
+        
+        CrossProduct( B, N, C );
+        binormal[0] = -C[1] * scale2;
+        CrossProduct( N, T, C );
+        binormal[1] = C[1] * scale2;
+        CrossProduct( T, B, C );
+        binormal[2] = -C[1] * scale2;
+        VectorNormalize( binormal );
+        
+        CrossProduct( B, N, C );
+        normal[0] = C[2] * scale2;
+        CrossProduct( N, T, C );
+        normal[1] = -C[2] * scale2;
+        CrossProduct( T, B, C );
+        normal[2] = C[2] * scale2;
+        VectorNormalize( normal );
+#endif
+    }
+}
+
+//
+// RB_CalculateTBNForTess
+// We need to create a new struct so we can precalc the TBN matrix.
+//
+void RB_CalculateTBNForTess( void )
+{
+    int indexes[3];
+    for( int i = 0; i < tess.numIndexes; i += 3 )
+    {
+        indexes[0] = tess.indexes[i + 0];
+        indexes[1] = tess.indexes[i + 1];
+        indexes[2] = tess.indexes[i + 2];
+        vec3_t tangent, binormal, normal;
+        
+        R_CalcTBNForTriangle( tangent, binormal, normal, tess.xyz[indexes[0]], tess.xyz[indexes[1]], tess.xyz[indexes[2]],
+                              tess.texCoords[indexes[0]][0], tess.texCoords[indexes[1]][0], tess.texCoords[indexes[2]][0] );
+                              
+        for( int c = 0; c < 3; c++ )
+        {
+            VectorCopy( tangent, tess.tangents[indexes[c]] );
+            VectorCopy( binormal, tess.binormals[indexes[c]] );
+            VectorCopy( normal, tess.normals[indexes[c]] );
+        }
+    }
+}
+
 /*
 ** RB_EndSurface
 */
@@ -1812,6 +1946,13 @@ void RB_EndSurface( void )
     backEnd.pc.c_vertexes += tess.numVertexes;
     backEnd.pc.c_indexes += tess.numIndexes;
     backEnd.pc.c_totalIndexes += tess.numIndexes * tess.numPasses;
+    
+    // Update the Tangent matrix if needed.
+    //
+    if( tess.shader->updateTangentMatrix )
+    {
+        RB_CalculateTBNForTess();
+    }
     
     //
     // call off to shader specific tess end function

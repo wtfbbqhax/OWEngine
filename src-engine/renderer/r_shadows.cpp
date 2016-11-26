@@ -337,7 +337,7 @@ void RB_ShadowFinish( void )
     
     glLoadIdentity();
     
-    glColor4f( 0.6f, 0.6f, 0.6f, 1.0f );
+    glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
     GL_State( GLS_DEPTHMASK_TRUE | GLS_SRCBLEND_DST_COLOR | GLS_DSTBLEND_ZERO );
     
 //	glColor4f( 1, 0, 0, 1 );

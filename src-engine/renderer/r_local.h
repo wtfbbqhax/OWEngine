@@ -454,6 +454,8 @@ typedef struct shader_s
     
     void ( *optimalStageIteratorFunc )( void );
     
+    bool updateTangentMatrix;
+    
     float clampTime;                                    // time this shader is clamped to
     float timeOffset;                                   // current time offset for this shader
     

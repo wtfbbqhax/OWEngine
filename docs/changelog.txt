@@ -10,6 +10,8 @@ Changelog
 	- Added possibility to read a block of memory from the graphics card in OpenCL
 	- Updated binary files
 	- Renamed all tr_* files into r_*
+	- Added updating tangent matrix if it is needed
+	- Added support for multiple texture units.
 
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c
@@ -19,7 +21,6 @@ Changelog
 		      Engine and renderer is expecting files from the "renderWorkerProgs" folder with ".renderworkerprog" extension.
 			  If GPU device is not "somehow" supporting OpenCL, engine will choose CPU as default device.
 	- Updated binary files
-			  
 
 11-24-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Ported whole engine, gamelogic and tools to C++
