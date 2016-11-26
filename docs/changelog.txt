@@ -14,6 +14,7 @@ Changelog
 	- Added support for multiple texture units.
 	- Fix crash from reading past end of tr.refdef.drawSurfs
 	- Roll up Bugfixes
+	- R_LoadCacheImages takes 4 parameters
 
 11-25-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed bg_lib.c
