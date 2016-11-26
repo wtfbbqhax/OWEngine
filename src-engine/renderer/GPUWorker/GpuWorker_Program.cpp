@@ -116,8 +116,24 @@ void owGPUWorkerProgram::UploadMemory( gpuWorkerMemoryPtr_t memhandle, void* dat
     // Force blocking right now.
     if( clEnqueueWriteBuffer( gpuWorkerLocal.GetCommandQueue(), ( cl_mem )memhandle, true, 0, size, data, NULL, NULL, NULL ) <= 0 )
     {
-        ri.Error( PRINT_ALL, "Upload GPU Memory block failed.\n" );
+        ri.Error( PRINT_ALL, "Uploading GPU Memory block failed.\n" );
     }
+}
+
+//Dushan
+/*
+========================
+owGPUWorkerProgram::ReadMemory
+Reads a block of memory from the graphics card.
+========================
+*/
+void owGPUWorkerProgram::ReadMemory(gpuWorkerMemoryPtr_t memhandle, void* data, int size)
+{
+	// Force blocking right now.
+	if (clEnqueueReadBuffer(gpuWorkerLocal.GetCommandQueue(), (cl_mem)memhandle, true, 0, size, data, NULL, NULL, NULL) <= 0)
+	{
+		ri.Error(PRINT_ALL, "Downloading GPU Memory block failed.\n");
+	}
 }
 
 /*

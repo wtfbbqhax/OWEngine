@@ -47,14 +47,13 @@
 #include "../../splines/util_str.h"
 #include <cl/cl_platform.h>
 
-
 #define GPUWORKER_FOLDER "renderWorkerProgs"
-#define GPUWORKER_EXT ".renderworkerprog"
+#define GPUWORKER_EXT ".opencl"
 
 // ----------------------------------
-typedef void* 			gpuWorkerProgramHandle_t;
-typedef void* 			gpuWorkerMemoryPtr_t;
-typedef void* 			gpuWorkerKernelHandle_t;
+typedef void* gpuWorkerProgramHandle_t;
+typedef void* gpuWorkerMemoryPtr_t;
+typedef void* gpuWorkerKernelHandle_t;
 // ----------------------------------
 
 //
@@ -78,6 +77,8 @@ protected:
     gpuWorkerProgramHandle_t		deviceHandle;		// Handle to the gpu program device handle.
     // Uploads memory to the GPU.
     virtual void					UploadMemory( gpuWorkerMemoryPtr_t memhandle, void* data, int size );
+    // Read memory from the GPU.
+    virtual void                    ReadMemory(gpuWorkerMemoryPtr_t memhandle, void* data, int size );
     // Creates a kernel handle(a kernel a function were going to execute at some point).
     virtual gpuWorkerKernelHandle_t	CreateKernel( const char* kernelName );
 private:

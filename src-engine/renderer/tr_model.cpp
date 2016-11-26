@@ -1659,7 +1659,7 @@ static bool R_LoadMDS( model_t* mod, void* buffer, const char* mod_name )
 */
 void RE_BeginRegistration( glconfig_t* glconfigOut )
 {
-    //ri.Hunk_Clear();    // (SA) MEM NOTE: not in missionpack
+    ri.Hunk_Clear();    // (SA) MEM NOTE: not in missionpack
     
     R_Init();
     *glconfigOut = glConfig;
