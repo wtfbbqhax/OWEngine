@@ -57,6 +57,7 @@
 
 #include "g_local.h"
 #include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/botlib/botlib.h"
 #include "../../../src-engine/botlib/be_aas.h"
 #include "../../../src-engine/botlib/be_ea.h"
 #include "../../../src-engine/botlib/be_ai_gen.h"
@@ -272,8 +273,7 @@ typedef struct
 
 funcList_t funcList[] =
 {
-    { NULL, NULL },
-    //#include "g_funcs.h"
+#include "g_funcs.h"
 };
 
 //-----------------
@@ -1250,9 +1250,6 @@ bool G_SaveGame( char* username )
     gclient_t*   cl;
     cast_state_t*    cs;
     int playtime, minutes;
-    
-    // jv - this is so messed up.
-    return false;
     
     //if (reloading)
     //	return true;	// actually this should be true, but we should make it silent during reloading

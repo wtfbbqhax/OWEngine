@@ -1,5 +1,8 @@
 Changelog
 
+11-27-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed game saving system
+
 11-26-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added initial integration of GLSL backend for OpenGL renderer
 		NOTE: Supported are "vertex", "fragment" and "geometry" shaders
