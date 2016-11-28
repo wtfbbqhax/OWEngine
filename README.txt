@@ -131,3 +131,12 @@ been lost, so the one from release 6b is included instead. There are a few
 the engine, but otherwise the dependency can be easily cleaned up to a
 better release of the library.
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Third party software
+
+* Autodesk FBX SDK - software development kid distributed along with FBX SDK version 20113_1
+Static libraries
+url - http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=16127237
+NOTE: FBX SDK is only needed for compiling "md4builder" solution
+-----------------------------------------------------------------------------

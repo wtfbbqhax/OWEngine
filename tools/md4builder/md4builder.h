@@ -53,7 +53,7 @@ using namespace std;
 #include "../../src-engine/qcommon/qfiles.h"
 
 #undef DotProduct
-#include "fbxsdk.h"
+#include <fbxsdk.h>
 #include <fbxfilesdk/fbxfilesdk_nsuse.h>
 
 struct exportJoint_t
