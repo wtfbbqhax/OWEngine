@@ -4,6 +4,7 @@ Changelog
 	- Moved CM and Sound files in their own folders
 	- Removed FBX library and include files
 	- Properly linked FBX (fbx20113_1_fbxsdk_win.exe) build inside installed folder on Windows platform
+	- Implemented new "MDV" model format with possibility to export models what are created from Maya application
 
 11-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed game saving system

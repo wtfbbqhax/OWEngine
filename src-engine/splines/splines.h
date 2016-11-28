@@ -43,7 +43,9 @@
 #ifndef __SPLINES_H
 #define __SPLINES_H
 
+#ifndef MAYATOOLS_EXPORTS
 #include "../renderer/qgl.h"
+#endif
 #include "util_list.h"
 #include "util_str.h"
 #include "math_vector.h"

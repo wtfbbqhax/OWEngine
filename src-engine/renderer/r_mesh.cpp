@@ -110,8 +110,6 @@ static int R_CullModel( md3Header_t* header, trRefEntity_t* ent )
     
     cullSphere = true;
     
-    
-    
     // compute frame pointers
     newFrame = ( md3Frame_t* )( ( byte* ) header + header->ofsFrames ) + ent->e.frame;
     oldFrame = ( md3Frame_t* )( ( byte* ) header + header->ofsFrames ) + ent->e.oldframe;
@@ -207,11 +205,61 @@ static int R_CullModel( md3Header_t* header, trRefEntity_t* ent )
     }
 }
 
+static int R_CullMDVModel( mdvHeader_t* header, trRefEntity_t* ent )
+{
+    vec3_t bounds[2];
+    mdvFrame_t*  oldFrame, *newFrame;
+    int i;
+    bool cullSphere;    //----(SA)	added
+    float radScale;
+    
+    cullSphere = true;
+    
+    // compute frame pointers
+    newFrame = ( mdvFrame_t* )( ( byte* )header + header->lumps[MDVLUMP_FRAMES].offset ) + ent->e.frame;
+    oldFrame = ( mdvFrame_t* )( ( byte* )header + header->lumps[MDVLUMP_FRAMES].offset ) + ent->e.oldframe;
+    
+    radScale = 1.0f;
+    
+    if( ent->e.nonNormalizedAxes )
+    {
+        cullSphere = false;    // by defalut, cull bounding sphere ONLY if this is not an upscaled entity
+        
+        // but allow the radius to be scaled if specified
+        //		if(ent->e.reFlags & REFLAG_SCALEDSPHERECULL) {
+        //			cullSphere = qtrue;
+        //			radScale = ent->e.radius;
+        //		}
+    }
+    
+    // calculate a bounding box in the current coordinate system
+    for( i = 0; i < 3; i++ )
+    {
+        bounds[0][i] = oldFrame->mins[i] < newFrame->mins[i] ? oldFrame->mins[i] : newFrame->mins[i];
+        bounds[1][i] = oldFrame->maxs[i] > newFrame->maxs[i] ? oldFrame->maxs[i] : newFrame->maxs[i];
+        
+        bounds[0][i] *= radScale;   //----(SA)	added
+        bounds[1][i] *= radScale;   //----(SA)	added
+    }
+    
+    switch( R_CullLocalBox( bounds ) )
+    {
+        case CULL_IN:
+            tr.pc.c_box_cull_md3_in++;
+            return CULL_IN;
+        case CULL_CLIP:
+            tr.pc.c_box_cull_md3_clip++;
+            return CULL_CLIP;
+        case CULL_OUT:
+        default:
+            tr.pc.c_box_cull_md3_out++;
+            return CULL_OUT;
+    }
+}
 
 /*
 =================
 R_ComputeLOD
-
 =================
 */
 int R_ComputeLOD( trRefEntity_t* ent )
@@ -519,3 +567,138 @@ void R_AddMD3Surfaces( trRefEntity_t* ent )
     
 }
 
+/*
+=================
+R_AddMDVSurfaces
+=================
+*/
+
+void R_AddMDVSurfaces( trRefEntity_t* ent )
+{
+    mdvHeader_t* header_;
+    mdvSurface_t* surface;
+    shader_t*	shader;
+    int cull, i, fogNum, j;
+    bool personalModel;
+    
+    fogNum = 0;
+    
+    // don't add third_person objects if not in a portal
+    personalModel = ( ent->e.renderfx & RF_THIRD_PERSON ) && !tr.viewParms.isPortal;
+    
+    if( ent->e.renderfx & RF_WRAP_FRAMES )
+    {
+        ent->e.frame %= tr.currentModel->mdv->numframes;
+        ent->e.oldframe %= tr.currentModel->mdv->numframes;
+    }
+    
+    //
+    // Validate the frames so there is no chance of a crash.
+    // This will write directly into the entity structure, so
+    // when the surfaces are rendered, they don't need to be
+    // range checked again.
+    //
+    if( ( ent->e.frame >= tr.currentModel->mdv->numframes )
+            || ( ent->e.frame < 0 )
+            || ( ent->e.oldframe >= tr.currentModel->mdv->numframes )
+            || ( ent->e.oldframe < 0 ) )
+    {
+        ri.Printf( PRINT_DEVELOPER, "R_AddMDVSurfaces: no such frame %d to %d for '%s'\n",
+                   ent->e.oldframe, ent->e.frame,
+                   tr.currentModel->name );
+        ent->e.frame = 0;
+        ent->e.oldframe = 0;
+    }
+    
+    header_ = tr.currentModel->mdv;
+    
+    //
+    // cull the entire model if merged bounding box of both frames
+    // is outside the view frustum.
+    //
+    cull = R_CullMDVModel( header_, ent );
+    if( cull == CULL_OUT )
+    {
+        return;
+    }
+    
+    //
+    // set up lighting now that we know we aren't culled
+    //
+    if( !personalModel || r_shadows->integer > 1 )
+    {
+        R_SetupEntityLighting( &tr.refdef, ent );
+    }
+    
+    surface = ( mdvSurface_t* )( ( byte* )header_ + header_->lumps[MDVLUMP_SURFACES].offset );
+    for( i = 0; i < header_->lumps[MDVLUMP_SURFACES].numlumps; i++, surface++ )
+    {
+        // we will add shadows even if the main object isn't visible in the view
+        
+        // stencil shadows can't do personal models unless I polyhedron clip
+        if( !personalModel
+                && r_shadows->integer == 2
+                && fogNum == 0
+                && !( ent->e.renderfx & ( RF_NOSHADOW | RF_DEPTHHACK ) )
+                && shader->sort == SS_OPAQUE )
+        {
+            // GR - tessellate according to model capabilities
+            R_AddDrawSurf( ( surfaceType_t* )surface, tr.shadowShader, 0, false, tr.currentModel->ATI_tess );
+        }
+        
+        // projection shadows work fine with personal models
+        //		if ( r_shadows->integer == 3
+        //			&& fogNum == 0
+        //			&& (ent->e.renderfx & RF_SHADOW_PLANE )
+        //			&& shader->sort == SS_OPAQUE ) {
+        //			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
+        //		}
+        
+        
+        // for testing polygon shadows (on /all/ models)
+        //		if ( r_shadows->integer == 4)
+        //			R_AddDrawSurf( (void *)surface, tr.projectionShadowShader, 0, qfalse );
+        if( ent->e.customShader )
+        {
+            shader = R_GetShaderByHandle( ent->e.customShader );
+        }
+        else if( ent->e.customSkin > 0 && ent->e.customSkin < tr.numSkins )
+        {
+            skin_t* skin;
+            
+            skin = R_GetSkinByHandle( ent->e.customSkin );
+            
+            // match the surface name to something in the skin file
+            shader = tr.defaultShader;
+            for( j = 0; j < skin->numSurfaces; j++ )
+            {
+                // the names have both been lowercased
+                if( !strcmp( skin->surfaces[j]->name, surface->surfacename ) )
+                {
+                    shader = skin->surfaces[j]->shader;
+                    break;
+                }
+            }
+            
+            if( shader == tr.defaultShader )
+            {
+                ri.Printf( PRINT_DEVELOPER, "WARNING: no shader for surface %s in skin %s\n", surface->surfacename, skin->name );
+            }
+            else if( shader->defaultShader )
+            {
+                ri.Printf( PRINT_DEVELOPER, "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
+            }
+        }
+        else
+        {
+            shader = R_GetShaderByHandle( surface->shadernum );
+        }
+        
+        // don't add third_person objects if not viewing through a portal
+        if( !personalModel )
+        {
+            // GR - tessellate according to model capabilities
+            R_AddDrawSurf( ( surfaceType_t* )surface, shader, fogNum, false, tr.currentModel->ATI_tess );
+        }
+    }
+}

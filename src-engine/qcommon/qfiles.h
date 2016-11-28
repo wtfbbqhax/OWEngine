@@ -498,6 +498,109 @@ typedef struct
 
 /*
 ==============================================================================
+MDV file format
+==============================================================================
+*/
+#define MDV_IDENT           ( ( 'M' << 24 ) + ( 'V' << 16 ) + ( 'M' << 8 ) + 'J' )
+#define MDV_VERSION         1
+#define MDV_MAX_SURFACES    32
+
+//
+// mdvLumpTypes_t
+//
+typedef enum
+{
+    MDVLUMP_SHADERS = 0,
+    MDVLUMP_SURFACES,
+    MDVLUMP_VERTS,
+    MDVLUMP_INDEXES,
+    MDVLUMP_FRAMES,
+    MDVLUMP_TAGS,
+    
+    NUMMDVLUMPS
+} mdvLumpTypes_t;
+
+//
+// mdvTag_t
+//
+typedef struct
+{
+    char		name[MAX_QPATH];
+    vec3_t		origin;
+    vec3_t		axis[3];
+} mdvTag_t;
+
+//
+// mdvFrame_t
+//
+typedef struct
+{
+    vec3_t			mins;
+    vec3_t			maxs;
+} mdvFrame_t;
+
+//
+// mdvLump_t
+//
+typedef struct
+{
+    int		offset;
+    int		numlumps;
+} mdvLump_t;
+
+//
+// mdvHeader_t
+//
+typedef struct
+{
+    int		  iden;
+    int		  version;
+    int		  numframes;
+    mdvLump_t lumps[NUMMDVLUMPS];
+} mdvHeader_t;
+
+//
+// mdvVertex_t
+//
+typedef struct
+{
+    vec3_t		xyz;
+    vec2_t		st;
+    vec3_t		normal;
+} mdvVertex_t;
+
+//
+// mdvSurface_t
+//
+typedef struct
+{
+    int		ident;
+    char	surfacename[MAX_QPATH];
+    
+    int		startVertex;
+    int		numVertexes;
+    
+    int     startIndex;
+    int		numIndexes;
+    
+    int		shadernum;
+    int		baseframenum;
+    
+    void*	header;
+} mdvSurface_t;
+
+//
+// mdvShader_t
+//
+typedef struct
+{
+    char	filepath[MAX_QPATH];
+} mdvShader_t;
+
+typedef short* mdvIndex_t;
+
+/*
+==============================================================================
 
 MDS file format (Wolfenstein Skeletal Format)
 

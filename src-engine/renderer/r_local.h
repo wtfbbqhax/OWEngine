@@ -638,6 +638,7 @@ typedef enum
     SF_MD3,
     SF_MDC,
     SF_MDS,
+    SF_MDV,
     SF_MD4MESH,
     SF_FLARE,
     SF_ENTITY,              // beams, rails, lightning, etc that can be determined by entity
@@ -873,6 +874,7 @@ typedef enum
     MOD_MESH,
     MOD_MDS,
     MOD_MDC, // Ridah
+    MOD_MDV,
     MOD_MD4MESH
 } modtype_t;
 
@@ -889,6 +891,7 @@ typedef struct model_s
     md3Header_t* md3[MD3_MAX_LODS]; // only if type == MOD_MESH
     mdsHeader_t* mds;               // only if type == MOD_MDS
     mdcHeader_t* mdc[MD3_MAX_LODS]; // only if type == MOD_MDC
+    mdvHeader_t* mdv;				// only if type == MOD_MDV
     md4MeshHeader_t* md4mesh;
     md4AnimHeader_t* md4Anims[MAX_MD4_ANIMS];
     int numLods;
@@ -1332,7 +1335,7 @@ void  R_NoiseInit( void );
 void R_SwapBuffers( int );
 
 void R_RenderView( viewParms_t* parms );
-
+void R_AddMDVSurfaces( trRefEntity_t* e );
 void R_AddMD4MeshSurfaces( trRefEntity_t* e );
 void RB_SurfaceMD4Mesh( md4MeshSurface_t* surfType );
 

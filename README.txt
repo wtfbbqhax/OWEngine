@@ -135,8 +135,12 @@ better release of the library.
 -----------------------------------------------------------------------------
 Third party software
 
-* Autodesk FBX SDK - software development kid distributed along with FBX SDK version 20113_1
+* Autodesk FBX SDK - software development kid distributed along with FBX SDK 
+version 20113_1
 Static libraries
 url - http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=16127237
 NOTE: FBX SDK is only needed for compiling "md4builder" solution
+-----------------------------------------------------------------------------
+* Autodesk Maya SDK - software development kit distributed along with Autodesk 
+Maya located in the same location as maya.exe.
 -----------------------------------------------------------------------------

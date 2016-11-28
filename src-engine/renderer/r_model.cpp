@@ -56,6 +56,7 @@ static bool R_LoadMDC( model_t* mod, int lod, void* buffer, const char* mod_name
 static bool R_LoadMD3( model_t* mod, int lod, void* buffer, const char* name );
 static bool R_LoadMDS( model_t* mod, void* buffer, const char* name );
 static bool R_LoadMD4Mesh( model_t* mod, void* buffer, const char* name, int filelen );
+static bool R_LoadMDV( model_t* mod, void* buffer, const char* name, int filelen );
 
 model_t* loadmodel;
 
@@ -211,6 +212,30 @@ qhandle_t RE_RegisterModel( const char* name )
             if( ident == MD4MESH_IDENT )
             {
                 loaded = R_LoadMD4Mesh( mod, buf, name, len );
+            }
+            
+            ri.FS_FreeFile( buf );
+        }
+        
+        if( loaded )
+        {
+            return mod->index;
+        }
+    }
+    
+    if( strstr( name, ".mdv" ) )
+    {
+        int len;
+        loaded = false;
+        len = ri.FS_ReadFile( name, ( void** )&buf );
+        if( buf )
+        {
+            loadmodel = mod;
+            
+            ident = LittleLong( *( unsigned* )buf );
+            if( ident == MDV_IDENT )
+            {
+                loaded = R_LoadMDV( mod, buf, name, len );
             }
             
             ri.FS_FreeFile( buf );
@@ -1298,37 +1323,6 @@ static bool R_LoadMD3( model_t* mod, int lod, void* buffer, const char* mod_name
 }
 
 //
-// GetNumFramesFromAnimationFile
-//
-
-// I Needed a way to get the number of frames in a animation on the server
-// without actually loading in the model so this just loads in the header
-// for a .md4anim.
-int R_GetNumFramesFromAnimationFile( const char* name )
-{
-//    qhandle_t animhandle;
-    fileHandle_t f;
-    int numFrames = 0;
-    md4AnimHeader_t header;
-    
-    // Try to open the file for reading.
-    if( !ri.FS_FOpenFileByMode( name, &f, FS_READ ) )
-    {
-        Com_Printf( "WARNING: R_GetNumFramesFromAnimationFile: Failed to open %s \n", name );
-        return 0;
-    }
-    
-    ri.FS_Read( &header, sizeof( md4AnimHeader_t ), f );
-    numFrames = header.numFrames;
-    
-    // Close the file.
-    ri.FS_FCloseFile( f );
-    
-    return numFrames;
-}
-
-
-//
 // R_LoadMD4Anim
 //
 qhandle_t R_LoadMD4Anim( qhandle_t modelHandle, const char* name )
@@ -1441,6 +1435,47 @@ static bool R_LoadMD4Mesh( model_t* mod, void* buffer, const char* name, int fil
     
     return true;
 }
+/*
+=================
+R_LoadMDV
+=================
+*/
+static bool R_LoadMDV( model_t* mod, void* buffer, const char* name, int filelen )
+{
+    mdvHeader_t* header, *mdv;
+    mdvShader_t*	shader;
+    mdvSurface_t* surface;
+    int i;
+    
+    // Ensure we are loading the right mdv version.
+    header = ( mdvHeader_t* )buffer;
+    if( header->version != MDV_VERSION )
+    {
+        ri.Printf( PRINT_WARNING, "R_LoadMDV: %s has wrong version (%i should be %i)\n", name, header->version, MDV_VERSION );
+        return false;
+    }
+    
+    mod->type = MOD_MDV;
+    mod->dataSize += filelen;
+    mdv = mod->mdv = ( mdvHeader_t* )ri.Hunk_Alloc( filelen, h_low );
+    
+    memcpy( mdv, buffer, filelen );
+    
+    // Load in all the shaders, and set the surface shader num to match the shader index.
+    for( i = 0; i < header->lumps[MDVLUMP_SURFACES].numlumps; i++ )
+    {
+        surface = ( mdvSurface_t* )( ( byte* )mdv + header->lumps[MDVLUMP_SURFACES].offset + ( sizeof( mdvSurface_t ) * i ) );
+        shader = ( mdvShader_t* )( ( byte* )mdv + header->lumps[MDVLUMP_SHADERS].offset + ( sizeof( mdvShader_t ) * surface->shadernum ) );
+        
+        surface->ident = SF_MDV;
+        surface->shadernum = RE_RegisterShader( shader->filepath );
+        
+        surface->header = mod->mdv;
+    }
+    
+    return true;
+}
+
 
 /*
 =================
@@ -1917,6 +1952,11 @@ int R_LerpTag( orientation_t* tag, const refEntity_t* refent, const char* tagNam
     frontLerp = frac;
     backLerp = 1.0 - frac;
     
+    if( model->type = MOD_MDV )
+    {
+        VectorClear( tag->origin );
+    }
+    
     if( model->type == MOD_MD4MESH )
     {
         return R_FindBone( model, model->md4Anims[0], tag, refent->frame, tagNameIn );
@@ -2089,6 +2129,31 @@ void R_TagInfo_f( void )
 
 /*
 ====================
+R_GetNumFramesForModel
+====================
+*/
+int R_GetNumFramesForModel( qhandle_t handle, qhandle_t animHandle )
+{
+    model_t* model;
+    
+    model = R_GetModelByHandle( handle );
+    if( model == NULL )
+    {
+        Com_Error( ERR_FATAL, "R_GetNumFramesForModel: Invalid model handle. \n" );
+        return 0;
+    }
+    
+    if( animHandle == -1 || model->md4Anims == NULL )
+    {
+        Com_Printf( "WARNING: R_GetNumFramesForModel implement for vertex models. \n" );
+        return 0;
+    }
+    
+    return model->md4Anims[animHandle]->numFrames;
+}
+
+/*
+====================
 R_ModelBounds
 ====================
 */
@@ -2124,6 +2189,19 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs )
         
         VectorCopy( _frame->bounds[0], mins );
         VectorCopy( _frame->bounds[1], maxs );
+        return;
+    }
+    
+    if( model->mdv )
+    {
+        mdvHeader_t* _header;
+        mdvFrame_t* frame_;
+        _header = ( mdvHeader_t* )model->mdv;
+        
+        frame_ = ( mdvFrame_t* )( ( byte* )header + _header->lumps[MDVLUMP_FRAMES].offset );
+        
+        VectorCopy( frame_->mins, mins );
+        VectorCopy( frame_->maxs, maxs );
         return;
     }
     

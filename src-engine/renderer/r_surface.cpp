@@ -1051,6 +1051,41 @@ void RB_SurfaceMesh( md3Surface_t* surface )
 }
 
 /*
+=============
+RB_SurfaceMDV
+=============
+*/
+void RB_SurfaceMDV( mdvSurface_t* surface )
+{
+    mdvVertex_t* vert;
+    mdvHeader_t* header;
+    short* indexes;
+    int i;
+    
+    header = ( mdvHeader_t* )surface->header;
+    
+    vert = ( mdvVertex_t* )( ( byte* )header + header->lumps[MDVLUMP_VERTS].offset + ( surface->startVertex * sizeof( mdvVertex_t ) ) );
+    indexes = ( short* )( ( byte* )header + header->lumps[MDVLUMP_INDEXES].offset + ( surface->startIndex * sizeof( short ) ) );
+    
+    for( i = 0; i < surface->numIndexes; i++ )
+    {
+        tess.indexes[tess.numIndexes + i] = indexes[i];
+    }
+    
+    for( i = 0; i < surface->numVertexes; i++ )
+    {
+        VectorCopy( vert[i].xyz, tess.xyz[tess.numVertexes + i] );
+        VectorCopy( vert[i].normal, tess.normals[tess.numVertexes + i] );
+        
+        tess.texCoords[tess.numVertexes + i][0][0] = vert[i].st[0];
+        tess.texCoords[tess.numVertexes + i][0][1] = vert[i].st[1];
+    }
+    
+    tess.numIndexes += surface->numIndexes;
+    tess.numVertexes += surface->numVertexes;
+}
+
+/*
 ** R_LatLongToNormal
 */
 void R_LatLongToNormal( vec3_t outNormal, short latLong )
@@ -1847,6 +1882,7 @@ void( *rb_surfaceTable[SF_NUM_SURFACE_TYPES] )( void* ) =
     ( void(* )( void* ) )RB_SurfaceMesh,           // SF_MD3,
     ( void(* )( void* ) )RB_SurfaceCMesh,          // SF_MDC,
     ( void(* )( void* ) )RB_SurfaceAnim,           // SF_MDS,
+    ( void(* )( void* ) )RB_SurfaceMDV,            // SF_MDV,
     ( void(* )( void* ) )RB_SurfaceMD4Mesh,        // SF_MD4MESH,
     ( void(* )( void* ) )RB_SurfaceFlare,          // SF_FLARE,
     ( void(* )( void* ) )RB_SurfaceEntity,         // SF_ENTITY
