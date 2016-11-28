@@ -51,7 +51,7 @@
 #include "../../src-engine/botlib/botlib.h"
 #include "../../src-engine/botlib/be_aas.h"
 #include "../../src-engine/botlib/be_aas_def.h"
-#include "../../src-engine/qcommon/cm_public.h"
+#include "../../src-engine/cm/cm_public.h"
 
 //#define BSPC
 

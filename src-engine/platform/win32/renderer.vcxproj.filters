@@ -365,9 +365,6 @@
     <ClInclude Include="..\..\renderer\anorms256.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\qcommon\cm_public.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\qcommon\qcommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -603,6 +600,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\renderer\r_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cm\cm_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

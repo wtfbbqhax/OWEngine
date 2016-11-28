@@ -156,12 +156,12 @@
     <ClCompile Include="..\..\botlib\l_precomp.cpp" />
     <ClCompile Include="..\..\botlib\l_script.cpp" />
     <ClCompile Include="..\..\botlib\l_struct.cpp" />
-    <ClCompile Include="..\..\qcommon\cm_load.cpp">
+    <ClCompile Include="..\..\cm\cm_load.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\cm_patch.cpp" />
-    <ClCompile Include="..\..\qcommon\cm_test.cpp" />
-    <ClCompile Include="..\..\qcommon\cm_trace.cpp" />
+    <ClCompile Include="..\..\cm\cm_patch.cpp" />
+    <ClCompile Include="..\..\cm\cm_test.cpp" />
+    <ClCompile Include="..\..\cm\cm_trace.cpp" />
     <ClCompile Include="..\..\qcommon\md4.cpp" />
     <ClCompile Include="..\..\qcommon\unzip.cpp" />
     <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.cpp">
@@ -273,10 +273,10 @@
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\qcommon\surfaceflags.h" />
-    <ClInclude Include="..\..\qcommon\cm_local.h" />
-    <ClInclude Include="..\..\qcommon\cm_patch.h" />
-    <ClInclude Include="..\..\qcommon\cm_polylib.h" />
-    <ClInclude Include="..\..\qcommon\cm_public.h" />
+    <ClInclude Include="..\..\cm\cm_local.h" />
+    <ClInclude Include="..\..\cm\cm_patch.h" />
+    <ClInclude Include="..\..\cm\cm_polylib.h" />
+    <ClInclude Include="..\..\cm\cm_public.h" />
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
     <ClInclude Include="..\..\qcommon\unzip.h" />

@@ -1,5 +1,8 @@
 Changelog
 
+11-28-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Moved CM and Sound files in their own folders
+
 11-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed game saving system
 

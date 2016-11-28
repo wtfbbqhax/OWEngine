@@ -316,7 +316,7 @@
     <ClInclude Include="..\..\..\libraries\jpeg-6\jpegint.h" />
     <ClInclude Include="..\..\..\libraries\jpeg-6\jpeglib.h" />
     <ClInclude Include="..\..\..\libraries\jpeg-6\jversion.h" />
-    <ClInclude Include="..\..\qcommon\cm_public.h" />
+    <ClInclude Include="..\..\cm\cm_public.h" />
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />

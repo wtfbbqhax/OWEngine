@@ -43,8 +43,8 @@
 #ifndef __CM_LOCAL_H__
 #define __CM_LOCAL_H__
 
-#include "q_shared.h"
-#include "qcommon.h"
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qcommon.h"
 #include "cm_polylib.h"
 
 

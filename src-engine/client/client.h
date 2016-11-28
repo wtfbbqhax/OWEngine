@@ -48,7 +48,7 @@
 #include "../renderer/r_public.h"
 #include "../../src-gamelogic/rtcw/ui/ui_public.h"
 #include "keys.h"
-#include "snd_public.h"
+#include "../sound/snd_public.h"
 #include "../../src-gamelogic/rtcw/cgame/cg_public.h"
 #include "../../src-gamelogic/rtcw/game/bg_public.h"
 

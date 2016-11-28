@@ -44,7 +44,7 @@
 #ifndef __QCOMMON_H__
 #define __QCOMMON_H__
 
-#include "../qcommon/cm_public.h"
+#include "../cm/cm_public.h"
 #include <stdint.h>
 
 //============================================================================

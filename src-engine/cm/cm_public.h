@@ -43,9 +43,9 @@
 #ifndef __CM_PUBLIC_H__
 #define __CM_PUBLIC_H__
 
-#include "qfiles.h"
+#include "../qcommon/qfiles.h"
 #include "../renderer/r_types.h"
-#include"q_shared.h"
+#include"../qcommon/q_shared.h"
 
 void CM_LoadMap( const char* name, bool clientload, int* checksum );
 void CM_ClearMap( void );

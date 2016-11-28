@@ -42,7 +42,7 @@
 
 #include <float.h>
 
-#include "../../client/snd_local.h"
+#include "../../sound/snd_local.h"
 #include "win_local.h"
 
 HRESULT( WINAPI* pDirectSoundCreate )( GUID FAR* lpGUID, LPDIRECTSOUND FAR* lplpDS, IUnknown FAR* pUnkOuter );
