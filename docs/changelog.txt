@@ -7,6 +7,10 @@ Changelog
 	- Implemented new "MDV" model format with possibility to export models what are created from Maya application
 	- Added missing VS solution file
 	- Added missing source code for MDVBuilder
+	- Added Q3Map2 into source tree
+		NOTE: Removed all the extra dependencies and extra stuff from q3map2 including all the XML code, jpeg code and png code.
+
+q3map2 is messy fixme...
 
 11-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed game saving system
