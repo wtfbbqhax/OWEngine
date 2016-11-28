@@ -5,6 +5,8 @@ Changelog
 	- Removed FBX library and include files
 	- Properly linked FBX (fbx20113_1_fbxsdk_win.exe) build inside installed folder on Windows platform
 	- Implemented new "MDV" model format with possibility to export models what are created from Maya application
+	- Added missing VS solution file
+	- Added missing source code for MDVBuilder
 
 11-27-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed game saving system
