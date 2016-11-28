@@ -9,6 +9,7 @@ Changelog
 	- Added missing source code for MDVBuilder
 	- Added Q3Map2 into source tree
 		NOTE: Removed all the extra dependencies and extra stuff from q3map2 including all the XML code, jpeg code and png code.
+	- Added Bullet Physics version 2.81 into library folder with compiled library files for Visual Studio 2015
 
 q3map2 is messy fixme...
 
