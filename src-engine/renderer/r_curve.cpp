@@ -374,13 +374,13 @@ srfGridMesh_t* R_CreateSurfaceGridMesh( int width, int height,
     grid->heightLodError = ( float* )malloc( height * 4 );
     memcpy( grid->heightLodError, errorTable[1], height * 4 );
 #else
-    grid = ri.Hunk_Alloc( size, h_low );
+    grid = Hunk_Alloc( size, h_low );
     memset( grid, 0, size );
     
-    grid->widthLodError = ri.Hunk_Alloc( width * 4, h_low );
+    grid->widthLodError = Hunk_Alloc( width * 4, h_low );
     memcpy( grid->widthLodError, errorTable[0], width * 4 );
     
-    grid->heightLodError = ri.Hunk_Alloc( height * 4, h_low );
+    grid->heightLodError = Hunk_Alloc( height * 4, h_low );
     memcpy( grid->heightLodError, errorTable[1], height * 4 );
 #endif
     

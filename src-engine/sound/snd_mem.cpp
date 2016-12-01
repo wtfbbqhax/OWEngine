@@ -485,10 +485,10 @@ bool S_LoadSound( sfx_t* sfx )
 
 /*
 ================
-S_DisplayFreeMemory
+idSoundSystemLocal::DisplayFreeMemory
 ================
 */
-void S_DisplayFreeMemory()
+void idSoundSystemLocal::DisplayFreeMemory()
 {
     Com_Printf( "%d bytes free sound buffer memory, %d total used\n", inUse, totalInUse );
 }

@@ -82,161 +82,111 @@ enum
     CGAME_EVENT_EDITHUD
 };
 
+#define CGAME_IMPORT_API_VERSION    4
 
-/*
-==================================================================
-
-functions imported from the main executable
-
-==================================================================
-*/
-
-#define CGAME_IMPORT_API_VERSION    3
-
-typedef enum
+struct cgameImports_t
 {
-    CG_PRINT,
-    CG_ERROR,
-    CG_MILLISECONDS,
-    CG_CVAR_REGISTER,
-    CG_CVAR_UPDATE,
-    CG_CVAR_SET,
-    CG_CVAR_VARIABLESTRINGBUFFER,
-    CG_ARGC,
-    CG_ARGV,
-    CG_ARGS,
-    CG_FS_FOPENFILE,
-    CG_FS_READ,
-    CG_FS_WRITE,
-    CG_FS_FCLOSEFILE,
-    CG_SENDCONSOLECOMMAND,
-    CG_ADDCOMMAND,
-    CG_SENDCLIENTCOMMAND,
-    CG_UPDATESCREEN,
-    CG_CM_LOADMAP,
-    CG_CM_NUMINLINEMODELS,
-    CG_CM_INLINEMODEL,
-    CG_CM_LOADMODEL,
-    CG_CM_TEMPBOXMODEL,
-    CG_CM_POINTCONTENTS,
-    CG_CM_TRANSFORMEDPOINTCONTENTS,
-    CG_CM_BOXTRACE,
-    CG_CM_TRANSFORMEDBOXTRACE,
-// MrE:
-    CG_CM_CAPSULETRACE,
-    CG_CM_TRANSFORMEDCAPSULETRACE,
-    CG_CM_TEMPCAPSULEMODEL,
-// done.
-    CG_CM_MARKFRAGMENTS,
-    CG_S_STARTSOUND,
-    CG_S_STARTSOUNDEX,  //----(SA)	added
-    CG_S_STARTLOCALSOUND,
-    CG_S_CLEARLOOPINGSOUNDS,
-    CG_S_ADDLOOPINGSOUND,
-    CG_S_UPDATEENTITYPOSITION,
-// Ridah, talking animations
-    CG_S_GETVOICEAMPLITUDE,
-// done.
-    CG_S_RESPATIALIZE,
-    CG_S_REGISTERSOUND,
-    CG_S_STARTBACKGROUNDTRACK,
-    CG_S_FADESTREAMINGSOUND,    //----(SA)	modified
-    CG_S_FADEALLSOUNDS,         //----(SA)	added for fading out everything
-    CG_S_STARTSTREAMINGSOUND,
-    CG_R_LOADWORLDMAP,
-    CG_R_REGISTERMODEL,
-    CG_R_REGISTERSKIN,
-    CG_R_REGISTERSHADER,
+    void( *Print )( const char* fmt, ... );
     
-    CG_LOADANIM,
+    void( *Error )( int level, const char* fmt, ... );
+    int( *Milliseconds )( void );
     
-    CG_R_GETSKINMODEL,      // client allowed to view what the .skin loaded so they can set their model appropriately
-    CG_R_GETMODELSHADER,    // client allowed the shader handle for given model/surface (for things like debris inheriting shader from explosive)
+    void( *Cvar_Register )( vmCvar_t* vmCvar, const char* varName, const char* defaultValue, int flags );
+    void( *Cvar_Update )( vmCvar_t* vmCvar );
+    void( *Cvar_Set )( const char* var_name, const char* value );
     
-    CG_R_REGISTERFONT,
-    CG_R_CLEARSCENE,
-    CG_R_ADDREFENTITYTOSCENE,
-    CG_GET_ENTITY_TOKEN,
-    CG_R_ADDPOLYTOSCENE,
-// Ridah
-    CG_R_ADDPOLYSTOSCENE,
-    CG_RB_ZOMBIEFXADDNEWHIT,
-// done.
-    CG_R_ADDLIGHTTOSCENE,
+    void( *Cvar_VariableStringBuffer )( const char* var_name, char* buffer, int bufsize );
     
-    CG_R_ADDCORONATOSCENE,
-    CG_R_SETFOG,
+    int( *Argc )( void );
     
-    CG_R_RENDERSCENE,
-    CG_R_SETCOLOR,
-    CG_R_DRAWSTRETCHPIC,
-    CG_R_DRAWSTRETCHPIC_GRADIENT,   //----(SA)	added
-    CG_R_MODELBOUNDS,
-    CG_R_LERPTAG,
-    CG_GETGLCONFIG,
-    CG_GETGAMESTATE,
-    CG_GETCURRENTSNAPSHOTNUMBER,
-    CG_GETSNAPSHOT,
-    CG_GETSERVERCOMMAND,
-    CG_GETCURRENTCMDNUMBER,
-    CG_GETUSERCMD,
-    CG_SETUSERCMDVALUE,
-    CG_R_REGISTERSHADERNOMIP,
-    CG_MEMORY_REMAINING,
+    void( *Argv )( int n, char* buffer, int bufferLength );
     
-    CG_KEY_ISDOWN,
-    CG_KEY_GETCATCHER,
-    CG_KEY_SETCATCHER,
-    CG_KEY_GETKEY,
+    void( *Args )( char* buffer, int bufferLength );
     
-    CG_PC_ADD_GLOBAL_DEFINE,
-    CG_PC_LOAD_SOURCE,
-    CG_PC_FREE_SOURCE,
-    CG_PC_READ_TOKEN,
-    CG_PC_SOURCE_FILE_AND_LINE,
-    CG_S_STOPBACKGROUNDTRACK,
-    CG_REAL_TIME,
-    CG_SNAPVECTOR,
-    CG_REMOVECOMMAND,
-//	CG_R_LIGHTFORPOINT,	// not currently used (sorry, trying to keep CG_MEMSET @ 100)
-
-    CG_SENDMOVESPEEDSTOGAME,
+    int( *FS_FOpenFile )( const char* qpath, fileHandle_t* f, fsMode_t mode );
+    int( *FS_Read )( void* buffer, int len, fileHandle_t f );
     
-    CG_CIN_PLAYCINEMATIC,
-    CG_CIN_STOPCINEMATIC,
-    CG_CIN_RUNCINEMATIC,
-    CG_CIN_DRAWCINEMATIC,
-    CG_CIN_SETEXTENTS,
-    CG_R_REMAP_SHADER,
-//	CG_S_ADDREALLOOPINGSOUND,	// not currently used (sorry, trying to keep CG_MEMSET @ 100)
-    CG_S_STOPLOOPINGSOUND,
-    CG_S_STOPSTREAMINGSOUND,    //----(SA)	added
+    int( *FS_Write )( const void* buffer, int len, fileHandle_t f );
     
-    CG_LOADCAMERA,
-    CG_STARTCAMERA,
-    CG_STOPCAMERA,  //----(SA)	added
-    CG_GETCAMERAINFO,
+    void( *FS_FCloseFile )( fileHandle_t f );
     
-    CG_MEMSET = 110,
-    CG_MEMCPY,
-    CG_STRNCPY,
-    CG_SIN,
-    CG_COS,
-    CG_ATAN2,
-    CG_SQRT,
-    CG_FLOOR,
-    CG_CEIL,
+    void( *SendConsoleCommand )( const char* text );
     
-    CG_TESTPRINTINT,
-    CG_TESTPRINTFLOAT,
-    CG_ACOS,
+    void( *AddCommand )( const char* cmdName );
     
-    CG_INGAME_POPUP,        //----(SA)	added
-    CG_INGAME_CLOSEPOPUP,   // NERVE - SMF
-    CG_LIMBOCHAT,           // NERVE - SMF
+    void( *SendClientCommand )( const char* s );
     
-    CG_GETMODELINFO
-} cgameImport_t;
+    void( *UpdateScreen )( void );
+    
+    void( *GetGlconfig )( glconfig_t* glconfig );
+    
+    void( *GetGameState )( gameState_t* gamestate );
+    
+    void( *GetCurrentSnapshotNumber )( int* snapshotNumber, int* serverTime );
+    
+    bool( *GetSnapshot )( int snapshotNumber, snapshot_t* snapshot );
+    
+    bool( *GetServerCommand )( int serverCommandNumber );
+    
+    int( *GetCurrentCmdNumber )( void );
+    
+    bool( *GetUserCmd )( int cmdNumber, usercmd_t* ucmd );
+    
+    void( *SetUserCmdValue )( int stateValue, int holdableValue, float sensitivityScale, int cld );
+    int( *MemoryRemaining )( void );
+    
+    bool( *loadCamera )( int camNum, const char* name );
+    void( *startCamera )( int camNum, int time );
+    void( *stopCamera )( int camNum );
+    
+    bool( *getCameraInfo )( int camNum, int time, vec3_t* origin, vec3_t* angles, float* fov );
+    
+    
+    bool( *Key_IsDown )( int keynum );
+    int( *Key_GetCatcher )( void );
+    void( *Key_SetCatcher )( int catcher );
+    int( *Key_GetKey )( const char* binding );
+    
+    int( *PC_AddGlobalDefine )( char* define );
+    
+    int( *PC_LoadSource )( const char* filename );
+    
+    int( *PC_FreeSource )( int handle );
+    
+    int( *PC_ReadToken )( int handle, pc_token_t* pc_token );
+    
+    int( *PC_SourceFileAndLine )( int handle, char* filename, int* line );
+    
+    int( *RealTime )( qtime_t* qtime );
+    
+    void( *SendMoveSpeedsToGame )( int entnum, char* movespeeds );
+    
+    // this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to qfalse (do not alter gamestate)
+    int( *CIN_PlayCinematic )( const char* arg0, int xpos, int ypos, int width, int height, int bits );
+    
+    // stops playing the cinematic and ends it.  should always return FMV_EOF
+    // cinematics must be stopped in reverse order of when they are started
+    e_status( *CIN_StopCinematic )( int handle );
+    
+    // will run a frame of the cinematic but will not draw it.  Will return FMV_EOF if the end of the cinematic has been reached.
+    e_status( *CIN_RunCinematic )( int handle );
+    
+    // draws the current frame
+    void( *CIN_DrawCinematic )( int handle );
+    
+    
+    // allows you to resize the animation dynamically
+    void( *CIN_SetExtents )( int handle, int x, int y, int w, int h );
+    
+    void( *UI_Popup )( const char* arg0 );
+    void( *UI_LimboChat )( const char* arg0 );
+    void( *UI_ClosePopup )( const char* arg0 );
+    bool( *GetModelInfo )( int clientNum, char* modelName, animModelInfo_t** modelInfo );
+    
+    idRenderSystem* renderSystem;
+    idCollisionModelManager* collisionModelManager;
+    idSoundSystem* soundSystem;
+};
 
 
 /*
@@ -247,10 +197,10 @@ functions exported to the main executable
 ==================================================================
 */
 
-typedef enum
+class idCGame
 {
-    CG_INIT,
-//	void CG_Init( int serverMessageNum, int serverCommandSequence )
+public:
+    virtual void Init( int serverMessageNum, int serverCommandSequence ) = 0;
     // called when the level loads or when the renderer is restarted
     // all media should be registered at this time
     // cgame will display loading status by calling SCR_Update, which
@@ -258,42 +208,32 @@ typedef enum
     // reliableCommandSequence will be 0 on fresh loads, but higher for
     // demos, tourney restarts, or vid_restarts
     
-    CG_SHUTDOWN,
-//	void (*CG_Shutdown)( void );
+    virtual void Shutdown() = 0;
     // oportunity to flush and close any open files
     
-    CG_CONSOLE_COMMAND,
-//	bool (*CG_ConsoleCommand)( void );
+    virtual bool ConsoleCommand() = 0;
     // a console command has been issued locally that is not recognized by the
     // main game system.
-    // use Cmd_Argc() / Cmd_Argv() to read the command, return false if the
+    // use Cmd_Argc() / Cmd_Argv() to read the command, return qfalse if the
     // command is not known to the game
     
-    CG_DRAW_ACTIVE_FRAME,
-//	void (*CG_DrawActiveFrame)( int serverTime, stereoFrame_t stereoView, bool demoPlayback );
+    virtual void DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback ) = 0;
     // Generates and draws a game scene and status information at the given time.
     // If demoPlayback is set, local movement prediction will not be enabled
     
-    CG_CROSSHAIR_PLAYER,
-//	int (*CG_CrosshairPlayer)( void );
-
-    CG_LAST_ATTACKER,
-//	int (*CG_LastAttacker)( void );
-
-    CG_KEY_EVENT,
-//	void	(*CG_KeyEvent)( int key, bool down );
-
-    CG_MOUSE_EVENT,
-//	void	(*CG_MouseEvent)( int dx, int dy );
-    CG_EVENT_HANDLING,
-//	void (*CG_EventHandling)(int type);
-
-    CG_GET_TAG,
-//	bool CG_GetTag( int clientNum, char *tagname, orientation_t *or );
-
-    MAX_CGAME_EXPORT
+    virtual int CrosshairPlayer( void ) = 0;
     
-} cgameExport_t;
+    virtual int LastAttacker( void ) = 0;
+    virtual void KeyEvent( int key, bool down ) = 0;
+    
+    virtual void MouseEvent( int dx, int dy ) = 0;
+    
+    virtual void EventHandling( int type ) = 0;
+    
+    virtual bool GetTag( int clientNum, char* tagname, orientation_t* or ) = 0;
+};
+
+extern idCGame* cgame;
 
 //----------------------------------------------
 

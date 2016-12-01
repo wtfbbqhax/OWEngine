@@ -540,7 +540,7 @@ void limbo( gentity_t* ent )
             ent->client->sess.spectatorState = SPECTATOR_FOLLOW;
         }
         
-        ClientUserinfoChanged( ent->client - level.clients );
+        gameLocal.ClientUserinfoChanged( ent->client - level.clients );
         if( ent->client->sess.sessionTeam == TEAM_RED )
         {
             ent->client->deployQueueNumber = level.redNumWaiting;
@@ -553,7 +553,7 @@ void limbo( gentity_t* ent )
         }
         
         
-//	ClientBegin( ent->client - level.clients );
+//	gameLocal.ClientBegin( ent->client - level.clients );
 
     }
 }
@@ -1412,7 +1412,7 @@ G_GetModelInfo
 ==============
 */
 bool G_ParseAnimationFiles( char* modelname, gclient_t* cl );
-bool G_GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo )
+bool idGameLocal::GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo )
 {
 
     if( !G_CheckForExistingModelInfo( &level.clients[clientNum], modelName, modelInfo ) )
@@ -1503,7 +1503,7 @@ bool G_ParseAnimationFiles( char* modelname, gclient_t* cl )
 
 /*
 ===========
-ClientUserInfoChanged
+idGameLocal::ClientUserinfoChanged
 
 Called from ClientConnect when the player first connects and
 directly by the server system when the player updates a userinfo variable.
@@ -1512,7 +1512,7 @@ The game can override any of the settings and call trap_SetUserinfo
 if desired.
 ============
 */
-void ClientUserinfoChanged( int clientNum )
+void idGameLocal::ClientUserinfoChanged( int clientNum )
 {
     gentity_t* ent;
     char*    s;
@@ -1738,7 +1738,7 @@ void ClientUserinfoChanged( int clientNum )
 
 /*
 ===========
-ClientConnect
+idGameLocal::ClientConnect
 
 Called when a player begins connecting to the server.
 Called again for every map change or tournement restart.
@@ -1756,7 +1756,7 @@ to the server machine, but false on map changes and tournement
 restarts.
 ============
 */
-char* ClientConnect( int clientNum, bool firstTime, bool isBot )
+char* idGameLocal::ClientConnect( int clientNum, bool firstTime, bool isBot )
 {
     char*        value;
     gclient_t*   client;
@@ -1803,7 +1803,7 @@ char* ClientConnect( int clientNum, bool firstTime, bool isBot )
     }
     
     // get and distribute relevent paramters
-    G_LogPrintf( "ClientConnect: %i\n", clientNum );
+    G_LogPrintf( "idGameLocal::ClientConnect: %i\n", clientNum );
     ClientUserinfoChanged( clientNum );
     
     // don't do the "xxx connected" messages if they were caried over from previous level
@@ -1825,14 +1825,14 @@ char* ClientConnect( int clientNum, bool firstTime, bool isBot )
 
 /*
 ===========
-ClientBegin
+idGameLocal::ClientBegin
 
 called when a client has finished connecting, and is ready
 to be placed into the level.  This will happen every level load,
 and on transition between teams, but doesn't happen on respawns
 ============
 */
-void ClientBegin( int clientNum )
+void idGameLocal::ClientBegin( int clientNum )
 {
     gentity_t*   ent;
     gclient_t*   client;
@@ -1906,7 +1906,7 @@ void ClientBegin( int clientNum )
             }
         }
     }
-    G_LogPrintf( "ClientBegin: %i\n", clientNum );
+    G_LogPrintf( "idGameLocal::ClientBegin: %i\n", clientNum );
     
     // count current clients and rank for scoreboard
     CalculateRanks();
@@ -2221,7 +2221,7 @@ void ClientSpawn( gentity_t* ent )
     // initialize animations and other things
     client->ps.commandTime = level.time - 100;
     ent->client->pers.cmd.serverTime = level.time;
-    ClientThink( ent - g_entities );
+    gameLocal.ClientThink( ent - g_entities );
     
     // positively link the client, even if the command times are weird
     if( ent->client->sess.sessionTeam != TEAM_SPECTATOR )
@@ -2241,7 +2241,7 @@ void ClientSpawn( gentity_t* ent )
 
 /*
 ===========
-ClientDisconnect
+idGameLocal::ClientDisconnect
 
 Called when a player drops from the server.
 Will not be called between levels.
@@ -2251,7 +2251,7 @@ call trap_DropClient(), which will call this and do
 server system housekeeping.
 ============
 */
-void ClientDisconnect( int clientNum )
+void idGameLocal::ClientDisconnect( int clientNum )
 {
     gentity_t*   ent;
     gentity_t*   tent;
@@ -2326,10 +2326,10 @@ void ClientDisconnect( int clientNum )
 
 /*
 ==================
-G_RetrieveMoveSpeedsFromClient
+idGameLocal::RetrieveMoveSpeedsFromClient
 ==================
 */
-void G_RetrieveMoveSpeedsFromClient( int entnum, char* text )
+void idGameLocal::RetrieveMoveSpeedsFromClient( int entnum, char* text )
 {
     char* text_p, *token;
     animation_t* anim;
@@ -2341,7 +2341,7 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char* text )
     token = COM_Parse( &text_p );
     if( !token || !token[0] )
     {
-        G_Error( "G_RetrieveMoveSpeedsFromClient: internal error" );
+        G_Error( "idGameLocal::RetrieveMoveSpeedsFromClient: internal error" );
     }
     
     modelInfo = BG_ModelInfoForModelname( token );
@@ -2364,14 +2364,14 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char* text )
         anim = BG_AnimationForString( token, modelInfo );
         if( anim->moveSpeed == 0 )
         {
-            G_Error( "G_RetrieveMoveSpeedsFromClient: trying to set movespeed for non-moving animation" );
+            G_Error( "idGameLocal::RetrieveMoveSpeedsFromClient: trying to set movespeed for non-moving animation" );
         }
         
         // get the movespeed
         token = COM_Parse( &text_p );
         if( !token || !token[0] )
         {
-            G_Error( "G_RetrieveMoveSpeedsFromClient: missing movespeed" );
+            G_Error( "idGameLocal::RetrieveMoveSpeedsFromClient: missing movespeed" );
         }
         anim->moveSpeed = atoi( token );
         
@@ -2379,7 +2379,7 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char* text )
         token = COM_Parse( &text_p );
         if( !token || !token[0] )
         {
-            G_Error( "G_RetrieveMoveSpeedsFromClient: missing stepGap" );
+            G_Error( "idGameLocal::RetrieveMoveSpeedsFromClient: missing stepGap" );
         }
         anim->stepGap = atoi( token );
     }

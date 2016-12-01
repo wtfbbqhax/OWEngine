@@ -63,15 +63,15 @@ void owGPUWorkerProgram::LoadWorkerProgram( const char* qpath )
     name = qpath;
     
     // Read the worker program into memory.
-    ri.Printf( PRINT_ALL, "Loading GPU Worker Program: %s\n", fullPath.c_str() );
-    bufferSize = ri.FS_ReadFile( fullPath.c_str(), ( void** )&buffer );
+    Com_Printf( "Loading GPU Worker Program: %s\n", fullPath.c_str() );
+    bufferSize = FS_ReadFile( fullPath.c_str(), ( void** )&buffer );
     if( bufferSize <= 0 )
     {
-        ri.Error( PRINT_ALL, "Failed to load GPU worker program %s\n", fullPath.c_str() );
+        Com_Error( PRINT_ALL, "Failed to load GPU worker program %s\n", fullPath.c_str() );
         return;
     }
     
-    ri.Printf( PRINT_ALL, "...Program Size %d\n", bufferSize );
+    Com_Printf( "...Program Size %d\n", bufferSize );
     
     // Create the program from the file buffer.
     deviceHandle = clCreateProgramWithSource( gpuWorkerLocal.GetDeviceContext(), 1, &buffer, &bufferSize, &deviceError );
@@ -79,7 +79,7 @@ void owGPUWorkerProgram::LoadWorkerProgram( const char* qpath )
     // Check to see if there was a error creating the program.
     if( deviceHandle == NULL || ID_GPUWORKER_HASERROR )
     {
-        ri.Printf( PRINT_ALL, "Failed to create GPU worker program %s -- Error %s\n", fullPath.c_str(), clErrorString( owGpuWorkerLocal::clError ) );
+        Com_Printf( "Failed to create GPU worker program %s -- Error %s\n", fullPath.c_str(), clErrorString( owGpuWorkerLocal::clError ) );
         return;
     }
     
@@ -101,7 +101,7 @@ void owGPUWorkerProgram::LoadWorkerProgram( const char* qpath )
         idStr deviceLogTemp = deviceErrorLog;
         delete[] deviceErrorLog;
         
-        ri.Printf( PRINT_ALL, "GPU Worker Program(%s) Compile Error %s\n", fullPath.c_str(), deviceLogTemp.c_str() );
+        Com_Printf( "GPU Worker Program(%s) Compile Error %s\n", fullPath.c_str(), deviceLogTemp.c_str() );
     }
 }
 
@@ -116,7 +116,7 @@ void owGPUWorkerProgram::UploadMemory( gpuWorkerMemoryPtr_t memhandle, void* dat
     // Force blocking right now.
     if( clEnqueueWriteBuffer( gpuWorkerLocal.GetCommandQueue(), ( cl_mem )memhandle, true, 0, size, data, NULL, NULL, NULL ) <= 0 )
     {
-        ri.Error( PRINT_ALL, "Uploading GPU Memory block failed.\n" );
+        Com_Error( PRINT_ALL, "Uploading GPU Memory block failed.\n" );
     }
 }
 
@@ -132,7 +132,7 @@ void owGPUWorkerProgram::ReadMemory( gpuWorkerMemoryPtr_t memhandle, void* data,
     // Force blocking right now.
     if( clEnqueueReadBuffer( gpuWorkerLocal.GetCommandQueue(), ( cl_mem )memhandle, true, 0, size, data, NULL, NULL, NULL ) <= 0 )
     {
-        ri.Error( PRINT_ALL, "Downloading GPU Memory block failed.\n" );
+        Com_Error( PRINT_ALL, "Downloading GPU Memory block failed.\n" );
     }
 }
 
@@ -148,7 +148,7 @@ gpuWorkerKernelHandle_t	owGPUWorkerProgram::CreateKernel( const char* kernelName
     kernel = clCreateKernel( ( cl_program )deviceHandle, kernelName, &owGpuWorkerLocal::clError );
     if( kernel == NULL || ID_GPUWORKER_HASERROR )
     {
-        ri.Error( PRINT_ALL, "Failed to create kernel %s\n", kernelName );
+        Com_Error( PRINT_ALL, "Failed to create kernel %s\n", kernelName );
     }
     
     return ( gpuWorkerKernelHandle_t )kernel;

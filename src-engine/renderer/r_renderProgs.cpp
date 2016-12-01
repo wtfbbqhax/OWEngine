@@ -92,15 +92,15 @@ static void RenderProgs_ShowShaderInfoLog( shader_t* shader )
     
     glGetShaderInfoLog( shader->shaderId, sizeof( infoLog ), NULL, infoLog );
     
-    ri.Printf( PRINT_DEVELOPER, "---------- RenderProg Info Log ----------\n" );
-    ri.Printf( PRINT_DEVELOPER, "%s", infoLog );
+    Com_Printf( "---------- RenderProg Info Log ----------\n" );
+    Com_Printf( "%s", infoLog );
     
     if( infoLogLen >= sizeof( infoLog ) )
     {
-        ri.Printf( PRINT_DEVELOPER, "...\n" );
+        Com_Printf( "...\n" );
     }
     
-    ri.Printf( PRINT_DEVELOPER, "-----------------------------------------\n" );
+    Com_Printf( "-----------------------------------------\n" );
 }
 
 /*
@@ -115,13 +115,13 @@ static void RenderProgs_CompileShader( shader_t* shader, const char* defines, co
     switch( shader->type )
     {
         case GL_VERTEX_SHADER:
-            ri.Printf( PRINT_ALL, "Compiling GLSL vertex shader '%s'...\n", shader->name );
+            Com_Printf( "Compiling GLSL vertex shader '%s'...\n", shader->name );
             break;
         case GL_FRAGMENT_SHADER:
-            ri.Printf( PRINT_ALL, "Compiling GLSL fragment shader '%s'...\n", shader->name );
+            Com_Printf( "Compiling GLSL fragment shader '%s'...\n", shader->name );
             break;
         case GL_GEOMETRY_SHADER:
-            ri.Printf( PRINT_ALL, "Compiling GLSL geometry shader '%s'...\n", shader->name );
+            Com_Printf( "Compiling GLSL geometry shader '%s'...\n", shader->name );
             break;
     }
     
@@ -148,13 +148,13 @@ static void RenderProgs_CompileShader( shader_t* shader, const char* defines, co
         switch( shader->type )
         {
             case GL_VERTEX_SHADER:
-                ri.Printf( PRINT_ALL, S_COLOR_RED "Failed to compile vertex shader '%s'\n", shader->name );
+                Com_Printf( S_COLOR_RED "Failed to compile vertex shader '%s'\n", shader->name );
                 break;
             case GL_FRAGMENT_SHADER:
-                ri.Printf( PRINT_ALL, S_COLOR_RED "Failed to compile fragment shader '%s'\n", shader->name );
+                Com_Printf( S_COLOR_RED "Failed to compile fragment shader '%s'\n", shader->name );
                 break;
             case GL_GEOMETRY_SHADER:
-                ri.Printf( PRINT_ALL, S_COLOR_RED "Failed to compile geometry shader '%s'\n", shader->name );
+                Com_Printf( S_COLOR_RED "Failed to compile geometry shader '%s'\n", shader->name );
                 break;
         }
         
@@ -173,7 +173,7 @@ static shader_t* RenderProgs_LoadShader( const char* name, GLenum type, char* co
     
     if( r_numShaders == MAX_SHADERS )
     {
-        ri.Error( PRINT_ERROR, "RenderProgs_LoadShader: MAX_SHADER hit" );
+        Com_Error( PRINT_ERROR, "RenderProgs_LoadShader: MAX_SHADER hit" );
     }
     
     r_shaders[r_numShaders++] = shader = ( shader_t* )malloc( sizeof( shader_t ) );
@@ -219,21 +219,21 @@ shader_t* RenderProgs_FindShader( const char* name, GLenum type )
     }
     
     // load it from disk
-    ri.Printf( PRINT_ALL, "%s", fullPath.c_str() );
+    Com_Printf( "%s", fullPath.c_str() );
     
-    ri.FS_ReadFile( fullPath, ( void** )&code );
+    FS_ReadFile( fullPath, ( void** )&code );
     if( !code )
     {
-        ri.Printf( PRINT_ALL, ": File not found\n" );
+        Com_Printf( ": File not found\n" );
         return NULL;
     }
     
-    ri.Printf( PRINT_ALL, "\n" );
+    Com_Printf( "\n" );
     
     // load the shader
     shader = RenderProgs_LoadShader( name, type, code );
     
-    ri.FS_FreeFile( code );
+    FS_FreeFile( code );
     
     if( !shader->compiled )
     {
@@ -307,15 +307,15 @@ static void RenderProgs_PrintProgramInfoLog( shaderProgram_t* program )
     
     glGetProgramInfoLog( program->program, sizeof( infoLog ), NULL, infoLog );
     
-    ri.Printf( PRINT_DEVELOPER, "---------- Program Info Log ----------\n" );
-    ri.Printf( PRINT_DEVELOPER, "%s", infoLog );
+    Com_Printf( "---------- Program Info Log ----------\n" );
+    Com_Printf( "%s", infoLog );
     
     if( infoLogLen >= sizeof( infoLog ) )
     {
-        ri.Printf( PRINT_DEVELOPER, "...\n" );
+        Com_Printf( "...\n" );
     }
     
-    ri.Printf( PRINT_DEVELOPER, "--------------------------------------\n" );
+    Com_Printf( "--------------------------------------\n" );
 }
 
 /*
@@ -344,7 +344,7 @@ static void RenderProgs_LinkProgram( shaderProgram_t* shaderProgram )
     glGetProgramiv( shaderProgram->program, GL_OBJECT_LINK_STATUS_ARB, ( GLint* )&shaderProgram->linked );
     if( !shaderProgram->linked )
     {
-        ri.Printf( PRINT_ALL, S_COLOR_RED "R_LinkGLSLShader: program failed to link\n" );
+        Com_Printf( S_COLOR_RED "R_LinkGLSLShader: program failed to link\n" );
         return;
     }
 }
@@ -360,7 +360,7 @@ static shaderProgram_t* RenderProgs_LoadProgram( const char* name, shader_t* ver
     
     if( r_numPrograms == MAX_PROGRAMS )
     {
-        ri.Error( PRINT_ERROR, "RenderProgs_LoadProgram: MAX_PROGRAMS hit" );
+        Com_Error( PRINT_ERROR, "RenderProgs_LoadProgram: MAX_PROGRAMS hit" );
     }
     
     r_programs[r_numPrograms++] = program = ( shaderProgram_t* )malloc( sizeof( shaderProgram_t ) );
@@ -387,7 +387,7 @@ shaderProgram_t* RenderProgs_FindProgram( const char* name, shader_t* vertexShad
     
     if( !vertexShader || !fragmentShader || !geometryShader )
     {
-        ri.Error( PRINT_ERROR, "RenderProgs_FindProgram: NULL shader" );
+        Com_Error( PRINT_ERROR, "RenderProgs_FindProgram: NULL shader" );
     }
     
     if( !name || !name[0] )

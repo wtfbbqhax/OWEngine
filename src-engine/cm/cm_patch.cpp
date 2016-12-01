@@ -1003,7 +1003,7 @@ void CM_AddFacetBevels( facet_t* facet )
                     Com_Printf( "ERROR: too many bevels\n" );
                 }
                 facet->borderPlanes[facet->numBorders] = CM_FindPlane2( plane, &flipped );
-                facet->borderNoAdjust[facet->numBorders] = 0;
+                facet->borderNoAdjust[facet->numBorders] = false;
                 facet->borderInward[facet->numBorders] = flipped;
                 facet->numBorders++;
             }
@@ -1094,7 +1094,7 @@ void CM_AddFacetBevels( facet_t* facet )
                         }
                     }
                     
-                    facet->borderNoAdjust[facet->numBorders] = 0;
+                    facet->borderNoAdjust[facet->numBorders] = false;
                     facet->borderInward[facet->numBorders] = flipped;
                     //
                     w2 = CopyWinding( w );
@@ -1127,7 +1127,7 @@ void CM_AddFacetBevels( facet_t* facet )
 #ifndef BSPC
     //add opposite plane
     facet->borderPlanes[facet->numBorders] = facet->surfacePlane;
-    facet->borderNoAdjust[facet->numBorders] = 0;
+    facet->borderNoAdjust[facet->numBorders] = false;
     facet->borderInward[facet->numBorders] = true;
     facet->numBorders++;
 #endif //BSPC
@@ -1897,7 +1897,7 @@ DEBUGGING
 
 /*
 ==================
-CM_DrawDebugSurface
+idCollisionModelManagerLocal::DrawDebugSurface
 
 Called from the renderer
 ==================
@@ -1906,7 +1906,7 @@ Called from the renderer
 void BotDrawDebugPolygons( void ( *drawPoly )( int color, int numPoints, float* points ), int value );
 #endif
 
-void CM_DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) )
+void idCollisionModelManagerLocal::DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) )
 {
     static cvar_t*   cv;
 #ifndef BSPC

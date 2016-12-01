@@ -1713,7 +1713,7 @@ void CG_ParticleDirtBulletDebris_Core( vec3_t org, vec3_t vel, int duration,
     p->endheight = p->height;
     p->endwidth = p->width;
     
-    p->rotate = 0;
+    p->rotate = false;
     
     p->pshader = trap_R_RegisterShader( shadername ); // JPW NERVE was "dirt_splash"
     

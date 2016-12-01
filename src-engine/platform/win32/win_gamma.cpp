@@ -82,7 +82,7 @@ void WG_CheckHardwareGamma( void )
                     ( HIBYTE( s_oldHardwareGamma[2][255] ) <= HIBYTE( s_oldHardwareGamma[2][0] ) ) )
             {
                 glConfig.deviceSupportsGamma = false;
-                ri.Printf( PRINT_WARNING, "WARNING: device has broken gamma support, generated gamma.dat\n" );
+                Com_Printf( "WARNING: device has broken gamma support, generated gamma.dat\n" );
             }
             
             //
@@ -93,7 +93,7 @@ void WG_CheckHardwareGamma( void )
             {
                 int g;
                 
-                ri.Printf( PRINT_WARNING, "WARNING: suspicious gamma tables, using linear ramp for restoration\n" );
+                Com_Printf( "WARNING: suspicious gamma tables, using linear ramp for restoration\n" );
                 
                 for( g = 0; g < 255; g++ )
                 {

@@ -42,6 +42,7 @@
 
 #include "ui_local.h"
 
+gitem_t bg_itemlist[];
 
 #define UI_TIMER_GESTURE        2300
 #define UI_TIMER_JUMP           1000

@@ -1,5 +1,9 @@
 Changelog
 
+12-01-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Removed VM
+	- Integrated UI into engine
+
 11-28-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Moved CM and Sound files in their own folders
 	- Removed FBX library and include files

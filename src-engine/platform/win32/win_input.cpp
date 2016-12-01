@@ -47,7 +47,6 @@
 #include <Xinput.h>
 
 #include <motioncontrollers.h>
-extern motcontr_export_t mce;
 
 typedef struct
 {
@@ -1030,7 +1029,7 @@ void IN_StartupJoystick( void )
 //Dushan
 void IN_StartupRazerHydra( void )
 {
-    mce.RazerHydra_Init();
+    RazerHydra_Init();
     Com_DPrintf( "Razer Hydra device active.\n" );
 }
 

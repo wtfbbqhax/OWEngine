@@ -19,13 +19,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
@@ -59,11 +59,11 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../../libraries/SixenseSDK/include;../../../libraries/OculusSDK/LibOVR/Include;../../../libraries/OculusSDK/LibOVR/src/Kernel;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MOTIONCONTROLLER_EXPORTS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -88,6 +88,10 @@
       </IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>.\motioncontrollers.def</ModuleDefinitionFile>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libovr.lib;sixense.lib;sixense_utils.lib;;Setupapi.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../libraries/SixenseSDK/lib/win32/release_dll;../../../libraries/OculusSDK/LibOVR/Lib/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -97,7 +101,7 @@
       <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;MOTIONCONTROLLER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>
       </ExceptionHandling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -114,15 +118,17 @@
       <TargetMachine>MachineX86</TargetMachine>
       <ModuleDefinitionFile>.\motioncontrollers.def</ModuleDefinitionFile>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../../libraries/SixenseSDK/lib/win32/release_dll;../../../libraries/OculusSDK/LibOVR/Lib/Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libovr.lib;sixense.lib;sixense_utils.lib;;Setupapi.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\motioncontrollers\motioncontrollers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="motioncontrollers.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

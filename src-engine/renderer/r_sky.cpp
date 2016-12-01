@@ -215,7 +215,7 @@ static void ClipSkyPolygon( int nump, vec3_t vecs, int stage )
     
     if( nump > MAX_CLIP_VERTS - 2 )
     {
-        ri.Error( ERR_DROP, "ClipSkyPolygon: MAX_CLIP_VERTS" );
+        Com_Error( ERR_DROP, "ClipSkyPolygon: MAX_CLIP_VERTS" );
     }
     if( stage == 6 )    // fully clipped, so draw it
     {
@@ -447,7 +447,7 @@ static void DrawSkySide( struct image_s* image, const int mins[2], const int max
     unsigned short* indicies;
     
     size = ( maxs[1] - mins[1] ) * ( maxs[0] - mins[0] + 1 );
-    indicies = ( unsigned short* )ri.Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
+    indicies = ( unsigned short* )Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
     
     GL_Bind( image );
     
@@ -465,7 +465,7 @@ static void DrawSkySide( struct image_s* image, const int mins[2], const int max
     glTexCoordPointer( 2, GL_FLOAT, 0, s_skyTexCoords );
     glVertexPointer( 3, GL_FLOAT, 0, s_skyPoints );
     glDrawElements( GL_TRIANGLE_STRIP, i, GL_UNSIGNED_SHORT, indicies );
-    ri.Hunk_FreeTempMemory( indicies );
+    Hunk_FreeTempMemory( indicies );
 }
 
 static void DrawSkySideInner( struct image_s* image, const int mins[2], const int maxs[2] )
@@ -475,7 +475,7 @@ static void DrawSkySideInner( struct image_s* image, const int mins[2], const in
     unsigned short* indicies;
     
     size = ( maxs[1] - mins[1] ) * ( maxs[0] - mins[0] + 1 );
-    indicies = ( unsigned short* )ri.Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
+    indicies = ( unsigned short* )Hunk_AllocateTempMemory( sizeof( unsigned short ) * size );
     
     GL_Bind( image );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -497,7 +497,7 @@ static void DrawSkySideInner( struct image_s* image, const int mins[2], const in
     glVertexPointer( 3, GL_FLOAT, 0, s_skyPoints );
     glDrawElements( GL_TRIANGLE_STRIP, i, GL_UNSIGNED_SHORT, indicies );
     glDisable( GL_BLEND );
-    ri.Hunk_FreeTempMemory( indicies );
+    Hunk_FreeTempMemory( indicies );
 }
 
 static void DrawSkyBox( shader_t* shader )
@@ -691,7 +691,7 @@ static void FillCloudySkySide( const int mins[2], const int maxs[2], bool addInd
             
             if( tess.numVertexes >= SHADER_MAX_VERTEXES )
             {
-                ri.Error( ERR_DROP, "SHADER_MAX_VERTEXES hit in FillCloudySkySide()\n" );
+                Com_Error( ERR_DROP, "SHADER_MAX_VERTEXES hit in FillCloudySkySide()\n" );
             }
         }
     }

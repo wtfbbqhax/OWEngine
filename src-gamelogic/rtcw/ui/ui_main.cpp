@@ -151,6 +151,9 @@ static char* netnames[] =
     NULL
 };
 
+idUserInterfaceManagerLocal uiManagerLocal;
+idUserInterfaceManager* uiManager = &uiManagerLocal;
+
 // TTimo: unused
 //static char quake3worldMessage[] = "Visit www.quake3world.com - News, Community, Events, Files";
 
@@ -202,71 +205,6 @@ vmCvar_t ui_new;
 vmCvar_t ui_debug;
 vmCvar_t ui_initialized;
 vmCvar_t ui_WolfFirstRun;
-
-void _UI_Init( bool );
-void _UI_Shutdown( void );
-void _UI_KeyEvent( int key, bool down );
-void _UI_MouseEvent( int dx, int dy );
-void _UI_Refresh( int realtime );
-bool _UI_IsFullscreen( void );
-#if defined( __MACOS__ )
-#pragma export on
-#endif
-intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11 )
-{
-#if defined( __MACOS__ )
-#pragma export off
-#endif
-    switch( command )
-    {
-        case UI_GETAPIVERSION:
-            return UI_API_VERSION;
-            
-        case UI_INIT:
-            _UI_Init( arg0 );
-            return 0;
-            
-        case UI_SHUTDOWN:
-            _UI_Shutdown();
-            return 0;
-            
-        case UI_KEY_EVENT:
-            _UI_KeyEvent( arg0, arg1 );
-            return 0;
-            
-        case UI_MOUSE_EVENT:
-            _UI_MouseEvent( arg0, arg1 );
-            return 0;
-            
-        case UI_REFRESH:
-            _UI_Refresh( arg0 );
-            return 0;
-            
-        case UI_IS_FULLSCREEN:
-            return _UI_IsFullscreen();
-            
-        case UI_SET_ACTIVE_MENU:
-            _UI_SetActiveMenu( ( uiMenuCommand_t )arg0 );
-            return 0;
-            
-        case UI_GET_ACTIVE_MENU:
-            return _UI_GetActiveMenu();
-            
-        case UI_CONSOLE_COMMAND:
-            return UI_ConsoleCommand( arg0 );
-            
-        case UI_DRAW_CONNECT_SCREEN:
-            UI_DrawConnectScreen( arg0 );
-            return 0;
-        case UI_HASUNIQUECDKEY:             // mod authors need to observe this
-            return true;
-            
-    }
-    
-    return -1;
-}
-
-
 
 void AssetCache()
 {
@@ -779,11 +717,11 @@ void UI_ShowPostGame( bool newHigh )
     trap_Cvar_Set( "cg_thirdPerson", "0" );
     trap_Cvar_Set( "sv_killserver", "1" );
     uiInfo.soundHighScore = newHigh;
-    _UI_SetActiveMenu( UIMENU_POSTGAME );
+    uiManagerLocal.SetActiveMenu( UIMENU_POSTGAME );
 }
 /*
 =================
-_UI_Refresh
+idUserInterfaceManagerLocal::Refresh
 =================
 */
 
@@ -799,7 +737,7 @@ int frameCount = 0;
 int startTime;
 
 #define UI_FPS_FRAMES   4
-void _UI_Refresh( int realtime )
+void idUserInterfaceManagerLocal::Refresh( int realtime )
 {
     static int index;
     static int previousTimes[UI_FPS_FRAMES];
@@ -849,7 +787,7 @@ void _UI_Refresh( int realtime )
     UI_SetColor( NULL );
     if( Menu_Count() > 0 )
     {
-        uiMenuCommand_t mymenu = _UI_GetActiveMenu();
+        uiMenuCommand_t mymenu = uiManagerLocal.GetActiveMenu();
         if( mymenu != UIMENU_BRIEFING )
         {
             UI_DrawHandlePic( uiInfo.uiDC.cursorx - 16, uiInfo.uiDC.cursory - 16, 32, 32, uiInfo.uiDC.Assets.cursor );
@@ -869,10 +807,10 @@ void _UI_Refresh( int realtime )
 
 /*
 =================
-_UI_Shutdown
+idUserInterfaceManagerLocal::Shutdown
 =================
 */
-void _UI_Shutdown( void )
+void idUserInterfaceManagerLocal::Shutdown( void )
 {
     trap_LAN_SaveCachedServers();
 }
@@ -6774,7 +6712,7 @@ static void UI_BuildServerDisplayList( bool force )
     // if we shouldn't reset
     if( force == 2 )
     {
-        force = 0;
+        force = false;
     }
     
     // do motd updates here too
@@ -8607,7 +8545,7 @@ static void UI_ParseGLConfig( void )
 UI_Init
 =================
 */
-void _UI_Init( bool inGameLoad )
+void idUserInterfaceManagerLocal::Init( bool inGameLoad )
 {
     const char* menuSet;
     int start;
@@ -8772,10 +8710,10 @@ void _UI_Init( bool inGameLoad )
 
 /*
 =================
-UI_KeyEvent
+idUserInterfaceManagerLocal::KeyEvent
 =================
 */
-void _UI_KeyEvent( int key, bool down )
+void idUserInterfaceManagerLocal::KeyEvent( int key, bool down )
 {
 
     if( Menu_Count() > 0 )
@@ -8809,10 +8747,10 @@ void _UI_KeyEvent( int key, bool down )
 
 /*
 =================
-UI_MouseEvent
+idUserInterfaceManagerLocal::MouseEvent
 =================
 */
-void _UI_MouseEvent( int dx, int dy )
+void idUserInterfaceManagerLocal::MouseEvent( int dx, int dy )
 {
     // update mouse screen position
     uiInfo.uiDC.cursorx += dx;
@@ -8864,17 +8802,17 @@ void UI_LoadNonIngame()
 //----(SA)	added
 /*
 ==============
-_UI_GetActiveMenu
+idUserInterfaceManagerLocal::GetActiveMenu
 ==============
 */
-uiMenuCommand_t _UI_GetActiveMenu( void )
+uiMenuCommand_t idUserInterfaceManagerLocal::GetActiveMenu( void )
 {
     return menutype;
 }
 
 //----(SA)	end
 
-void _UI_SetActiveMenu( uiMenuCommand_t menu )
+void idUserInterfaceManagerLocal::SetActiveMenu( uiMenuCommand_t menu )
 {
     char buf[256];
     
@@ -9064,12 +9002,10 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu )
     }
 }
 
-bool _UI_IsFullscreen( void )
+bool idUserInterfaceManagerLocal::IsFullscreen( void )
 {
     return Menus_AnyFullScreenVisible();
 }
-
-
 
 static connstate_t lastConnState;
 static char lastLoadingText[MAX_INFO_VALUE];
@@ -9212,13 +9148,13 @@ static void UI_DisplayDownloadInfo( const char* downloadName, float centerPoint,
 
 /*
 ========================
-UI_DrawConnectScreen
+idUserInterfaceManagerLocal::DrawConnectScreen
 
 This will also be overlaid on the cgame info screen during loading
 to prevent it from blinking away too rapidly on local or lan games.
 ========================
 */
-void UI_DrawConnectScreen( bool overlay )
+void idUserInterfaceManagerLocal::DrawConnectScreen( bool overlay )
 {
     char*            s;
     uiClientState_t cstate;
@@ -9666,7 +9602,7 @@ static void UI_DoServerRefresh( void )
     else if( !wait )
     {
         // get the last servers in the list
-        UI_BuildServerDisplayList( 2 );
+        UI_BuildServerDisplayList( false );
         // stop the refresh
         UI_StopServerRefresh();
     }

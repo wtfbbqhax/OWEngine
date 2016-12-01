@@ -83,7 +83,7 @@ int CM_PointLeafnum_r( const vec3_t p, int num )
     return -1 - num;
 }
 
-int CM_PointLeafnum( const vec3_t p )
+int idCollisionModelManagerLocal::PointLeafnum( const vec3_t p )
 {
     if( !cm.numNodes )      // map not loaded
     {
@@ -218,10 +218,10 @@ void CM_BoxLeafnums_r( leafList_t* ll, int nodenum )
 
 /*
 ==================
-CM_BoxLeafnums
+idCollisionModelManagerLocal::BoxLeafnums
 ==================
 */
-int CM_BoxLeafnums( const vec3_t mins, const vec3_t maxs, int* list, int listsize, int* lastLeaf )
+int idCollisionModelManagerLocal::BoxLeafnums( const vec3_t mins, const vec3_t maxs, int* list, int listsize, int* lastLeaf )
 {
     leafList_t ll;
     
@@ -273,11 +273,10 @@ int CM_BoxBrushes( const vec3_t mins, const vec3_t maxs, cbrush_t** list, int li
 
 /*
 ==================
-CM_PointContents
-
+idCollisionModelManagerLocal::PointContents
 ==================
 */
-int CM_PointContents( const vec3_t p, clipHandle_t model )
+int idCollisionModelManagerLocal::PointContents( const vec3_t p, clipHandle_t model )
 {
     int leafnum;
     int i, k;
@@ -333,13 +332,13 @@ int CM_PointContents( const vec3_t p, clipHandle_t model )
 
 /*
 ==================
-CM_TransformedPointContents
+idCollisionModelManagerLocal::TransformedPointContents
 
 Handles offseting and rotation of the end points for moving and
 rotating entities
 ==================
 */
-int CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles )
+int idCollisionModelManagerLocal::TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles )
 {
     vec3_t p_l;
     vec3_t temp;
@@ -360,7 +359,7 @@ int CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_
         p_l[2] = DotProduct( temp, up );
     }
     
-    return CM_PointContents( p_l, model );
+    return collisionModelManagerLocal.PointContents( p_l, model );
 }
 
 
@@ -373,7 +372,7 @@ PVS
 ===============================================================================
 */
 
-byte*    CM_ClusterPVS( int cluster )
+byte*    idCollisionModelManagerLocal::ClusterPVS( int cluster )
 {
     if( cluster < 0 || cluster >= cm.numClusters || !cm.vised )
     {
@@ -453,11 +452,10 @@ void    CM_FloodAreaConnections( void )
 
 /*
 ====================
-CM_AdjustAreaPortalState
-
+idCollisionModelManagerLocal::AdjustAreaPortalState
 ====================
 */
-void CM_AdjustAreaPortalState( int area1, int area2, bool open )
+void idCollisionModelManagerLocal::AdjustAreaPortalState( int area1, int area2, bool open )
 {
     if( area1 < 0 || area2 < 0 )
     {
@@ -489,11 +487,10 @@ void CM_AdjustAreaPortalState( int area1, int area2, bool open )
 
 /*
 ====================
-CM_AreasConnected
-
+idCollisionModelManagerLocal::AreasConnected
 ====================
 */
-bool CM_AreasConnected( int area1, int area2 )
+bool idCollisionModelManagerLocal::AreasConnected( int area1, int area2 )
 {
 #ifndef BSPC
     if( cm_noAreas->integer )
@@ -522,19 +519,19 @@ bool CM_AreasConnected( int area1, int area2 )
 
 /*
 =================
-CM_WriteAreaBits
+idCollisionModelManagerLocal::WriteAreaBits
 
 Writes a bit vector of all the areas
 that are in the same flood as the area parameter
 Returns the number of bytes needed to hold all the bits.
 
-The bits are OR'd in, so you can CM_WriteAreaBits from multiple
+The bits are OR'd in, so you can idCollisionModelManagerLocal::WriteAreaBits from multiple
 viewpoints and get the union of all visible areas.
 
 This is used to cull non-visible entities from snapshots
 =================
 */
-int CM_WriteAreaBits( byte* buffer, int area )
+int idCollisionModelManagerLocal::WriteAreaBits( byte* buffer, int area )
 {
     int i;
     int floodnum;

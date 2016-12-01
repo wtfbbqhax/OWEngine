@@ -42,19 +42,19 @@
 
 #include "snd_local.h"
 
-int myftol( float f );
+long myftol( float f );
 
 #define C0 0.4829629131445341
 #define C1 0.8365163037378079
 #define C2 0.2241438680420134
 #define C3 -0.1294095225512604
 
-void daub4( float b[], unsigned int n, int isign )
+void daub4( float b[], unsigned long n, int isign )
 {
     float wksp[4097];
     float*   a = b - 1;                     // numerical recipies so a[1] = b[0]
     
-    unsigned int nh, nh1, i, j;
+    unsigned long nh, nh1, i, j;
     
     if( n < 4 )
     {
@@ -88,9 +88,9 @@ void daub4( float b[], unsigned int n, int isign )
     }
 }
 
-void wt1( float a[], unsigned int n, int isign )
+void wt1( float a[], unsigned long n, int isign )
 {
-    unsigned int nn;
+    unsigned long nn;
     int inverseStartLength = n / 4;
     if( n < inverseStartLength )
     {
@@ -121,7 +121,7 @@ static unsigned char numBits[] =
 
 byte MuLawEncode( short s )
 {
-    unsigned int adjusted;
+    unsigned long adjusted;
     byte sign, exponent, mantissa;
     
     sign = ( s < 0 ) ? 0 : 0x80;
@@ -130,7 +130,7 @@ byte MuLawEncode( short s )
     {
         s = -s;
     }
-    adjusted = ( int )s << ( 16 - sizeof( short ) * 8 );
+    adjusted = ( long )s << ( 16 - sizeof( short ) * 8 );
     adjusted += 128L + 4L;
     if( adjusted > 32767 )
     {
@@ -143,7 +143,7 @@ byte MuLawEncode( short s )
 
 short MuLawDecode( byte uLaw )
 {
-    signed int adjusted;
+    signed long adjusted;
     byte exponent, mantissa;
     
     uLaw = ~uLaw;

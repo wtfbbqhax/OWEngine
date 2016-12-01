@@ -276,7 +276,7 @@ float R_CalcMDSLod( refEntity_t* refent, vec3_t origin, float radius, float mode
     if( projectedRadius != 0 )
     {
     
-//		ri.Printf (PRINT_ALL, "projected radius: %f\n", projectedRadius);
+//		Com_Printf(  "projected radius: %f\n", projectedRadius);
 
         _lodScale = r_lodscale->value;   // fudge factor since MDS uses a much smoother method of LOD
         flod = projectedRadius * _lodScale * modelScale;
@@ -440,11 +440,11 @@ void R_AddAnimSurfaces( trRefEntity_t* ent )
             
             if( shader == tr.defaultShader )
             {
-                ri.Printf( PRINT_DEVELOPER, "WARNING: no shader for surface %s in skin %s\n", surface->name, skin->name );
+                Com_Printf( "WARNING: no shader for surface %s in skin %s\n", surface->name, skin->name );
             }
             else if( shader->defaultShader )
             {
-                ri.Printf( PRINT_DEVELOPER, "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
+                Com_Printf( "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
             }
         }
         else
@@ -1200,13 +1200,13 @@ void R_CalcBones( mdsHeader_t* header, const refEntity_t* refent, int* boneList,
         
         if( r_bonesDebug->integer == 4 && totalrt )
         {
-            ri.Printf( PRINT_ALL, "Lod %.2f  verts %4d/%4d  tris %4d/%4d  (%.2f%%)\n",
-                       lodScale,
-                       totalrv,
-                       totalv,
-                       totalrt,
-                       totalt,
-                       ( float )( 100.0 * totalrt ) / ( float ) totalt );
+            Com_Printf( "Lod %.2f  verts %4d/%4d  tris %4d/%4d  (%.2f%%)\n",
+                        lodScale,
+                        totalrv,
+                        totalv,
+                        totalrt,
+                        totalt,
+                        ( float )( 100.0 * totalrt ) / ( float ) totalt );
         }
         
         totalrv = totalrt = totalv = totalt = 0;
@@ -1374,7 +1374,7 @@ void R_CalcBones( mdsHeader_t* header, const refEntity_t* refent, int* boneList,
 }
 
 #ifdef DBG_PROFILE_BONES
-#define DBG_SHOWTIME    Com_Printf( "%i: %i, ", di++, ( dt = ri.Milliseconds() ) - ldt ); ldt = dt;
+#define DBG_SHOWTIME    Com_Printf( "%i: %i, ", di++, ( dt = Sys_Milliseconds() ) - ldt ); ldt = dt;
 #else
 #define DBG_SHOWTIME    ;
 #endif
@@ -1394,7 +1394,7 @@ void RB_SurfaceAnim( mdsSurface_t* surface )
 #ifdef DBG_PROFILE_BONES
     int di = 0, dt, ldt;
     
-    dt = ri.Milliseconds();
+    dt = Sys_Milliseconds();
     ldt = dt;
 #endif
     

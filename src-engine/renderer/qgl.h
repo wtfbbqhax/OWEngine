@@ -122,18 +122,6 @@
 //#undef NDEBUG
 //#define QGL_LOG_GL_CALLS
 
-// extensions will be function pointers on all platforms
-
-extern	void ( APIENTRY* qglMultiTexCoord2fARB )( GLenum texture, GLfloat s, GLfloat t );
-extern	void ( APIENTRY* qglActiveTextureARB )( GLenum texture );
-extern	void ( APIENTRY* qglClientActiveTextureARB )( GLenum texture );
-
-extern	void ( APIENTRY* qglLockArraysEXT )( GLint, GLint );
-extern	void ( APIENTRY* qglUnlockArraysEXT )( void );
-
-extern void ( APIENTRY* qglPNTrianglesiATI )( GLenum pname, GLint param );
-extern void ( APIENTRY* qglPNTrianglesfATI )( GLenum pname, GLfloat param );
-
 #ifdef QGL_LOG_GL_CALLS
 extern unsigned int QGLLogGLCalls;
 

@@ -15,11 +15,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="motioncontrollers.def">
-      <Filter>Source Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h">
       <Filter>Header Files</Filter>
     </ClInclude>

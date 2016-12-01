@@ -805,7 +805,7 @@ void SV_SpawnServer( char* server, bool killBots )
     Hunk_Clear();
     
     // clear collision map data		// (SA) NOTE: TODO: used in missionpack
-    CM_ClearMap();
+    collisionModelManager->ClearMap();
     
     // wipe the entire per-level structure
     SV_ClearServer();
@@ -865,7 +865,7 @@ void SV_SpawnServer( char* server, bool killBots )
     sv.checksumFeed = ( ( ( int ) rand() << 16 ) ^ rand() ) ^ Sys_Milliseconds();
     FS_Restart( sv.checksumFeed );
     
-    CM_LoadMap( va( "maps/%s.bsp", server ), false, &checksum );
+    collisionModelManager->LoadMap( va( "maps/%s.bsp", server ), false, &checksum );
     
     // set serverinfo visible name
     Cvar_Set( "mapname", server );
@@ -894,7 +894,7 @@ void SV_SpawnServer( char* server, bool killBots )
     // run a few frames to allow everything to settle
     for( i = 0 ; i < 3 ; i++ )
     {
-        VM_Call( gvm, GAME_RUN_FRAME, svs.time );
+        game->RunFrame( svs.time );
         SV_BotFrame( svs.time );
         svs.time += 100;
     }
@@ -924,7 +924,7 @@ void SV_SpawnServer( char* server, bool killBots )
             }
             
             // connect the client again
-            denied = ( char* )VM_ExplicitArgPtr( gvm, VM_Call( gvm, GAME_CLIENT_CONNECT, i, false, isBot ) ); // firstTime = false
+            denied = ( char* )game->ClientConnect( i, false, isBot ); // firstTime = qfalse
             if( denied )
             {
                 // this generally shouldn't happen, because the client
@@ -953,14 +953,14 @@ void SV_SpawnServer( char* server, bool killBots )
                     client->deltaMessage = -1;
                     client->nextSnapshotTime = svs.time;    // generate a snapshot immediately
                     
-                    VM_Call( gvm, GAME_CLIENT_BEGIN, i );
+                    game->ClientBegin( i );
                 }
             }
         }
     }
     
     // run another frame to allow things to look at all the players
-    VM_Call( gvm, GAME_RUN_FRAME, svs.time );
+    game->RunFrame( svs.time );
     SV_BotFrame( svs.time );
     svs.time += 100;
     

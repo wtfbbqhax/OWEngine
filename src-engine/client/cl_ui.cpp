@@ -898,410 +898,6 @@ static int GetConfigString( int index, char* buf, int size )
 
 /*
 ====================
-FloatAsInt
-====================
-*/
-static int FloatAsInt( float f )
-{
-    int temp;
-    
-    *( float* )&temp = f;
-    
-    return temp;
-}
-
-#define VMA( x ) ( (void *) args[x] )
-#define VMF( x )  ( *(float *)&args[x] )
-
-/*
-====================
-CL_UISystemCalls
-
-The ui module is making a system call
-====================
-*/
-intptr_t CL_UISystemCalls( intptr_t* args )
-{
-    switch( args[0] )
-    {
-        case UI_ERROR:
-            Com_Error( ERR_DROP, "%s", VMA( 1 ) );
-            return 0;
-            
-        case UI_PRINT:
-            Com_Printf( "%s", VMA( 1 ) );
-            return 0;
-            
-        case UI_MILLISECONDS:
-            return Sys_Milliseconds();
-            
-        case UI_CVAR_REGISTER:
-            Cvar_Register( ( vmCvar_t* )VMA( 1 ), ( const char* )VMA( 2 ), ( const char* )VMA( 3 ), args[4] );
-            return 0;
-            
-        case UI_CVAR_UPDATE:
-            Cvar_Update( ( vmCvar_t* )VMA( 1 ) );
-            return 0;
-            
-        case UI_CVAR_SET:
-            Cvar_Set( ( const char* )VMA( 1 ), ( const char* )VMA( 2 ) );
-            return 0;
-            
-        case UI_CVAR_VARIABLEVALUE:
-            return FloatAsInt( Cvar_VariableValue( ( const char* )VMA( 1 ) ) );
-            
-        case UI_CVAR_VARIABLESTRINGBUFFER:
-            Cvar_VariableStringBuffer( ( const char* )VMA( 1 ), ( char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_CVAR_SETVALUE:
-            Cvar_SetValue( ( const char* )VMA( 1 ), VMF( 2 ) );
-            return 0;
-            
-        case UI_CVAR_RESET:
-            Cvar_Reset( ( const char* )VMA( 1 ) );
-            return 0;
-            
-        case UI_CVAR_CREATE:
-            Cvar_Get( ( const char* )VMA( 1 ), ( const char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_CVAR_INFOSTRINGBUFFER:
-            Cvar_InfoStringBuffer( args[1], ( char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_ARGC:
-            return Cmd_Argc();
-            
-        case UI_ARGV:
-            Cmd_ArgvBuffer( args[1], ( char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_CMD_EXECUTETEXT:
-            Cbuf_ExecuteText( args[1], ( const char* )VMA( 2 ) );
-            return 0;
-            
-        case UI_FS_FOPENFILE:
-            return FS_FOpenFileByMode( ( const char* )VMA( 1 ), ( fileHandle_t* )VMA( 2 ), ( fsMode_t )args[3] );
-            
-        case UI_FS_READ:
-            FS_Read( VMA( 1 ), args[2], args[3] );
-            return 0;
-            
-//----(SA)	added
-        case UI_FS_SEEK:
-            FS_Seek( args[1], args[2], args[3] );
-            return 0;
-//----(SA)	end
-
-        case UI_FS_WRITE:
-            FS_Write( VMA( 1 ), args[2], args[3] );
-            return 0;
-            
-        case UI_FS_FCLOSEFILE:
-            FS_FCloseFile( args[1] );
-            return 0;
-            
-        case UI_FS_DELETEFILE:
-            return FS_Delete( ( char* )VMA( 1 ) );
-            
-        case UI_FS_GETFILELIST:
-            return FS_GetFileList( ( const char* )VMA( 1 ), ( const char* )VMA( 2 ), ( char* )VMA( 3 ), args[4] );
-            
-        case UI_R_REGISTERMODEL:
-            return re.RegisterModel( ( const char* )VMA( 1 ) );
-            
-        case UI_R_REGISTERSKIN:
-            return re.RegisterSkin( ( const char* )VMA( 1 ) );
-            
-        case UI_R_REGISTERSHADERNOMIP:
-            return re.RegisterShaderNoMip( ( const char* )VMA( 1 ) );
-            
-        case UI_R_CLEARSCENE:
-            re.ClearScene();
-            return 0;
-            
-        case UI_R_ADDREFENTITYTOSCENE:
-            re.AddRefEntityToScene( ( refEntity_t* )VMA( 1 ) );
-            return 0;
-            
-        case UI_R_ADDPOLYTOSCENE:
-            re.AddPolyToScene( args[1], args[2], ( const polyVert_t* )VMA( 3 ) );
-            return 0;
-            
-            // Ridah
-        case UI_R_ADDPOLYSTOSCENE:
-            re.AddPolysToScene( args[1], args[2], ( const polyVert_t* )VMA( 3 ), args[4] );
-            return 0;
-            // done.
-            
-        case UI_R_ADDLIGHTTOSCENE:
-            re.AddLightToScene( ( const vec_t* )VMA( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), args[6] );
-            return 0;
-            
-        case UI_R_ADDCORONATOSCENE:
-            re.AddCoronaToScene( ( const vec_t* )VMA( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), args[6], args[7] );
-            return 0;
-            
-        case UI_R_RENDERSCENE:
-            re.RenderScene( ( const refdef_t* )VMA( 1 ) );
-            return 0;
-            
-        case UI_R_SETCOLOR:
-            re.SetColor( ( const float* )VMA( 1 ) );
-            return 0;
-            
-        case UI_R_DRAWSTRETCHPIC:
-            re.DrawStretchPic( VMF( 1 ), VMF( 2 ), VMF( 3 ), VMF( 4 ), VMF( 5 ), VMF( 6 ), VMF( 7 ), VMF( 8 ), args[9] );
-            return 0;
-            
-        case UI_R_MODELBOUNDS:
-            re.ModelBounds( args[1], ( vec_t* )VMA( 2 ), ( vec_t* )VMA( 3 ) );
-            return 0;
-            
-        case UI_UPDATESCREEN:
-            SCR_UpdateScreen();
-            return 0;
-            
-        case UI_CM_LERPTAG:
-            return re.LerpTag( ( orientation_t* )VMA( 1 ), ( refEntity_t* )VMA( 2 ), ( const char* )VMA( 3 ), args[4] );
-            
-        case UI_S_REGISTERSOUND:
-#ifdef DOOMSOUND    ///// (SA) DOOMSOUND
-            return S_RegisterSound( VMA( 1 ) );
-#else
-            return S_RegisterSound( ( const char* )VMA( 1 ), false );
-#endif  ///// (SA) DOOMSOUND
-            
-        case UI_S_STARTLOCALSOUND:
-            S_StartLocalSound( args[1], args[2] );
-            return 0;
-            
-//----(SA)	added
-        case UI_S_FADESTREAMINGSOUND:
-            S_FadeStreamingSound( VMF( 1 ), args[2], args[3] );
-            return 0;
-            
-        case UI_S_FADEALLSOUNDS:
-            S_FadeAllSounds( VMF( 1 ), args[2] );
-            return 0;
-//----(SA)	end
-
-        case UI_KEY_KEYNUMTOSTRINGBUF:
-            Key_KeynumToStringBuf( args[1], ( char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_KEY_GETBINDINGBUF:
-            Key_GetBindingBuf( args[1], ( char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_KEY_SETBINDING:
-            Key_SetBinding( args[1], ( const char* )VMA( 2 ) );
-            return 0;
-            
-        case UI_KEY_ISDOWN:
-            return Key_IsDown( args[1] );
-            
-        case UI_KEY_GETOVERSTRIKEMODE:
-            return Key_GetOverstrikeMode();
-            
-        case UI_KEY_SETOVERSTRIKEMODE:
-            Key_SetOverstrikeMode( args[1] );
-            return 0;
-            
-        case UI_KEY_CLEARSTATES:
-            Key_ClearStates();
-            return 0;
-            
-        case UI_KEY_GETCATCHER:
-            return Key_GetCatcher();
-            
-        case UI_KEY_SETCATCHER:
-            Key_SetCatcher( args[1] );
-            return 0;
-            
-        case UI_GETCLIPBOARDDATA:
-            GetClipboardData( ( char* )VMA( 1 ), args[2] );
-            return 0;
-            
-        case UI_GETCLIENTSTATE:
-            GetClientState( ( uiClientState_t* )VMA( 1 ) );
-            return 0;
-            
-        case UI_GETGLCONFIG:
-            CL_GetGlconfig( ( glconfig_t* )VMA( 1 ) );
-            return 0;
-            
-        case UI_GETCONFIGSTRING:
-            return GetConfigString( args[1], ( char* )VMA( 2 ), args[3] );
-            
-        case UI_LAN_LOADCACHEDSERVERS:
-            LAN_LoadCachedServers();
-            return 0;
-            
-        case UI_LAN_SAVECACHEDSERVERS:
-            LAN_SaveServersToCache();
-            return 0;
-            
-        case UI_LAN_ADDSERVER:
-            return LAN_AddServer( args[1], ( const char* )VMA( 2 ), ( const char* )VMA( 3 ) );
-            
-        case UI_LAN_REMOVESERVER:
-            LAN_RemoveServer( args[1], ( const char* )VMA( 2 ) );
-            return 0;
-            
-        case UI_LAN_GETPINGQUEUECOUNT:
-            return LAN_GetPingQueueCount();
-            
-        case UI_LAN_CLEARPING:
-            LAN_ClearPing( args[1] );
-            return 0;
-            
-        case UI_LAN_GETPING:
-            LAN_GetPing( args[1], ( char* )VMA( 2 ), args[3], ( int* )VMA( 4 ) );
-            return 0;
-            
-        case UI_LAN_GETPINGINFO:
-            LAN_GetPingInfo( args[1], ( char* )VMA( 2 ), args[3] );
-            return 0;
-            
-        case UI_LAN_GETSERVERCOUNT:
-            return LAN_GetServerCount( args[1] );
-            
-        case UI_LAN_GETSERVERADDRESSSTRING:
-            LAN_GetServerAddressString( args[1], args[2], ( char* )VMA( 3 ), args[4] );
-            return 0;
-            
-        case UI_LAN_GETSERVERINFO:
-            LAN_GetServerInfo( args[1], args[2], ( char* )VMA( 3 ), args[4] );
-            return 0;
-            
-        case UI_LAN_GETSERVERPING:
-            return LAN_GetServerPing( args[1], args[2] );
-            
-        case UI_LAN_MARKSERVERVISIBLE:
-            LAN_MarkServerVisible( args[1], args[2], args[3] );
-            return 0;
-            
-        case UI_LAN_SERVERISVISIBLE:
-            return LAN_ServerIsVisible( args[1], args[2] );
-            
-        case UI_LAN_UPDATEVISIBLEPINGS:
-            return LAN_UpdateVisiblePings( args[1] );
-            
-        case UI_LAN_RESETPINGS:
-            LAN_ResetPings( args[1] );
-            return 0;
-            
-        case UI_LAN_SERVERSTATUS:
-            return LAN_GetServerStatus( ( char* )VMA( 1 ), ( char* )VMA( 2 ), args[3] );
-            
-        case UI_LAN_COMPARESERVERS:
-            return LAN_CompareServers( args[1], args[2], args[3], args[4], args[5] );
-            
-        case UI_MEMORY_REMAINING:
-            return Hunk_MemoryRemaining();
-            
-        case UI_GET_CDKEY:
-            CLUI_GetCDKey( ( char* )VMA( 1 ), args[2] );
-            return 0;
-            
-        case UI_SET_CDKEY:
-            CLUI_SetCDKey( ( char* )VMA( 1 ) );
-            return 0;
-            
-        case UI_R_REGISTERFONT:
-            re.RegisterFont( ( const char* )VMA( 1 ), args[2], ( fontInfo_t* )VMA( 3 ) );
-            return 0;
-            
-        case UI_MEMSET:
-            return ( intptr_t )memset( VMA( 1 ), args[2], args[3] );
-            
-        case UI_MEMCPY:
-            return ( intptr_t )memcpy( VMA( 1 ), VMA( 2 ), args[3] );
-            
-        case UI_STRNCPY:
-            return ( intptr_t )strncpy( ( char* )VMA( 1 ), ( const char* )VMA( 2 ), args[3] );
-            
-        case UI_SIN:
-            return FloatAsInt( sin( VMF( 1 ) ) );
-            
-        case UI_COS:
-            return FloatAsInt( cos( VMF( 1 ) ) );
-            
-        case UI_ATAN2:
-            return FloatAsInt( atan2( VMF( 1 ), VMF( 2 ) ) );
-            
-        case UI_SQRT:
-            return FloatAsInt( sqrt( VMF( 1 ) ) );
-            
-        case UI_FLOOR:
-            return FloatAsInt( floor( VMF( 1 ) ) );
-            
-        case UI_CEIL:
-            return FloatAsInt( ceil( VMF( 1 ) ) );
-            
-        case UI_PC_ADD_GLOBAL_DEFINE:
-            return botlib_export->PC_AddGlobalDefine( ( char* )VMA( 1 ) );
-        case UI_PC_LOAD_SOURCE:
-            return botlib_export->PC_LoadSourceHandle( ( const char* )VMA( 1 ) );
-        case UI_PC_FREE_SOURCE:
-            return botlib_export->PC_FreeSourceHandle( args[1] );
-        case UI_PC_READ_TOKEN:
-            return botlib_export->PC_ReadTokenHandle( args[1], ( pc_token_t* )VMA( 2 ) );
-        case UI_PC_SOURCE_FILE_AND_LINE:
-            return botlib_export->PC_SourceFileAndLine( args[1], ( char* )VMA( 2 ), ( int* )VMA( 3 ) );
-            
-        case UI_S_STOPBACKGROUNDTRACK:
-            S_StopBackgroundTrack();
-            return 0;
-        case UI_S_STARTBACKGROUNDTRACK:
-            S_StartBackgroundTrack( ( const char* )VMA( 1 ), ( const char* )VMA( 2 ), args[3] ); //----(SA)	added fadeup time
-            return 0;
-            
-        case UI_REAL_TIME:
-            return Com_RealTime( ( qtime_t* )VMA( 1 ) );
-            
-        case UI_CIN_PLAYCINEMATIC:
-            Com_DPrintf( "UI_CIN_PlayCinematic\n" );
-            return CIN_PlayCinematic( ( const char* )VMA( 1 ), args[2], args[3], args[4], args[5], args[6] );
-            
-        case UI_CIN_STOPCINEMATIC:
-            return CIN_StopCinematic( args[1] );
-            
-        case UI_CIN_RUNCINEMATIC:
-            return CIN_RunCinematic( args[1] );
-            
-        case UI_CIN_DRAWCINEMATIC:
-            CIN_DrawCinematic( args[1] );
-            return 0;
-            
-        case UI_CIN_SETEXTENTS:
-            CIN_SetExtents( args[1], args[2], args[3], args[4], args[5] );
-            return 0;
-            
-        case UI_R_REMAP_SHADER:
-            re.RemapShader( ( const char* )VMA( 1 ), ( const char* )VMA( 2 ), ( const char* )VMA( 3 ) );
-            return 0;
-            
-        case UI_VERIFY_CDKEY:
-            return CL_CDKeyValidate( ( const char* )VMA( 1 ), ( const char* )VMA( 2 ) );
-            
-            // NERVE - SMF
-        case UI_CL_GETLIMBOSTRING:
-            return CL_GetLimboString( args[1], ( char* )VMA( 2 ) );
-            // -NERVE - SMF
-            
-        default:
-            Com_Error( ERR_DROP, "Bad UI system trap: %i", args[0] );
-            
-    }
-    
-    return 0;
-}
-
-/*
-====================
 CL_ShutdownUI
 ====================
 */
@@ -1309,13 +905,7 @@ void CL_ShutdownUI( void )
 {
     cls.keyCatchers &= ~KEYCATCH_UI;
     cls.uiStarted = false;
-    if( !uivm )
-    {
-        return;
-    }
-    VM_Call( uivm, UI_SHUTDOWN );
-    VM_Free( uivm );
-    uivm = NULL;
+    uiManager->Shutdown();
 }
 
 /*
@@ -1326,51 +916,13 @@ CL_InitUI
 
 void CL_InitUI( void )
 {
-    int v;
-    vmInterpret_t interpret;
-    
-    // load the dll or bytecode
-    if( cl_connectedToPureServer != 0 )
-    {
-        // if sv_pure is set we only allow qvms to be loaded
-        interpret = VMI_COMPILED;
-    }
-    else
-    {
-        interpret = VMI_NATIVE;
-    }
-    
-    uivm = VM_Create( "ui", CL_UISystemCalls, VMI_NATIVE );
-    
-    if( !uivm )
-    {
-        Com_Error( ERR_FATAL, "VM_Create on UI failed" );
-    }
-    
-    // sanity check
-    v = VM_Call( uivm, UI_GETAPIVERSION );
-    if( v != UI_API_VERSION )
-    {
-        Com_Error( ERR_FATAL, "User Interface is version %d, expected %d", v, UI_API_VERSION );
-        cls.uiStarted = false;
-    }
-    
-    // init for this gamestate
-//	VM_Call( uivm, UI_INIT );
-    VM_Call( uivm, UI_INIT, ( cls.state >= CA_AUTHORIZING && cls.state < CA_ACTIVE ) );
+    uiManager->Init( cls.state >= CA_AUTHORIZING && cls.state < CA_ACTIVE );
 }
 
 
 bool UI_usesUniqueCDKey()
 {
-    if( uivm )
-    {
-        return ( VM_Call( uivm, UI_HASUNIQUECDKEY ) == true );
-    }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 /*
@@ -1387,5 +939,508 @@ bool UI_GameCommand( void )
         return false;
     }
     
-    return VM_Call( uivm, UI_CONSOLE_COMMAND, cls.realtime );
+    return uiManager->ConsoleCommand( cls.realtime );
 }
+
+//
+// REMOVE THESE
+//
+
+#define PASSFLOAT(x) x
+
+void trap_Print( const char* string )
+{
+    Com_Printf( string );
+}
+
+void trap_Error( const char* string )
+{
+    Com_Error( ERR_FATAL, string );
+}
+
+int trap_Milliseconds( void )
+{
+    return Sys_Milliseconds();
+}
+
+void trap_Cvar_Register( vmCvar_t* cvar, const char* var_name, const char* value, int flags )
+{
+    Cvar_Register( cvar, var_name, value, flags );
+}
+
+void trap_Cvar_Update( vmCvar_t* cvar )
+{
+    Cvar_Update( cvar );
+}
+
+void trap_Cvar_Set( const char* var_name, const char* value )
+{
+    Cvar_Set( var_name, value );
+}
+
+float trap_Cvar_VariableValue( const char* var_name )
+{
+    return Cvar_VariableValue( var_name );;
+}
+
+void trap_Cvar_VariableStringBuffer( const char* var_name, char* buffer, int bufsize )
+{
+    Cvar_VariableStringBuffer( var_name, buffer, bufsize );
+}
+
+void trap_Cvar_SetValue( const char* var_name, float value )
+{
+    Cvar_SetValue( var_name, PASSFLOAT( value ) );
+}
+
+void trap_Cvar_Reset( const char* name )
+{
+    Cvar_Reset( name );
+}
+
+void trap_Cvar_Create( const char* var_name, const char* var_value, int flags )
+{
+    Cvar_Get( var_name, var_value, flags );
+}
+
+void trap_Cvar_InfoStringBuffer( int bit, char* buffer, int bufsize )
+{
+    Cvar_InfoStringBuffer( bit, buffer, bufsize );
+}
+
+int trap_Argc( void )
+{
+    return Cmd_Argc();
+}
+
+void trap_Argv( int n, char* buffer, int bufferLength )
+{
+    Cmd_ArgvBuffer( n, buffer, bufferLength );
+}
+
+void trap_Cmd_ExecuteText( int exec_when, const char* text )
+{
+    Cbuf_ExecuteText( exec_when, text );
+}
+
+int trap_FS_FOpenFile( const char* qpath, fileHandle_t* f, fsMode_t mode )
+{
+    return FS_FOpenFileByMode( qpath, f, mode );
+}
+
+void trap_FS_Read( void* buffer, int len, fileHandle_t f )
+{
+    FS_Read( buffer, len, f );
+}
+
+//----(SA)	added
+void trap_FS_Seek( fileHandle_t f, long offset, int origin )
+{
+    FS_Seek( f, offset, origin );
+}
+//----(SA)	end
+
+void trap_FS_Write( const void* buffer, int len, fileHandle_t f )
+{
+    FS_Write( buffer, len, f );
+}
+
+void trap_FS_FCloseFile( fileHandle_t f )
+{
+    FS_FCloseFile( f );
+}
+
+int trap_FS_GetFileList( const char* path, const char* extension, char* listbuf, int bufsize )
+{
+    return FS_GetFileList( path, extension, listbuf, bufsize );
+}
+
+int trap_FS_Delete( const char* filename )
+{
+    return FS_Delete( ( char* )filename );
+}
+
+qhandle_t trap_R_RegisterModel( const char* name )
+{
+    return renderSystem->RegisterModel( name );
+}
+
+qhandle_t trap_R_RegisterSkin( const char* name )
+{
+    return renderSystem->RegisterSkin( name );
+}
+
+void trap_R_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
+{
+    renderSystem->RegisterFont( fontName, pointSize, font );
+}
+
+qhandle_t trap_R_RegisterShaderNoMip( const char* name )
+{
+    return renderSystem->RegisterShaderNoMip( name );
+}
+
+void trap_R_ClearScene( void )
+{
+    renderSystem->ClearScene();
+}
+
+void trap_R_AddRefEntityToScene( const refEntity_t* re )
+{
+    renderSystem->AddRefEntityToScene( re );
+}
+
+void trap_R_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts )
+{
+    renderSystem->AddPolyToScene( hShader, numVerts, verts );
+}
+
+void trap_R_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw )
+{
+    renderSystem->AddLightToScene( org, PASSFLOAT( intensity ), PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ), overdraw );
+}
+
+void trap_R_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags )
+{
+    renderSystem->AddCoronaToScene( org, PASSFLOAT( r ), PASSFLOAT( g ), PASSFLOAT( b ), PASSFLOAT( scale ), id, flags );
+}
+
+void trap_R_RenderScene( const refdef_t* fd )
+{
+    renderSystem->RenderScene( fd );
+}
+
+void trap_R_SetColor( const float* rgba )
+{
+    renderSystem->SetColor( rgba );
+}
+
+void trap_R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader )
+{
+    renderSystem->DrawStretchPic( PASSFLOAT( x ), PASSFLOAT( y ), PASSFLOAT( w ), PASSFLOAT( h ), PASSFLOAT( s1 ), PASSFLOAT( t1 ), PASSFLOAT( s2 ), PASSFLOAT( t2 ), hShader );
+}
+
+void    trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs )
+{
+    renderSystem->ModelBounds( model, mins, maxs );
+}
+
+void trap_UpdateScreen( void )
+{
+    SCR_UpdateScreen();
+}
+
+int trap_CM_LerpTag( orientation_t* tag, const refEntity_t* refent, const char* tagName, int startIndex )
+{
+    return renderSystem->LerpTag( tag, refent, tagName, 0 );         // NEFVE - SMF - fixed
+}
+
+void trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum )
+{
+    soundSystem->StartLocalSound( sfx, channelNum );
+}
+
+sfxHandle_t trap_S_RegisterSound( const char* sample )
+{
+    return soundSystem->RegisterSound( sample );
+}
+
+//----(SA)	added (already in cg)
+void    trap_S_FadeBackgroundTrack( float targetvol, int time, int num )   // yes, i know.  fadebackground coming in, fadestreaming going out.  will have to see where functionality leads...
+{
+    soundSystem->FadeStreamingSound( PASSFLOAT( targetvol ), time, num ); // 'num' is '0' if it's music, '1' if it's "all streaming sounds"
+}
+
+void    trap_S_FadeAllSound( float targetvol, int time )
+{
+    soundSystem->FadeAllSounds( PASSFLOAT( targetvol ), time );
+}
+//----(SA)	end
+
+
+void trap_Key_KeynumToStringBuf( int keynum, char* buf, int buflen )
+{
+    Key_KeynumToStringBuf( keynum, buf, buflen );
+}
+
+void trap_Key_GetBindingBuf( int keynum, char* buf, int buflen )
+{
+    Key_GetBindingBuf( keynum, buf, buflen );
+}
+
+void trap_Key_SetBinding( int keynum, const char* binding )
+{
+    Key_SetBinding( keynum, binding );
+}
+
+bool trap_Key_IsDown( int keynum )
+{
+    return Key_IsDown( keynum );
+}
+
+bool trap_Key_GetOverstrikeMode( void )
+{
+    return Key_GetOverstrikeMode();
+}
+
+void trap_Key_SetOverstrikeMode( bool state )
+{
+    Key_SetOverstrikeMode( state );
+}
+
+void trap_Key_ClearStates( void )
+{
+    Key_ClearStates();
+}
+
+int trap_Key_GetCatcher( void )
+{
+    return Key_GetCatcher();
+}
+
+void trap_Key_SetCatcher( int catcher )
+{
+    Key_SetCatcher( catcher );
+}
+
+void trap_GetClipboardData( char* buf, int bufsize )
+{
+    GetClipboardData( buf, bufsize );
+}
+
+void trap_GetClientState( uiClientState_t* state )
+{
+    GetClientState( state );
+}
+
+void trap_GetGlconfig( glconfig_t* glconfig )
+{
+    CL_GetGlconfig( glconfig );
+}
+
+int trap_GetConfigString( int index, char* buff, int buffsize )
+{
+    return GetConfigString( index, buff, buffsize );
+}
+
+int trap_LAN_GetLocalServerCount( void )
+{
+    //	return LAN_GetLocalServerCount( );
+    return 0;
+}
+
+void trap_LAN_GetLocalServerAddressString( int n, char* buf, int buflen )
+{
+    //	LAN_GetLocalServerAddressString( n, buf, buflen );
+}
+
+int trap_LAN_GetGlobalServerCount( void )
+{
+    //	return LAN_GetGlobalServerCount();
+    return 0;
+}
+
+void trap_LAN_GetGlobalServerAddressString( int n, char* buf, int buflen )
+{
+    //	LAN_GetGlobalServerAddressString( n, buf, buflen );
+}
+
+int trap_LAN_GetPingQueueCount( void )
+{
+    return LAN_GetPingQueueCount();
+}
+
+void trap_LAN_ClearPing( int n )
+{
+    LAN_ClearPing( n );
+}
+
+void trap_LAN_GetPing( int n, char* buf, int buflen, int* pingtime )
+{
+    LAN_GetPing( n, buf, buflen, pingtime );
+}
+
+void trap_LAN_GetPingInfo( int n, char* buf, int buflen )
+{
+    LAN_GetPingInfo( n, buf, buflen );
+}
+
+// NERVE - SMF
+bool trap_LAN_UpdateVisiblePings( int source )
+{
+    return LAN_UpdateVisiblePings( source );
+}
+
+int trap_LAN_GetServerCount( int source )
+{
+    return LAN_GetServerCount( source );
+}
+
+int trap_LAN_CompareServers( int source, int sortKey, int sortDir, int s1, int s2 )
+{
+    return LAN_CompareServers( source, sortKey, sortDir, s1, s2 );
+}
+
+void trap_LAN_GetServerAddressString( int source, int n, char* buf, int buflen )
+{
+    LAN_GetServerAddressString( source, n, buf, buflen );
+}
+
+void trap_LAN_GetServerInfo( int source, int n, char* buf, int buflen )
+{
+    LAN_GetServerInfo( source, n, buf, buflen );
+}
+
+int trap_LAN_AddServer( int source, const char* name, const char* addr )
+{
+    return LAN_AddServer( source, name, addr );
+}
+
+void trap_LAN_RemoveServer( int source, const char* addr )
+{
+    LAN_RemoveServer( source, addr );
+}
+
+int trap_LAN_GetServerPing( int source, int n )
+{
+    return LAN_GetServerPing( source, n );
+}
+
+int trap_LAN_ServerIsVisible( int source, int n )
+{
+    return LAN_ServerIsVisible( source, n );
+}
+
+int trap_LAN_ServerStatus( const char* serverAddress, char* serverStatus, int maxLen )
+{
+    return LAN_GetServerStatus( ( char* )serverAddress, serverStatus, maxLen );
+}
+
+void trap_LAN_SaveCachedServers()
+{
+    LAN_SaveServersToCache();
+}
+
+void trap_LAN_LoadCachedServers()
+{
+    LAN_LoadCachedServers();
+}
+
+void trap_LAN_MarkServerVisible( int source, int n, bool visible )
+{
+    LAN_MarkServerVisible( source, n, visible );
+}
+
+void trap_LAN_ResetPings( int n )
+{
+    LAN_ResetPings( n );
+}
+// -NERVE - SMF
+
+int trap_MemoryRemaining( void )
+{
+    return Hunk_MemoryRemaining();
+}
+
+
+void trap_GetCDKey( char* buf, int buflen )
+{
+    CLUI_GetCDKey( buf, buflen );
+}
+
+void trap_SetCDKey( char* buf )
+{
+    CLUI_SetCDKey( buf );
+}
+
+int trap_PC_AddGlobalDefine( char* define )
+{
+    return botlib_export->PC_AddGlobalDefine( define );
+}
+
+int trap_PC_LoadSource( const char* filename )
+{
+    return botlib_export->PC_LoadSourceHandle( filename );
+}
+
+int trap_PC_FreeSource( int handle )
+{
+    return botlib_export->PC_FreeSourceHandle( handle );
+}
+
+int trap_PC_ReadToken( int handle, pc_token_t* pc_token )
+{
+    return botlib_export->PC_ReadTokenHandle( handle, pc_token );
+}
+
+int trap_PC_SourceFileAndLine( int handle, char* filename, int* line )
+{
+    return botlib_export->PC_SourceFileAndLine( handle, filename, line );
+}
+
+void trap_S_StopBackgroundTrack( void )
+{
+    soundSystem->StopBackgroundTrack();
+}
+
+void trap_S_StartBackgroundTrack( const char* intro, const char* loop, int fadeupTime )
+{
+    soundSystem->StartBackgroundTrack( intro, loop, fadeupTime );
+}
+
+int trap_RealTime( qtime_t* qtime )
+{
+    return Com_RealTime( qtime );
+}
+
+// this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to false (do not alter gamestate)
+int trap_CIN_PlayCinematic( const char* arg0, int xpos, int ypos, int width, int height, int bits )
+{
+    return CIN_PlayCinematic( arg0, xpos, ypos, width, height, bits );
+}
+
+// stops playing the cinematic and ends it.  should always return FMV_EOF
+// cinematics must be stopped in reverse order of when they are started
+e_status trap_CIN_StopCinematic( int handle )
+{
+    return ( e_status )CIN_StopCinematic( handle );
+}
+
+
+// will run a frame of the cinematic but will not draw it.  Will return FMV_EOF if the end of the cinematic has been reached.
+e_status trap_CIN_RunCinematic( int handle )
+{
+    return ( e_status )CIN_RunCinematic( handle );
+}
+
+
+// draws the current frame
+void trap_CIN_DrawCinematic( int handle )
+{
+    CIN_DrawCinematic( handle );
+}
+
+
+// allows you to resize the animation dynamically
+void trap_CIN_SetExtents( int handle, int x, int y, int w, int h )
+{
+    CIN_SetExtents( handle, x, y, w, h );
+}
+
+
+void    trap_R_RemapShader( const char* oldShader, const char* newShader, const char* timeOffset )
+{
+    renderSystem->RemapShader( oldShader, newShader, timeOffset );
+}
+
+bool trap_VerifyCDKey( const char* key, const char* chksum )
+{
+    return CL_CDKeyValidate( key, chksum );
+}
+
+// NERVE - SMF
+bool trap_GetLimboString( int index, char* buf )
+{
+    return CL_GetLimboString( index, buf );
+}
+// -NERVE - SMF

@@ -67,13 +67,13 @@ owGpuWorker::Init
 */
 void owGpuWorkerLocal::Init( void )
 {
-    ri.Printf( PRINT_ALL, "----------- R_GPUWorker_Init ----------\n" );
-    ri.Printf( PRINT_ALL, "Init OpenCL...\n" );
-    ri.Printf( PRINT_ALL, "...Getting Device Platform ID.\n" );
+    Com_Printf( "----------- R_GPUWorker_Init ----------\n" );
+    Com_Printf( "Init OpenCL...\n" );
+    Com_Printf( "...Getting Device Platform ID.\n" );
     ID_GPUWORKER_CALLAPI( clGetPlatformIDs( 1, &platform, NULL ) );
     
     // Get all the device ids
-    ri.Printf( PRINT_ALL, "...Getting Device ID.\n" );
+    Com_Printf( "...Getting Device ID.\n" );
     ID_GPUWORKER_CALLAPI( clGetDeviceIDs( platform, CL_DEVICE_TYPE_GPU, 1, &device, NULL ) );
     
     cl_context_properties properties[] =
@@ -97,14 +97,14 @@ void owGpuWorkerLocal::Init( void )
     };
     
     // Create the OpenCL device context
-    ri.Printf( PRINT_ALL, "...Creating Device Context.\n" );
+    Com_Printf( "...Creating Device Context.\n" );
     context = clCreateContext( properties, 1, &device, NULL, NULL, &clError );
     
     // Create the opencl command queue.
-    ri.Printf( PRINT_ALL, "...Creating Device Command Queue.\n" );
+    Com_Printf( "...Creating Device Command Queue.\n" );
     queue = clCreateCommandQueue( context, device, 0, &clError );
     
-    ri.Printf( PRINT_ALL, "---------------------------------------\n" );
+    Com_Printf( "---------------------------------------\n" );
 }
 
 /*
@@ -132,9 +132,9 @@ owGpuWorkerLocal::Shutdown
 */
 void owGpuWorkerLocal::Shutdown( void )
 {
-    ri.Printf( PRINT_ALL, "----------- R_GPUWorker_Shutdown ----------\n" );
+    Com_Printf( "----------- R_GPUWorker_Shutdown ----------\n" );
     
-    ri.Printf( PRINT_ALL, "Clearing render program workers...\n" );
+    Com_Printf( "Clearing render program workers...\n" );
     for( int i = 0; i < programPool.Num(); i++ )
     {
         programPool[i]->Free();
@@ -143,9 +143,9 @@ void owGpuWorkerLocal::Shutdown( void )
     
     programPool.Clear();
     
-    ri.Printf( PRINT_ALL, "Releasing command queue\n" );
+    Com_Printf( "Releasing command queue\n" );
     clReleaseCommandQueue( queue );
     
-    ri.Printf( PRINT_ALL, "Releasing OpenCL context\n" );
+    Com_Printf( "Releasing OpenCL context\n" );
     clReleaseContext( context );
 }

@@ -56,16 +56,16 @@ clipHandle_t SV_ClipHandleForEntity( const sharedEntity_t* ent )
     if( ent->r.bmodel )
     {
         // explicit hulls in the BSP model
-        return CM_InlineModel( ent->s.modelindex );
+        return collisionModelManager->InlineModel( ent->s.modelindex );
     }
     if( ent->r.svFlags & SVF_CAPSULE )
     {
         // create a temp capsule from bounding box sizes
-        return CM_TempBoxModel( ent->r.mins, ent->r.maxs, true );
+        return collisionModelManager->TempBoxModel( ent->r.mins, ent->r.maxs, true );
     }
     
     // create a temp tree from bounding box sizes
-    return CM_TempBoxModel( ent->r.mins, ent->r.maxs, false );
+    return collisionModelManager->TempBoxModel( ent->r.mins, ent->r.maxs, false );
 }
 
 
@@ -184,8 +184,8 @@ void SV_ClearWorld( void )
     sv_numworldSectors = 0;
     
     // get world map bounds
-    h = CM_InlineModel( 0 );
-    CM_ModelBounds( h, mins, maxs );
+    h = collisionModelManager->InlineModel( 0 );
+    collisionModelManager->ModelBounds( h, mins, maxs );
     SV_CreateworldSector( 0, mins, maxs );
 }
 
@@ -353,9 +353,9 @@ void SV_LinkEntity( sharedEntity_t* gEnt )
     ent->areanum2 = -1;
     
     //get all leafs, including solids
-    num_leafs = CM_BoxLeafnums( gEnt->r.absmin, gEnt->r.absmax,
-                                leafs, MAX_TOTAL_ENT_LEAFS, &lastLeaf );
-                                
+    num_leafs = collisionModelManager->BoxLeafnums( gEnt->r.absmin, gEnt->r.absmax,
+                leafs, MAX_TOTAL_ENT_LEAFS, &lastLeaf );
+                
     // if none of the leafs were inside the map, the
     // entity is outside the world and can be considered unlinked
     if( !num_leafs )
@@ -366,7 +366,7 @@ void SV_LinkEntity( sharedEntity_t* gEnt )
     // set areas, even from clusters that don't fit in the entity array
     for( i = 0 ; i < num_leafs ; i++ )
     {
-        area = CM_LeafArea( leafs[i] );
+        area = collisionModelManager->LeafArea( leafs[i] );
         if( area != -1 )
         {
             // doors may legally straggle two areas,
@@ -392,7 +392,7 @@ void SV_LinkEntity( sharedEntity_t* gEnt )
     ent->numClusters = 0;
     for( i = 0 ; i < num_leafs ; i++ )
     {
-        cluster = CM_LeafCluster( leafs[i] );
+        cluster = collisionModelManager->LeafCluster( leafs[i] );
         if( cluster != -1 )
         {
             ent->clusternums[ent->numClusters++] = cluster;
@@ -406,7 +406,7 @@ void SV_LinkEntity( sharedEntity_t* gEnt )
     // store off a last cluster if we need to
     if( i != num_leafs )
     {
-        ent->lastCluster = CM_LeafCluster( lastLeaf );
+        ent->lastCluster = collisionModelManager->LeafCluster( lastLeaf );
     }
     
     gEnt->r.linkcount++;
@@ -592,13 +592,13 @@ void SV_ClipToEntity( trace_t* trace, const vec3_t start, const vec3_t mins, con
     
 #ifdef __MACOS__
     // compiler bug with const
-    CM_TransformedBoxTrace( trace, ( float* )start, ( float* )end,
-                            ( float* )mins, ( float* )maxs, clipHandle,  contentmask,
-                            origin, angles, capsule );
+    collisionModelManager->TransformedBoxTrace( trace, ( float* )start, ( float* )end,
+            ( float* )mins, ( float* )maxs, clipHandle,  contentmask,
+            origin, angles, capsule );
 #else
-    CM_TransformedBoxTrace( trace, start, end,
-                            mins, maxs, clipHandle, contentmask,
-                            origin, angles, capsule );
+    collisionModelManager->TransformedBoxTrace( trace, start, end,
+            mins, maxs, clipHandle, contentmask,
+            origin, angles, capsule );
 #endif
     if( trace->fraction < 1 )
     {
@@ -607,7 +607,7 @@ void SV_ClipToEntity( trace_t* trace, const vec3_t start, const vec3_t mins, con
 }
 
 
-// FIXME: Copied from cm_local.h
+// FIXME: Copied from collisionModelManager->local.h
 #define BOX_MODEL_HANDLE 511
 
 /*
@@ -684,7 +684,7 @@ void SV_ClipMoveToEntities( moveclip_t* clip )
         // DHM - Nerve :: If clipping against BBOX, set to correct contents
         if( clipHandle == BOX_MODEL_HANDLE )
         {
-            CM_SetTempBoxModelContents( touch->r.contents );
+            collisionModelManager->SetTempBoxModelContents( touch->r.contents );
         }
         
         origin = touch->r.currentOrigin;
@@ -698,13 +698,13 @@ void SV_ClipMoveToEntities( moveclip_t* clip )
         
 #ifdef __MACOS__
         // compiler bug with const
-        CM_TransformedBoxTrace( &trace, ( float* )clip->start, ( float* )clip->end,
-                                ( float* )clip->mins, ( float* )clip->maxs, clipHandle,  clip->contentmask,
-                                origin, angles, clip->capsule );
+        collisionModelManager->TransformedBoxTrace( &trace, ( float* )clip->start, ( float* )clip->end,
+                ( float* )clip->mins, ( float* )clip->maxs, clipHandle,  clip->contentmask,
+                origin, angles, clip->capsule );
 #else
-        CM_TransformedBoxTrace( &trace, clip->start, clip->end,
-                                clip->mins, clip->maxs, clipHandle,  clip->contentmask,
-                                origin, angles, clip->capsule );
+        collisionModelManager->TransformedBoxTrace( &trace, clip->start, clip->end,
+                clip->mins, clip->maxs, clipHandle,  clip->contentmask,
+                origin, angles, clip->capsule );
 #endif
         if( trace.allsolid )
         {
@@ -726,13 +726,20 @@ void SV_ClipMoveToEntities( moveclip_t* clip )
             
             trace.entityNum = touch->s.number;
             clip->trace = trace;
-            clip->trace.startsolid |= oldStart;
+            if( clip->trace.startsolid == false )
+            {
+                clip->trace.startsolid = true;
+            }
+            else
+            {
+                clip->trace.startsolid = false;
+            }
         }
         
         // DHM - Nerve :: Reset contents to default
         if( clipHandle == BOX_MODEL_HANDLE )
         {
-            CM_SetTempBoxModelContents( CONTENTS_BODY );
+            collisionModelManager->SetTempBoxModelContents( CONTENTS_BODY );
         }
     }
 }
@@ -763,7 +770,7 @@ void SV_Trace( trace_t* results, const vec3_t start, const vec3_t mins, const ve
     memset( &clip, 0, sizeof( moveclip_t ) );
     
     // clip to world
-    CM_BoxTrace( &clip.trace, start, end, mins, maxs, 0, contentmask, capsule );
+    collisionModelManager->BoxTrace( &clip.trace, start, end, mins, maxs, 0, contentmask, capsule );
     clip.trace.entityNum = clip.trace.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
     if( clip.trace.fraction == 0 )
     {
@@ -821,7 +828,7 @@ int SV_PointContents( const vec3_t p, int passEntityNum )
     float*       angles;
     
     // get base contents from world
-    contents = CM_PointContents( p, 0 );
+    contents = collisionModelManager->PointContents( p, 0 );
     
     // or in contents from all the other entities
     num = SV_AreaEntities( p, p, touch, MAX_GENTITIES );
@@ -843,7 +850,7 @@ int SV_PointContents( const vec3_t p, int passEntityNum )
         
         // RF, ignore this test if the origin is at the world origin
         //if (!VectorCompare( hit->s.origin, vec3_origin )) {
-        c2 = CM_TransformedPointContents( p, clipHandle, hit->s.origin, hit->s.angles );
+        c2 = collisionModelManager->TransformedPointContents( p, clipHandle, hit->s.origin, hit->s.angles );
         
         contents |= c2;
         //}

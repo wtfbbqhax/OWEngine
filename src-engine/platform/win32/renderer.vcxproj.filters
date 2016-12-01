@@ -40,8 +40,8 @@
     <Filter Include="libraries\glew\Source Files">
       <UniqueIdentifier>{aa24162e-d41a-4fc4-b83e-063df3add80d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GpuWorker">
-      <UniqueIdentifier>{da759807-e104-43a5-9305-fff75e9e7cf5}</UniqueIdentifier>
+    <Filter Include="GPUWorker">
+      <UniqueIdentifier>{7e121af3-8f6b-41a3-bdf0-34d3359a925f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -267,18 +267,6 @@
     <ClCompile Include="win_gamma.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker.cpp">
-      <Filter>GpuWorker</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Error.cpp">
-      <Filter>GpuWorker</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Program.cpp">
-      <Filter>GpuWorker</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\renderer\r_renderProgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\renderer\r_animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -289,9 +277,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\renderer\r_cmds.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\renderer\r_cmesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\renderer\r_curve.cpp">
@@ -352,6 +337,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\renderer\r_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\GPUWorker\GpuWorker.cpp">
+      <Filter>GPUWorker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\GPUWorker\GpuWorker_Error.cpp">
+      <Filter>GPUWorker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\GPUWorker\GpuWorker_Program.cpp">
+      <Filter>GPUWorker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\r_cmesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\renderer\r_renderProgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -584,15 +584,6 @@
     <ClInclude Include="..\..\..\libraries\cl\cl\cl_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker_Program.h">
-      <Filter>GpuWorker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker.h">
-      <Filter>GpuWorker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker_Local.h">
-      <Filter>GpuWorker</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\renderer\r_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -605,10 +596,14 @@
     <ClInclude Include="..\..\cm\cm_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\renderer\ref_trin.def">
-      <Filter>Source Files</Filter>
-    </None>
+    <ClInclude Include="..\..\renderer\GPUWorker\GpuWorker.h">
+      <Filter>GPUWorker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\GPUWorker\GpuWorker_Local.h">
+      <Filter>GPUWorker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\renderer\GPUWorker\GpuWorker_Program.h">
+      <Filter>GPUWorker</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -490,7 +490,7 @@ void G_CheckBotSpawn( void )
         {
             continue;
         }
-        ClientBegin( botSpawnQueue[n].clientNum );
+        gameLocal.ClientBegin( botSpawnQueue[n].clientNum );
         botSpawnQueue[n].spawnTime = 0;
         
         if( g_gametype.integer == GT_SINGLE_PLAYER )
@@ -522,7 +522,7 @@ static void AddBotToSpawnQueue( int clientNum, int delay )
     }
     
     G_Printf( S_COLOR_YELLOW "Unable to delay spawn\n" );
-    ClientBegin( clientNum );
+    gameLocal.ClientBegin( clientNum );
 }
 
 
@@ -694,14 +694,14 @@ static void G_AddBot( const char* name, int skill, const char* team, int delay )
     trap_SetUserinfo( clientNum, userinfo );
     
     // have it connect to the game as a normal client
-    if( ClientConnect( clientNum, true, true ) )
+    if( gameLocal.ClientConnect( clientNum, true, true ) )
     {
         return;
     }
     
     if( delay == 0 )
     {
-        ClientBegin( clientNum );
+        gameLocal.ClientBegin( clientNum );
         return;
     }
     

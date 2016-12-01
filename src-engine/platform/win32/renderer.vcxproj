@@ -16,13 +16,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
@@ -76,9 +76,8 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\libraries\cl\lib\Win32\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -109,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;..\motioncontrollers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libraries\glew-2.0.0\include\;..\motioncontrollers;..\..\..\libraries\cl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -118,9 +117,8 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\libraries\cl\lib\Win32\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -135,9 +133,6 @@
       <AdditionalLibraryDirectories>..\..\..\libraries\cl\lib\Win32\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="..\..\renderer\ref_trin.def" />
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\libraries\ft2\ahangles.c" />
     <ClCompile Include="..\..\..\libraries\ft2\ahglobal.c" />
@@ -211,18 +206,18 @@
     <ClCompile Include="..\..\..\libraries\jpeg-6\jutils.c" />
     <ClCompile Include="..\..\qcommon\q_math.cpp" />
     <ClCompile Include="..\..\qcommon\q_shared.cpp" />
-    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker.cpp" />
-    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Error.cpp" />
-    <ClCompile Include="..\..\renderer\gpuworker\GpuWorker_Program.cpp" />
-    <ClCompile Include="..\..\renderer\r_renderProgs.cpp" />
+    <ClCompile Include="..\..\renderer\GPUWorker\GpuWorker.cpp" />
+    <ClCompile Include="..\..\renderer\GPUWorker\GpuWorker_Error.cpp" />
+    <ClCompile Include="..\..\renderer\GPUWorker\GpuWorker_Program.cpp" />
+    <ClCompile Include="..\..\renderer\r_cmesh.cpp" />
     <ClCompile Include="..\..\renderer\r_model_md4mesh.cpp" />
+    <ClCompile Include="..\..\renderer\r_renderProgs.cpp" />
     <ClCompile Include="win_gamma.cpp" />
     <ClCompile Include="win_glimp.cpp" />
     <ClCompile Include="..\..\renderer\r_animation.cpp" />
     <ClCompile Include="..\..\renderer\r_backend.cpp" />
     <ClCompile Include="..\..\renderer\r_bsp.cpp" />
     <ClCompile Include="..\..\renderer\r_cmds.cpp" />
-    <ClCompile Include="..\..\renderer\r_cmesh.cpp" />
     <ClCompile Include="..\..\renderer\r_curve.cpp" />
     <ClCompile Include="..\..\renderer\r_flares.cpp" />
     <ClCompile Include="..\..\renderer\r_font.cpp" />
@@ -247,9 +242,9 @@
     <ClInclude Include="..\..\..\libraries\cl\cl\cl_utils.h" />
     <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\glew.h" />
     <ClInclude Include="..\..\..\libraries\glew-2.0.0\include\GL\wglew.h" />
-    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker.h" />
-    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker_Local.h" />
-    <ClInclude Include="..\..\renderer\gpuworker\GpuWorker_Program.h" />
+    <ClInclude Include="..\..\renderer\GPUWorker\GpuWorker.h" />
+    <ClInclude Include="..\..\renderer\GPUWorker\GpuWorker_Local.h" />
+    <ClInclude Include="..\..\renderer\GPUWorker\GpuWorker_Program.h" />
     <ClInclude Include="..\..\renderer\r_types.h" />
     <ClInclude Include="..\..\..\libraries\ft2\ahangles.h" />
     <ClInclude Include="..\..\..\libraries\ft2\ahglobal.h" />
@@ -329,6 +324,9 @@
     <ClInclude Include="..\..\renderer\r_public.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="motioncontrollers.vcxproj">
+      <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
+    </ProjectReference>
     <ProjectReference Include="Splines.vcxproj">
       <Project>{aa96579b-0f16-4614-8453-0b03c8b39a46}</Project>
     </ProjectReference>

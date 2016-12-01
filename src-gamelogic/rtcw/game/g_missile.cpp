@@ -495,6 +495,7 @@ G_ExplodeMissile
 Explode a missile without an impact
 ================
 */
+#undef small
 void G_ExplodeMissile( gentity_t* ent )
 {
     vec3_t dir;

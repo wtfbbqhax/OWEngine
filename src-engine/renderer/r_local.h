@@ -57,6 +57,20 @@ static OculusVR_HMDInfo HMD;
 static int OculusVRDetected;
 #endif
 
+// these are just here temp while i port everything to c++.
+void CL_PlayCinematic_f( void );
+void SCR_DrawCinematic( void );
+void SCR_RunCinematic( void );
+void SCR_StopCinematic( void );
+int CIN_PlayCinematic( const char* arg0, int xpos, int ypos, int width, int height, int bits );
+e_status CIN_StopCinematic( int handle );
+e_status CIN_RunCinematic( int handle );
+void CIN_DrawCinematic( int handle );
+void CIN_SetExtents( int handle, int x, int y, int w, int h );
+void CIN_SetLooping( int handle, bool loop );
+void CIN_UploadCinematic( int handle );
+void CIN_CloseAllVideos( void );
+
 #define GL_INDEX_TYPE       GL_UNSIGNED_SHORT
 typedef unsigned short glIndex_t;
 
@@ -905,13 +919,9 @@ typedef struct model_s
 
 void        R_ModelInit( void );
 model_t*     R_GetModelByHandle( qhandle_t hModel );
-int         R_LerpTag( orientation_t* tag, const refEntity_t* refent, const char* tagName, int startIndex );
-void        R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs );
-
 void        R_Modellist_f( void );
 
 //====================================================
-extern refimport_t ri;
 
 #define MAX_DRAWIMAGES          2048
 #define MAX_LIGHTMAPS           256
@@ -1423,23 +1433,6 @@ void    GL_Cull( int cullType );
 #define GLS_DEFAULT         GLS_DEPTHMASK_TRUE
 
 void R_SetupProjection();
-void    RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, bool dirty );
-void    RE_UploadCinematic( int w, int h, int cols, int rows, const byte* data, int client, bool dirty );
-
-void        RE_BeginFrame( stereoFrame_t stereoFrame );
-void        RE_BeginRegistration( glconfig_t* glconfig );
-void        RE_LoadWorldMap( const char* mapname );
-void        RE_SetWorldVisData( const byte* vis );
-qhandle_t   RE_RegisterModel( const char* name );
-qhandle_t   RE_RegisterSkin( const char* name );
-void        RE_Shutdown( bool destroyWindow );
-
-bool    R_GetEntityToken( char* buffer, int size );
-
-//----(SA)
-bool    RE_GetSkinModel( qhandle_t skinid, const char* type, char* name );
-qhandle_t   RE_GetShaderFromModel( qhandle_t modelid, int surfnum, int withlightmap );    //----(SA)
-//----(SA) end
 
 model_t*     R_AllocModel( void );
 
@@ -1469,7 +1462,6 @@ void    R_ScreenShotJPEG_f( void );
 void    R_InitFogTable( void );
 float   R_FogFactor( float s, float t );
 void    R_InitImages( void );
-void    R_DeleteTextures( void );
 int     R_SumOfUsedImages( void );
 void    R_InitSkins( void );
 skin_t*  R_GetSkinByHandle( qhandle_t hSkin );
@@ -1478,18 +1470,12 @@ skin_t*  R_GetSkinByHandle( qhandle_t hSkin );
 //
 // r_shader.c
 //
-qhandle_t        RE_RegisterShaderLightMap( const char* name, int lightmapIndex );
-qhandle_t        RE_RegisterShader( const char* name );
-qhandle_t        RE_RegisterShaderNoMip( const char* name );
-qhandle_t RE_RegisterShaderFromImage( const char* name, int lightmapIndex, image_t* image, bool mipRawImage );
-
 shader_t*    R_FindShader( const char* name, int lightmapIndex, bool mipRawImage );
 shader_t*    R_GetShaderByHandle( qhandle_t hShader );
 shader_t*    R_GetShaderByState( int index, int* cycleTime );
 shader_t* R_FindShaderByName( const char* name );
 void        R_InitShaders( void );
 void        R_ShaderList_f( void );
-void    R_RemapShader( const char* oldShader, const char* newShader, const char* timeOffset );
 
 /*
 ====================================================================
@@ -1665,38 +1651,12 @@ void R_FreeSurfaceGridMesh( srfGridMesh_t* grid );
 /*
 ============================================================
 
-MARKERS, POLYGON PROJECTION ON WORLD POLYGONS
-
-============================================================
-*/
-
-int R_MarkFragments( int orientation, const vec3_t* points, const vec3_t projection,
-                     int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer );
-
-
-/*
-============================================================
-
 SCENE GENERATION
 
 ============================================================
 */
 
 void R_ToggleSmpFrame( void );
-
-void RE_ClearScene( void );
-void RE_AddRefEntityToScene( const refEntity_t* ent );
-void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts );
-// Ridah
-void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys );
-// done.
-// Ridah
-void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
-// done.
-//----(SA)
-void RE_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags );
-//----(SA)
-void RE_RenderScene( const refdef_t* fd );
 
 /*
 =============================================================
@@ -1744,7 +1704,6 @@ void    RB_CalcSpecularAlpha( unsigned char* alphas );
 void    RB_CalcDiffuseColor( unsigned char* colors );
 
 void    RB_ZombieFXInit( void );
-void    RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitDir );
 
 
 /*
@@ -1886,19 +1845,11 @@ void R_SyncRenderThread( void );
 
 void R_AddDrawSurfCmd( drawSurf_t* drawSurfs, int numDrawSurfs );
 
-void RE_SetColor( const float* rgba );
-void RE_StretchPic( float x, float y, float w, float h,
-                    float s1, float t1, float s2, float t2, qhandle_t hShader );
-void RE_StretchPicGradient( float x, float y, float w, float h,
-                            float s1, float t1, float s2, float t2, qhandle_t hShader, const float* gradientColor, int gradientType );
-void RE_BeginFrame( stereoFrame_t stereoFrame );
-void RE_EndFrame( int* frontEndMsec, int* backEndMsec );
 void SaveJPG( char* filename, int quality, int image_width, int image_height, unsigned char* image_buffer );
 
 // font stuff
 void R_InitFreeType();
 void R_DoneFreeType();
-void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font );
 
 // Ridah, caching system
 // NOTE: to disable this for development, set "r_cache 0" in autoexec.cfg
@@ -1981,8 +1932,6 @@ extern bool fogIsOn;
 extern void         R_FogOff( void );
 extern void         R_FogOn( void );
 
-extern void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density );
-
 extern int skyboxportal;
 extern int drawskyboxportal;
 
@@ -2009,5 +1958,71 @@ typedef struct shaderProgram_s
 void RenderProgsInitialization( void );
 void RenderProgs_ShutdownPrograms( void );
 void RenderProgs_ShutdownShaders( void );
+
+//
+// idRenderSystemLocal
+//
+class idRenderSystemLocal : public idRenderSystem
+{
+public:
+    virtual void Shutdown( bool destroyWindow );
+    virtual void Init( glconfig_t* config );
+    virtual qhandle_t RegisterModel( const char* name );
+    virtual qhandle_t RegisterSkin( const char* name );
+    virtual qhandle_t RegisterShader( const char* name );
+    virtual qhandle_t RegisterShaderNoMip( const char* name );
+    virtual void LoadWorld( const char* name );
+    virtual bool GetSkinModel( qhandle_t skinid, const char* type, char* name );     //----(SA)	added
+    virtual qhandle_t GetShaderFromModel( qhandle_t modelid, int surfnum, int withlightmap );                 //----(SA)	added
+    virtual void SetWorldVisData( const byte* vis );
+    virtual qhandle_t RegisterShaderLightMap( const char* name, int lightmapIndex );
+    
+    virtual void ClearScene( void );
+    virtual void AddRefEntityToScene( const refEntity_t* re );
+    virtual int LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir );
+    virtual void AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts );
+    virtual void AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys );
+    virtual void AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw );
+    virtual void AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags );
+    virtual void SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density );
+    virtual void RenderScene( const refdef_t* fd );
+    
+    virtual void SetColor( const float* rgba );     // NULL = 1,1,1,1
+    virtual void DrawStretchPic( float x, float y, float w, float h,
+                                 float s1, float t1, float s2, float t2, qhandle_t hShader ); // 0 = white
+    virtual void DrawStretchPicGradient( float x, float y, float w, float h,
+                                         float s1, float t1, float s2, float t2, qhandle_t hShader, const float* gradientColor, int gradientType );
+                                         
+    // Draw images for cinematic rendering, pass as 32 bit rgba
+    virtual void DrawStretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, bool dirty );
+    virtual void UploadCinematic( int w, int h, int cols, int rows, const byte* data, int client, bool dirty );
+    
+    virtual void BeginFrame( stereoFrame_t stereoFrame );
+    
+    // if the pointers are not NULL, timing info will be returned
+    virtual void EndFrame( int* frontEndMsec, int* backEndMsec );
+    
+    
+    virtual int MarkFragments( int numPoints, const vec3_t* points, const vec3_t projection,
+                               int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer );
+                               
+    virtual int LerpTag( orientation_t* tag,  const refEntity_t* refent, const char* tagName, int startIndex );
+    virtual void ModelBounds( qhandle_t model, vec3_t mins, vec3_t maxs );
+    
+    virtual void RegisterFont( const char* fontName, int pointSize, fontInfo_t* font );
+    virtual void RemapShader( const char* oldShader, const char* newShader, const char* offsetTime );
+    
+    virtual void ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitDir );
+    
+    virtual bool GetEntityToken( char* buffer, int size );
+    
+    virtual qhandle_t LoadAnim( qhandle_t modelHandle, const char* name );
+    
+    virtual void DeleteTextures( void );
+    
+};
+
+extern idRenderSystemLocal renderSystemLocal;
+
 
 #endif //R_LOCAL_H (THIS MUST BE LAST!!)

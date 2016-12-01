@@ -988,10 +988,10 @@ int BotAILoadMap( int restart )
 
 /*
 ==================
-BotAIStartFrame
+idGameLocal::BotAIStartFrame
 ==================
 */
-int BotAIStartFrame( int time )
+int idGameLocal::BotAIStartFrame( int time )
 {
     int i;
     gentity_t*   ent;

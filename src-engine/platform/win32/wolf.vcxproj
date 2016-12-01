@@ -155,6 +155,12 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.cpp" />
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.cpp" />
     <ClCompile Include="..\..\client\cl_cgame.cpp" />
     <ClCompile Include="..\..\client\cl_cin.cpp" />
     <ClCompile Include="..\..\client\cl_console.cpp" />
@@ -186,9 +192,6 @@
     <ClCompile Include="..\..\qcommon\msg.cpp" />
     <ClCompile Include="..\..\qcommon\net_chan.cpp" />
     <ClCompile Include="..\..\qcommon\unzip.cpp" />
-    <ClCompile Include="..\..\qcommon\vm.cpp" />
-    <ClCompile Include="..\..\qcommon\vm_interpreted.cpp" />
-    <ClCompile Include="..\..\qcommon\vm_x86.cpp" />
     <ClCompile Include="..\..\server\sv_bot.cpp" />
     <ClCompile Include="..\..\server\sv_ccmds.cpp" />
     <ClCompile Include="..\..\server\sv_client.cpp" />
@@ -207,6 +210,7 @@
     <ClCompile Include="win_wndproc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_local.h" />
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\botai\botai.h" />
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_public.h" />
@@ -227,8 +231,6 @@
     <ClInclude Include="..\..\qcommon\qcommon.h" />
     <ClInclude Include="..\..\qcommon\qfiles.h" />
     <ClInclude Include="..\..\qcommon\unzip.h" />
-    <ClInclude Include="..\..\qcommon\vm_local.h" />
-    <ClInclude Include="..\..\renderer\r_local.h" />
     <ClInclude Include="..\..\renderer\r_public.h" />
     <ClInclude Include="..\..\server\server.h" />
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\keycodes.h" />
@@ -236,6 +238,15 @@
     <ClInclude Include="win_local.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="botlib.vcxproj">
+      <Project>{86691fdd-e0c6-4d71-9ffd-e0f30f19aa3e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="motioncontrollers.vcxproj">
+      <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="renderer.vcxproj">
+      <Project>{f45a4f73-0ea1-4eb2-9829-154964adec6a}</Project>
+    </ProjectReference>
     <ProjectReference Include="Splines.vcxproj">
       <Project>{aa96579b-0f16-4614-8453-0b03c8b39a46}</Project>
     </ProjectReference>

@@ -331,7 +331,7 @@ static void LogLight( trRefEntity_t* ent )
         max2 = ent->directedLight[2];
     }
     
-    ri.Printf( PRINT_ALL, "amb:%i  dir:%i\n", max1, max2 );
+    Com_Printf( "amb:%i  dir:%i\n", max1, max2 );
 }
 
 /*
@@ -471,10 +471,10 @@ void R_SetupEntityLighting( const trRefdef_t* refdef, trRefEntity_t* ent )
 
 /*
 =================
-R_LightForPoint
+idRenderSystemLocal::LightForPoint
 =================
 */
-int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir )
+int idRenderSystemLocal::LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir )
 {
     trRefEntity_t ent;
     

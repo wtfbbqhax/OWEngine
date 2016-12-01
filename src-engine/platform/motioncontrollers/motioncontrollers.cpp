@@ -48,9 +48,6 @@
 #include <sixense_utils/event_triggers.hpp>
 #include <sixense_utils/controller_manager/controller_manager.hpp>
 
-motcontr_export_t mcexport;
-motcontr_import_t mcimport;
-
 using namespace OVR;
 
 // Ptr<> AddRef'ed, AutoCleaned
@@ -322,56 +319,4 @@ int RazerHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trig
     Quatf orient( ref.rot_quat[0], ref.rot_quat[1], ref.rot_quat[2], ref.rot_quat[3] );
     orient.GetEulerAngles<Axis_Y, Axis_X, Axis_Z>( yaw, pitch, roll );
     return 1;
-}
-
-/*
-============
-GetMotContrLibAPI
-============
-*/
-motcontr_export_t* GetMotContrLibAPI( int apiVersion, motcontr_import_t* import )
-{
-    mcimport = *import;
-    
-    memset( &mcexport, 0, sizeof( mcexport ) );
-    
-    if( apiVersion != MOTLIB_API_VERSION )
-    {
-        Com_Printf( "Mismatched BOTLIB_API_VERSION: expected %i, got %i\n", MOTLIB_API_VERSION, apiVersion );
-        return NULL;
-    }
-    
-    mcexport.OculusVR_Init = OculusVR_Init;
-    mcexport.OculusVR_Exit = OculusVR_Exit;
-    mcexport.OculusVR_QueryHMD = OculusVR_QueryHMD;
-    mcexport.OculusVR_Peek = OculusVR_Peek;
-    mcexport.OculusVR_StereoConfig = OculusVR_StereoConfig;
-    mcexport.RazerHydra_Init = RazerHydra_Init;
-    mcexport.RazerHydra_Peek = RazerHydra_Peek;
-    
-    return &mcexport;
-}
-
-void Com_Printf( const char* msg, ... )
-{
-    va_list         argptr;
-    char            text[1024];
-    
-    va_start( argptr, msg );
-    vsnprintf( text, sizeof( text ), msg, argptr );
-    va_end( argptr );
-    
-    mcimport.Print( "%s", text );
-}
-
-void Com_Error( int level, const char* error, ... )
-{
-    va_list         argptr;
-    char            text[1024];
-    
-    va_start( argptr, error );
-    vsnprintf( text, sizeof( text ), error, argptr );
-    va_end( argptr );
-    
-    mcimport.Error( level, "%s", text );
 }

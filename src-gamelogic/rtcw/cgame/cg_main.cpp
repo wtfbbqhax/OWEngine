@@ -51,70 +51,14 @@ int OculusVRDetected = 0;
 
 int forceModelModificationCount = -1;
 
-void CG_Init( int serverMessageNum, int serverCommandSequence );
-void CG_Shutdown( void );
-
-
-/*
-================
-vmMain
-
-This is the only way control passes into the module.
-This must be the very first function compiled into the .q3vm file
-================
-*/
-#if defined( __MACOS__ ) // TTimo: guarding
-#pragma export on
-#endif
-intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6, intptr_t arg7, intptr_t arg8, intptr_t arg9, intptr_t arg10, intptr_t arg11 )
-{
-#if defined( __MACOS__ )
-#pragma export off
-#endif
-    switch( command )
-    {
-        case CG_GET_TAG:
-            return CG_GetTag( arg0, ( char* )arg1, ( orientation_t* )arg2 );
-        case CG_DRAW_ACTIVE_FRAME:
-            CG_DrawActiveFrame( arg0, ( stereoFrame_t )arg1, arg2 );
-            return 0;
-        case CG_EVENT_HANDLING:
-            CG_EventHandling( arg0 );
-            return 0;
-        case CG_INIT:
-            CG_Init( arg0, arg1 );
-            return 0;
-        case CG_SHUTDOWN:
-            CG_Shutdown();
-            return 0;
-        case CG_CONSOLE_COMMAND:
-            return CG_ConsoleCommand();
-        case CG_CROSSHAIR_PLAYER:
-            return CG_CrosshairPlayer();
-        case CG_LAST_ATTACKER:
-            return CG_LastAttacker();
-        case CG_KEY_EVENT:
-            CG_KeyEvent( arg0, arg1 );
-            return 0;
-        case CG_MOUSE_EVENT:
-            cgDC.cursorx = cgs.cursorX;
-            cgDC.cursory = cgs.cursorY;
-            CG_MouseEvent( arg0, arg1 );
-            return 0;
-        default:
-            CG_Error( "vmMain: unknown command %i", command );
-            break;
-    }
-    return -1;
-}
-
-
 cg_t cg;
 cgs_t cgs;
 centity_t cg_entities[MAX_GENTITIES];
 weaponInfo_t cg_weapons[MAX_WEAPONS];
 itemInfo_t cg_items[MAX_ITEMS];
 
+idCGameLocal cgameLocal;
+idCGame* cgame = &cgameLocal;
 
 vmCvar_t cg_railTrailTime;
 vmCvar_t cg_centertime;
@@ -563,8 +507,7 @@ void CG_UpdateCvars( void )
     */
 }
 
-
-int CG_CrosshairPlayer( void )
+int idCGameLocal::CrosshairPlayer( void )
 {
     if( cg.time > ( cg.crosshairClientTime + 1000 ) )
     {
@@ -573,7 +516,7 @@ int CG_CrosshairPlayer( void )
     return cg.crosshairClientNum;
 }
 
-int CG_LastAttacker( void )
+int idCGameLocal::LastAttacker( void )
 {
     if( !cg.attackerTime )
     {
@@ -2541,13 +2484,13 @@ void CG_AssetCache()
 
 /*
 =================
-CG_Init
+idCGameLocal::Init
 
 Called after every level change or subsystem restart
 Will perform callbacks to make the loading info screen update.
 =================
 */
-void CG_Init( int serverMessageNum, int serverCommandSequence )
+void idCGameLocal::Init( int serverMessageNum, int serverCommandSequence )
 {
     const char*  s;
 #if !defined( __ANDROID__ )
@@ -2662,7 +2605,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence )
     CG_ShaderStateChanged();
     
     // RF, clear all sounds, so we dont hear anything after level load
-    trap_S_ClearLoopingSounds( 2 );
+    trap_S_ClearLoopingSounds( true );
     
     // start level load music
     // too late...
@@ -2688,9 +2631,8 @@ CG_Shutdown
 Called before every level change or subsystem restart
 =================
 */
-void CG_Shutdown( void )
+void idCGameLocal::Shutdown( void )
 {
-
     // some mods may need to do cleanup work here,
     // like closing files or archiving session data
 }

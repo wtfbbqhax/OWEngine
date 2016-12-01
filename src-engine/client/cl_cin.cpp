@@ -1505,8 +1505,8 @@ redump:
             if( !cinTable[currentHandle].silent )
             {
                 ssize = RllDecodeMonoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, ( unsigned short )cinTable[currentHandle].roq_flags );
-                S_RawSamples( ssize, 22050, 2, 1, ( byte* )sbuf, 1.0f, 1.0f, CIN_STREAM );
-                cinTable[currentHandle].sound = 1;
+                soundSystem->RawSamples( ssize, 22050, 2, 1, ( byte* )sbuf, 1.0f, 1.0f, CIN_STREAM );
+                cinTable[currentHandle].sound = true;
             }
             break;
         case    ZA_SOUND_STEREO:
@@ -1514,14 +1514,14 @@ redump:
             {
                 if( cinTable[currentHandle].numQuads == -1 )
                 {
-                    S_Update();
+                    soundSystem->Update();
                     Com_DPrintf( "S_Update: Setting rawend to %i\n", s_soundtime );
                     s_rawend[CIN_STREAM] = s_soundtime;         //DAJ added [CIN_STREAM]
                 }
                 ssize = RllDecodeStereoToStereo( framedata, sbuf, cinTable[currentHandle].RoQFrameSize, 0, ( unsigned short )cinTable[currentHandle].roq_flags );
 //			Com_Printf("%i\n", ssize+s_rawend[CIN_STREAM]- s_soundtime );
-                S_RawSamples( ssize, 22050, 2, 2, ( byte* )sbuf, 1.0f, 1.0f, CIN_STREAM );
-                cinTable[currentHandle].sound = 1;
+                soundSystem->RawSamples( ssize, 22050, 2, 2, ( byte* )sbuf, 1.0f, 1.0f, CIN_STREAM );
+                cinTable[currentHandle].sound = true;
             }
             break;
         case    ROQ_QUAD_INFO:
@@ -1738,7 +1738,6 @@ Fetch and decompress the pending frame
 ==================
 */
 
-
 e_status CIN_RunCinematic( int handle )
 {
     // bk001204 - init
@@ -1848,7 +1847,6 @@ e_status CIN_RunCinematic( int handle )
 /*
 ==================
 CL_PlayCinematic
-
 ==================
 */
 int CIN_PlayCinematic( const char* arg, int x, int y, int w, int h, int systemBits )
@@ -1916,10 +1914,7 @@ int CIN_PlayCinematic( const char* arg, int x, int y, int w, int h, int systemBi
     if( cinTable[currentHandle].alterGameState )
     {
         // close the menu
-        if( uivm )
-        {
-            VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_NONE );
-        }
+        uiManager->SetActiveMenu( UIMENU_NONE );
     }
     else
     {
@@ -1984,7 +1979,6 @@ void CIN_SetLooping( int handle, bool loop )
 /*
 ==================
 SCR_DrawCinematic
-
 ==================
 */
 
@@ -2019,18 +2013,18 @@ void CIN_DrawCinematic( int handle )
         
         barheight = ( ( float )LETTERBOX_OFFSET / 480.0f ) * vh; //----(SA)	added
         
-        re.SetColor( &colorBlack[0] );
-        //re.DrawStretchPic( 0, 0, SCREEN_WIDTH, LETTERBOX_OFFSET, 0, 0, 0, 0, cls.whiteShader );
-        //re.DrawStretchPic( 0, SCREEN_HEIGHT-LETTERBOX_OFFSET, SCREEN_WIDTH, LETTERBOX_OFFSET, 0, 0, 0, 0, cls.whiteShader );
+        renderSystem->SetColor( &colorBlack[0] );
+        //renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, LETTERBOX_OFFSET, 0, 0, 0, 0, cls.whiteShader );
+        //renderSystem->DrawStretchPic( 0, SCREEN_HEIGHT-LETTERBOX_OFFSET, SCREEN_WIDTH, LETTERBOX_OFFSET, 0, 0, 0, 0, cls.whiteShader );
         //----(SA)	adjust for 640x480
-//		re.DrawStretchPic( 0, 0, w, barheight, 0, 0, 0, 0, cls.whiteShader );
-//		re.DrawStretchPic( 0, vh - barheight - 1, w, barheight + 1, 0, 0, 0, 0, cls.whiteShader );
+        //renderSystem->DrawStretchPic( 0, 0, w, barheight, 0, 0, 0, 0, cls.whiteShader );
+        //renderSystem->DrawStretchPic( 0, vh - barheight - 1, w, barheight + 1, 0, 0, 0, 0, cls.whiteShader );
     }
     //else
     //{
-    //	re.SetColor( g_color_table[0] );
-    //	re.DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, cls.whiteShader );
-    //	re.SetColor( NULL );
+    //	renderSystem->SetColor( g_color_table[0] );
+    //	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, cls.whiteShader );
+    //	renderSystem->SetColor( NULL );
     //}
     
     if( cinTable[handle].dirty && ( cinTable[handle].CIN_WIDTH != cinTable[handle].drawX || cinTable[handle].CIN_HEIGHT != cinTable[handle].drawY ) )
@@ -2097,13 +2091,13 @@ void CIN_DrawCinematic( int handle )
                 }
             }
         }
-        re.DrawStretchRaw( x, y, w, h, 256, 256, ( byte* )buf2, handle, true );
+        renderSystem->DrawStretchRaw( x, y, w, h, 256, 256, ( byte* )buf2, handle, true );
         cinTable[handle].dirty = false;
         Hunk_FreeTempMemory( buf2 );
         return;
     }
     
-    re.DrawStretchRaw( x, y, w, h, cinTable[handle].drawX, cinTable[handle].drawY, buf, handle, cinTable[handle].dirty );
+    renderSystem->DrawStretchRaw( x, y, w, h, cinTable[handle].drawX, cinTable[handle].drawY, buf, handle, cinTable[handle].dirty );
     cinTable[handle].dirty = false;
 }
 
@@ -2147,9 +2141,9 @@ void CL_PlayCinematic_f( void )
         bits |= CIN_letterBox;
     }
     
-    S_StopAllSounds();
+    soundSystem->StopAllSounds();
     // make sure volume is up for cine
-    S_FadeAllSounds( 1, 0 );
+    soundSystem->FadeAllSounds( 1, 0 );
     
     if( bits & CIN_letterBox )
     {
@@ -2199,7 +2193,7 @@ void SCR_StopCinematic( void )
     if( CL_handle >= 0 && CL_handle < MAX_VIDEO_HANDLES )
     {
         CIN_StopCinematic( CL_handle );
-        S_StopAllSounds();
+        soundSystem->StopAllSounds();
         CL_handle = -1;
     }
 }
@@ -2230,7 +2224,7 @@ void CIN_UploadCinematic( int handle )
                 }
             }
         }
-        re.UploadCinematic( 256, 256, 256, 256, cinTable[handle].buf, handle, cinTable[handle].dirty );
+        renderSystem->UploadCinematic( 256, 256, 256, 256, cinTable[handle].buf, handle, cinTable[handle].dirty );
         if( cl_inGameVideo->integer == 0 && cinTable[handle].playonwalls == 1 )
         {
             cinTable[handle].playonwalls--;

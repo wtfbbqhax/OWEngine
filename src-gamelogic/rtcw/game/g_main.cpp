@@ -64,6 +64,9 @@ gentity_t*       g_camEnt = NULL;   //----(SA)	script camera
 extern int bg_pmove_gameskill_integer;
 // done
 
+idGameLocal gameLocal;
+idGame* game = &gameLocal;
+
 vmCvar_t g_gametype;
 
 // Rafael gameskill
@@ -286,69 +289,14 @@ void AICast_Init( void );
 
 void G_RetrieveMoveSpeedsFromClient( int entnum, char* text );
 
-/*
-================
-vmMain
-
-This is the only way control passes into the module.
-This must be the very first function compiled into the .q3vm file
-================
-*/
-#if defined( __MACOS__ )
-#pragma export on
-#endif
-intptr_t vmMain( int command, intptr_t arg0, intptr_t arg1, intptr_t arg2, intptr_t arg3, intptr_t arg4, intptr_t arg5, intptr_t arg6 )
+bool idGameLocal::AICastVisibleFromPos( vec3_t srcpos, int srcnum, vec3_t destpos, int destnum, bool updateVisPos )
 {
-#if defined( __MACOS__ )
-#pragma export off
-#endif
-    switch( command )
-    {
-        case GAME_INIT:
-            G_InitGame( arg0, arg1, arg2 );
-            return 0;
-        case GAME_SHUTDOWN:
-            G_ShutdownGame( arg0 );
-            return 0;
-        case GAME_CLIENT_CONNECT:
-            return ( intptr_t )ClientConnect( arg0, arg1, arg2 );
-        case GAME_CLIENT_THINK:
-            ClientThink( arg0 );
-            return 0;
-        case GAME_CLIENT_USERINFO_CHANGED:
-            ClientUserinfoChanged( arg0 );
-            return 0;
-        case GAME_CLIENT_DISCONNECT:
-            ClientDisconnect( arg0 );
-            return 0;
-        case GAME_CLIENT_BEGIN:
-            ClientBegin( arg0 );
-            return 0;
-        case GAME_CLIENT_COMMAND:
-            ClientCommand( arg0 );
-            return 0;
-        case GAME_RUN_FRAME:
-            G_RunFrame( arg0 );
-            return 0;
-        case GAME_CONSOLE_COMMAND:
-            return ConsoleCommand();
-        case BOTAI_START_FRAME:
-            return BotAIStartFrame( arg0 );
-            // Ridah, Cast AI
-        case AICAST_VISIBLEFROMPOS:
-            return AICast_VisibleFromPos( ( float* )arg0, arg1, ( float* )arg2, arg3, arg4 );
-        case AICAST_CHECKATTACKATPOS:
-            return AICast_CheckAttackAtPos( arg0, arg1, ( float* )arg2, arg3, arg4 );
-            // done.
-            
-        case GAME_RETRIEVE_MOVESPEEDS_FROM_CLIENT:
-            G_RetrieveMoveSpeedsFromClient( arg0, ( char* )arg1 );
-            return 0;
-        case GAME_GETMODELINFO:
-            return G_GetModelInfo( arg0, ( char* )arg1, ( animModelInfo_t** )arg2 );
-    }
-    
-    return -1;
+    return AICastVisibleFromPos( srcpos, srcnum, destpos, destnum, updateVisPos );
+}
+
+bool idGameLocal::AICastCheckAttackAtPos( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld )
+{
+    return AICastCheckAttackAtPos( entnum, enemy, pos, ducking, allowHitWorld );
 }
 
 
@@ -1360,13 +1308,12 @@ int G_SendMissionStats()
 
 /*
 ============
-G_InitGame
-
+idGameLocal::Init
 ============
 */
 extern void trap_Cvar_Reset( const char* var_name );
 
-void G_InitGame( int levelTime, int randomSeed, int restart )
+void idGameLocal::Init( int levelTime, int randomSeed, int restart )
 {
     int i;
     
@@ -1542,10 +1489,10 @@ void G_InitGame( int levelTime, int randomSeed, int restart )
 
 /*
 =================
-G_ShutdownGame
+idGameLocal::Shutdown
 =================
 */
-void G_ShutdownGame( int restart )
+void idGameLocal::Shutdown( int restart )
 {
     if( g_gametype.integer != GT_SINGLE_PLAYER )
     {
@@ -1737,14 +1684,14 @@ void AdjustTournamentScores( void )
     if( level.clients[ clientNum ].pers.connected == CON_CONNECTED )
     {
         level.clients[ clientNum ].sess.wins++;
-        ClientUserinfoChanged( clientNum );
+        gameLocal.ClientUserinfoChanged( clientNum );
     }
     
     clientNum = level.sortedClients[1];
     if( level.clients[ clientNum ].pers.connected == CON_CONNECTED )
     {
         level.clients[ clientNum ].sess.losses++;
-        ClientUserinfoChanged( clientNum );
+        gameLocal.ClientUserinfoChanged( clientNum );
     }
     
 }
@@ -2785,12 +2732,12 @@ void G_RunThink( gentity_t* ent )
 
 /*
 ================
-G_RunFrame
+idGameLocal::RunFrame
 
 Advances the non-player objects in the world
 ================
 */
-void G_RunFrame( int levelTime )
+void idGameLocal::RunFrame( int levelTime )
 {
     int i;
     gentity_t*   ent;

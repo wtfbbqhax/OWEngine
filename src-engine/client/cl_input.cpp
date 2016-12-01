@@ -67,7 +67,6 @@ at the same time.
 
 #if !defined( __ANDROID__ )
 #include <motioncontrollers.h>
-extern motcontr_export_t mce;
 #endif
 
 static kbutton_t kb[NUM_BUTTONS];
@@ -505,7 +504,7 @@ void IN_Notebook( void )
     if( cls.state == CA_ACTIVE && !clc.demoplaying )
     {
         Cvar_Set( "cg_youGotMail", "0" ); // clear icon	//----(SA)	added
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_NOTEBOOK );    // startup notebook
+        uiManager->SetActiveMenu( UIMENU_NOTEBOOK );  // startup notebook
     }
 }
 
@@ -513,7 +512,7 @@ void IN_Help( void )
 {
     if( cls.state == CA_ACTIVE && !clc.demoplaying )
     {
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_HELP );        // startup help system
+        uiManager->SetActiveMenu( UIMENU_HELP );      // startup help system
     }
 }
 
@@ -654,11 +653,11 @@ void CL_MouseEvent( int dx, int dy, int time )
 {
     if( cls.keyCatchers & KEYCATCH_UI )
     {
-        VM_Call( uivm, UI_MOUSE_EVENT, dx, dy );
+        uiManager->MouseEvent( dx, dy );
     }
     else if( cls.keyCatchers & KEYCATCH_CGAME )
     {
-        VM_Call( cgvm, CG_MOUSE_EVENT, dx, dy );
+        cgame->MouseEvent( dx, dy );
     }
     else
     {
@@ -761,7 +760,7 @@ static void CL_RazerHydra( usercmd_t* cmd )
         movespeed = 64;
     }
     
-    if( mce.RazerHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    if( RazerHydra_Peek( 1, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
     {
         static unsigned int lockbtn = 0;
         static float accjoyx = 0.0f;
@@ -789,7 +788,7 @@ static void CL_RazerHydra( usercmd_t* cmd )
         lockbtn = buttons;
     }
     
-    if( mce.RazerHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
+    if( RazerHydra_Peek( 0, &joyx, &joyy, &pos, &trigger, &yaw, &pitch, &roll, &buttons ) != 0 )
     {
         static unsigned int lockbtn = 0;
         if( ( ( buttons & SIXENSE_BUTTON_BUMPER ) != 0 ) && ( ( lockbtn & SIXENSE_BUTTON_BUMPER ) == 0 ) )
@@ -843,7 +842,7 @@ static void CL_OculusHeadTracker()
     /*static int bla = 0;
     ++bla;
     Com_Printf("HMD: %d\n", bla);*/
-    if( mce.OculusVR_Peek( &yaw, &pitch, &roll ) != 0 )
+    if( OculusVR_Peek( &yaw, &pitch, &roll ) != 0 )
     {
         cl.headAngles[YAW] = ( yaw    * ( 180.0f / 3.14159f ) ); // Delta Yaw to adjust with mouse Yaw.
         lastYaw = yaw;

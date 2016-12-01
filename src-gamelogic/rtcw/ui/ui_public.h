@@ -59,123 +59,6 @@ typedef struct
 
 typedef enum
 {
-    UI_ERROR,
-    UI_PRINT,
-    UI_MILLISECONDS,
-    UI_CVAR_SET,
-    UI_CVAR_VARIABLEVALUE,
-    UI_CVAR_VARIABLESTRINGBUFFER,
-    UI_CVAR_SETVALUE,
-    UI_CVAR_RESET,
-    UI_CVAR_CREATE,
-    UI_CVAR_INFOSTRINGBUFFER,
-    UI_ARGC,
-    UI_ARGV,
-    UI_CMD_EXECUTETEXT,
-    UI_FS_FOPENFILE,
-    UI_FS_READ,
-    UI_FS_SEEK, //----(SA)	added
-    UI_FS_WRITE,
-    UI_FS_FCLOSEFILE,
-    UI_FS_GETFILELIST,
-    UI_FS_DELETEFILE,
-    UI_R_REGISTERMODEL,
-    UI_R_REGISTERSKIN,
-    UI_R_REGISTERSHADERNOMIP,
-    UI_R_CLEARSCENE,
-    UI_R_ADDREFENTITYTOSCENE,
-    UI_R_ADDPOLYTOSCENE,
-    UI_R_ADDPOLYSTOSCENE,
-    // JOSEPH 12-6-99
-    UI_R_ADDLIGHTTOSCENE,
-    // END JOSEPH
-    //----(SA)
-    UI_R_ADDCORONATOSCENE,
-    //----(SA)
-    UI_R_RENDERSCENE,
-    UI_R_SETCOLOR,
-    UI_R_DRAWSTRETCHPIC,
-    UI_UPDATESCREEN,        // 30
-    UI_CM_LERPTAG,
-    UI_CM_LOADMODEL,
-    UI_S_REGISTERSOUND,
-    UI_S_STARTLOCALSOUND,
-    UI_S_FADESTREAMINGSOUND,    //----(SA)	added
-    UI_S_FADEALLSOUNDS,         //----(SA)	added
-    UI_KEY_KEYNUMTOSTRINGBUF,
-    UI_KEY_GETBINDINGBUF,
-    UI_KEY_SETBINDING,
-    UI_KEY_ISDOWN,
-    UI_KEY_GETOVERSTRIKEMODE,
-    UI_KEY_SETOVERSTRIKEMODE,
-    UI_KEY_CLEARSTATES,
-    UI_KEY_GETCATCHER,
-    UI_KEY_SETCATCHER,
-    UI_GETCLIPBOARDDATA,
-    UI_GETGLCONFIG,
-    UI_GETCLIENTSTATE,
-    UI_GETCONFIGSTRING,
-    UI_LAN_GETLOCALSERVERCOUNT,
-    UI_LAN_GETLOCALSERVERADDRESSSTRING,
-    UI_LAN_GETGLOBALSERVERCOUNT,        // 50
-    UI_LAN_GETGLOBALSERVERADDRESSSTRING,
-    UI_LAN_GETPINGQUEUECOUNT,
-    UI_LAN_CLEARPING,
-    UI_LAN_GETPING,
-    UI_LAN_GETPINGINFO,
-    UI_CVAR_REGISTER,
-    UI_CVAR_UPDATE,
-    UI_MEMORY_REMAINING,
-    
-    UI_GET_CDKEY,
-    UI_SET_CDKEY,
-    UI_R_REGISTERFONT,
-    UI_R_MODELBOUNDS,
-    UI_PC_ADD_GLOBAL_DEFINE,
-    UI_PC_LOAD_SOURCE,
-    UI_PC_FREE_SOURCE,
-    UI_PC_READ_TOKEN,
-    UI_PC_SOURCE_FILE_AND_LINE,
-    UI_S_STOPBACKGROUNDTRACK,
-    UI_S_STARTBACKGROUNDTRACK,
-    UI_REAL_TIME,
-    UI_LAN_GETSERVERCOUNT,
-    UI_LAN_GETSERVERADDRESSSTRING,
-    UI_LAN_GETSERVERINFO,
-    UI_LAN_MARKSERVERVISIBLE,
-    UI_LAN_UPDATEVISIBLEPINGS,
-    UI_LAN_RESETPINGS,
-    UI_LAN_LOADCACHEDSERVERS,
-    UI_LAN_SAVECACHEDSERVERS,
-    UI_LAN_ADDSERVER,
-    UI_LAN_REMOVESERVER,
-    UI_CIN_PLAYCINEMATIC,
-    UI_CIN_STOPCINEMATIC,
-    UI_CIN_RUNCINEMATIC,
-    UI_CIN_DRAWCINEMATIC,
-    UI_CIN_SETEXTENTS,
-    UI_R_REMAP_SHADER,
-    UI_VERIFY_CDKEY,
-    UI_LAN_SERVERSTATUS,
-    UI_LAN_GETSERVERPING,
-    UI_LAN_SERVERISVISIBLE,
-    UI_LAN_COMPARESERVERS,
-    UI_CL_GETLIMBOSTRING,           // NERVE - SMF
-    
-    UI_MEMSET = 100,
-    UI_MEMCPY,
-    UI_STRNCPY,
-    UI_SIN,
-    UI_COS,
-    UI_ATAN2,
-    UI_SQRT,
-    UI_FLOOR,
-    UI_CEIL
-    
-} uiImport_t;
-
-typedef enum
-{
     UIMENU_NONE,
     UIMENU_MAIN,
     UIMENU_INGAME,
@@ -207,43 +90,32 @@ typedef enum
 #define SORT_SAVENAME       0
 #define SORT_SAVETIME       1
 
-typedef enum
+//
+// idUserInterfaceManager
+//
+class idUserInterfaceManager
 {
-    UI_GETAPIVERSION = 0,   // system reserved
+public:
+    virtual void	Init( bool inGameLoad ) = 0;
+    virtual void	Shutdown( void ) = 0;
     
-    UI_INIT,
-//	void	UI_Init( void );
+    virtual	void	KeyEvent( int key, bool down ) = 0;
+    virtual void	MouseEvent( int dx, int dy ) = 0;
+    virtual void	Refresh( int time ) = 0;
+    
+    virtual bool IsFullscreen( void ) = 0;
+    
+    virtual void SetActiveMenu( uiMenuCommand_t menu ) = 0;
+    
+    virtual uiMenuCommand_t GetActiveMenu( void ) = 0;
+    virtual bool ConsoleCommand( int realTime ) = 0;
+    
+    // if !overlay, the background will be drawn, otherwise it will be
+    // overlayed over whatever the cgame has drawn.
+    // a GetClientState syscall will be made to get the current strings
+    virtual void DrawConnectScreen( bool overlay ) = 0;
+};
 
-    UI_SHUTDOWN,
-//	void	UI_Shutdown( void );
+extern idUserInterfaceManager* uiManager;
 
-    UI_KEY_EVENT,
-//	void	UI_KeyEvent( int key );
-
-    UI_MOUSE_EVENT,
-//	void	UI_MouseEvent( int dx, int dy );
-
-    UI_REFRESH,
-//	void	UI_Refresh( int time );
-
-    UI_IS_FULLSCREEN,
-//	bool UI_IsFullscreen( void );
-
-    UI_SET_ACTIVE_MENU,
-//	void	UI_SetActiveMenu( uiMenuCommand_t menu );
-
-    UI_GET_ACTIVE_MENU,
-//	void	UI_GetActiveMenu( void );
-
-    UI_CONSOLE_COMMAND,
-//	bool UI_ConsoleCommand( void );
-
-    UI_DRAW_CONNECT_SCREEN,
-//	void	UI_DrawConnectScreen( bool overlay );
-    UI_HASUNIQUECDKEY
-// if !overlay, the background will be drawn, otherwise it will be
-// overlayed over whatever the cgame has drawn.
-// a GetClientState syscall will be made to get the current strings
-} uiExport_t;
-
-#endif // !__UI_PUBLIC_H__
+#endif

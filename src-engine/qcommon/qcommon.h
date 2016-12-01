@@ -44,7 +44,6 @@
 #ifndef __QCOMMON_H__
 #define __QCOMMON_H__
 
-#include "../cm/cm_public.h"
 #include <stdint.h>
 
 //============================================================================
@@ -311,56 +310,7 @@ enum clc_ops_e
     clc_EOF
 };
 
-/*
-==============================================================
-
-VIRTUAL MACHINE
-
-==============================================================
-*/
-
-typedef struct vm_s vm_t;
-
-typedef enum
-{
-    VMI_NATIVE,
-    VMI_BYTECODE,
-    VMI_COMPILED
-} vmInterpret_t;
-
-typedef enum
-{
-    TRAP_MEMSET = 100,
-    TRAP_MEMCPY,
-    TRAP_STRNCPY,
-    TRAP_SIN,
-    TRAP_COS,
-    TRAP_ATAN2,
-    TRAP_SQRT,
-    TRAP_MATRIXMULTIPLY,
-    TRAP_ANGLEVECTORS,
-    TRAP_PERPENDICULARVECTOR,
-    TRAP_FLOOR,
-    TRAP_CEIL,
-    
-    TRAP_TESTPRINTINT,
-    TRAP_TESTPRINTFLOAT
-} sharedTraps_t;
-
-void    VM_Init( void );
-vm_t*   VM_Create( const char* module, intptr_t ( *systemCalls )( intptr_t* ), vmInterpret_t interpret );
-// module should be bare: "cgame", not "cgame.dll" or "vm/cgame.qvm"
-
-void    VM_Free( vm_t* vm );
-void    VM_Clear( void );
-vm_t*    VM_Restart( vm_t* vm );
-
-intptr_t VM_Call( vm_t* vm, intptr_t callNum, ... );
-
-void    VM_Debug( int level );
-
-void*    VM_ArgPtr( intptr_t intValue );
-void*    VM_ExplicitArgPtr( vm_t* vm, intptr_t intValue );
+#define vm_t void
 
 /*
 ==============================================================
@@ -960,8 +910,8 @@ void Sys_EnterCriticalSection( void* ptr );
 void Sys_LeaveCriticalSection( void* ptr );
 
 // general development dll loading for virtual machine testing
-void*   Sys_LoadDll( const char* name, intptr_t( * *entryPoint )( intptr_t, ... ),
-                     intptr_t ( * systemcalls )( intptr_t, ... ) );
+void*	Sys_LoadDll( const char* name );
+void*	Sys_GetProcAddress( void* dllhandle, const char* name );
 void    Sys_UnloadDll( void* dllHandle );
 
 void    Sys_UnloadGame( void );

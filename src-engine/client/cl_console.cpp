@@ -148,7 +148,7 @@ Con_MessageMode3_f
 */
 void Con_MessageMode3_f( void )
 {
-    chat_playerNum = VM_Call( cgvm, CG_CROSSHAIR_PLAYER );
+    chat_playerNum = cgame->CrosshairPlayer();
     if( chat_playerNum < 0 || chat_playerNum >= MAX_CLIENTS )
     {
         chat_playerNum = -1;
@@ -168,7 +168,7 @@ Con_MessageMode4_f
 */
 void Con_MessageMode4_f( void )
 {
-    chat_playerNum = VM_Call( cgvm, CG_LAST_ATTACKER );
+    chat_playerNum = cgame->LastAttacker();
     if( chat_playerNum < 0 || chat_playerNum >= MAX_CLIENTS )
     {
         chat_playerNum = -1;
@@ -578,7 +578,7 @@ void Con_DrawInput( void )
     
     y = con.vislines - ( SMALLCHAR_HEIGHT * 2 );
     
-    re.SetColor( con.color );
+    renderSystem->SetColor( con.color );
     
     SCR_DrawSmallChar( con.xadjust + 1 * SMALLCHAR_WIDTH, y, ']' );
     
@@ -604,7 +604,7 @@ void Con_DrawNotify( void )
     int currentColor;
     
     currentColor = 7;
-    re.SetColor( g_color_table[currentColor] );
+    renderSystem->SetColor( g_color_table[currentColor] );
     
     v = 0;
     for( i = con.current - NUM_CON_TIMES + 1 ; i <= con.current ; i++ )
@@ -639,7 +639,7 @@ void Con_DrawNotify( void )
             if( ( ( text[x] >> 8 ) & 7 ) != currentColor )
             {
                 currentColor = ( text[x] >> 8 ) & 7;
-                re.SetColor( g_color_table[currentColor] );
+                renderSystem->SetColor( g_color_table[currentColor] );
             }
             SCR_DrawSmallChar( cl_conXOffset->integer + con.xadjust + ( x + 1 ) * SMALLCHAR_WIDTH, v, text[x] & 0xff );
         }
@@ -647,7 +647,7 @@ void Con_DrawNotify( void )
         v += SMALLCHAR_HEIGHT;
     }
     
-    re.SetColor( NULL );
+    renderSystem->SetColor( NULL );
     
     if( cls.keyCatchers & ( KEYCATCH_UI | KEYCATCH_CGAME ) )
     {
@@ -724,11 +724,11 @@ void Con_DrawSolidConsole( float frac )
         {
             color[0] = color[1] = color[2] = frac * 2.0f;
             color[3] = 1.0f;
-            re.SetColor( color );
+            renderSystem->SetColor( color );
             
             // draw the logo
             SCR_DrawPic( 192, 70, 256, 128, cls.consoleShader2 );
-            re.SetColor( NULL );
+            renderSystem->SetColor( NULL );
         }
     }
     
@@ -739,8 +739,7 @@ void Con_DrawSolidConsole( float frac )
     SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
     
     // draw the version number
-    
-    re.SetColor( g_color_table[ColorIndex( COLNSOLE_COLOR )] );
+    renderSystem->SetColor( g_color_table[ColorIndex( COLNSOLE_COLOR )] );
     
     i = strlen( Q3_VERSION );
     
@@ -764,7 +763,7 @@ void Con_DrawSolidConsole( float frac )
     if( con.display != con.current )
     {
         // draw arrows to show the buffer is backscrolled
-        re.SetColor( g_color_table[ColorIndex( COLOR_WHITE )] );
+        renderSystem->SetColor( g_color_table[ColorIndex( COLOR_WHITE )] );
         for( x = 0 ; x < con.linewidth ; x += 4 )
             SCR_DrawSmallChar( con.xadjust + ( x + 1 ) * SMALLCHAR_WIDTH, y, '^' );
         y -= SMALLCHAR_HEIGHT;
@@ -779,7 +778,7 @@ void Con_DrawSolidConsole( float frac )
     }
     
     currentColor = 7;
-    re.SetColor( g_color_table[currentColor] );
+    renderSystem->SetColor( g_color_table[currentColor] );
     
     for( i = 0 ; i < rows ; i++, y -= SMALLCHAR_HEIGHT, row-- )
     {
@@ -805,7 +804,7 @@ void Con_DrawSolidConsole( float frac )
             if( ( ( text[x] >> 8 ) & 7 ) != currentColor )
             {
                 currentColor = ( text[x] >> 8 ) & 7;
-                re.SetColor( g_color_table[currentColor] );
+                renderSystem->SetColor( g_color_table[currentColor] );
             }
             SCR_DrawSmallChar( con.xadjust + ( x + 1 ) * SMALLCHAR_WIDTH, y, text[x] & 0xff );
         }
@@ -814,7 +813,7 @@ void Con_DrawSolidConsole( float frac )
     // draw the input prompt, user text, and cursor if desired
     Con_DrawInput();
     
-    re.SetColor( NULL );
+    renderSystem->SetColor( NULL );
 }
 
 

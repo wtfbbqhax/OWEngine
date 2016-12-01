@@ -261,7 +261,6 @@ void R_BoxSurfaces_r( mnode_t* node, vec3_t mins, vec3_t maxs, surfaceType_t** l
 /*
 =================
 R_AddMarkFragments
-
 =================
 */
 void R_AddMarkFragments( int numClipPoints, vec3_t clipPoints[2][MAX_VERTS_ON_POLY],
@@ -545,12 +544,11 @@ int R_OldMarkFragments( int numPoints, const vec3_t* points, const vec3_t projec
 
 /*
 =================
-R_MarkFragments
-
+idRenderSystemLocal::MarkFragments
 =================
 */
-int R_MarkFragments( int orientation, const vec3_t* points, const vec3_t projection,
-                     int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer )
+int idRenderSystemLocal::MarkFragments( int orientation, const vec3_t* points, const vec3_t projection,
+                                        int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t* fragmentBuffer )
 {
     int numsurfaces, numPlanes;
     int i, j, k, m, n;

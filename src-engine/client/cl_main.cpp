@@ -108,9 +108,6 @@ clientConnection_t clc;
 clientStatic_t cls;
 vm_t*                cgvm;
 
-// Structure containing functions exported from refresh DLL
-refexport_t re;
-
 ping_t cl_pinglist[MAX_PINGREQUESTS];
 
 typedef struct serverStatus_s
@@ -125,10 +122,6 @@ typedef struct serverStatus_s
 
 serverStatus_t cl_serverStatusList[MAX_SERVERSTATUSREQUESTS];
 int serverStatusCount;
-
-#if 0 // MrE defined __USEA3D && defined __A3D_GEOM
-void hA3Dg_ExportRenderGeom( refexport_t* incoming_re );
-#endif
 
 extern void SV_BotFrame( int time );
 void CL_CheckForResend( void );
@@ -659,19 +652,15 @@ CL_ShutdownAll
 */
 void CL_ShutdownAll( void )
 {
-
     // clear sounds
-    S_DisableSounds();
+    soundSystem->DisableSounds();
     // shutdown CGame
     CL_ShutdownCGame();
     // shutdown UI
     CL_ShutdownUI();
     
     // shutdown the renderer
-    if( re.Shutdown )
-    {
-        re.Shutdown( false );      // don't destroy window or context
-    }
+    renderSystem->Shutdown( false );
     
     cls.uiStarted = false;
     cls.cgameStarted = false;
@@ -700,7 +689,7 @@ void CL_FlushMemory( void )
         // clear the whole hunk
         Hunk_Clear();
         // clear collision map data
-        CM_ClearMap();
+        collisionModelManager->ClearMap();
     }
     else
     {
@@ -760,7 +749,7 @@ void CL_MapLoading( void )
     }
     
     // make sure sound is quiet
-    S_FadeAllSounds( 0, 0 );
+    soundSystem->FadeAllSounds( 0, 0 );
 }
 
 /*
@@ -772,8 +761,7 @@ Called before parsing a gamestate
 */
 void CL_ClearState( void )
 {
-
-    S_StopAllSounds();
+    soundSystem->StopAllSounds();
     
     memset( &cl, 0, sizeof( cl ) );
 }
@@ -818,9 +806,9 @@ void CL_Disconnect( bool showMainMenu )
         clc.demofile = 0;
     }
     
-    if( uivm && showMainMenu )
+    if( showMainMenu )
     {
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_NONE );
+        uiManager->SetActiveMenu( UIMENU_NONE );
     }
     
     SCR_StopCinematic();
@@ -1115,7 +1103,6 @@ void CL_Disconnect_f( void )
 /*
 ================
 CL_Reconnect_f
-
 ================
 */
 void CL_Reconnect_f( void )
@@ -1169,8 +1156,6 @@ void CL_Connect_f( void )
     Con_Close();
     
 //	CL_FlushMemory();	//----(SA)	MEM NOTE: in missionpack, this is moved to CL_DownloadsComplete
-
-
 
     Q_strncpyz( cls.servername, server, sizeof( cls.servername ) );
     
@@ -1318,14 +1303,13 @@ doesn't know what graphics to reload
 */
 void CL_Vid_Restart_f( void )
 {
-
     vmCvar_t musicCvar;
     
     // RF, don't show percent bar, since the memory usage will just sit at the same level anyway
     Cvar_Set( "com_expectedhunkusage", "-1" );
     
     // don't let them loop during the restart
-    S_StopAllSounds();
+    soundSystem->StopAllSounds();
     // shutdown the UI
     CL_ShutdownUI();
     // shutdown the CGame
@@ -1339,7 +1323,9 @@ void CL_Vid_Restart_f( void )
     // reinitialize the filesystem if the game directory or checksum has changed
     FS_ConditionalRestart( clc.checksumFeed );
     
-    S_BeginRegistration();  // all sound handles are now invalid
+    collisionModelManager->ClearMap();
+    
+    soundSystem->BeginRegistration();  // all sound handles are now invalid
     
     cls.rendererStarted = false;
     cls.uiStarted = false;
@@ -1381,11 +1367,11 @@ void CL_Vid_Restart_f( void )
     Cvar_Register( &musicCvar, "s_currentMusic", "", CVAR_ROM );
     if( strlen( musicCvar.string ) )
     {
-        S_StartBackgroundTrack( musicCvar.string, musicCvar.string, 1000 );
+        soundSystem->StartBackgroundTrack( musicCvar.string, musicCvar.string, 1000 );
     }
     
     // fade up volume
-    S_FadeAllSounds( 1, 0 );
+    soundSystem->FadeAllSounds( 1, 0 );
 }
 
 /*
@@ -1399,8 +1385,8 @@ handles will be invalid
 */
 void CL_Snd_Restart_f( void )
 {
-    S_Shutdown();
-    S_Init();
+    soundSystem->Shutdown();
+    soundSystem->Init();
     
     CL_Vid_Restart_f();
 }
@@ -1748,7 +1734,6 @@ void CL_DisconnectPacket( netadr_t from )
 /*
 ===================
 CL_MotdPacket
-
 ===================
 */
 void CL_MotdPacket( netadr_t from )
@@ -2202,7 +2187,6 @@ void CL_CheckUserinfo( void )
 /*
 ==================
 CL_Frame
-
 ==================
 */
 void CL_Frame( int msec )
@@ -2217,23 +2201,19 @@ void CL_Frame( int msec )
     {
         // bring up the cd error dialog if needed
         cls.cddialog = false;
-#ifdef __MACOS__    //DAJ hide the cursor for intro movie
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_BRIEFING );
-#else
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_NEED_CD );
-#endif
+        uiManager->SetActiveMenu( UIMENU_NEED_CD );
     }
     else if( cls.endgamemenu )
     {
         cls.endgamemenu = false;
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_ENDGAME );
+        uiManager->SetActiveMenu( UIMENU_ENDGAME );
     }
     else if( cls.state == CA_DISCONNECTED && !( cls.keyCatchers & KEYCATCH_UI )
              && !com_sv_running->integer )
     {
         // if disconnected, bring up the menu
-        S_StopAllSounds();
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN );
+        soundSystem->StopAllSounds();
+        uiManager->SetActiveMenu( UIMENU_MAIN );
     }
     
     // if recording an avi, lock to a fixed fps
@@ -2291,7 +2271,7 @@ void CL_Frame( int msec )
 //		Cvar_VariableStringBuffer( "g_missionStats", buf, sizeof(buf) );
 //		if (strlen(buf) <= 1 ) {
 //			// update audio
-    S_Update();
+    soundSystem->Update();
 //		}
 //	}
 
@@ -2542,13 +2522,13 @@ CL_InitRenderer
 void CL_InitRenderer( void )
 {
     // this sets up the renderer and calls R_Init
-    re.BeginRegistration( &cls.glconfig );
+    renderSystem->Init( &cls.glconfig );
     
     // load character sets
-    cls.charSetShader = re.RegisterShader( "gfx/2d/bigchars" );
-    cls.whiteShader = re.RegisterShader( "white" );
-    cls.consoleShader = re.RegisterShader( "console" );
-    cls.consoleShader2 = re.RegisterShader( "console2" );
+    cls.charSetShader = renderSystem->RegisterShader( "gfx/2d/bigchars" );
+    cls.whiteShader = renderSystem->RegisterShader( "white" );
+    cls.consoleShader = renderSystem->RegisterShader( "console" );
+    cls.consoleShader2 = renderSystem->RegisterShader( "console2" );
     g_console_field_width = cls.glconfig.vidWidth / SMALLCHAR_WIDTH - 2;
     g_consoleField.widthInChars = g_console_field_width;
 }
@@ -2582,13 +2562,13 @@ void CL_StartHunkUsers( void )
     if( !cls.soundStarted )
     {
         cls.soundStarted = true;
-        S_Init();
+        soundSystem->Init();
     }
     
     if( !cls.soundRegistered )
     {
         cls.soundRegistered = true;
-        S_BeginRegistration();
+        soundSystem->BeginRegistration();
     }
     
     if( !cls.uiStarted )
@@ -2604,9 +2584,6 @@ int CL_ScaledMilliseconds( void )
     return Sys_Milliseconds() * com_timescale->value;
 }
 
-static cvar_t*  cl_renderer = NULL;
-static void*    rendererLib = NULL;
-
 /*
 ============
 CL_InitRef
@@ -2614,104 +2591,7 @@ CL_InitRef
 */
 void CL_InitRef( void )
 {
-    refimport_t ri;
-    motcontr_export_t mce;
-    refexport_t* ret;
-    
-    GetRefAPI_t		GetRefAPI;
-    char            dllName[MAX_OSPATH];
-    
     Com_Printf( "----- Initializing Renderer ----\n" );
-    
-    cl_renderer = Cvar_Get( "cl_renderer", "GL", CVAR_ARCHIVE | CVAR_LATCH );
-    
-#ifdef _WIN32
-    Com_sprintf( dllName, sizeof( dllName ), "renderer%s" DLL_EXT, cl_renderer->string );
-#else
-    Com_sprintf( dllName, sizeof( dllName ), "renderer%s" ARCH_STRING DLL_EXT, cl_renderer->string );
-#endif
-    
-    Com_Printf( "Loading \"%s\"...\n", dllName );
-    if( ( rendererLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
-    {
-#if 0//def _WIN32
-        Com_Printf( "failed:\n\"%s\"\n", Sys_DLLError() );
-#else
-        char            fn[1024];
-        
-        Q_strncpyz( fn, Sys_Cwd(), sizeof( fn ) );
-        strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
-        strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
-        
-        Com_Printf( "Loading \"%s\"...\n", fn );
-        if( ( rendererLib = Sys_LoadDLLSimple( fn ) ) == 0 )
-        {
-            Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
-        }
-#endif	/* _WIN32 */
-    }
-    
-    GetRefAPI = ( GetRefAPI_t )Sys_LoadFunction( rendererLib, "GetRefAPI" );
-    if( !GetRefAPI )
-    {
-        Com_Error( ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_DLLError() );
-    }
-    
-    ri.Cmd_AddCommand = Cmd_AddCommand;
-    ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
-    ri.Cmd_Argc = Cmd_Argc;
-    ri.Cmd_Argv = Cmd_Argv;
-    ri.Cmd_ExecuteText = Cbuf_ExecuteText;
-    ri.Printf = CL_RefPrintf;
-    ri.Error = Com_Error;
-    ri.Milliseconds = CL_ScaledMilliseconds;
-    ri.Hunk_Clear = Hunk_ClearToMark;
-#ifdef HUNK_DEBUG
-    ri.Hunk_AllocDebug = Hunk_AllocDebug;
-#else
-    ri.Hunk_Alloc = Hunk_Alloc;
-#endif
-    ri.Hunk_AllocateTempMemory = Hunk_AllocateTempMemory;
-    ri.Hunk_FreeTempMemory = Hunk_FreeTempMemory;
-    ri.CM_DrawDebugSurface = CM_DrawDebugSurface;
-    ri.FS_ReadFile = FS_ReadFile;
-    ri.FS_FreeFile = FS_FreeFile;
-    ri.FS_WriteFile = FS_WriteFile;
-    ri.FS_FreeFileList = FS_FreeFileList;
-    ri.FS_ListFiles = FS_ListFiles;
-    ri.FS_FileIsInPAK = FS_FileIsInPAK;
-    ri.FS_FileExists = FS_FileExists;
-    ri.Cvar_Get = Cvar_Get;
-    ri.Cvar_Set = Cvar_Set;
-    
-    // cinematic stuff
-    ri.CIN_UploadCinematic = CIN_UploadCinematic;
-    ri.CIN_PlayCinematic = CIN_PlayCinematic;
-    ri.CIN_RunCinematic = CIN_RunCinematic;
-    
-    ri.Sys_GetSystemHandles = Sys_GetSystemHandles;
-    ri.OculusVR_StereoConfig = mce.OculusVR_StereoConfig;
-    
-    //Dushan
-    ri.FS_FCloseFile = FS_FCloseFile;
-    ri.FS_Read = FS_Read;
-    ri.FS_FOpenFileByMode = FS_FOpenFileByMode;
-    
-    Com_Printf( "Calling GetRefAPI...\n" );
-    ret = GetRefAPI( REF_API_VERSION, &ri );
-    
-#if 0 // MrE defined __USEA3D && defined __A3D_GEOM
-    hA3Dg_ExportRenderGeom( ret );
-#endif
-    
-    Com_Printf( "-------------------------------\n" );
-    
-    if( !ret )
-    {
-        Com_Error( ERR_FATAL, "Couldn't initialize refresh\n" );
-    }
-    
-    re = *ret;
     
     // unpause so the cgame definately gets a snapshot and renders a frame
     Cvar_Set( "cl_paused", "0" );
@@ -2724,18 +2604,7 @@ CL_ShutdownRef
 */
 void CL_ShutdownRef( void )
 {
-    if( !re.Shutdown )
-    {
-        return;
-    }
-    re.Shutdown( true );
-    memset( &re, 0, sizeof( re ) );
-    
-    if( rendererLib )
-    {
-        Sys_UnloadDll( rendererLib );
-        rendererLib = NULL;
-    }
+    renderSystem->Shutdown( true );
 }
 
 // RF, trap manual client damage commands so users can't issue them manually
@@ -2997,7 +2866,7 @@ void CL_Shutdown( void )
     
     CL_Disconnect( true );
     
-    S_Shutdown();
+    soundSystem->Shutdown();
     CL_ShutdownRef();
     
     CL_ShutdownUI();

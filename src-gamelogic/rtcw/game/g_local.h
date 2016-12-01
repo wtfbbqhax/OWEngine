@@ -41,6 +41,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/splines/splines.h"
 #include "bg_public.h"
 #include "g_public.h"
 
@@ -52,8 +53,6 @@
 // done.
 
 #define BODY_QUEUE_SIZE     8
-
-#define INFINITE            1000000
 
 #define FRAMETIME           100                 // msec
 #define EVENT_VALID_MSEC    1000
@@ -120,7 +119,6 @@ typedef enum
 
 //============================================================================
 
-typedef struct gentity_s gentity_t;
 typedef struct gclient_s gclient_t;
 
 //====================================================================
@@ -1004,18 +1002,8 @@ void G_ChangeLevel( char* mapName );
 //----(SA)	end
 
 //
-// g_client.c
-//
-char* ClientConnect( int clientNum, bool firstTime, bool isBot );
-void ClientUserinfoChanged( int clientNum );
-void ClientDisconnect( int clientNum );
-void ClientBegin( int clientNum );
-void ClientCommand( int clientNum );
-
-//
 // g_active.c
 //
-void ClientThink( int clientNum );
 void ClientEndFrame( gentity_t* ent );
 void G_RunClient( gentity_t* ent );
 
@@ -1060,7 +1048,6 @@ int BotAIShutdown( int restart );
 int BotAILoadMap( int restart );
 int BotAISetupClient( int client, struct bot_settings_s* settings );
 int BotAIShutdownClient( int client );
-int BotAIStartFrame( int time );
 void BotTestAAS( vec3_t origin );
 
 
@@ -1183,6 +1170,30 @@ extern vmCvar_t g_soldierChargeTime;
 
 extern vmCvar_t g_playerStart;      //----(SA)	added
 
+//
+// idGame
+//
+class idGameLocal : public idGame
+{
+public:
+    virtual void Init( int levelTime, int randomSeed, int restart );
+    virtual void Shutdown( int restart );
+    virtual void ClientBegin( int clientNum );
+    virtual char* ClientConnect( int clientNum, bool firstTime, bool isBot );
+    virtual void ClientThink( int clientNum );
+    virtual void ClientUserinfoChanged( int clientNum );
+    virtual void ClientDisconnect( int clientNum );
+    virtual void ClientCommand( int clientNum );
+    virtual void RunFrame( int levelTime );
+    virtual bool ConsoleCommand( void );
+    virtual bool AICastVisibleFromPos( vec3_t srcpos, int srcnum, vec3_t destpos, int destnum, bool updateVisPos );
+    virtual bool AICastCheckAttackAtPos( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld ) ;
+    virtual void RetrieveMoveSpeedsFromClient( int entnum, char* text );
+    virtual bool GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo );
+    virtual int	BotAIStartFrame( int time );
+};
+
+extern idGameLocal gameLocal;
 
 void    trap_Printf( const char* fmt );
 void    trap_Error( const char* fmt );
@@ -1242,7 +1253,6 @@ int     trap_BotLibDefine( char* string );
 int     trap_BotLibStartFrame( float time );
 int     trap_BotLibLoadMap( const char* mapname );
 int     trap_BotLibUpdateEntity( int ent, void /* struct bot_updateentity_s */ *bue );
-int     trap_BotLibTest( int parm0, char* parm1, vec3_t parm2, vec3_t parm3 );
 
 int     trap_BotGetSnapshotEntity( int clientNum, int sequence );
 int     trap_BotGetServerCommand( int clientNum, char* message, int size );
@@ -1337,10 +1347,10 @@ int     trap_BotChatLength( int chatstate );
 void    trap_BotEnterChat( int chatstate, int client, int sendto );
 void    trap_BotGetChatMessage( int chatstate, char* buf, int size );
 int     trap_StringContains( char* str1, char* str2, int casesensitive );
-int     trap_BotFindMatch( char* str, void /* struct bot_match_s */ *match, unsigned int context );
+int     trap_BotFindMatch( char* str, void /* struct bot_match_s */ *match, unsigned long int context );
 void    trap_BotMatchVariable( void /* struct bot_match_s */ *match, int variable, char* buf, int size );
 void    trap_UnifyWhiteSpaces( char* string );
-void    trap_BotReplaceSynonyms( char* string, unsigned int context );
+void    trap_BotReplaceSynonyms( char* string, unsigned long int context );
 int     trap_BotLoadChatFile( int chatstate, char* chatfile, char* chatname );
 void    trap_BotSetChatGender( int chatstate, int gender );
 void    trap_BotSetChatName( int chatstate, char* name );

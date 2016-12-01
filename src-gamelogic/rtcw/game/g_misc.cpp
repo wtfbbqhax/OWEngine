@@ -506,7 +506,7 @@ void use_spotlight( gentity_t* ent, gentity_t* other, gentity_t* activator )
         tent = G_PickTarget( ent->target );
         VectorCopy( tent->s.origin, ent->s.origin2 );
         
-        ent->active = 0;
+        ent->active = false;
         trap_LinkEntity( ent );
     }
 }
@@ -519,7 +519,7 @@ void spotlight_die( gentity_t* self, gentity_t* inflictor, gentity_t* attacker, 
     
     self->s.time2 = level.time;
     self->s.frame   = 1;    // 1 == dead
-    self->takedamage = 0;
+    self->takedamage = false;
     
 //	G_AddEvent( self, EV_ENTDEATH, 0 );
 }
@@ -528,7 +528,7 @@ void spotlight_finish_spawning( gentity_t* ent )
 {
     if( ent->spawnflags & 1 )      // START_ON
     {
-//		ent->active = 0;
+//		ent->active = false;
         trap_LinkEntity( ent );
     }
     
@@ -538,7 +538,7 @@ void spotlight_finish_spawning( gentity_t* ent )
     {
         ent->health = 1;
     }
-    ent->takedamage = 1;
+    ent->takedamage = true;
     ent->think      = 0;
     ent->nextthink  = 0;
     ent->s.frame    = 0;
@@ -1006,7 +1006,7 @@ void use_shooter_tesla( gentity_t* ent, gentity_t* other, gentity_t* activator )
         tent = G_PickTarget( ent->target );
         VectorCopy( tent->s.origin, ent->s.origin2 );
         
-        ent->active = 0;
+        ent->active = false;
         trap_LinkEntity( ent );
     }
 }
@@ -1042,7 +1042,7 @@ void shooter_tesla_finish_spawning( gentity_t* ent )
     
     if( ent->spawnflags & 1 )      // START_ON
     {
-        ent->active = 0;
+        ent->active = false;
         trap_LinkEntity( ent );
     }
 }
@@ -1319,7 +1319,7 @@ void use_corona( gentity_t* ent, gentity_t* other, gentity_t* activator )
     }
     else
     {
-        ent->active = 0;
+        ent->active = false;
         trap_LinkEntity( ent );
     }
 }
@@ -1470,7 +1470,7 @@ void use_dlight( gentity_t* ent, gentity_t* other, gentity_t* activator )
     }
     else
     {
-        ent->active = 0;
+        ent->active = false;
         trap_LinkEntity( ent );
         
         if( ent->spawnflags & 4 )      // ONETIME

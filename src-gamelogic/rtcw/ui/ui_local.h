@@ -48,7 +48,6 @@
 //#include <limits.h>
 
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/renderer/r_types.h"
 #include "ui_public.h"
 #include "keycodes.h"
 #include "../game/bg_public.h"
@@ -393,8 +392,6 @@ extern sfxHandle_t  MenuField_Key( menufield_s* m, int* key );
 void            UI_Report();
 void            UI_Load();
 void            UI_LoadMenus( const char* menuFile, bool reset );
-void            _UI_SetActiveMenu( uiMenuCommand_t menu );
-uiMenuCommand_t _UI_GetActiveMenu( void );
 int             UI_AdjustTimeByGame( int time );
 void            UI_ShowPostGame( bool newHigh );
 void            UI_ClearScores();
@@ -436,11 +433,6 @@ extern void UI_SetupMenu( void );
 //
 extern void UI_TeamMainMenu( void );
 extern void TeamMain_Cache( void );
-
-//
-// ui_connect.c
-//
-extern void UI_DrawConnectScreen( bool overlay );
 
 //
 // ui_controls2.c
@@ -962,13 +954,6 @@ typedef struct
 
 extern uiInfo_t uiInfo;
 
-
-extern void         UI_Init( void );
-extern void         UI_Shutdown( void );
-extern void         UI_KeyEvent( int key );
-extern void         UI_MouseEvent( int dx, int dy );
-extern void         UI_Refresh( int realtime );
-extern bool     UI_ConsoleCommand( int realTime );
 extern float        UI_ClampCvar( float min, float max, float value );
 extern void         UI_DrawNamedPic( float x, float y, float width, float height, const char* picname );
 extern void         UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader );
@@ -1213,5 +1198,34 @@ void UI_SPUnlock_f( void );
 void UI_SPUnlockMedals_f( void );
 
 void UI_InitGameinfo( void );
+
+//
+// idUserInterfaceManagerLocal
+//
+class idUserInterfaceManagerLocal : public idUserInterfaceManager
+{
+public:
+    virtual void	Init( bool inGameLoad );
+    virtual void	Shutdown( void );
+    
+    virtual	void	KeyEvent( int key, bool down );
+    virtual void	MouseEvent( int dx, int dy );
+    virtual void	Refresh( int time );
+    
+    virtual bool IsFullscreen( void );
+    
+    virtual void SetActiveMenu( uiMenuCommand_t menu );
+    
+    virtual uiMenuCommand_t GetActiveMenu( void );
+    virtual bool ConsoleCommand( int realTime );
+    
+    // if !overlay, the background will be drawn, otherwise it will be
+    // overlayed over whatever the cgame has drawn.
+    // a GetClientState syscall will be made to get the current strings
+    virtual void DrawConnectScreen( bool overlay );
+};
+
+extern idUserInterfaceManagerLocal uiManagerLocal;
+
 
 #endif

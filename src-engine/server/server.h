@@ -45,8 +45,10 @@
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-#include "../../../src-gamelogic/rtcw/game/g_public.h"
 #include "../../../src-gamelogic/rtcw/game/bg_public.h"
+#include "../../../src-engine/botlib/botlib.h"
+#define botlib_export_s botlib_export_t
+#include "../../../src-gamelogic/rtcw/game/g_public.h"
 
 //=============================================================================
 
@@ -244,6 +246,7 @@ typedef struct
 extern serverStatic_t svs;                  // persistant server info across maps
 extern server_t sv;                         // cleared each map
 extern vm_t*            gvm;                // game virtual machine
+extern idGame*		game;
 
 #define MAX_MASTER_SERVERS  5
 

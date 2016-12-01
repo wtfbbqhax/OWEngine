@@ -390,7 +390,7 @@ void SNDDMA_BeginPainting( void )
         if( hresult != DSERR_BUFFERLOST )
         {
             Com_Printf( "SNDDMA_BeginPainting: Lock failed with error '%s'\n", DSoundError( hresult ) );
-            S_Shutdown();
+            soundSystem->Shutdown();
             return;
         }
         else

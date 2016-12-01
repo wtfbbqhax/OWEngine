@@ -471,7 +471,7 @@ typedef struct botlib_export_s
 } botlib_export_t;
 
 //linking of bot library
-typedef botlib_export_t* ( *GetBotLibAPI )( int apiVersion, botlib_import_t* rimp );
+botlib_export_t* GetBotLibAPI( int apiVersion, botlib_import_t* import );
 
 /* Library variables:
 

@@ -66,7 +66,6 @@
 static char sys_cmdline[MAX_STRING_CHARS];
 
 #include <motioncontrollers.h>
-motcontr_export_t mce;
 struct OculusVR_HMDInfo HMD;
 int OculusVRDetected;
 
@@ -693,60 +692,31 @@ Used to load a development dll instead of a virtual machine
 */
 extern char*     FS_BuildOSPath( const char* base, const char* game, const char* qpath );
 
-void* Sys_LoadDll( const char* name, intptr_t( ** entryPoint )( intptr_t, ... ),
-                   intptr_t( * systemcalls )( intptr_t, ... ) )
+void* Sys_LoadDll( const char* name )
 {
     static int lastWarning = 0;
     HINSTANCE libHandle;
-    void ( * dllEntry )( intptr_t( * syscallptr )( intptr_t, ... ) );
     char*    basepath;
     char*    cdpath;
     char*    gamedir;
     char*    fn;
-#ifdef NDEBUG
-    int timestamp;
-    int ret;
-#endif
     char filename[MAX_QPATH];
     
 #ifdef WOLF_SP_DEMO
-    Com_sprintf( filename, sizeof( filename ), "%sx86_d.dll", name );
+    Com_sprintf( filename, sizeof( filename ), "%sx86_demo.dll", name );
 #else
     Com_sprintf( filename, sizeof( filename ), "%sx86.dll", name );
 #endif
     
     
-#ifdef NDEBUG
-    timestamp = Sys_Milliseconds();
-    if( ( ( timestamp - lastWarning ) > ( 5 * 60000 ) ) && !Cvar_VariableIntegerValue( "dedicated" )
-            && !Cvar_VariableIntegerValue( "com_blindlyLoadDLLs" ) )
-    {
-        if( FS_FileExists( filename ) )
-        {
-            lastWarning = timestamp;
-            ret = MessageBoxEx( NULL, "You are about to load a .DLL executable that\n"
-                                "has not been verified for use with Wolfenstein.\n"
-                                "This type of file can compromise the security of\n"
-                                "your computer.\n\n"
-                                "Select 'OK' if you choose to load it anyway.",
-                                "Security Warning", MB_OKCANCEL | MB_ICONEXCLAMATION | MB_DEFBUTTON2 | MB_TOPMOST | MB_SETFOREGROUND,
-                                MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ) );
-            if( ret != IDOK )
-            {
-                return NULL;
-            }
-        }
-    }
-#endif
-    
     // check current folder only if we are a developer
-    if( 1 )    //----(SA)	always dll
+    if( 1 )  //----(SA)	always dll
     {
-//	if (Cvar_VariableIntegerValue( "devdll" )) {
+        //	if (Cvar_VariableIntegerValue( "devdll" )) {
         libHandle = LoadLibrary( filename );
         if( libHandle )
         {
-            goto found_dll;
+            return libHandle;
         }
     }
     
@@ -771,23 +741,16 @@ void* Sys_LoadDll( const char* name, intptr_t( ** entryPoint )( intptr_t, ... ),
         }
     }
     
-found_dll:
-
-    dllEntry = ( void (* )( intptr_t(* )( intptr_t, ... ) ) )GetProcAddress( libHandle, "dllEntry" );
-    *entryPoint = ( intptr_t(* )( intptr_t, ... ) )GetProcAddress( libHandle, "vmMain" );
-    if( !*entryPoint || !dllEntry )
-    {
-        FreeLibrary( libHandle );
-        return NULL;
-    }
-    dllEntry( systemcalls );
-    
     return libHandle;
+}
+
+void* Sys_GetProcAddress( void* dllhandle, const char* name )
+{
+    return GetProcAddress( ( HMODULE )dllhandle, name );
 }
 
 void* Sys_LoadDLLSimple( const char* name )
 {
-    SetDllDirectoryA( "../system" );
     return ( void* )LoadLibrary( name );
 }
 
@@ -848,7 +811,7 @@ void Sys_MusicThread( void )
     while( 1 )
     {
         Sleep( 33 );
-        S_UpdateThread();
+        soundSystem->UpdateThread();
     }
 }
 
@@ -1479,82 +1442,6 @@ void* Sys_GetSystemHandles( void )
 
 int totalMsec, countMsec;
 
-// Structure containing functions exported from refresh DLL
-static void* motcontLib = NULL;
-
-static void Init_MCLibrary( void )
-{
-    motcontr_import_t mi;
-    motcontr_export_t* mex;
-    GetMotContrLibAPI_t GetMotContrAPI;
-    char dllName[MAX_OSPATH];
-    
-    Com_Printf( "\n----- Initializing Motion Controllers ----\n" );
-    
-#ifdef _WIN32
-    Com_sprintf( dllName, sizeof( dllName ), "motioncontrollers" DLL_EXT );
-#else
-    Com_sprintf( dllName, sizeof( dllName ), "motioncontrollers" ARCH_STRING DLL_EXT );
-#endif
-    
-    Com_Printf( "Loading \"%s\"...\n", dllName );
-    if( ( motcontLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
-    {
-#if 0 //def _WIN32
-        Com_Printf( "failed:\n\"%s\"\n", Sys_DLLError() );
-#else
-        char fn[1024];
-        
-        Q_strncpyz( fn, Sys_Cwd(), sizeof( fn ) );
-        strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
-        strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
-        
-        Com_Printf( "Loading \"%s\"...\n", fn );
-        if( ( motcontLib = Sys_LoadDLLSimple( fn ) ) == 0 )
-        {
-            Com_Error( ERR_FATAL, "failed: %s\n", Sys_DLLError() );
-        }
-#endif	/* _WIN32 */
-    }
-    
-    mi.Print = Com_Printf;
-    mi.Error = Com_Error;
-    
-    GetMotContrAPI = ( GetMotContrLibAPI_t )Sys_LoadFunction( motcontLib, "GetMotContrLibAPI" );
-    if( !GetMotContrAPI )
-    {
-        Com_Error( ERR_FATAL, "Can't load symbol GetMotContrLibAPI: '%s'\n", Sys_DLLError() );
-    }
-    
-    Com_Printf( "Calling GetMotContrLibAPI...\n" );
-    mex = GetMotContrAPI( MOTLIB_API_VERSION, &mi );
-    
-    Com_Printf( "-------------------------------\n" );
-    mce = *mex;
-}
-
-/*
-============
-Shutdown_MCLibrary
-============
-*/
-static void Shutdown_MCLibrary( void )
-{
-    if( !mce.OculusVR_Exit )
-    {
-        return;
-    }
-    
-    mce.OculusVR_Exit();
-    memset( &mce, 0, sizeof( mce ) );
-    
-    if( motcontLib )
-    {
-        Sys_UnloadDll( motcontLib );
-        motcontLib = NULL;
-    }
-}
-
 /*
 ==============
 Sys_Quit
@@ -1565,13 +1452,10 @@ void Sys_Quit( void )
     timeEndPeriod( 1 );
     IN_Shutdown();
     Sys_DestroyConsole();
-    
-    Shutdown_MCLibrary();
+    OculusVR_Exit();
     
     exit( 0 );
 }
-
-
 
 /*
 ==================
@@ -1600,9 +1484,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     // no abort/retry/fail errors
     SetErrorMode( SEM_FAILCRITICALERRORS );
     
-    // init motion controller library
-    Init_MCLibrary();
-    
     // get the initial time base
     Sys_Milliseconds();
     
@@ -1621,7 +1502,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     Sys_InitStreamThread();
     
     // Init Oculus SDK
-    if( mce.OculusVR_Init() == 0 )
+    if( OculusVR_Init() == 0 )
     {
         OculusVRDetected = 0;
         Com_Printf( "[OVR] OculusVR_Init() Failed!\n" );
@@ -1636,7 +1517,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     {
         OculusVRDetected = 1;
         Com_Printf( "[OVR] OculusVR_Init() Success!\n" );
-        if( mce.OculusVR_QueryHMD( &HMD ) != 0 )
+        if( OculusVR_QueryHMD( &HMD ) != 0 )
         {
             Com_Printf( "[OVR] Device Name       : %s\n", HMD.DisplayDeviceName );
             Com_Printf( "[OVR] IPD               : %f\n", HMD.InterpupillaryDistance );

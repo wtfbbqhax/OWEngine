@@ -1954,7 +1954,7 @@ void CL_KeyEvent( int key, bool down, unsigned time )
 //----(SA)	get the active menu if in ui mode
     if( cls.keyCatchers & KEYCATCH_UI )
     {
-        activeMenu = VM_Call( uivm, UI_GET_ACTIVE_MENU );
+        activeMenu = uiManager->GetActiveMenu();
     }
     
     
@@ -1965,7 +1965,7 @@ void CL_KeyEvent( int key, bool down, unsigned time )
             cls.state == CA_ACTIVE &&
             !clc.demoplaying )
     {
-        VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_INGAME );
+        uiManager->SetActiveMenu( UIMENU_INGAME );
         return;
     }
     
@@ -1983,7 +1983,7 @@ void CL_KeyEvent( int key, bool down, unsigned time )
         if( cls.keyCatchers & KEYCATCH_CGAME )
         {
             cls.keyCatchers &= ~KEYCATCH_CGAME;
-            VM_Call( cgvm, CG_EVENT_HANDLING, CGAME_EVENT_NONE );
+            cgame->EventHandling( CGAME_EVENT_NONE );
             return;
         }
         
@@ -1991,13 +1991,13 @@ void CL_KeyEvent( int key, bool down, unsigned time )
         {
             if( cls.state == CA_ACTIVE && !clc.demoplaying )
             {
-                VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_INGAME );
+                uiManager->SetActiveMenu( UIMENU_INGAME );
             }
             else
             {
                 CL_Disconnect_f();
-                S_StopAllSounds();
-                VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN );
+                soundSystem->StopAllSounds();
+                uiManager->SetActiveMenu( UIMENU_MAIN );
             }
             return;
         }
@@ -2007,7 +2007,7 @@ void CL_KeyEvent( int key, bool down, unsigned time )
             return;
         }
         
-        VM_Call( uivm, UI_KEY_EVENT, key, down );
+        uiManager->KeyEvent( key, down );
         return;
     }
     
@@ -2028,13 +2028,13 @@ void CL_KeyEvent( int key, bool down, unsigned time )
             Cbuf_AddText( cmd );
         }
         
-        if( cls.keyCatchers & KEYCATCH_UI && uivm )
+        if( cls.keyCatchers & KEYCATCH_UI )
         {
-            VM_Call( uivm, UI_KEY_EVENT, key, down );
+            uiManager->KeyEvent( key, down );
         }
         else if( cls.keyCatchers & KEYCATCH_CGAME && cgvm )
         {
-            VM_Call( cgvm, CG_KEY_EVENT, key, down );
+            cgame->KeyEvent( key, down );
         }
         
         return;
@@ -2071,7 +2071,7 @@ void CL_KeyEvent( int key, bool down, unsigned time )
             {
                 if( !Q_stricmp( "notebook", kb ) )
                 {
-                    if( VM_Call( uivm, UI_GET_ACTIVE_MENU ) == UIMENU_NOTEBOOK )
+                    if( uiManager->GetActiveMenu() == UIMENU_NOTEBOOK )
                     {
                         key = K_ESCAPE;
                     }
@@ -2083,18 +2083,13 @@ void CL_KeyEvent( int key, bool down, unsigned time )
 ///				}
             }
         }
-        
-        if( uivm )
-        {
-            VM_Call( uivm, UI_KEY_EVENT, key, down );
-        }
-        
+        uiManager->KeyEvent( key, down );
     }
     else if( cls.keyCatchers & KEYCATCH_CGAME )
     {
         if( cgvm )
         {
-            VM_Call( cgvm, CG_KEY_EVENT, key, down );
+            cgame->KeyEvent( key, down );
         }
     }
     else if( cls.keyCatchers & KEYCATCH_MESSAGE )
@@ -2158,7 +2153,7 @@ void CL_CharEvent( int key )
     }
     else if( cls.keyCatchers & KEYCATCH_UI )
     {
-        VM_Call( uivm, UI_KEY_EVENT, key | K_CHAR_FLAG, true );
+        uiManager->KeyEvent( key | K_CHAR_FLAG, true );
     }
     else if( cls.keyCatchers & KEYCATCH_MESSAGE )
     {
@@ -2189,7 +2184,7 @@ void Key_ClearStates( void )
             CL_KeyEvent( i, false, 0 );
             
         }
-        keys[i].down = 0;
+        keys[i].down = false;
         keys[i].repeats = 0;
     }
 }

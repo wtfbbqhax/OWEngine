@@ -71,7 +71,7 @@ void GL_Bind( image_t* image )
     
     if( !image )
     {
-        ri.Printf( PRINT_WARNING, "GL_Bind: NULL image\n" );
+        Com_Printf( "GL_Bind: NULL image\n" );
         texnum = tr.defaultImage->texnum;
     }
     else
@@ -108,7 +108,6 @@ void GL_SelectTexture( int unit )
     
     glState.currenttmu = unit;
 }
-
 
 /*
 ** GL_BindMultitexture
@@ -215,7 +214,7 @@ void GL_TexEnv( int env )
             glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD );
             break;
         default:
-            ri.Error( ERR_DROP, "GL_TexEnv: invalid env '%d' passed\n", env );
+            Com_Error( ERR_DROP, "GL_TexEnv: invalid env '%d' passed\n", env );
             break;
     }
 }
@@ -290,7 +289,7 @@ void GL_State( unsigned int stateBits )
                     break;
                 default:
                     srcFactor = GL_ONE;     // to get warning to shut up
-                    ri.Error( ERR_DROP, "GL_State: invalid src blend state bits\n" );
+                    Com_Error( ERR_DROP, "GL_State: invalid src blend state bits\n" );
                     break;
             }
             
@@ -322,7 +321,7 @@ void GL_State( unsigned int stateBits )
                     break;
                 default:
                     dstFactor = GL_ONE;     // to get warning to shut up
-                    ri.Error( ERR_DROP, "GL_State: invalid dst blend state bits\n" );
+                    Com_Error( ERR_DROP, "GL_State: invalid dst blend state bits\n" );
                     break;
             }
             
@@ -712,7 +711,7 @@ void RB_ZombieFXInit( void )
     memset( zombieFleshHitVerts, 0, sizeof( zombieFleshHitVerts ) );
 }
 
-void RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitDir )
+void idRenderSystemLocal::ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitDir )
 {
     int part = 0;
     
@@ -734,7 +733,7 @@ void RB_ZombieFXAddNewHit( int entityNum, const vec3_t hitPos, const vec3_t hitD
     
     if( entityNum >= MAX_SP_CLIENTS )
     {
-        Com_Printf( "RB_ZombieFXAddNewHit: entityNum (%i) outside allowable range (%i)\n", entityNum, MAX_SP_CLIENTS );
+        Com_Printf( "idRenderSystemLocal::ZombieFXAddNewHit: entityNum (%i) outside allowable range (%i)\n", entityNum, MAX_SP_CLIENTS );
         return;
     }
     if( zombieFleshHitVerts[entityNum][part].numHits + zombieFleshHitVerts[entityNum][part].numNewHits >= ZOMBIEFX_MAX_HITS )
@@ -1062,7 +1061,7 @@ void RB_RenderDrawSurfList( drawSurf_t* drawSurfs, int numDrawSurfs )
     
     // we don't want to pump the event loop too often and waste time, so
     // we are going to check every shader change
-    macEventTime = ri.Milliseconds() + MAC_EVENT_PUMP_MSEC;
+    macEventTime = Sys_Milliseconds() + MAC_EVENT_PUMP_MSEC;
 #endif
     
     // save original time for entity shader offsets
@@ -1127,7 +1126,7 @@ void RB_RenderDrawSurfList( drawSurf_t* drawSurfs, int numDrawSurfs )
 #ifdef __MACOS__    // crutch up the mac's limited buffer queue size
                 int t;
                 
-                t = ri.Milliseconds();
+                t = Sys_Milliseconds();
                 if( t > macEventTime )
                 {
                     macEventTime = t + MAC_EVENT_PUMP_MSEC;
@@ -1323,14 +1322,14 @@ void    RB_SetGL2D( void )
     glDisable( GL_CLIP_PLANE0 );
     
     // set time for 2D shaders
-    backEnd.refdef.time = ri.Milliseconds();
+    backEnd.refdef.time = Sys_Milliseconds();
     backEnd.refdef.floatTime = backEnd.refdef.time * 0.001f;
 }
 
 
 /*
 =============
-RE_StretchRaw
+idRenderSystemLocal::DrawStretchRaw
 
 FIXME: not exactly backend
 Stretches a raw 32 bit power of 2 bitmap image over the given screen rectangle.
@@ -1338,7 +1337,7 @@ Used for cinematics.
 =============
 */
 
-void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, bool dirty )
+void idRenderSystemLocal::DrawStretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* data, int client, bool dirty )
 {
     int                     i, j;
     int                     start, end;
@@ -1355,11 +1354,10 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* 
     // we definately want to sync every frame for the cinematics
     glFinish();
     
-    
     start = end = 0;
     if( r_speeds->integer )
     {
-        start = ri.Milliseconds();
+        start = Sys_Milliseconds();
     }
     
     
@@ -1372,12 +1370,10 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* 
     }
     if( ( 1 << i ) != cols || ( 1 << j ) != rows )
     {
-        ri.Error( ERR_DROP, "Draw_StretchRaw: size not a power of 2: %i by %i", cols, rows );
+        Com_Error( ERR_DROP, "Draw_StretchRaw: size not a power of 2: %i by %i", cols, rows );
     }
     
-    
     GL_Bind( tr.scratchImage[client] );
-    
     
     // if the scratchImage isn't in the format we want, specify it as a new texture
     if( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height )
@@ -1400,13 +1396,11 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* 
         }
     }
     
-    
     if( r_speeds->integer )
     {
-        end = ri.Milliseconds();
-        ri.Printf( PRINT_ALL, "glTexSubImage2D %i, %i: %i msec\n", cols, rows, end - start );
+        end = Sys_Milliseconds();
+        Com_Printf( "glTexSubImage2D %i, %i: %i msec\n", cols, rows, end - start );
     }
-    
     
     RB_SetGL2D();
     glClearColor( 0, 0, 0, 1 );
@@ -1440,9 +1434,8 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte* 
     glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
-void RE_UploadCinematic( int w, int h, int cols, int rows, const byte* data, int client, bool dirty )
+void idRenderSystemLocal::UploadCinematic( int w, int h, int cols, int rows, const byte* data, int client, bool dirty )
 {
-
     GL_Bind( tr.scratchImage[client] );
     
     // if the scratchImage isn't in the format we want, specify it as a new texture
@@ -1738,7 +1731,7 @@ void RB_ShowImages( void )
     glFinish();
     
     
-    start = ri.Milliseconds();
+    start = Sys_Milliseconds();
     
     
     glEnableClientState( GL_TEXTURE_COORD_ARRAY );
@@ -1783,8 +1776,8 @@ void RB_ShowImages( void )
     glFinish();
     
     
-    end = ri.Milliseconds();
-    ri.Printf( PRINT_ALL, "%i msec to draw all images\n", end - start );
+    end = Sys_Milliseconds();
+    Com_Printf( "%i msec to draw all images\n", end - start );
     
     
 }
@@ -1823,7 +1816,7 @@ const void*  RB_SwapBuffers( const void* data )
         int sum = 0;
         unsigned char* stencilReadback;
         
-        stencilReadback = ri.Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
+        stencilReadback = Hunk_AllocateTempMemory( glConfig.vidWidth * glConfig.vidHeight );
         glPixelStorei( GL_PACK_ALIGNMENT, 1 );
         glReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, stencilReadback );
         
@@ -1833,7 +1826,7 @@ const void*  RB_SwapBuffers( const void* data )
         }
         
         backEnd.pc.c_overDraw += sum;
-        ri.Hunk_FreeTempMemory( stencilReadback );
+        Hunk_FreeTempMemory( stencilReadback );
     }
 #endif
     
@@ -1869,7 +1862,7 @@ void RB_ExecuteRenderCommands( const void* data )
 {
     int t1, t2;
     
-    t1 = ri.Milliseconds();
+    t1 = Sys_Milliseconds();
     
     if( !r_smp->integer || data == backEndData[0]->commands.cmds )
     {
@@ -1906,7 +1899,7 @@ void RB_ExecuteRenderCommands( const void* data )
             case RC_END_OF_LIST:
             default:
                 // stop rendering on this thread
-                t2 = ri.Milliseconds();
+                t2 = Sys_Milliseconds();
                 backEnd.pc.msec = t2 - t1;
                 return;
         }

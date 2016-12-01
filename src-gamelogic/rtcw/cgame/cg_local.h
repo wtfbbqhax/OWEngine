@@ -47,7 +47,6 @@
 #define __CG_LOCAL_H__
 
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/renderer/r_types.h"
 #include "../game/bg_public.h"
 #include "cg_public.h"
 
@@ -1845,14 +1844,7 @@ void CG_QueueMusic( void ); //----(SA)	added
 
 void CG_UpdateCvars( void );
 
-int CG_CrosshairPlayer( void );
-int CG_LastAttacker( void );
 void CG_LoadMenus( const char* menuFile );
-void CG_KeyEvent( int key, bool down );
-void CG_MouseEvent( int x, int y );
-void CG_EventHandling( int type );
-
-bool CG_GetTag( int clientNum, char* tagname, orientation_t* or );
 bool CG_GetWeaponTag( int clientNum, char* tagname, orientation_t* or );
 
 //
@@ -1868,8 +1860,6 @@ void CG_ZoomDown_f( void );
 void CG_ZoomIn_f( void );
 void CG_ZoomOut_f( void );
 void CG_ZoomUp_f( void );
-
-void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback );
 
 void CG_Concussive( centity_t* cent );
 //
@@ -2260,6 +2250,46 @@ void CG_TransitionPlayerState( playerState_t* ps, playerState_t* ops );
 void CG_CheckChangedPredictableEvents( playerState_t* ps );
 void CG_LoadClientInfo( clientInfo_t* ci );
 
+//
+// idCGameLocal
+//
+class idCGameLocal : public idCGame
+{
+public:
+    virtual void Init( int serverMessageNum, int serverCommandSequence );
+    // called when the level loads or when the renderer is restarted
+    // all media should be registered at this time
+    // cgame will display loading status by calling SCR_Update, which
+    // will call CG_DrawInformation during the loading process
+    // reliableCommandSequence will be 0 on fresh loads, but higher for
+    // demos, tourney restarts, or vid_restarts
+    
+    virtual void Shutdown();
+    // oportunity to flush and close any open files
+    
+    virtual bool ConsoleCommand();
+    // a console command has been issued locally that is not recognized by the
+    // main game system.
+    // use Cmd_Argc() / Cmd_Argv() to read the command, return qfalse if the
+    // command is not known to the game
+    
+    virtual void DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback );
+    // Generates and draws a game scene and status information at the given time.
+    // If demoPlayback is set, local movement prediction will not be enabled
+    
+    virtual int CrosshairPlayer( void );
+    
+    virtual int LastAttacker( void );
+    virtual void KeyEvent( int key, bool down );
+    
+    virtual void MouseEvent( int dx, int dy );
+    
+    virtual void EventHandling( int type );
+    
+    virtual bool GetTag( int clientNum, char* tagname, orientation_t* or );
+};
+
+extern idCGameLocal cgameLocal;
 
 //===============================================
 

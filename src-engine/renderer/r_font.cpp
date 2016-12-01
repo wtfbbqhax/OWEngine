@@ -161,7 +161,7 @@ FT_Bitmap* R_RenderGlyph( FT_GlyphSlot glyph, glyphInfo_t* glyphOut )
     }
     else
     {
-        ri.Printf( PRINT_ALL, "Non-outline fonts are not supported\n" );
+        Com_Printf( "Non-outline fonts are not supported\n" );
     }
     return NULL;
 }
@@ -190,7 +190,7 @@ void WriteTGA( char* filename, byte* data, int width, int height )
         buffer[i + 3] = data[i - 18 + 3];     // alpha
     }
     
-    ri.FS_WriteFile( filename, buffer, c );
+    FS_WriteFile( filename, buffer, c );
     
     //f = fopen (filename, "wb");
     //fwrite (buffer, 1, c, f);
@@ -373,7 +373,7 @@ float readFloat()
     return me.ffred;
 }
 
-void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
+void idRenderSystemLocal::RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
 {
 #ifdef BUILD_FREETYPE
     FT_Face face;
@@ -403,7 +403,7 @@ void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
     
     if( registeredFontCount >= MAX_FONTS )
     {
-        ri.Printf( PRINT_ALL, "RE_RegisterFont: Too many fonts registered already.\n" );
+        Com_Printf( "RE_RegisterFont: Too many fonts registered already.\n" );
         return;
     }
     
@@ -417,10 +417,10 @@ void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
         }
     }
     
-    len = ri.FS_ReadFile( name, NULL );
+    len = FS_ReadFile( name, NULL );
     if( len == sizeof( fontInfo_t ) )
     {
-        ri.FS_ReadFile( name, &faceData );
+        FS_ReadFile( name, &faceData );
         fdOffset = 0;
         fdFile = ( byte* )faceData;
         for( i = 0; i < GLYPHS_PER_FONT; i++ )
@@ -447,39 +447,39 @@ void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
         Q_strncpyz( font->name, name, sizeof( font->name ) );
         for( i = GLYPH_START; i < GLYPH_END; i++ )
         {
-            font->glyphs[i].glyph = RE_RegisterShaderNoMip( font->glyphs[i].shaderName );
+            font->glyphs[i].glyph = renderSystemLocal.RegisterShaderNoMip( font->glyphs[i].shaderName );
         }
         memcpy( &registeredFont[registeredFontCount++], font, sizeof( fontInfo_t ) );
         return;
     }
     
 #ifndef BUILD_FREETYPE
-    ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType code not available\n" );
+    Com_Printf( "idRenderSystemLocal::RegisterFont: FreeType code not available\n" );
 #else
     if( ftLibrary == NULL )
     {
-        ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType not initialized.\n" );
+        Com_Printf( "idRenderSystemLocal::RegisterFont: FreeType not initialized.\n" );
         return;
     }
     
-    len = ri.FS_ReadFile( fontName, &faceData );
+    len = FS_ReadFile( fontName, &faceData );
     if( len <= 0 )
     {
-        ri.Printf( PRINT_ALL, "RE_RegisterFont: Unable to read font file\n" );
+        Com_Printf( "idRenderSystemLocal::RegisterFont: Unable to read font file\n" );
         return;
     }
     
     // allocate on the stack first in case we fail
     if( FT_New_Memory_Face( ftLibrary, faceData, len, 0, &face ) )
     {
-        ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType2, unable to allocate new face.\n" );
+        Com_Printf( "idRenderSystemLocal::RegisterFont: FreeType2, unable to allocate new face.\n" );
         return;
     }
     
     
     if( FT_Set_Char_Size( face, pointSize << 6, pointSize << 6, dpi, dpi ) )
     {
-        ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType2, Unable to set face char size.\n" );
+        Com_Printf( "idRenderSystemLocal::RegisterFont: FreeType2, Unable to set face char size.\n" );
         return;
     }
     
@@ -491,7 +491,7 @@ void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
     out = Z_Malloc( 1024 * 1024 );
     if( out == NULL )
     {
-        ri.Printf( PRINT_ALL, "RE_RegisterFont: Z_Malloc failure during output image creation.\n" );
+        Com_Printf( "idRenderSystemLocal::RegisterFont: Z_Malloc failure during output image creation.\n" );
         return;
     }
     Com_Memset( out, 0, 1024 * 1024 );
@@ -582,12 +582,12 @@ void RE_RegisterFont( const char* fontName, int pointSize, fontInfo_t* font )
     
     if( r_saveFontData->integer )
     {
-        ri.FS_WriteFile( va( "fonts/fontImage_%i.dat", pointSize ), font, sizeof( fontInfo_t ) );
+        FS_WriteFile( va( "fonts/fontImage_%i.dat", pointSize ), font, sizeof( fontInfo_t ) );
     }
     
     Z_Free( out );
     
-    ri.FS_FreeFile( faceData );
+    FS_FreeFile( faceData );
 #endif
 }
 
@@ -598,7 +598,7 @@ void R_InitFreeType()
 #ifdef BUILD_FREETYPE
     if( FT_Init_FreeType( &ftLibrary ) )
     {
-        ri.Printf( PRINT_ALL, "R_InitFreeType: Unable to initialize FreeType.\n" );
+        Com_Printf( "R_InitFreeType: Unable to initialize FreeType.\n" );
     }
 #endif
     registeredFontCount = 0;

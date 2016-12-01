@@ -45,7 +45,6 @@
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-#include "snd_public.h"
 
 #define PAINTBUFFER_SIZE        4096                    // this is in samples
 
@@ -337,5 +336,68 @@ extern int sfxScratchIndex;
 extern unsigned char s_entityTalkAmplitude[MAX_CLIENTS];
 
 extern float S_GetStreamingFade( streamingSound_t* ss );    //----(SA)	added
+
+//
+// idSoundSystemLocal
+//
+class idSoundSystemLocal : public idSoundSystem
+{
+public:
+    virtual void Init( void ) ;
+    virtual void Shutdown( void ) ;
+    virtual void UpdateThread( void ) ;
+    
+    // if origin is NULL, the sound will be dynamically sourced from the entity
+    virtual void StartSound( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx ) ;
+    virtual void StartSoundEx( vec3_t origin, int entnum, int entchannel, sfxHandle_t sfx, int flags ) ;
+    virtual void StartLocalSound( sfxHandle_t sfx, int channelNum ) ;
+    
+    virtual void StartBackgroundTrack( const char* intro, const char* loop, int fadeupTime ) ;
+    virtual void StopBackgroundTrack( void ) ;
+    virtual void FadeStreamingSound( float targetvol, int time, int ssNum ) ;  //----(SA)	added
+    virtual void FadeAllSounds( float targetvol, int time ) ;    //----(SA)	added
+    
+    virtual void StartStreamingSound( const char* intro, const char* loop, int entnum, int channel, int attenuation ) ;
+    virtual void StopStreamingSound( int index ) ;
+    virtual void StopEntStreamingSound( int entNum ) ; //----(SA)	added
+    
+    // cinematics and voice-over-network will send raw samples
+    // 1.0 volume will be direct output of source samples
+    virtual void RawSamples( int samples, int rate, int width, int channels, const byte* data, float lvol, float rvol, int streamingIndex ) ;
+    
+    // stop all sounds and the background track
+    virtual void StopAllSounds( void ) ;
+    
+    // all continuous looping sounds must be added before calling Update
+    virtual void ClearLoopingSounds( void ) ;
+    virtual void ClearSounds( bool clearStreaming, bool clearMusic ) ; //----(SA)	modified
+    virtual void AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfxHandle, int volume ) ;
+    
+    // recompute the reletive volumes for all running sounds
+    // reletive to the given entityNum / orientation
+    virtual void Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], int inwater ) ;
+    
+    // let the sound system know where an entity currently is
+    virtual void UpdateEntityPosition( int entityNum, const vec3_t origin ) ;
+    
+    virtual void Update( void ) ;
+    
+    virtual void DisableSounds( void ) ;
+    
+    virtual void BeginRegistration( void ) ;
+    
+    // RegisterSound will allways return a valid sample, even if it
+    // has to create a placeholder.  This prevents continuous filesystem
+    // checks for missing files
+    virtual sfxHandle_t RegisterSound( const char* sample ) ;
+    
+    
+    virtual void DisplayFreeMemory( void ) ;
+    
+    //
+    virtual int GetVoiceAmplitude( int entityNum ) ;
+};
+
+extern idSoundSystemLocal soundSystemLocal;
 
 #endif // !__SND_LOCAL_H__

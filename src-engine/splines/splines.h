@@ -43,9 +43,6 @@
 #ifndef __SPLINES_H
 #define __SPLINES_H
 
-#ifndef MAYATOOLS_EXPORTS
-#include "../renderer/qgl.h"
-#endif
 #include "util_list.h"
 #include "util_str.h"
 #include "math_vector.h"
@@ -335,10 +332,10 @@ public:
     }
     
     
-    void setSegmentTime( int index, int time )
+    void setSegmentTime( int index, int _time )
     {
         assert( index >= 0 && index < splinePoints.Num() );
-        splineTime[index] = time;
+        splineTime[index] = _time;
     }
     
     int getSegmentTime( int index )
@@ -346,10 +343,10 @@ public:
         assert( index >= 0 && index < splinePoints.Num() );
         return ( int )splineTime[index];
     }
-    void addSegmentTime( int index, int time )
+    void addSegmentTime( int index, int _time )
     {
         assert( index >= 0 && index < splinePoints.Num() );
-        splineTime[index] += time;
+        splineTime[index] += _time;
     }
     
     float totalDistance();
@@ -545,7 +542,7 @@ public:
         return NULL;
     }
     
-    virtual void draw( bool editMode ) {};
+    virtual void draw( bool _editMode ) {};
     
     virtual void parse( const char * ( *text ) ) {};
     virtual void write( fileHandle_t file, const char* name );
@@ -656,9 +653,9 @@ public:
         return &pos;
     }
     
-    virtual void draw( bool editMode )
+    virtual void draw( bool _editMode )
     {
-        glLabeledPoint( blue, pos, ( editMode ) ? 5 : 3, "Fixed point" );
+        glLabeledPoint( blue, pos, ( _editMode ) ? 5 : 3, "Fixed point" );
     }
     
 protected:
@@ -741,10 +738,10 @@ public:
         }
     }
     
-    virtual void draw( bool editMode )
+    virtual void draw( bool _editMode )
     {
-        glLabeledPoint( blue, startPos, ( editMode ) ? 5 : 3, "Start interpolated" );
-        glLabeledPoint( blue, endPos, ( editMode ) ? 5 : 3, "End interpolated" );
+        glLabeledPoint( blue, startPos, ( _editMode ) ? 5 : 3, "Start interpolated" );
+        glLabeledPoint( blue, endPos, ( _editMode ) ? 5 : 3, "End interpolated" );
         /*	qglBegin( GL_LINES );
         	qglVertex3fv( startPos );
         	qglVertex3fv( endPos );
@@ -831,9 +828,9 @@ public:
         target.addPoint( x, y, z );
     }
     
-    virtual void draw( bool editMode )
+    virtual void draw( bool _editMode )
     {
-        target.draw( editMode );
+        target.draw( _editMode );
     }
     
     virtual void updateSelection( const idVec3& move )
@@ -1147,11 +1144,11 @@ public:
     }
     
     
-    void setActiveTargetByName( const char* name )
+    void setActiveTargetByName( const char* _name )
     {
         for( int i = 0; i < targetPositions.Num(); i++ )
         {
-            if( Q_stricmp( name, targetPositions[i]->getName() ) == 0 )
+            if( Q_stricmp( _name, targetPositions[i]->getName() ) == 0 )
             {
                 setActiveTarget( i );
                 return;
@@ -1212,17 +1209,17 @@ public:
         return b;
     }
     
-    void draw( bool editMode )
+    void draw( bool _editMode )
     {
         // gcc doesn't allow casting away from bools
         // why?  I've no idea...
         if( cameraPosition )
         {
-            cameraPosition->draw( ( bool )( ( editMode || cameraRunning ) && cameraEdit ) );
+            cameraPosition->draw( ( bool )( ( _editMode || cameraRunning ) && cameraEdit ) );
             int count = targetPositions.Num();
             for( int i = 0; i < count; i++ )
             {
-                targetPositions[i]->draw( ( bool )( ( editMode || cameraRunning ) && i == activeTarget && !cameraEdit ) );
+                targetPositions[i]->draw( ( bool )( ( _editMode || cameraRunning ) && i == activeTarget && !cameraEdit ) );
             }
         }
     }

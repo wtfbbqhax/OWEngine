@@ -668,7 +668,7 @@ static mnode_t* R_PointInLeaf( vec3_t p )
     
     if( !tr.world )
     {
-        ri.Error( ERR_DROP, "R_PointInLeaf: bad model" );
+        Com_Error( ERR_DROP, "R_PointInLeaf: bad model" );
     }
     
     node = tr.world->nodes;
@@ -751,7 +751,7 @@ static void R_MarkLeaves( void )
         r_showcluster->modified = false;
         if( r_showcluster->integer )
         {
-            ri.Printf( PRINT_ALL, "cluster:%i  area:%i\n", cluster, leaf->area );
+            Com_Printf( "cluster:%i  area:%i\n", cluster, leaf->area );
         }
     }
     

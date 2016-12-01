@@ -48,11 +48,12 @@ void S_SoundList_f( void );
 void S_Music_f( void );
 void S_QueueMusic_f( void );
 void S_StreamingSound_f( void );
-void S_ClearSounds( bool clearStreaming, bool clearMusic ); //----(SA)	modified
 
 void S_Update_Mix();
-void S_StopAllSounds( void );
 void S_UpdateStreamingSounds( void );
+
+idSoundSystemLocal soundSystemLocal;
+idSoundSystem* soundSystem = &soundSystemLocal;
 
 snd_t snd;  // globals for sound
 
@@ -164,10 +165,10 @@ void S_ChannelSetup();
 
 /*
 ================
-S_Init
+idSoundSystemLocal::Init
 ================
 */
-void S_Init( void )
+void idSoundSystemLocal::Init( void )
 {
     cvar_t*  cv;
     bool r;
@@ -211,7 +212,7 @@ void S_Init( void )
     Cmd_AddCommand( "streamingsound", S_StreamingSound_f );
     Cmd_AddCommand( "s_list", S_SoundList_f );
     Cmd_AddCommand( "s_info", S_SoundInfo_f );
-    Cmd_AddCommand( "s_stop", S_StopAllSounds );
+    //Cmd_AddCommand( "s_stop", S_StopAllSounds );
     
     r = SNDDMA_Init();
     Com_Printf( "------------------------------------\n" );
@@ -230,7 +231,7 @@ void S_Init( void )
         s_soundtime = 0;
         s_paintedtime = 0;
         
-        S_StopAllSounds();
+        soundSystem->StopAllSounds();
         
         S_SoundInfo_f();
         S_ChannelSetup();
@@ -316,10 +317,10 @@ void S_ChannelSetup()
 
 /*
 ================
-S_Shutdown
+idSoundSystemLocal::Shutdown
 ================
 */
-void S_Shutdown( void )
+void idSoundSystemLocal::Shutdown( void )
 {
     if( !snd.s_soundStarted )
     {
@@ -490,26 +491,25 @@ void S_DefaultSound( sfx_t* sfx )
 
 /*
 ===================
-S_DisableSounds
+idSoundSystemLocal::DisableSounds
 
 Disables sounds until the next S_BeginRegistration.
 This is called when the hunk is cleared and the sounds
 are no longer valid.
 ===================
 */
-void S_DisableSounds( void )
+void idSoundSystemLocal::DisableSounds( void )
 {
-    S_StopAllSounds();
+    soundSystem->StopAllSounds();
     snd.s_soundMute = 1;
 }
 
 /*
 =====================
-S_BeginRegistration
-
+idSoundSystemLocal::BeginRegistration
 =====================
 */
-void S_BeginRegistration( void )
+void idSoundSystemLocal::BeginRegistration( void )
 {
     sfx_t*   sfx;
     
@@ -530,16 +530,16 @@ void S_BeginRegistration( void )
 
 /*
 ==================
-S_RegisterSound
+idSoundSystemLocal::RegisterSound
 
 Creates a default buzz sound if the file can't be loaded
 ==================
 */
-sfxHandle_t S_RegisterSound( const char* name, bool compressed )
+sfxHandle_t idSoundSystemLocal::RegisterSound( const char* name )
 {
     sfx_t*   sfx;
     
-    compressed = false;
+    bool compressed = false;
     if( !snd.s_soundStarted )
     {
         return 0;
@@ -700,7 +700,7 @@ Entchannel 0 will never override a playing sound
 */
 void S_ThreadStartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags );
 
-void S_StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags )
+void idSoundSystemLocal::StartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle, int flags )
 {
     if( !snd.s_soundStarted || snd.s_soundMute || ( cls.state != CA_ACTIVE && cls.state != CA_DISCONNECTED ) )
     {
@@ -955,22 +955,22 @@ void S_ThreadStartSoundEx( vec3_t origin, int entityNum, int entchannel, sfxHand
 
 /*
 ==============
-S_StartSound
+idSoundSystemLocal::StartSound
 ==============
 */
-void S_StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle )
+void idSoundSystemLocal::StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfxHandle )
 {
-    S_StartSoundEx( origin, entityNum, entchannel, sfxHandle, 0 );
+    StartSoundEx( origin, entityNum, entchannel, sfxHandle, 0 );
 }
 
 
 
 /*
 ==================
-S_StartLocalSound
+idSoundSystemLocal::StartLocalSound
 ==================
 */
-void S_StartLocalSound( sfxHandle_t sfxHandle, int channelNum )
+void idSoundSystemLocal::StartLocalSound( sfxHandle_t sfxHandle, int channelNum )
 {
     if( !snd.s_soundStarted || snd.s_soundMute )
     {
@@ -983,7 +983,7 @@ void S_StartLocalSound( sfxHandle_t sfxHandle, int channelNum )
         return;
     }
     
-    S_StartSound( NULL, listener_number, channelNum, sfxHandle );
+    StartSound( NULL, listener_number, channelNum, sfxHandle );
 }
 
 
@@ -1012,15 +1012,15 @@ void S_ClearSoundBuffer( bool killStreaming )
 //	snd.s_clearSoundBuffer = 4;
     snd.s_clearSoundBuffer = 3;
     
-    S_ClearSounds( killStreaming, true );    // do this now since you might not be allowed to in a sec (no multi-threaeded)
+    soundSystemLocal.ClearSounds( killStreaming, true );    // do this now since you might not be allowed to in a sec (no multi-threaeded)
 }
 
 /*
 ==================
-S_StopAllSounds
+idSoundSystemLocal::StopAllSounds
 ==================
 */
-void S_StopAllSounds( void )
+void idSoundSystemLocal::StopAllSounds( void )
 {
     int i;
     if( !snd.s_soundStarted )
@@ -1042,11 +1042,11 @@ void S_StopAllSounds( void )
     Sys_LeaveCriticalSection( crit );
     
     // stop the background music
-    S_StopBackgroundTrack();
+    soundSystemLocal.StopBackgroundTrack();
     
     S_ClearSoundBuffer( true );
     
-    S_UpdateThread();   // clear the stuff that needs to clear
+    soundSystemLocal.UpdateThread();   // clear the stuff that needs to clear
 }
 
 /*
@@ -1059,18 +1059,17 @@ continuous looping sounds are added each frame
 
 /*
 ==================
-S_ClearLoopingSounds
-
+idSoundSystemLocal::ClearLoopingSounds
 ==================
 */
-void S_ClearLoopingSounds( void )
+void idSoundSystemLocal::ClearLoopingSounds( void )
 {
     snd.numLoopSounds = 0;
 }
 
 /*
 ==================
-S_AddLoopingSound
+idSoundSystemLocal::AddLoopingSound
 
 Called during entity generation for a frame
 Include velocity in case I get around to doing doppler...
@@ -1081,7 +1080,7 @@ NOTE: 'volume' with underwater bit set stays at set volume underwater
 
 #define UNDERWATER_BIT  8
 
-void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfxHandle, int volume )
+void idSoundSystemLocal::AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocity, const int range, sfxHandle_t sfxHandle, int volume )
 {
     sfx_t* sfx;
     
@@ -1100,7 +1099,7 @@ void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocit
     
     if( sfxHandle < 0 || sfxHandle >= snd.s_numSfx )
     {
-        Com_Error( ERR_DROP, "S_AddLoopingSound: handle %i out of range", sfxHandle );
+        Com_Error( ERR_DROP, "idSoundSystemLocal::AddLoopingSound: handle %i out of range", sfxHandle );
     }
     
     sfx = &s_knownSfx[ sfxHandle ];
@@ -1303,12 +1302,12 @@ portable_samplepair_t* S_GetRawSamplePointer()
 
 /*
 ============
-S_RawSamples
+idSoundSystemLocal::RawSamples
 
 Music streaming
 ============
 */
-void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte* data, float lvol, float rvol, int streamingIndex )
+void idSoundSystemLocal::RawSamples( int samples, int rate, int width, int _s_channels, const byte* data, float lvol, float rvol, int streamingIndex )
 {
     int i;
     int src, dst;
@@ -1425,16 +1424,16 @@ void S_RawSamples( int samples, int rate, int width, int _s_channels, const byte
 
 /*
 =====================
-S_UpdateEntityPosition
+idSoundSystemLocal::UpdateEntityPosition
 
 let the sound system know where an entity currently is
 ======================
 */
-void S_UpdateEntityPosition( int entityNum, const vec3_t origin )
+void idSoundSystemLocal::UpdateEntityPosition( int entityNum, const vec3_t origin )
 {
     if( entityNum < 0 || entityNum > MAX_GENTITIES )
     {
-        Com_Error( ERR_DROP, "S_UpdateEntityPosition: bad entitynum %i", entityNum );
+        Com_Error( ERR_DROP, "idSoundSystemLocal::UpdateEntityPosition: bad entitynum %i", entityNum );
     }
     VectorCopy( origin, snd.entityPositions[entityNum] );
 }
@@ -1442,12 +1441,12 @@ void S_UpdateEntityPosition( int entityNum, const vec3_t origin )
 
 /*
 ============
-S_Respatialize
+idSoundSystemLocal::Respatialize
 
 Change the volumes of all the playing sounds for changes in their positions
 ============
 */
-void S_Respatialize( int entityNum, const vec3_t head, vec3_t axis[3], int inwater )
+void idSoundSystemLocal::Respatialize( int entityNum, const vec3_t head, vec3_t axis[3], int inwater )
 {
 
     if( !snd.s_soundStarted || ( snd.s_soundMute == 1 ) )
@@ -1566,11 +1565,11 @@ int S_CheckForQueuedMusic( void )
     }
     else if( snd.nextMusicTrackType == QUEUED_PLAY_ONCE )
     {
-        S_StartBackgroundTrack( nextMusicVA, ss->name, 0 );      // play once, then go back to looping what's currently playing
+        soundSystemLocal.StartBackgroundTrack( nextMusicVA, ss->name, 0 );      // play once, then go back to looping what's currently playing
     }
     else            // QUEUED_PLAY_LOOPED
     {
-        S_StartBackgroundTrack( nextMusicVA, nextMusicVA, 0 );   // take over
+        soundSystemLocal.StartBackgroundTrack( nextMusicVA, nextMusicVA, 0 );   // take over
     }
     
     snd.nextMusicTrackType = 0;     // clear out music queue
@@ -1581,13 +1580,13 @@ int S_CheckForQueuedMusic( void )
 
 /*
 ============
-S_Update
+idSoundSystemLocal::Update
 
 Called once each time through the main loop
 ============
 */
 
-void S_Update( void )
+void idSoundSystemLocal::Update( void )
 {
     int i;
     int total;
@@ -1619,16 +1618,16 @@ void S_Update( void )
     }
     // add loopsounds
     S_AddLoopSounds();
-    S_UpdateThread();
+    soundSystemLocal.UpdateThread();
 }
 
 
 /*
 ==============
-S_ClearSounds
+idSoundSystemLocal::ClearSounds
 ==============
 */
-void S_ClearSounds( bool clearStreaming, bool clearMusic )
+void idSoundSystemLocal::ClearSounds( bool clearStreaming, bool clearMusic )
 {
     int clear;
     int i;
@@ -1638,7 +1637,7 @@ void S_ClearSounds( bool clearStreaming, bool clearMusic )
     Sys_EnterCriticalSection( crit );
     
     // stop looping sounds
-    S_ClearLoopingSounds();
+    soundSystemLocal.ClearLoopingSounds();
     
     // RF, moved this up so streaming sounds dont get updated with the music, below, and leave us with a snippet off streaming sounds after we reload
     if( clearStreaming )       // we don't want to stop guys with long dialogue from getting cut off by a file read
@@ -1702,10 +1701,10 @@ void S_ClearSounds( bool clearStreaming, bool clearMusic )
 
 /*
 ==============
-S_UpdateThread
+idSoundSystemLocal::UpdateThread
 ==============
 */
-void S_UpdateThread( void )
+void idSoundSystemLocal::UpdateThread( void )
 {
 
     if( !snd.s_soundStarted || ( snd.s_soundMute == 1 ) )
@@ -1721,7 +1720,7 @@ void S_UpdateThread( void )
     
     if( snd.s_clearSoundBuffer )
     {
-        S_ClearSounds( true, ( bool )( snd.s_clearSoundBuffer >= 4 ) );  //----(SA)	modified
+        soundSystemLocal.ClearSounds( true, ( bool )( snd.s_clearSoundBuffer >= 4 ) );  //----(SA)	modified
         snd.s_clearSoundBuffer = 0;
     }
     else
@@ -1762,7 +1761,7 @@ void S_GetSoundtime( void )
         {
             buffers = 0;
             s_paintedtime = fullsamples;
-            S_StopAllSounds();
+            soundSystem->StopAllSounds();
         }
     }
     oldsamplepos = samplepos;
@@ -1917,10 +1916,10 @@ void S_Play_f( void )
         {
             Q_strncpyz( name, Cmd_Argv( i ), sizeof( name ) );
         }
-        h = S_RegisterSound( name, false );
+        h = soundSystemLocal.RegisterSound( name );
         if( h )
         {
-            S_StartLocalSound( h, CHAN_LOCAL_SOUND );
+            soundSystemLocal.StartLocalSound( h, CHAN_LOCAL_SOUND );
         }
         i++;
     }
@@ -1950,7 +1949,7 @@ void S_QueueMusic_f( void )
     }
     
     // NOTE: could actually use this to touch the file now so there's not a hit when the queue'd music is played?
-    S_StartBackgroundTrack( Cmd_Argv( 1 ), Cmd_Argv( 1 ), type );
+    soundSystemLocal.StartBackgroundTrack( Cmd_Argv( 1 ), Cmd_Argv( 1 ), type );
 }
 
 void S_Music_f( void )
@@ -1961,11 +1960,11 @@ void S_Music_f( void )
     
     if( c == 2 )
     {
-        S_StartBackgroundTrack( Cmd_Argv( 1 ), Cmd_Argv( 1 ), 0 );
+        soundSystemLocal.StartBackgroundTrack( Cmd_Argv( 1 ), Cmd_Argv( 1 ), 0 );
     }
     else if( c == 3 )
     {
-        S_StartBackgroundTrack( Cmd_Argv( 1 ), Cmd_Argv( 2 ), 0 );
+        soundSystemLocal.StartBackgroundTrack( Cmd_Argv( 1 ), Cmd_Argv( 2 ), 0 );
         Q_strncpyz( streamingSounds[0].loop, Cmd_Argv( 2 ), sizeof( streamingSounds[0].loop ) );
     }
     else
@@ -1984,11 +1983,11 @@ void S_StreamingSound_f( void )
     
     if( c == 2 )
     {
-        S_StartStreamingSound( Cmd_Argv( 1 ), 0, -1, 0, 0 );
+        soundSystemLocal.StartStreamingSound( Cmd_Argv( 1 ), 0, -1, 0, 0 );
     }
     else if( c == 5 )
     {
-        S_StartStreamingSound( Cmd_Argv( 1 ), 0, atoi( Cmd_Argv( 2 ) ), atoi( Cmd_Argv( 3 ) ), atoi( Cmd_Argv( 4 ) ) );
+        soundSystemLocal.StartStreamingSound( Cmd_Argv( 1 ), 0, atoi( Cmd_Argv( 2 ) ), atoi( Cmd_Argv( 3 ) ), atoi( Cmd_Argv( 4 ) ) );
     }
     else
     {
@@ -2020,7 +2019,7 @@ void S_SoundList_f( void )
         Com_Printf( "%6i[%s] : %s[%s]\n", size, type[sfx->soundCompressionMethod], sfx->soundName, mem[sfx->inMemory] );
     }
     Com_Printf( "Total resident: %i\n", total );
-    S_DisplayFreeMemory();
+    soundSystemLocal.DisplayFreeMemory();
 }
 
 
@@ -2086,10 +2085,10 @@ int S_FindWavChunk( const fileHandle_t f, const char* chunk )
 
 /*
 ======================
-S_StartBackgroundTrack
+idSoundSystemLocal::StartBackgroundTrack
 ======================
 */
-void S_StartBackgroundTrack( const char* intro, const char* loop, int fadeupTime )
+void idSoundSystemLocal::StartBackgroundTrack( const char* intro, const char* loop, int fadeupTime )
 {
     int len;
     char dump[16];
@@ -2293,18 +2292,17 @@ void S_StartBackgroundTrack( const char* intro, const char* loop, int fadeupTime
     ss->kill = 0;
     numStreamingSounds++;
     
-    Com_DPrintf( "S_StartBackgroundTrack - Success\n" );
+    Com_DPrintf( "idSoundSystemLocal::StartBackgroundTrack - Success\n" );
     Sys_LeaveCriticalSection( crit );
 }
 
 
 /*
 ==============
-S_FadeAllSounds
-
+idSoundSystemLocal::FadeAllSounds
 ==============
 */
-void S_FadeAllSounds( float targetVol, int time )
+void idSoundSystemLocal::FadeAllSounds( float targetVol, int time )
 {
 
     snd.volStart = snd.volCurrent;
@@ -2325,10 +2323,10 @@ void S_FadeAllSounds( float targetVol, int time )
 //----(SA)	added
 /*
 ==============
-S_FadeStreamingSound
+idSoundSystemLocal::FadeStreamingSound
 ==============
 */
-void S_FadeStreamingSound( float targetVol, int time, int ssNum )
+void idSoundSystemLocal::FadeStreamingSound( float targetVol, int time, int ssNum )
 {
     streamingSound_t* ss;
     
@@ -2420,14 +2418,14 @@ float S_GetStreamingFade( streamingSound_t* ss )
 
 /*
 ======================
-S_StartStreamingSound
+idSoundSystemLocal::StartStreamingSound
 
   FIXME: record the starting cg.time of the sound, so we can determine the
   position by looking at the current cg.time, this way pausing or loading a
   savegame won't screw up the timing of important sounds
 ======================
 */
-void S_StartStreamingSound( const char* intro, const char* loop, int entnum, int channel, int attenuation )
+void idSoundSystemLocal::StartStreamingSound( const char* intro, const char* loop, int entnum, int channel, int attenuation )
 {
     int len;
     char dump[16];
@@ -2453,7 +2451,7 @@ void S_StartStreamingSound( const char* intro, const char* loop, int entnum, int
             intro = "";
         }
     }
-    Com_DPrintf( "S_StartStreamingSound( %s, %s, %i, %i, %i )\n", intro, loop, entnum, channel, attenuation );
+    Com_DPrintf( "idSoundSystemLocal::StartStreamingSound( %s, %s, %i, %i, %i )\n", intro, loop, entnum, channel, attenuation );
     
     // look for a free track, but first check for overriding a currently playing sound for this entity
     ss = NULL;
@@ -2600,10 +2598,10 @@ void S_StartStreamingSound( const char* intro, const char* loop, int entnum, int
 
 /*
 ======================
-S_StopStreamingSound
+idSoundSystemLocal::StopStreamingSound
 ======================
 */
-void S_StopStreamingSound( int index )
+void idSoundSystemLocal::StopStreamingSound( int index )
 {
     if( !streamingSounds[index].file )
     {
@@ -2617,10 +2615,10 @@ void S_StopStreamingSound( int index )
 //----(SA)	added
 /*
 ==============
-S_StopEntStreamingSound
+idSoundSystemLocal::StopEntStreamingSound
 ==============
 */
-void S_StopEntStreamingSound( int entNum )
+void idSoundSystemLocal::StopEntStreamingSound( int entNum )
 {
     int i;
     
@@ -2641,7 +2639,7 @@ void S_StopEntStreamingSound( int entNum )
             continue;
         }
         
-        S_StopStreamingSound( i );
+        soundSystemLocal.StopStreamingSound( i );
         s_rawend[i] = 0;    // stop it /now/
     }
 }
@@ -2649,12 +2647,12 @@ void S_StopEntStreamingSound( int entNum )
 
 /*
 ======================
-S_StopBackgroundTrack
+idSoundSystemLocal::StopBackgroundTrack
 ======================
 */
-void S_StopBackgroundTrack( void )
+void idSoundSystemLocal::StopBackgroundTrack( void )
 {
-    S_StopStreamingSound( 0 );
+    soundSystemLocal.StopStreamingSound( 0 );
 }
 
 /*
@@ -2820,9 +2818,9 @@ void S_UpdateStreamingSounds( void )
             }
             
             // add to raw buffer
-            S_RawSamples( fileSamples, ss->info.rate,
-                          ss->info.width, ss->info.channels, raw, lvol, rvol, i );
-                          
+            soundSystemLocal.RawSamples( fileSamples, ss->info.rate,
+                                         ss->info.width, ss->info.channels, raw, lvol, rvol, i );
+                                         
             *rp = true;
             
             ss->samples -= fileSamples;
@@ -2893,7 +2891,7 @@ void S_UpdateStreamingSounds( void )
                         }
                         else                                                // start up the sound
                         {
-                            S_StartBackgroundTrack( ss->loop, ss->loop, 0 );
+                            soundSystemLocal.StartBackgroundTrack( ss->loop, ss->loop, 0 );
                             ss->looped = true; // this is now the music ss->file, no need to re-start next time through
                             break;
                         }

@@ -42,7 +42,6 @@
 
 #include "../game/g_local.h"
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/botlib/botlib.h"      //bot lib interface
 #include "../../../src-engine/botlib/be_aas.h"
 #include "../../../src-engine/botlib/be_ea.h"
 #include "../../../src-engine/botlib/be_ai_gen.h"
@@ -1084,7 +1083,7 @@ char* AIFunc_Heinrich_RaiseDeadStart( cast_state_t* cs )
     {
         if( !trav->active && trav->spawnflags & 4 )
         {
-            trav->active = 1;   // let them release spirits now
+            trav->active = true;   // let them release spirits now
         }
     }
     // is the player outside the circle?
@@ -1133,7 +1132,7 @@ char* AIFunc_Heinrich_SpawnSpiritsStart( cast_state_t* cs )
     {
         if( !trav->active && trav->spawnflags & 4 )
         {
-            trav->active = 1;   // let them release spirits now
+            trav->active = true;   // let them release spirits now
         }
     }
     // is the player outside the circle?

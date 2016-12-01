@@ -755,7 +755,8 @@ static void CG_MapRestart( void )
     
     // (SA) clear zoom (so no warpies)
     cg.zoomedBinoc = false;
-    cg.zoomedBinoc = cg.zoomedScope = false;
+    cg.zoomedBinoc = false;
+    cg.zoomedScope = 0;
     cg.zoomTime = 0;
     cg.zoomval = 0;
     

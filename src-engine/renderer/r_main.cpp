@@ -54,8 +54,8 @@ static float s_flipMatrix[16] =
     0, 0, 0, 1
 };
 
-
-refimport_t ri;
+idRenderSystemLocal	renderSystemLocal;
+idRenderSystem*	renderSystem = &renderSystemLocal;
 
 // entities that will have procedurally generated surfaces will just
 // point at this for their sorting surface
@@ -233,7 +233,7 @@ void R_FogOn( void )
 //----(SA)
 /*
 ==============
-R_SetFog
+idRenderSystemLocal::SetFog
 
   if fogvar == FOG_CMD_SWITCHFOG {
 	fogvar is the command
@@ -249,7 +249,7 @@ R_SetFog
   }
 ==============
 */
-void R_SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density )
+void idRenderSystemLocal::SetFog( int fogvar, int var1, int var2, float r, float g, float b, float density )
 {
     if( fogvar != FOG_CMD_SWITCHFOG )      // just set the parameters and return
     {
@@ -874,7 +874,7 @@ void R_SetFrameFog( void )
     {
         if( !glfogsettings[FOG_TARGET].registered )
         {
-            ri.Printf( PRINT_ALL, "no fog - calc zFar: %0.1f\n", tr.viewParms.zFar );
+            Com_Printf( "no fog - calc zFar: %0.1f\n", tr.viewParms.zFar );
             return;
         }
     }
@@ -966,11 +966,11 @@ void R_SetFrameFog( void )
     {
         if( glfogsettings[FOG_CURRENT].mode == GL_LINEAR )
         {
-            ri.Printf( PRINT_ALL, "farclip fog - den: %0.1f  calc zFar: %0.1f  fog zfar: %0.1f\n", glfogsettings[FOG_CURRENT].density, tr.viewParms.zFar, glfogsettings[FOG_CURRENT].end );
+            Com_Printf( "farclip fog - den: %0.1f  calc zFar: %0.1f  fog zfar: %0.1f\n", glfogsettings[FOG_CURRENT].density, tr.viewParms.zFar, glfogsettings[FOG_CURRENT].end );
         }
         else
         {
-            ri.Printf( PRINT_ALL, "density fog - den: %0.6f  calc zFar: %0.1f  fog zFar: %0.1f\n", glfogsettings[FOG_CURRENT].density, tr.viewParms.zFar, glfogsettings[FOG_CURRENT].end );
+            Com_Printf( "density fog - den: %0.6f  calc zFar: %0.1f  fog zFar: %0.1f\n", glfogsettings[FOG_CURRENT].density, tr.viewParms.zFar, glfogsettings[FOG_CURRENT].end );
         }
     }
 }
@@ -1004,7 +1004,7 @@ static void SetFarClip( void )
         
         if( r_speeds->integer == 5 )
         {
-            ri.Printf( PRINT_ALL, "r_zfar value forcing farclip at: %f\n", tr.viewParms.zFar );
+            Com_Printf( "r_zfar value forcing farclip at: %f\n", tr.viewParms.zFar );
         }
         
         return;
@@ -1444,7 +1444,7 @@ bool R_GetPortalOrientations( drawSurf_t* drawSurf, int entityNum,
     // to see a surface before the server has communicated the matching
     // portal surface entity, so we don't want to print anything here...
     
-    //ri.Printf( PRINT_ALL, "Portal surface without a portal entity\n" );
+    //Com_Printf( "Portal surface without a portal entity\n" );
     
     return false;
 }
@@ -1636,7 +1636,7 @@ bool R_MirrorViewBySurface( drawSurf_t* drawSurf, int entityNum )
     // don't recursively mirror
     if( tr.viewParms.isPortal )
     {
-        ri.Printf( PRINT_DEVELOPER, "WARNING: recursive mirror/portal found\n" );
+        Com_Printf( "WARNING: recursive mirror/portal found\n" );
         return false;
     }
     
@@ -2028,7 +2028,7 @@ void R_SortDrawSurfs( drawSurf_t* drawSurfs, int numDrawSurfs )
         // no shader should ever have this sort type
         if( shader->sort == SS_BAD )
         {
-            ri.Error( ERR_DROP, "Shader '%s'with sort == SS_BAD", shader->name );
+            Com_Error( ERR_DROP, "Shader '%s'with sort == SS_BAD", shader->name );
         }
         
         // if the mirror was completely clipped away, we may need to check another surface
@@ -2150,13 +2150,13 @@ void R_AddEntitySurfaces( void )
                             R_AddDrawSurf( &entitySurface, tr.defaultShader, 0, 0, ATI_TESS_NONE );
                             break;
                         default:
-                            ri.Error( ERR_DROP, "R_AddEntitySurfaces: Bad modeltype" );
+                            Com_Error( ERR_DROP, "R_AddEntitySurfaces: Bad modeltype" );
                             break;
                     }
                 }
                 break;
             default:
-                ri.Error( ERR_DROP, "R_AddEntitySurfaces: Bad reType" );
+                Com_Error( ERR_DROP, "R_AddEntitySurfaces: Bad reType" );
         }
     }
     
@@ -2241,7 +2241,7 @@ void R_DebugGraphics( void )
     
     GL_Bind( tr.whiteImage );
     GL_Cull( CT_FRONT_SIDED );
-    ri.CM_DrawDebugSurface( R_DebugPolygon );
+    collisionModelManager->DrawDebugSurface( R_DebugPolygon );
 }
 
 

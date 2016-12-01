@@ -102,11 +102,10 @@ void R_ToggleSmpFrame( void )
 
 /*
 ====================
-RE_ClearScene
-
+idRenderSystemLocal::ClearScene
 ====================
 */
-void RE_ClearScene( void )
+void idRenderSystemLocal::ClearScene( void )
 {
     r_firstSceneDlight = r_numdlights;
     r_firstSceneCorona = r_numcoronas;
@@ -148,11 +147,10 @@ void R_AddPolygonSurfaces( void )
 
 /*
 =====================
-RE_AddPolyToScene
-
+idRenderSystemLocal::AddPolyToScene
 =====================
 */
-void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts )
+void idRenderSystemLocal::AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts )
 {
     srfPoly_t*   poly;
     int i;
@@ -167,7 +165,7 @@ void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts
     
     if( !hShader )
     {
-        ri.Printf( PRINT_WARNING, "WARNING: RE_AddPolyToScene: NULL poly shader\n" );
+        Com_Printf( "WARNING: idRenderSystemLocal::AddPolyToScene: NULL poly shader\n" );
         return;
     }
     
@@ -233,11 +231,10 @@ void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts
 // Ridah
 /*
 =====================
-RE_AddPolysToScene
-
+idRenderSystemLocal::AddPolysToScene
 =====================
 */
-void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys )
+void idRenderSystemLocal::AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* verts, int numPolys )
 {
     srfPoly_t*   poly;
     int i;
@@ -253,7 +250,7 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* vert
     
     if( !hShader )
     {
-        ri.Printf( PRINT_WARNING, "WARNING: RE_AddPolysToScene: NULL poly shader\n" );
+        Com_Printf( "WARNING: idRenderSystemLocal::AddPolysToScene: NULL poly shader\n" );
         return;
     }
     
@@ -261,7 +258,7 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* vert
     {
         if( r_numpolyverts + numVerts >= max_polyverts || r_numpolys >= max_polys )
         {
-//			ri.Printf( PRINT_WARNING, "WARNING: RE_AddPolysToScene: MAX_POLYS or MAX_POLYVERTS reached\n");
+//			Com_Printf( "WARNING: RE_AddPolysToScene: MAX_POLYS or MAX_POLYVERTS reached\n");
             return;
         }
         
@@ -329,14 +326,12 @@ void RE_AddPolysToScene( qhandle_t hShader, int numVerts, const polyVert_t* vert
 
 //=================================================================================
 
-
 /*
 =====================
-RE_AddRefEntityToScene
-
+idRenderSystemLocal::AddRefEntityToScene
 =====================
 */
-void RE_AddRefEntityToScene( const refEntity_t* ent )
+void idRenderSystemLocal::AddRefEntityToScene( const refEntity_t* ent )
 {
     if( !tr.registered )
     {
@@ -349,7 +344,7 @@ void RE_AddRefEntityToScene( const refEntity_t* ent )
     }
     if( ent->reType < 0 || ent->reType >= RT_MAX_REF_ENTITY_TYPE )
     {
-        ri.Error( ERR_DROP, "RE_AddRefEntityToScene: bad reType %i", ent->reType );
+        Com_Error( ERR_DROP, "idRenderSystemLocal::AddRefEntityToScene: bad reType %i", ent->reType );
     }
     
     backEndData[tr.smpFrame]->entities[r_numentities].e = *ent;
@@ -361,11 +356,10 @@ void RE_AddRefEntityToScene( const refEntity_t* ent )
 // Ridah, added support for overdraw field
 /*
 =====================
-RE_AddLightToScene
-
+idRenderSystemLocal::AddLightToScene
 =====================
 */
-void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw )
+void idRenderSystemLocal::AddLightToScene( const vec3_t org, float intensity, float r, float g, float b, int overdraw )
 {
     dlight_t*    dl;
     
@@ -419,11 +413,11 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
     
     if( overdraw == 10 )    // sorry, hijacking 10 for a quick hack (SA)
     {
-        dl->dlshader = R_GetShaderByHandle( RE_RegisterShader( "negdlightshader" ) );
+        dl->dlshader = R_GetShaderByHandle( renderSystemLocal.RegisterShader( "negdlightshader" ) );
     }
     else if( overdraw == 11 )      // 11 is flames
     {
-        dl->dlshader = R_GetShaderByHandle( RE_RegisterShader( "flamedlightshader" ) );
+        dl->dlshader = R_GetShaderByHandle( renderSystemLocal.RegisterShader( "flamedlightshader" ) );
     }
     else
     {
@@ -435,10 +429,10 @@ void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, fl
 
 /*
 ==============
-RE_AddCoronaToScene
+idRenderSystemLocal::AddCoronaToSceneRenderScene
 ==============
 */
-void RE_AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags )
+void idRenderSystemLocal::AddCoronaToScene( const vec3_t org, float r, float g, float b, float scale, int id, int flags )
 {
     corona_t*    cor;
     
@@ -472,7 +466,7 @@ Rendering a scene may require multiple views to be rendered
 to handle mirrors,
 @@@@@@@@@@@@@@@@@@@@@
 */
-void RE_RenderScene( const refdef_t* fd )
+void idRenderSystemLocal::RenderScene( const refdef_t* fd )
 {
     viewParms_t parms;
     int startTime;
@@ -488,11 +482,11 @@ void RE_RenderScene( const refdef_t* fd )
         return;
     }
     
-    startTime = ri.Milliseconds();
+    startTime = Sys_Milliseconds();
     
     if( !tr.world && !( fd->rdflags & RDF_NOWORLDMODEL ) )
     {
-        ri.Error( ERR_DROP, "R_RenderScene: NULL worldmodel" );
+        Com_Error( ERR_DROP, "R_RenderScene: NULL worldmodel" );
     }
     
     memcpy( tr.refdef.text, fd->text, sizeof( tr.refdef.text ) );
@@ -623,5 +617,5 @@ void RE_RenderScene( const refdef_t* fd )
     r_firstSceneDlight = r_numdlights;
     r_firstScenePoly = r_numpolys;
     
-    tr.frontEndMsec += ri.Milliseconds() - startTime;
+    tr.frontEndMsec += Sys_Milliseconds() - startTime;
 }

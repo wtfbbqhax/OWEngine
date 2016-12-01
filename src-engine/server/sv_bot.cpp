@@ -41,7 +41,6 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "server.h"
-#include "../botlib/botlib.h"
 #include "../../../src-gamelogic/rtcw/botai/botai.h"
 
 #define MAX_DEBUGPOLYS      128
@@ -332,7 +331,7 @@ BotImport_BSPEntityData
 */
 char* BotImport_BSPEntityData( void )
 {
-    return CM_EntityString();
+    return collisionModelManager->EntityString();
 }
 
 /*
@@ -347,8 +346,8 @@ void BotImport_BSPModelMinsMaxsOrigin( int modelnum, vec3_t angles, vec3_t outmi
     float max;
     int i;
     
-    h = CM_InlineModel( modelnum );
-    CM_ModelBounds( h, mins, maxs );
+    h = collisionModelManager->InlineModel( modelnum );
+    collisionModelManager->ModelBounds( h, mins, maxs );
     //if the model is rotated
     if( ( angles[0] || angles[1] || angles[2] ) )
     {
@@ -552,7 +551,7 @@ void SV_BotFrame( int time )
     {
         return;
     }
-    VM_Call( gvm, BOTAI_START_FRAME, time );
+    game->BotAIStartFrame( time );
 }
 
 /*
@@ -628,7 +627,7 @@ BotImport_AICast_VisibleFromPos
 bool BotImport_AICast_VisibleFromPos( vec3_t srcpos, int srcnum,
                                       vec3_t destpos, int destnum, bool updateVisPos )
 {
-    return VM_Call( gvm, AICAST_VISIBLEFROMPOS, ( intptr_t )srcpos, srcnum, ( intptr_t )destpos, destnum, updateVisPos );
+    return game->AICastVisibleFromPos( srcpos, srcnum, destpos, destnum, updateVisPos );
 }
 
 /*
@@ -638,7 +637,7 @@ BotImport_AICast_CheckAttackAtPos
 */
 bool BotImport_AICast_CheckAttackAtPos( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld )
 {
-    return VM_Call( gvm, AICAST_CHECKATTACKATPOS, entnum, enemy, ( intptr_t )pos, ducking, allowHitWorld );
+    return game->AICastCheckAttackAtPos( entnum, enemy, pos, ducking, allowHitWorld );
 }
 // done.
 
@@ -652,50 +651,22 @@ SV_BotInitBotLib
 void SV_BotInitBotLib( void )
 {
     botlib_import_t botlib_import;
-    GetBotLibAPI    GetBotAPI;
-    char            dllName[MAX_OSPATH];
+    
+#if COPY_PROTECT
+    if( !Cvar_VariableValue( "fs_restrict" ) && !Sys_CheckCD() )
+    {
+        Com_Error( ERR_NEED_CD, "Game CD not in drive" );
+    }
+#else
+    Com_Printf( "Bypassing CD checks\n" );
+#endif
     
     /*
     if ( botlib_export ) {
-    	SV_BotLibShutdown();
+    SV_BotLibShutdown();
     }*/
     
-    Com_Printf( "----- Initializing bot library ----\n" );
-    
-#ifdef _WIN32
-    Com_sprintf( dllName, sizeof( dllName ), "botlib" DLL_EXT );
-#else
-    Com_sprintf( dllName, sizeof( dllName ), "botlib%s" ARCH_STRING DLL_EXT );
-#endif
-    
-    Com_Printf( "Loading \"%s\"...\n", dllName );
-    if( ( botLib = Sys_LoadDLLSimple( dllName ) ) == 0 )
-    {
-#if 0//def _WIN32
-        Com_Printf( "failed:\n\"%s\"\n", Sys_DLLError() );
-#else
-        char            fn[1024];
-        
-        Q_strncpyz( fn, Sys_Cwd(), sizeof( fn ) );
-        strncat( fn, "/", sizeof( fn ) - strlen( fn ) - 1 );
-        strncat( fn, dllName, sizeof( fn ) - strlen( fn ) - 1 );
-        
-        Com_Printf( "Loading \"%s\"...\n", fn );
-        if( ( botLib = Sys_LoadDLLSimple( fn ) ) == 0 )
-        {
-            Com_Error( ERR_FATAL, "failed:\n\"%s\"", Sys_DLLError() );
-        }
-#endif	/* _WIN32 */
-    }
-    
-    GetBotAPI = ( GetBotLibAPI )Sys_LoadFunction( botLib, "GetBotLibraryAPI" );
-    if( !GetBotAPI )
-    {
-        Com_Error( ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_DLLError() );
-    }
-    
     botlib_import.Print = BotImport_Print;
-    botlib_import.Error = Com_Error;
     botlib_import.Trace = BotImport_Trace;
     botlib_import.EntityTrace = BotImport_EntityTrace;
     botlib_import.PointContents = BotImport_PointContents;
@@ -730,10 +701,8 @@ void SV_BotInitBotLib( void )
     botlib_import.AICast_CheckAttackAtPos = BotImport_AICast_CheckAttackAtPos;
     // done.
     
-    Com_Printf( "Calling GetBotAPI...\n" );
-    botlib_export = GetBotAPI( BOTLIB_API_VERSION, &botlib_import );
+    botlib_export = ( botlib_export_t* )GetBotLibAPI( BOTLIB_API_VERSION, &botlib_import );
 }
-
 
 //
 //  * * * BOT AI CODE IS BELOW THIS POINT * * *

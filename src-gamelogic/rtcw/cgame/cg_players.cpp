@@ -202,6 +202,7 @@ CG_CalcMoveSpeeds
 void CG_CalcMoveSpeeds( clientInfo_t* ci )
 {
     char* tags[2] = {"tag_footleft", "tag_footright"};
+    //char *tags[2] = { "tag_leftfoot", "tag_rightfoot" };
     vec3_t oldPos[2];
     refEntity_t refent;
     animation_t* anim;
@@ -724,10 +725,10 @@ bool CG_RegisterClientModelname( clientInfo_t* ci, const char* modelName, const 
         Com_sprintf( filename, sizeof( filename ), "models/players/%s/%s", modelName, namefromskin );
         ci->legsModel = trap_R_RegisterModel( filename );
     }
-    else        // try skeletal model
+    else // try skeletal model
     {
-        Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.md4mesh", modelName );
-        ci->legsModel = trap_R_RegisterModel( filename );
+        //Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.md4mesh", modelName );
+        //ci->legsModel = trap_R_RegisterModel( filename );
         
         Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.mds", modelName );
         ci->legsModel = trap_R_RegisterModel( filename );
@@ -741,8 +742,8 @@ bool CG_RegisterClientModelname( clientInfo_t* ci, const char* modelName, const 
         {
             ci->isSkeletal = true;
             ci->torsoModel = ci->legsModel;
-            Com_sprintf( filename, sizeof( filename ), "models/players/%s/body.md4anim", modelName );
-            trap_R_LoadAnim( ci->torsoModel, filename );
+            //Com_sprintf(filename, sizeof(filename), "models/players/%s/body.md4anim", modelName);
+            //ci->legsModel = trap_R_LoadAnim(ci->torsoModel, filename);
         }
     }
     
@@ -6393,10 +6394,10 @@ void CG_GetBleedOrigin( vec3_t head_origin, vec3_t torso_origin, vec3_t legs_ori
 
 /*
 ===============
-CG_GetTag
+idCGameLocal::GetTag
 ===============
 */
-bool CG_GetTag( int clientNum, char* tagname, orientation_t* or )
+bool idCGameLocal::GetTag( int clientNum, char* tagname, orientation_t* or )
 {
     clientInfo_t*    ci;
     centity_t*       cent;

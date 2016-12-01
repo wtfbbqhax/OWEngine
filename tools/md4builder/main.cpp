@@ -41,6 +41,9 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "md4builder.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <direct.h>
 #include <stdio.h>
 
@@ -61,7 +64,7 @@ void Com_Printf( const char* fmt, ... )
     va_end( argptr );
     
     printf( msg );
-    OutputDebugString( msg );
+    OutputDebugStringA( msg );
 }
 
 /*

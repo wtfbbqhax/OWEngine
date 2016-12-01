@@ -273,7 +273,7 @@ void R_AddMD4MeshSurfaces( trRefEntity_t* ent )
     || ( ent->e.frame < 0 )
     || ( ent->e.oldframe >= tr.currentModel->mdv->numframes)
     || ( ent->e.oldframe < 0 ) ) {
-    ri.Printf( PRINT_DEVELOPER, "R_AddMDVSurfaces: no such frame %d to %d for '%s'\n",
+    Com_DPrintf( "R_AddMD3Surfaces: no such frame %d to %d for '%s'\n",
     ent->e.oldframe, ent->e.frame,
     tr.currentModel->name );
     ent->e.frame = 0;
@@ -326,11 +326,11 @@ void R_AddMD4MeshSurfaces( trRefEntity_t* ent )
             
             if( shader == tr.defaultShader )
             {
-                ri.Printf( PRINT_DEVELOPER, "WARNING: no shader for surface %s in skin %s\n", surface->name, skin->name );
+                Com_Printf( "WARNING: no shader for surface %s in skin %s\n", surface->name, skin->name );
             }
             else if( shader->defaultShader )
             {
-                ri.Printf( PRINT_DEVELOPER, "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
+                Com_Printf( "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
             }
         }
         else

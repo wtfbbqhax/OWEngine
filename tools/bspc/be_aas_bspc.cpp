@@ -118,7 +118,7 @@ void AAS_ClearShownDebugLines( void )
 //===========================================================================
 char* BotImport_BSPEntityData( void )
 {
-    return CM_EntityString();
+    return collisionModelManager->EntityString();
 } //end of the function AAS_GetEntityData
 //===========================================================================
 //
@@ -130,7 +130,7 @@ void BotImport_Trace( bsp_trace_t* bsptrace, vec3_t start, vec3_t mins, vec3_t m
 {
     trace_t result;
     
-    CM_BoxTrace( &result, start, end, mins, maxs, worldmodel, contentmask, capsule_collision );
+    collisionModelManager->BoxTrace( &result, start, end, mins, maxs, worldmodel, contentmask, capsule_collision );
     
     bsptrace->allsolid = result.allsolid;
     bsptrace->contents = result.contents;
@@ -154,7 +154,7 @@ void BotImport_Trace( bsp_trace_t* bsptrace, vec3_t start, vec3_t mins, vec3_t m
 //===========================================================================
 int BotImport_PointContents( vec3_t p )
 {
-    return CM_PointContents( p, worldmodel );
+    return collisionModelManager->PointContents( p, worldmodel );
 } //end of the function BotImport_PointContents
 //===========================================================================
 //
@@ -199,8 +199,8 @@ void BotImport_BSPModelMinsMaxsOrigin( int modelnum, vec3_t angles, vec3_t outmi
     float max;
     int i;
     
-    h = CM_InlineModel( modelnum );
-    CM_ModelBounds( h, mins, maxs );
+    h = collisionModelManager->InlineModel( modelnum );
+    collisionModelManager->ModelBounds( h, mins, maxs );
     //if the model is rotated
     if( ( angles[0] || angles[1] || angles[2] ) )    // expand for rotation
     {
@@ -309,9 +309,9 @@ void AAS_CalcReachAndClusters( struct quakefile_s* qf )
         strcpy( qf->pakfile, qf->filename );
     }
     //load the map
-    CM_LoadMap( ( char* ) qf, false, &( *aasworld ).bspchecksum );
+    collisionModelManager->LoadMap( ( char* ) qf, false, &( *aasworld ).bspchecksum );
     //get a handle to the world model
-    worldmodel = CM_InlineModel( 0 );     // 0 = world, 1 + are bmodels
+    worldmodel = collisionModelManager->InlineModel( 0 );     // 0 = world, 1 + are bmodels
     //initialize bot import structure
     AAS_InitBotImport();
     //load the BSP entity string

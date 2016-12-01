@@ -42,7 +42,6 @@
 
 #include "../game/g_local.h"
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/botlib/botlib.h"      //bot lib interface
 #include "../../../src-engine/botlib/be_aas.h"
 #include "../../../src-engine/botlib/be_ea.h"
 #include "../../../src-engine/botlib/be_ai_gen.h"
@@ -283,7 +282,7 @@ gentity_t* AICast_AddCastToGame( gentity_t* ent, char* castname, char* model, ch
     
     // have it connect to the game as a normal client
 //----(SA) ClientConnect requires a third 'isbot' parameter.  setting to false and noting
-    ClientConnect( bot->s.number, true, false );
+    gameLocal.ClientConnect( bot->s.number, true, false );
 //----(SA) end
 
     // copy the origin/angles across
@@ -291,7 +290,7 @@ gentity_t* AICast_AddCastToGame( gentity_t* ent, char* castname, char* model, ch
     VectorCopy( ent->s.angles, bot->s.angles );
     
     memset( &cmd, 0, sizeof( cmd ) );
-    ClientBegin( bot->s.number );
+    gameLocal.ClientBegin( bot->s.number );
     
     // set up the ai
     AICast_SetupClient( bot->s.number );

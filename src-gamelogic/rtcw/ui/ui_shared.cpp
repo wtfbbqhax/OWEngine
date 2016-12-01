@@ -3646,7 +3646,7 @@ void Menu_HandleKey( menuDef_t* menu, int key, bool down )
         case K_F11:
             if( DC->getCVarValue( "developer" ) )
             {
-                debugMode ^= 1;
+                debugMode = true;
             }
             break;
             

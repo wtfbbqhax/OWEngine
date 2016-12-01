@@ -42,7 +42,6 @@
 
 #include "../game/g_local.h"
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/botlib/botlib.h"      //bot lib interface
 #include "../../../src-engine/botlib/be_aas.h"
 #include "../../../src-engine/botlib/be_ea.h"
 #include "../../../src-engine/botlib/be_ai_gen.h"

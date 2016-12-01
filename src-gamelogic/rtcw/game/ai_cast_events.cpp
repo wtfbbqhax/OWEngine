@@ -42,7 +42,6 @@
 
 #include "../game/g_local.h"
 #include "../../../src-engine/qcommon/q_shared.h"
-#include "../../../src-engine/botlib/botlib.h"      //bot lib interface
 #include "../../../src-engine/botlib/be_aas.h"
 #include "../../../src-engine/botlib/be_ea.h"
 #include "../../../src-engine/botlib/be_ai_gen.h"
@@ -278,7 +277,7 @@ void AICast_Die( gentity_t* self, gentity_t* inflictor, gentity_t* attacker, int
                 */
                 self->takedamage = false;
                 self->r.contents = 0;
-                cs->secondDeadTime = 2;
+                cs->secondDeadTime = true;
                 cs->rebirthTime = 0;
                 cs->revivingTime = 0;
             }

@@ -3069,7 +3069,7 @@ void CG_OwnerDraw( float x, float y, float w, float h, float text_x, float text_
     }
 }
 
-void CG_MouseEvent( int x, int y )
+void idCGameLocal::MouseEvent( int x, int y )
 {
     int n;
     
@@ -3149,14 +3149,14 @@ void CG_ShowTeamMenu()
 
 /*
 ==================
-CG_EventHandling
+idCGameLocal::EventHandling
 ==================
  type 0 - no event handling
 	  1 - team menu
 	  2 - hud editor
 
 */
-void CG_EventHandling( int type )
+void idCGameLocal::EventHandling( int type )
 {
     cgs.eventHandling = type;
     if( type == CGAME_EVENT_NONE )
@@ -3173,9 +3173,7 @@ void CG_EventHandling( int type )
     
 }
 
-
-
-void CG_KeyEvent( int key, bool down )
+void idCGameLocal::KeyEvent( int key, bool down )
 {
 
     if( !down )
@@ -3185,7 +3183,7 @@ void CG_KeyEvent( int key, bool down )
     
     if( cg.predictedPlayerState.pm_type == PM_NORMAL || ( cg.predictedPlayerState.pm_type == PM_SPECTATOR && cg.showScores == false ) )
     {
-        CG_EventHandling( CGAME_EVENT_NONE );
+        cgameLocal.EventHandling( CGAME_EVENT_NONE );
         trap_Key_SetCatcher( 0 );
         return;
     }

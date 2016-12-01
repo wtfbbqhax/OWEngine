@@ -43,8 +43,6 @@
 #ifndef __MOTIONCONTROLLERS_H__
 #define __MOTIONCONTROLLERS_H__
 
-#define MOTLIB_API_VERSION 1
-
 struct OculusVR_HMDInfo
 {
     unsigned      HResolution;
@@ -81,27 +79,12 @@ struct OculusVR_StereoCfg
 #define SIXENSE_BUTTON_4        (0x01<<4)
 #define SIXENSE_BUTTON_START    (0x01<<0)
 
-typedef struct motcontr_import_s
-{
-    //print messages from the bot library
-    void ( *Print )( const char* fmt, ... );
-    //Dushan
-    void ( *Error )( int errorLevel, const char* fmt, ... );
-} motcontr_import_t;
-
-//bot AI library imported functions
-typedef struct motcontr_export_s
-{
-    int ( *OculusVR_Init )();
-    void ( *OculusVR_Exit )();
-    int ( *OculusVR_QueryHMD )( struct OculusVR_HMDInfo* refHmdInfo );
-    int ( *OculusVR_Peek )( float* yaw, float* pitch, float* roll );
-    int ( *OculusVR_StereoConfig )( int eye, struct OculusVR_StereoCfg* stereoCfg );
-    int ( *RazerHydra_Init )();
-    int ( *RazerHydra_Peek )( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons );
-} motcontr_export_t;
-
-//linking library
-typedef motcontr_export_t* ( *GetMotContrLibAPI_t )( int apiVersion, motcontr_import_t* rimp );
+int OculusVR_Init();
+void OculusVR_Exit();
+int OculusVR_QueryHMD( OculusVR_HMDInfo* refHmdInfo );
+int OculusVR_Peek( float* yaw, float* pitch, float* roll );
+int OculusVR_StereoConfig( int eye, struct OculusVR_StereoCfg* stereoCfg );
+int RazerHydra_Init();
+int RazerHydra_Peek( int hand, float* joyx, float* joyy, float* pos, float* trigger, float* yaw, float* pitch, float* roll, unsigned int* buttons );
 
 #endif // !__MOTIONCONTROLLERS_H__

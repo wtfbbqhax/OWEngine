@@ -35,15 +35,6 @@
     <ClCompile Include="win_input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\qcommon\vm_x86.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\qcommon\vm_interpreted.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\qcommon\vm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\qcommon\unzip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -161,6 +152,24 @@
     <ClCompile Include="..\..\sound\snd_mix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_atoms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_gameinfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_players.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\ui\ui_shared.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\client.h">
@@ -179,9 +188,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\qcommon\unzip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\qcommon\vm_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="win_local.h">
@@ -238,10 +244,10 @@
     <ClInclude Include="..\..\renderer\r_public.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\renderer\r_local.h">
+    <ClInclude Include="..\..\renderer\r_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\renderer\r_types.h">
+    <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

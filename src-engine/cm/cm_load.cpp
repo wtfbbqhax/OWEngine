@@ -44,6 +44,9 @@
 #include "cm_local.h"
 #endif // !__CM_LOCAL_H__
 
+idCollisionModelManagerLocal collisionModelManagerLocal;
+idCollisionModelManager* collisionModelManager = &collisionModelManagerLocal;
+
 #ifdef BSPC
 #ifndef __L_QFIELS_H__
 #include "../../tools/bspc/l_qfiles.h"
@@ -658,12 +661,12 @@ unsigned CM_Checksum( dheader_t* header )
 
 /*
 ==================
-CM_LoadMap
+idCollisionModelManagerLocal::LoadMap
 
 Loads in the map and all submodels
 ==================
 */
-void CM_LoadMap( const char* name, bool clientload, int* checksum )
+void idCollisionModelManagerLocal::LoadMap( const char* name, bool clientload, int* checksum )
 {
     int*             buf;
     int i;
@@ -766,10 +769,10 @@ void CM_LoadMap( const char* name, bool clientload, int* checksum )
 
 /*
 ==================
-CM_ClearMap
+idCollisionModelManagerLocal::ClearMap
 ==================
 */
-void CM_ClearMap( void )
+void idCollisionModelManagerLocal::ClearMap( void )
 {
     Com_Memset( &cm, 0, sizeof( cm ) );
     CM_ClearLevelPatches();
@@ -807,10 +810,10 @@ cmodel_t*    CM_ClipHandleToModel( clipHandle_t handle )
 
 /*
 ==================
-CM_InlineModel
+idCollisionModelManagerLocal::InlineModel
 ==================
 */
-clipHandle_t    CM_InlineModel( int index )
+clipHandle_t    idCollisionModelManagerLocal::InlineModel( int index )
 {
     if( index < 0 || index >= cm.numSubModels )
     {
@@ -819,22 +822,22 @@ clipHandle_t    CM_InlineModel( int index )
     return index;
 }
 
-int     CM_NumClusters( void )
+int     idCollisionModelManagerLocal::NumClusters( void )
 {
     return cm.numClusters;
 }
 
-int     CM_NumInlineModels( void )
+int     idCollisionModelManagerLocal::NumInlineModels( void )
 {
     return cm.numSubModels;
 }
 
-char*    CM_EntityString( void )
+char*    idCollisionModelManagerLocal::EntityString( void )
 {
     return cm.entityString;
 }
 
-int     CM_LeafCluster( int leafnum )
+int     idCollisionModelManagerLocal::LeafCluster( int leafnum )
 {
     if( leafnum < 0 || leafnum >= cm.numLeafs )
     {
@@ -843,7 +846,7 @@ int     CM_LeafCluster( int leafnum )
     return cm.leafs[leafnum].cluster;
 }
 
-int     CM_LeafArea( int leafnum )
+int     idCollisionModelManagerLocal::LeafArea( int leafnum )
 {
     if( leafnum < 0 || leafnum >= cm.numLeafs )
     {
@@ -910,14 +913,14 @@ void CM_InitBoxHull( void )
 
 /*
 ===================
-CM_TempBoxModel
+idCollisionModelManagerLocal::TempBoxModel
 
 To keep everything totally uniform, bounding boxes are turned into small
 BSP trees instead of being compared directly.
 Capsules are handled differently though.
 ===================
 */
-clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule )
+clipHandle_t idCollisionModelManagerLocal::TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule )
 {
 
     VectorCopy( mins, box_model.mins );
@@ -950,20 +953,20 @@ clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule 
 
 /*
 ===================
-CM_SetTempBoxModelContents
+idCollisionModelManagerLocal::SetTempBoxModelContents
 ===================
 */
-void CM_SetTempBoxModelContents( int contents )
+void idCollisionModelManagerLocal::SetTempBoxModelContents( int contents )
 {
     box_brush->contents = contents;
 }
 
 /*
 ===================
-CM_ModelBounds
+idCollisionModelManagerLocal::ModelBounds
 ===================
 */
-void CM_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs )
+void idCollisionModelManagerLocal::ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs )
 {
     cmodel_t*    cmod;
     

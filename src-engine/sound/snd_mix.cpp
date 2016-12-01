@@ -156,7 +156,7 @@ void S_WriteLinearBlastStereo16( void );
 S_TransferStereo16
 ===================
 */
-void S_TransferStereo16( unsigned int* pbuf, int endtime )
+void S_TransferStereo16( unsigned long* pbuf, int endtime )
 {
     int lpos;
     int ls_paintedtime;
@@ -200,9 +200,9 @@ void S_TransferPaintBuffer( int endtime )
     int*     p;
     int step;
     int val;
-    unsigned int* pbuf;
+    unsigned long* pbuf;
     
-    pbuf = ( unsigned int* )dma.buffer;
+    pbuf = ( unsigned long* )dma.buffer;
     if( !pbuf )
     {
         return;
@@ -539,14 +539,14 @@ void S_SetVoiceAmplitudeFromMuLaw( const sfx_t* sc, int sampleOffset, int count,
 
 /*
 ===================
-S_GetVoiceAmplitude
+idSoundSystemLocal::GetVoiceAmplitude
 ===================
 */
-int S_GetVoiceAmplitude( int entityNum )
+int idSoundSystemLocal::GetVoiceAmplitude( int entityNum )
 {
     if( entityNum >= MAX_CLIENTS )
     {
-        Com_Printf( "Error: S_GetVoiceAmplitude() called for a non-client\n" );
+        Com_Printf( "Error: idSoundSystemLocal::GetVoiceAmplitude() called for a non-client\n" );
         return 0;
     }
     

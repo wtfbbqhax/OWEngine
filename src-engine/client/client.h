@@ -45,12 +45,10 @@
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-#include "../renderer/r_public.h"
 #include "../../src-gamelogic/rtcw/ui/ui_public.h"
 #include "keys.h"
-#include "../sound/snd_public.h"
-#include "../../src-gamelogic/rtcw/cgame/cg_public.h"
 #include "../../src-gamelogic/rtcw/game/bg_public.h"
+#include "../../src-gamelogic/rtcw/cgame/cg_public.h"
 
 #define RETRANSMIT_TIMEOUT  3000    // time between connection packet retransmits
 
@@ -351,9 +349,7 @@ extern clientStatic_t cls;
 //=============================================================================
 
 extern vm_t*            cgvm;   // interface to cgame dll or vm
-extern vm_t*            uivm;   // interface to ui dll or vm
-extern refexport_t re;          // interface to refresh .dll
-
+extern idCGame*	   	cgame;
 
 //
 // cvars

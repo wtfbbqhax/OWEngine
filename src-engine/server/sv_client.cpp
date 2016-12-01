@@ -146,20 +146,20 @@ void SV_GetChallenge( netadr_t from )
     if( svs.authorizeAddress.type != NA_BAD )
     {
         cvar_t*  fs;
-        char game[1024];
+        char _game[1024];
         
-        game[0] = 0;
+        _game[0] = 0;
         fs = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
         if( fs && fs->string[0] != 0 )
         {
-            strcpy( game, fs->string );
+            strcpy( _game, fs->string );
         }
         Com_DPrintf( "sending getIpAuthorize for %s\n", NET_AdrToString( from ) );
         fs = Cvar_Get( "sv_allowAnonymous", "0", CVAR_SERVERINFO );
         
         NET_OutOfBandPrint( NS_SERVER, svs.authorizeAddress,
                             "getIpAuthorize %i %i.%i.%i.%i %s %s",  svs.challenges[i].challenge,
-                            from.ip[0], from.ip[1], from.ip[2], from.ip[3], game, fs->integer );
+                            from.ip[0], from.ip[1], from.ip[2], from.ip[3], _game, fs->integer );
     }
 }
 
@@ -276,9 +276,9 @@ void SV_DirectConnect( netadr_t from )
     int version;
     int qport;
     int challenge;
-    char*        password;
+    char* password;
     int startIndex;
-    intptr_t denied;
+    char* denied;
     int count;
     
     Com_DPrintf( "SVC_DirectConnect ()\n" );
@@ -390,7 +390,7 @@ void SV_DirectConnect( netadr_t from )
             newcl = cl;
             // disconnect the client from the game first so any flags the
             // player might have are dropped
-            VM_Call( gvm, GAME_CLIENT_DISCONNECT, newcl - svs.clients );
+            game->ClientDisconnect( newcl - svs.clients );
             //
             goto gotnewcl;
         }
@@ -485,12 +485,9 @@ gotnewcl:
     Q_strncpyz( newcl->userinfo, userinfo, sizeof( newcl->userinfo ) );
     
     // get the game a chance to reject this connection or modify the userinfo
-    denied = VM_Call( gvm, GAME_CLIENT_CONNECT, clientNum, true, false ); // firstTime = true
+    denied = ( char* )game->ClientConnect( clientNum, true, false ); // firstTime = true
     if( denied )
     {
-        // we can't just use VM_ArgPtr, because that is only valid inside a VM_Call
-        denied = ( intptr_t )VM_ExplicitArgPtr( gvm, denied );
-        
         NET_OutOfBandPrint( NS_SERVER, from, "print\n%s\n", denied );
         Com_DPrintf( "Game rejected a connection: %s.\n", denied );
         return;
@@ -579,7 +576,7 @@ void SV_DropClient( client_t* drop, const char* reason )
     
     // call the prog function for removing a client
     // this will remove the body, among other things
-    VM_Call( gvm, GAME_CLIENT_DISCONNECT, drop - svs.clients );
+    game->ClientDisconnect( drop - svs.clients );
     
     // Ridah, no need to tell the player if an AI drops
     if( !( drop->gentity && drop->gentity->r.svFlags & SVF_CASTAI ) )
@@ -721,7 +718,7 @@ void SV_ClientEnterWorld( client_t* client, usercmd_t* cmd )
     client->lastUsercmd = *cmd;
     
     // call the game begin function
-    VM_Call( gvm, GAME_CLIENT_BEGIN, client - svs.clients );
+    game->ClientBegin( client - svs.clients );
 }
 
 /*
@@ -1342,7 +1339,7 @@ static void SV_UpdateUserinfo_f( client_t* cl )
     
     SV_UserinfoChanged( cl );
     // call prog code to allow overrides
-    VM_Call( gvm, GAME_CLIENT_USERINFO_CHANGED, cl - svs.clients );
+    game->ClientUserinfoChanged( cl - svs.clients );
 }
 
 
@@ -1394,7 +1391,7 @@ void SV_ExecuteClientCommand( client_t* cl, const char* s, bool clientOK )
         // pass unknown strings to the game
         if( !u->name && sv.state == SS_GAME )
         {
-            VM_Call( gvm, GAME_CLIENT_COMMAND, cl - svs.clients );
+            game->ClientCommand( cl - svs.clients );
         }
     }
 }
@@ -1479,7 +1476,7 @@ void SV_ClientThink( client_t* cl, usercmd_t* cmd )
         return;     // may have been kicked during the last usercmd
     }
     
-    VM_Call( gvm, GAME_CLIENT_THINK, cl - svs.clients );
+    game->ClientThink( cl - svs.clients );
 }
 
 /*

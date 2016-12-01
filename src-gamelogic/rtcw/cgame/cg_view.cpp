@@ -1879,12 +1879,12 @@ extern void CG_SetupDlightstyles( void );
 
 /*
 =================
-CG_DrawActiveFrame
+idCGameLocal::DrawActiveFrame
 
 Generates and draws a game scene and status information at the given time.
 =================
 */
-void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback )
+void idCGameLocal::DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback )
 {
     int inwater;
     

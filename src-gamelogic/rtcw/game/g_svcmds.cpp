@@ -484,11 +484,10 @@ char*    ConcatArgs( int start );
 
 /*
 =================
-ConsoleCommand
-
+idGameLocal::ConsoleCommand
 =================
 */
-bool    ConsoleCommand( void )
+bool idGameLocal::ConsoleCommand( void )
 {
     char cmd[MAX_TOKEN_CHARS];
     

@@ -63,9 +63,9 @@ void SCR_DrawNamedPic( float x, float y, float width, float height, const char* 
     
     assert( width != 0 );
     
-    hShader = re.RegisterShader( picname );
+    hShader = renderSystem->RegisterShader( picname );
     SCR_AdjustFrom640( &x, &y, &width, &height );
-    re.DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
+    renderSystem->DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
 
 
@@ -119,14 +119,13 @@ Coordinates are 640*480 virtual values
 */
 void SCR_FillRect( float x, float y, float width, float height, const float* color )
 {
-    re.SetColor( color );
+    renderSystem->SetColor( color );
     
     SCR_AdjustFrom640( &x, &y, &width, &height );
-    re.DrawStretchPic( x, y, width, height, 0, 0, 0, 0, cls.whiteShader );
+    renderSystem->DrawStretchPic( x, y, width, height, 0, 0, 0, 0, cls.whiteShader );
     
-    re.SetColor( NULL );
+    renderSystem->SetColor( NULL );
 }
-
 
 /*
 ================
@@ -138,10 +137,8 @@ Coordinates are 640*480 virtual values
 void SCR_DrawPic( float x, float y, float width, float height, qhandle_t hShader )
 {
     SCR_AdjustFrom640( &x, &y, &width, &height );
-    re.DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
+    renderSystem->DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
-
-
 
 /*
 ** SCR_DrawChar
@@ -178,10 +175,10 @@ static void SCR_DrawChar( int x, int y, float size, int ch )
     fcol = col * 0.0625;
     size = 0.0625;
     
-    re.DrawStretchPic( ax, ay, aw, ah,
-                       fcol, frow,
-                       fcol + size, frow + size,
-                       cls.charSetShader );
+    renderSystem->DrawStretchPic( ax, ay, aw, ah,
+                                  fcol, frow,
+                                  fcol + size, frow + size,
+                                  cls.charSetShader );
 }
 
 /*
@@ -213,10 +210,10 @@ void SCR_DrawSmallChar( int x, int y, int ch )
     fcol = col * 0.0625;
     size = 0.0625;
     
-    re.DrawStretchPic( x, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
-                       fcol, frow,
-                       fcol + size, frow + size,
-                       cls.charSetShader );
+    renderSystem->DrawStretchPic( x, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
+                                  fcol, frow,
+                                  fcol + size, frow + size,
+                                  cls.charSetShader );
 }
 
 
@@ -239,7 +236,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char* string, float* set
     // draw the drop shadow
     color[0] = color[1] = color[2] = 0;
     color[3] = setColor[3];
-    re.SetColor( color );
+    renderSystem->SetColor( color );
     s = string;
     xx = x;
     while( *s )
@@ -258,7 +255,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char* string, float* set
     // draw the colored text
     s = string;
     xx = x;
-    re.SetColor( setColor );
+    renderSystem->SetColor( setColor );
     while( *s )
     {
         if( Q_IsColorString( s ) )
@@ -267,7 +264,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char* string, float* set
             {
                 memcpy( color, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( color ) );
                 color[3] = setColor[3];
-                re.SetColor( color );
+                renderSystem->SetColor( color );
             }
             s += 2;
             continue;
@@ -276,7 +273,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char* string, float* set
         xx += size;
         s++;
     }
-    re.SetColor( NULL );
+    renderSystem->SetColor( NULL );
 }
 
 
@@ -314,7 +311,7 @@ void SCR_DrawSmallStringExt( int x, int y, const char* string, float* setColor, 
     // draw the colored text
     s = string;
     xx = x;
-    re.SetColor( setColor );
+    renderSystem->SetColor( setColor );
     while( *s )
     {
         if( Q_IsColorString( s ) )
@@ -323,7 +320,7 @@ void SCR_DrawSmallStringExt( int x, int y, const char* string, float* setColor, 
             {
                 memcpy( color, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( color ) );
                 color[3] = setColor[3];
-                re.SetColor( color );
+                renderSystem->SetColor( color );
             }
             s += 2;
             continue;
@@ -332,7 +329,7 @@ void SCR_DrawSmallStringExt( int x, int y, const char* string, float* setColor, 
         xx += SMALLCHAR_WIDTH;
         s++;
     }
-    re.SetColor( NULL );
+    renderSystem->SetColor( NULL );
 }
 
 
@@ -440,10 +437,10 @@ void SCR_DrawDebugGraph( void )
     w = cls.glconfig.vidWidth;
     x = 0;
     y = cls.glconfig.vidHeight;
-    re.SetColor( g_color_table[0] );
-    re.DrawStretchPic( x, y - cl_graphheight->integer,
-                       w, cl_graphheight->integer, 0, 0, 0, 0, cls.whiteShader );
-    re.SetColor( NULL );
+    renderSystem->SetColor( g_color_table[0] );
+    renderSystem->DrawStretchPic( x, y - cl_graphheight->integer,
+                                  w, cl_graphheight->integer, 0, 0, 0, 0, cls.whiteShader );
+    renderSystem->SetColor( NULL );
     
     for( a = 0 ; a < w ; a++ )
     {
@@ -457,7 +454,7 @@ void SCR_DrawDebugGraph( void )
             v += cl_graphheight->integer * ( 1 + ( int )( -v / cl_graphheight->integer ) );
         }
         h = ( int )v % cl_graphheight->integer;
-        re.DrawStretchPic( x + w - 1 - a, y - h, 1, h, 0, 0, 0, 0, cls.whiteShader );
+        renderSystem->DrawStretchPic( x + w - 1 - a, y - h, 1, h, 0, 0, 0, 0, cls.whiteShader );
     }
 }
 
@@ -491,27 +488,21 @@ This will be called twice if rendering in stereo mode
 */
 void SCR_DrawScreenField( stereoFrame_t stereoFrame )
 {
-    re.BeginFrame( stereoFrame );
+    renderSystem->BeginFrame( stereoFrame );
     
     // wide aspect ratio screens need to have the sides cleared
     // unless they are displaying game renderings
     //if ( cls.state != CA_ACTIVE ) {
     //	if ( cls.glconfig.vidWidth * 480 > cls.glconfig.vidHeight * 640 ) {
-    //		re.SetColor( g_color_table[0] );
-    //		re.DrawStretchPic( 0, 0, cls.glconfig.vidWidth, cls.glconfig.vidHeight, 0, 0, 0, 0, cls.whiteShader );
-    //		re.SetColor( NULL );
+    //		renderSystem->SetColor( g_color_table[0] );
+    //		renderSystem->DrawStretchPic( 0, 0, cls.glconfig.vidWidth, cls.glconfig.vidHeight, 0, 0, 0, 0, cls.whiteShader );
+    //		renderSystem->SetColor( NULL );
     //	}
     //}
     
-    if( !uivm )
-    {
-        Com_DPrintf( "draw screen without UI loaded\n" );
-        return;
-    }
-    
     // if the menu is going to cover the entire screen, we
     // don't need to render anything under it
-    if( !VM_Call( uivm, UI_IS_FULLSCREEN ) )
+    if( !uiManager->IsFullscreen() )
     {
         switch( cls.state )
         {
@@ -523,16 +514,16 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame )
                 break;
             case CA_DISCONNECTED:
                 // force menu up
-                S_StopAllSounds();
-                VM_Call( uivm, UI_SET_ACTIVE_MENU, UIMENU_MAIN );
+                soundSystem->StopAllSounds();
+                uiManager->SetActiveMenu( UIMENU_MAIN );
                 break;
             case CA_CONNECTING:
             case CA_CHALLENGING:
             case CA_CONNECTED:
                 // connecting clients will only show the connection dialog
                 // refresh to update the time
-                VM_Call( uivm, UI_REFRESH, cls.realtime );
-                VM_Call( uivm, UI_DRAW_CONNECT_SCREEN, false );
+                uiManager->Refresh( cls.realtime );
+                uiManager->DrawConnectScreen( false );
                 break;
 //			// Ridah, if the cgame is valid, fall through to there
 //			if (!cls.cgameStarted || !com_sv_running->integer) {
@@ -548,8 +539,8 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame )
                 // also draw the connection information, so it doesn't
                 // flash away too briefly on local or lan games
                 //if (!com_sv_running->value || Cvar_VariableIntegerValue("sv_cheats"))	// Ridah, don't draw useless text if not in dev mode
-                VM_Call( uivm, UI_REFRESH, cls.realtime );
-                VM_Call( uivm, UI_DRAW_CONNECT_SCREEN, true );
+                uiManager->Refresh( cls.realtime );
+                uiManager->DrawConnectScreen( true );
                 break;
             case CA_ACTIVE:
                 CL_CGameRendering( STEREO_CENTER );
@@ -559,9 +550,9 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame )
     }
     
     // the menu draws next
-    if( cls.keyCatchers & KEYCATCH_UI && uivm )
+    if( cls.keyCatchers & KEYCATCH_UI )
     {
-        VM_Call( uivm, UI_REFRESH, cls.realtime );
+        uiManager->Refresh( cls.realtime );
     }
     
     // console draws next
@@ -592,25 +583,27 @@ void SCR_UpdateScreen( void )
         return;             // not initialized yet
     }
     
+    CL_StartHunkUsers();
+    
     if( ++recursive > 2 )
     {
         Com_Error( ERR_FATAL, "SCR_UpdateScreen: recursively called" );
     }
-    recursive = 1;
+    recursive = true;
     
     // If there is no VM, there are also no rendering commands issued. Stop the renderer in
     // that case.
-    if( uivm || com_dedicated->integer )
+    if( cls.glconfig.stereoEnabled )
     {
         SCR_DrawScreenField( STEREO_LEFT );
         
         if( com_speeds->integer )
         {
-            re.EndFrame( &time_frontend, &time_backend );
+            renderSystem->EndFrame( &time_frontend, &time_backend );
         }
         else
         {
-            re.EndFrame( NULL, NULL );
+            renderSystem->EndFrame( NULL, NULL );
         }
         
         SCR_DrawScreenField( STEREO_RIGHT );
@@ -618,11 +611,11 @@ void SCR_UpdateScreen( void )
     
     if( com_speeds->integer )
     {
-        re.EndFrame( &time_frontend, &time_backend );
+        renderSystem->EndFrame( &time_frontend, &time_backend );
     }
     else
     {
-        re.EndFrame( NULL, NULL );
+        renderSystem->EndFrame( NULL, NULL );
     }
     
     recursive = 0;

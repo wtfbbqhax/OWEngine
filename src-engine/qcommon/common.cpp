@@ -1358,7 +1358,6 @@ void Hunk_Clear( void )
     
     Cvar_Set( "com_hunkused", va( "%i", hunk_low.permanent + hunk_high.permanent ) );
     Com_Printf( "Hunk_Clear: reset the hunk ok\n" );
-    VM_Clear(); // (SA) FIXME:TODO: was commented out in wolf
 #ifdef HUNK_DEBUG
     hunkblocks = NULL;
 #endif
@@ -2361,7 +2360,6 @@ void Com_Init( char* commandLine )
     com_version = Cvar_Get( "version", s, CVAR_ROM | CVAR_SERVERINFO );
     Sys_Init();
     Netchan_Init( Com_Milliseconds() & 0xffff );    // pick a port value that should be nice and random
-    VM_Init();
     SV_Init();
     
     com_dedicated->modified = false;
@@ -2397,7 +2395,7 @@ void Com_Init( char* commandLine )
         Cvar_Set( "com_recommendedSet", "1" );
     }
     
-    if( !com_dedicated->integer )
+    if( !com_dedicated->integer && !Com_AddStartupCommands() )
     {
         //Cbuf_AddText ("cinematic gmlogo.RoQ\n");
         if( !com_introPlayed->integer )

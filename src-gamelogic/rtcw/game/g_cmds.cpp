@@ -783,9 +783,9 @@ void SetTeam( gentity_t* ent, char* s )
     }
     
     // get and distribute relevent paramters
-    ClientUserinfoChanged( clientNum );
+    gameLocal.ClientUserinfoChanged( clientNum );
     
-    ClientBegin( clientNum );
+    gameLocal.ClientBegin( clientNum );
 }
 
 // DHM - Nerve
@@ -2405,10 +2405,10 @@ void Cmd_SetSpawnPoint_f( gentity_t* clent )
 
 /*
 =================
-ClientCommand
+idGameLocal::ClientCommand
 =================
 */
-void ClientCommand( int clientNum )
+void idGameLocal::ClientCommand( int clientNum )
 {
     gentity_t* ent;
     char cmd[MAX_TOKEN_CHARS];
@@ -2418,7 +2418,6 @@ void ClientCommand( int clientNum )
     {
         return;     // not fully in game yet
     }
-    
     
     trap_Argv( 0, cmd, sizeof( cmd ) );
     

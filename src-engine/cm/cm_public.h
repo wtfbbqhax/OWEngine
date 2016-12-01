@@ -44,40 +44,115 @@
 #define __CM_PUBLIC_H__
 
 #include "../qcommon/qfiles.h"
-#include "../renderer/r_types.h"
-#include"../qcommon/q_shared.h"
 
-void CM_LoadMap( const char* name, bool clientload, int* checksum );
-void CM_ClearMap( void );
+// plane types are used to speed some tests
+// 0-2 are axial planes
+#define PLANE_X         0
+#define PLANE_Y         1
+#define PLANE_Z         2
+#define PLANE_NON_AXIAL 3
 
-clipHandle_t CM_InlineModel( int index );       // 0 = world, 1 + are bmodels
-clipHandle_t CM_TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule );
 
-void CM_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
-void CM_SetTempBoxModelContents( int contents );
-int CM_NumClusters( void );
-int CM_NumInlineModels( void );
-char* CM_EntityString( void );
-// returns an ORed contents mask
-int CM_PointContents( const vec3_t p, clipHandle_t model );
-int CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles );
-void CM_BoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
-                  const vec3_t mins, const vec3_t maxs,
-                  clipHandle_t model, int brushmask, int capsule );
-void CM_TransformedBoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
-                             const vec3_t mins, const vec3_t maxs,
-                             clipHandle_t model, int brushmask,
-                             const vec3_t origin, const vec3_t angles, int capsule );
-byte* CM_ClusterPVS( int cluster );
-int CM_PointLeafnum( const vec3_t p );
-// only returns non-solid leafs
-// overflow if return listsize and if *lastLeaf != list[listsize-1]
-int CM_BoxLeafnums( const vec3_t mins, const vec3_t maxs, int* list, int listsize, int* lastLeaf );
-int CM_LeafCluster( int leafnum );
-int CM_LeafArea( int leafnum );
-bool CM_AreasConnected( int area1, int area2 );
-int CM_WriteAreaBits( byte* buffer, int area );
-void CM_AdjustAreaPortalState( int area1, int area2, bool open );
-void CM_DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) );
+/*
+=================
+PlaneTypeForNormal
+=================
+*/
+
+#define PlaneTypeForNormal( x ) ( x[0] == 1.0 ? PLANE_X : ( x[1] == 1.0 ? PLANE_Y : ( x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL ) ) )
+
+// plane_t structure
+// !!! if this is changed, it must be changed in asm code too !!!
+typedef struct cplane_s
+{
+    vec3_t normal;
+    float dist;
+    byte type;              // for fast side tests: 0,1,2 = axial, 3 = nonaxial
+    byte signbits;          // signx + (signy<<1) + (signz<<2), used as lookup during collision
+    byte pad[2];
+} cplane_t;
+
+// trace->entityNum can also be 0 to (MAX_GENTITIES-1)
+// or ENTITYNUM_NONE, ENTITYNUM_WORLD
+
+// a trace is returned when a box is swept through the world
+typedef struct
+{
+    bool allsolid;      // if true, plane is not valid
+    bool startsolid;    // if true, the initial point was in a solid area
+    float fraction;         // time completed, 1.0 = didn't hit anything
+    vec3_t endpos;          // final position
+    cplane_t plane;         // surface normal at impact, transformed to world space
+    int surfaceFlags;           // surface hit
+    int contents;           // contents on other side of surface hit
+    int entityNum;          // entity the contacted sirface is a part of
+} trace_t;
+
+// markfragments are returned by CM_MarkFragments()
+typedef struct
+{
+    int firstPoint;
+    int numPoints;
+} markFragment_t;
+
+typedef struct
+{
+    vec3_t origin;
+    vec3_t axis[3];
+} orientation_t;
+
+//
+// idCollisionModelManager
+//
+class idCollisionModelManager
+{
+public:
+    virtual void        LoadMap( const char* name, bool clientload, int* checksum ) = 0;
+    virtual clipHandle_t InlineModel( int index ) = 0;       // 0 = world, 1 + are bmodels
+    virtual clipHandle_t TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule ) = 0;
+    
+    virtual void        ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) = 0;
+    
+    virtual int         NumClusters( void ) = 0;
+    virtual int         NumInlineModels( void ) = 0;
+    virtual char*        EntityString( void ) = 0;
+    
+    // returns an ORed contents mask
+    virtual int         PointContents( const vec3_t p, clipHandle_t model ) = 0;
+    virtual int         TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles ) = 0;
+    
+    virtual void        BoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
+                                  const vec3_t mins, const vec3_t maxs,
+                                  clipHandle_t model, int brushmask, int capsule ) = 0;
+    virtual void        SetTempBoxModelContents( int contents ) = 0;
+    virtual void        TransformedBoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
+            const vec3_t mins, const vec3_t maxs,
+            clipHandle_t model, int brushmask,
+            const vec3_t origin, const vec3_t angles, int capsule ) = 0;
+            
+    virtual byte*        ClusterPVS( int cluster ) = 0;
+    
+    virtual int         PointLeafnum( const vec3_t p ) = 0;
+    
+    // only returns non-solid leafs
+    // overflow if return listsize and if *lastLeaf != list[listsize-1]
+    virtual int         BoxLeafnums( const vec3_t mins, const vec3_t maxs, int* list,
+                                     int listsize, int* lastLeaf ) = 0;
+                                     
+    virtual int         LeafCluster( int leafnum ) = 0;
+    virtual int         LeafArea( int leafnum ) = 0;
+    
+    virtual void        AdjustAreaPortalState( int area1, int area2, bool open ) = 0;
+    virtual bool        AreasConnected( int area1, int area2 ) = 0;
+    
+    virtual int         WriteAreaBits( byte* buffer, int area ) = 0;
+    
+    virtual void        ClearMap( void ) = 0;
+    
+    // cm_patch.c
+    virtual void DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) ) = 0;
+};
+
+extern idCollisionModelManager* collisionModelManager;
 
 #endif // !__CM_PUBLIC_H__

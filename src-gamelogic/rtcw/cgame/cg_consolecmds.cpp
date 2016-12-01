@@ -48,7 +48,7 @@ void CG_TargetCommand_f( void )
     int targetNum;
     char test[4];
     
-    targetNum = CG_CrosshairPlayer();
+    targetNum = cgameLocal.CrosshairPlayer();
     if( !targetNum )
     {
         return;
@@ -222,7 +222,7 @@ static void CG_TellTarget_f( void )
     char command[128];
     char message[128];
     
-    clientNum = CG_CrosshairPlayer();
+    clientNum = cgameLocal.CrosshairPlayer();
     if( clientNum == -1 )
     {
         return;
@@ -239,7 +239,7 @@ static void CG_TellAttacker_f( void )
     char command[128];
     char message[128];
     
-    clientNum = CG_LastAttacker();
+    clientNum = cgameLocal.LastAttacker();
     if( clientNum == -1 )
     {
         return;
@@ -512,13 +512,13 @@ static consoleCommand_t commands[] =
 
 /*
 =================
-CG_ConsoleCommand
+idCGameLocal::ConsoleCommand
 
 The string has been tokenized and can be retrieved with
 Cmd_Argc() / Cmd_Argv()
 =================
 */
-bool CG_ConsoleCommand( void )
+bool idCGameLocal::ConsoleCommand( void )
 {
     const char*  cmd;
     int i;

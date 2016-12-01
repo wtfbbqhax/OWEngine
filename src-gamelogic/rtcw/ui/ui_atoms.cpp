@@ -45,35 +45,6 @@
 uiStatic_t uis;
 bool m_entersound;              // after a frame, so caching won't disrupt the sound
 
-// these are here so the functions in q_shared.c can link
-#if !defined( UI_HARD_LINKED ) || defined( __MACOS__ )
-
-void Com_Error( int level, const char* error, ... )
-{
-    va_list argptr;
-    char text[1024];
-    
-    va_start( argptr, error );
-    vsprintf( text, error, argptr );
-    va_end( argptr );
-    
-    trap_Error( va( "%s", text ) );
-}
-
-void Com_Printf( const char* msg, ... )
-{
-    va_list argptr;
-    char text[1024];
-    
-    va_start( argptr, msg );
-    vsprintf( text, msg, argptr );
-    va_end( argptr );
-    
-    trap_Print( va( "%s", text ) );
-}
-
-#endif
-
 /*
 =================
 UI_ClampCvar
@@ -371,10 +342,10 @@ static void UI_CalcPostGameStats()
 
 /*
 =================
-UI_ConsoleCommand
+idUserInterfaceManagerLocal::ConsoleCommand
 =================
 */
-bool UI_ConsoleCommand( int realTime )
+bool idUserInterfaceManagerLocal::ConsoleCommand( int realTime )
 {
     char*    cmd;
     

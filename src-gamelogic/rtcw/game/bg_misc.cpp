@@ -41,6 +41,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "../../../src-engine/qcommon/q_shared.h"
+#include "../../../src-engine/splines/splines.h"
 #include "bg_public.h"
 
 #ifdef CGAMEDLL

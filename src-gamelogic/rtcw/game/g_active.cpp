@@ -676,7 +676,7 @@ void ClientIntermissionThink( gclient_t* client )
     if( ( client->buttons & ( BUTTON_ATTACK | BUTTON_USE_HOLDABLE ) & ( client->oldbuttons ^ client->buttons ) ) ||
             ( client->wbuttons & WBUTTON_ATTACK2 & ( client->oldwbuttons ^ client->wbuttons ) ) )
     {
-        client->readyToExit ^= 1;
+        client->readyToExit = true;
     }
 }
 
@@ -1666,12 +1666,12 @@ void ClientThink_real( gentity_t* ent )
 
 /*
 ==================
-ClientThink
+idGameLocal::ClientThink
 
 A new command has arrived from the client
 ==================
 */
-void ClientThink( int clientNum )
+void idGameLocal::ClientThink( int clientNum )
 {
     gentity_t* ent;
     
@@ -1824,7 +1824,7 @@ void SpectatorClientEndFrame( gentity_t* ent )
                 if( ent->client->sess.spectatorClient >= 0 )
                 {
                     ent->client->sess.spectatorState = SPECTATOR_FREE;
-                    ClientBegin( ent->client - level.clients );
+                    gameLocal.ClientBegin( ent->client - level.clients );
                 }
             }
         }

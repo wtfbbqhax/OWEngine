@@ -61,6 +61,7 @@
 
 #ifdef _WIN32
 
+#pragma warning(disable : 4996)
 #pragma warning(disable : 4018) // signed/unsigned mismatch
 #pragma warning(disable : 4032)
 #pragma warning(disable : 4051)
@@ -712,6 +713,10 @@ typedef enum
     FS_SEEK_SET
 } fsOrigin_t;
 
+#include "../cm/cm_public.h"
+#include "../renderer/r_public.h"
+#include "../sound/snd_public.h"
+
 //=============================================
 
 int Q_isprint( int c );
@@ -896,78 +901,7 @@ typedef struct
     char string[MAX_CVAR_VALUE_STRING];
 } vmCvar_t;
 
-/*
-==============================================================
-
-COLLISION DETECTION
-
-==============================================================
-*/
-
-#include "surfaceflags.h"            // shared with the q3map utility
-
-// plane types are used to speed some tests
-// 0-2 are axial planes
-#define PLANE_X         0
-#define PLANE_Y         1
-#define PLANE_Z         2
-#define PLANE_NON_AXIAL 3
-
-
-/*
-=================
-PlaneTypeForNormal
-=================
-*/
-
-#define PlaneTypeForNormal( x ) ( x[0] == 1.0 ? PLANE_X : ( x[1] == 1.0 ? PLANE_Y : ( x[2] == 1.0 ? PLANE_Z : PLANE_NON_AXIAL ) ) )
-
-// plane_t structure
-// !!! if this is changed, it must be changed in asm code too !!!
-typedef struct cplane_s
-{
-    vec3_t normal;
-    float dist;
-    byte type;              // for fast side tests: 0,1,2 = axial, 3 = nonaxial
-    byte signbits;          // signx + (signy<<1) + (signz<<2), used as lookup during collision
-    byte pad[2];
-} cplane_t;
-
-
-// a trace is returned when a box is swept through the world
-typedef struct
-{
-    bool allsolid;      // if true, plane is not valid
-    bool startsolid;    // if true, the initial point was in a solid area
-    float fraction;         // time completed, 1.0 = didn't hit anything
-    vec3_t endpos;          // final position
-    cplane_t plane;         // surface normal at impact, transformed to world space
-    int surfaceFlags;           // surface hit
-    int contents;           // contents on other side of surface hit
-    int entityNum;          // entity the contacted sirface is a part of
-} trace_t;
-
-// trace->entityNum can also be 0 to (MAX_GENTITIES-1)
-// or ENTITYNUM_NONE, ENTITYNUM_WORLD
-
-
-// markfragments are returned by CM_MarkFragments()
-typedef struct
-{
-    int firstPoint;
-    int numPoints;
-} markFragment_t;
-
-
-
-typedef struct
-{
-    vec3_t origin;
-    vec3_t axis[3];
-} orientation_t;
-
 //=====================================================================
-
 
 // in order from highest priority to lowest
 // if none of the catchers are active, bound key strings will be executed
@@ -1474,37 +1408,6 @@ typedef enum
     CA_ACTIVE,          // game views should be displayed
     CA_CINEMATIC        // playing a cinematic or a static pic, not connected to a server
 } connstate_t;
-
-// font support
-
-#define GLYPH_START 0
-#define GLYPH_END 255
-#define GLYPH_CHARSTART 32
-#define GLYPH_CHAREND 127
-#define GLYPHS_PER_FONT GLYPH_END - GLYPH_START + 1
-typedef struct
-{
-    int height;     // number of scan lines
-    int top;        // top of glyph in buffer
-    int bottom;     // bottom of glyph in buffer
-    int pitch;      // width for copying
-    int xSkip;      // x adjustment
-    int imageWidth; // width of actual image
-    int imageHeight; // height of actual image
-    float s;        // x offset in image where glyph starts
-    float t;        // y offset in image where glyph starts
-    float s2;
-    float t2;
-    qhandle_t glyph; // handle to the shader with the glyph
-    char shaderName[32];
-} glyphInfo_t;
-
-typedef struct
-{
-    glyphInfo_t glyphs [GLYPHS_PER_FONT];
-    float glyphScale;
-    char name[MAX_QPATH];
-} fontInfo_t;
 
 #define Square( x ) ( ( x ) * ( x ) )
 

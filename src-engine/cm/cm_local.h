@@ -214,7 +214,6 @@ typedef struct leafList_s
     void ( *storeLeafs )( struct leafList_s* ll, int nodenum );
 } leafList_t;
 
-
 int CM_BoxBrushes( const vec3_t mins, const vec3_t maxs, cbrush_t** list, int listsize );
 
 void CM_StoreLeafs( leafList_t* ll, int nodenum );
@@ -231,4 +230,58 @@ void CM_TraceThroughPatchCollide( traceWork_t* tw, const struct patchCollide_s* 
 bool CM_PositionTestInPatchCollide( traceWork_t* tw, const struct patchCollide_s* pc );
 void CM_ClearLevelPatches( void );
 
-#endif // !__CM_LOCAL_H__
+//
+// idCollisionModelManagerLocal
+//
+class idCollisionModelManagerLocal : public idCollisionModelManager
+{
+public:
+    virtual void        LoadMap( const char* name, bool clientload, int* checksum );
+    virtual clipHandle_t InlineModel( int index );       // 0 = world, 1 + are bmodels
+    virtual clipHandle_t TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule );
+    
+    virtual void        ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
+    
+    virtual int         NumClusters( void );
+    virtual int         NumInlineModels( void );
+    virtual char*        EntityString( void );
+    
+    // returns an ORed contents mask
+    virtual int         PointContents( const vec3_t p, clipHandle_t model );
+    virtual int         TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles );
+    
+    virtual void        BoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
+                                  const vec3_t mins, const vec3_t maxs,
+                                  clipHandle_t model, int brushmask, int capsule );
+    virtual void        SetTempBoxModelContents( int contents );
+    virtual void        TransformedBoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
+            const vec3_t mins, const vec3_t maxs,
+            clipHandle_t model, int brushmask,
+            const vec3_t origin, const vec3_t angles, int capsule );
+            
+    virtual byte*        ClusterPVS( int cluster );
+    
+    virtual int         PointLeafnum( const vec3_t p );
+    
+    // only returns non-solid leafs
+    // overflow if return listsize and if *lastLeaf != list[listsize-1]
+    virtual int         BoxLeafnums( const vec3_t mins, const vec3_t maxs, int* list,
+                                     int listsize, int* lastLeaf );
+                                     
+    virtual int         LeafCluster( int leafnum );
+    virtual int         LeafArea( int leafnum );
+    
+    virtual void        AdjustAreaPortalState( int area1, int area2, bool open );
+    virtual bool        AreasConnected( int area1, int area2 );
+    
+    virtual int         WriteAreaBits( byte* buffer, int area );
+    
+    virtual void        ClearMap( void );
+    
+    // cm_patch.c
+    virtual void DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) );
+};
+
+extern idCollisionModelManagerLocal collisionModelManagerLocal;
+
+#endif // !__CM_LOCAL_H__ 

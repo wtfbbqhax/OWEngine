@@ -215,8 +215,8 @@ static void R_BindAnimatedImage( textureBundle_t* bundle )
     
     if( bundle->isVideoMap )
     {
-        ri.CIN_RunCinematic( bundle->videoMapHandle );
-        ri.CIN_UploadCinematic( bundle->videoMapHandle );
+        CIN_RunCinematic( bundle->videoMapHandle );
+        CIN_UploadCinematic( bundle->videoMapHandle );
         return;
     }
     
@@ -1215,7 +1215,7 @@ static void ComputeTexCoords( shaderStage_t* pStage )
                     break;
                     
                 default:
-                    ri.Error( ERR_DROP, "ERROR: unknown texmod '%d' in shader '%s'\n", pStage->bundle[b].texMods[tm].type, tess.shader->name );
+                    Com_Error( ERR_DROP, "ERROR: unknown texmod '%d' in shader '%s'\n", pStage->bundle[b].texMods[tm].type, tess.shader->name );
                     break;
             }
         }
@@ -1900,11 +1900,11 @@ void RB_EndSurface( void )
     
     if( input->indexes[SHADER_MAX_INDEXES - 1] != 0 )
     {
-        ri.Error( ERR_DROP, "RB_EndSurface() - SHADER_MAX_INDEXES hit" );
+        Com_Error( ERR_DROP, "RB_EndSurface() - SHADER_MAX_INDEXES hit" );
     }
     if( input->xyz[SHADER_MAX_VERTEXES - 1][0] != 0 )
     {
-        ri.Error( ERR_DROP, "RB_EndSurface() - SHADER_MAX_VERTEXES hit" );
+        Com_Error( ERR_DROP, "RB_EndSurface() - SHADER_MAX_VERTEXES hit" );
     }
     
     if( tess.shader == tr.shadowShader )

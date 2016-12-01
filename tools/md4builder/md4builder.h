@@ -67,7 +67,7 @@ struct exportJoint_t
 void Com_Printf( const char* fmt, ... );
 
 //
-// jvMD4Anim
+// owMD4Anim
 //
 class owMD4Anim
 {
@@ -110,7 +110,7 @@ protected:
 };
 
 //
-// jvFBXManager
+// owFBXManager
 //
 class owFBXManager
 {

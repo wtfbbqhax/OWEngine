@@ -4101,7 +4101,7 @@ void CG_DrawActive( stereoFrame_t stereoView )
         VectorMA( cg.refdef.vieworg, -separation, cg.refdef.viewaxis[1], cg.refdef.vieworg );
     }
     
-    cg.refdef.glfog.registered = 0; // make sure it doesn't use fog from another scene
+    cg.refdef.glfog.registered = false; // make sure it doesn't use fog from another scene
     /*
     	// NERVE - SMF - activate limbo menu and draw small 3d window
     	CG_ActivateLimboMenu();

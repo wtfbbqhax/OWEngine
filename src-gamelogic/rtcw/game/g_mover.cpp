@@ -3594,13 +3594,13 @@ void FuncBatsReached( gentity_t* self )
     
     if( !self->nextTrain || !self->nextTrain->target )
     {
-        self->active = 2;   // remove the bats at next point
+        self->active = true;   // remove the bats at next point
         return;
     }
     
 //	if(self->nextTrain) {
 //		if(Q_stricmp(self->nextTrain->classname, "path_corner")) {
-//			self->active = 2;
+//			self->active = true;
 //			return;
 //		}
 //	}
@@ -3729,7 +3729,7 @@ void FuncBatsActivate( gentity_t* self, gentity_t* other, gentity_t* activator )
     }
     else        // second use kills bats
     {
-        self->active = 2;
+        self->active = true;
     }
 }
 
