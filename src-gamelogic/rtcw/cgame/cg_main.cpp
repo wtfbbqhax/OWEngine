@@ -232,6 +232,8 @@ vmCvar_t mp_mapTitle;
 vmCvar_t mp_itemDesc;
 // -NERVE - SMF
 
+vmCvar_t cg_debugPhysics;
+
 typedef struct
 {
     vmCvar_t*    vmCvar;
@@ -428,6 +430,8 @@ cvarTable_t cvarTable[] =
     // -NERVE - SMF
     
     { &cg_showAIState, "cg_showAIState", "0", CVAR_CHEAT},
+    { &cg_debugPhysics, "cg_debugPhysics", "0", CVAR_CHEAT},
+    
 };
 int cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
 
@@ -2633,6 +2637,8 @@ Called before every level change or subsystem restart
 */
 void idCGameLocal::Shutdown( void )
 {
+    collisionModelManager->FreeMap();
+    
     // some mods may need to do cleanup work here,
     // like closing files or archiving session data
 }

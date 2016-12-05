@@ -403,7 +403,6 @@ MATHLIB
 ==============================================================
 */
 
-
 typedef float vec_t;
 typedef vec_t vec2_t[2];
 typedef vec_t vec3_t[3];
@@ -713,11 +712,17 @@ typedef enum
     FS_SEEK_SET
 } fsOrigin_t;
 
+#include "../splines/util_list.h"
+#include "../splines/util_str.h"
+#include "../splines/math_vector.h"
+#include "../splines/math_quaternion.h"
 #include "../cm/cm_public.h"
 #include "../renderer/r_public.h"
 #include "../sound/snd_public.h"
 
 //=============================================
+
+void TransformToMatrix( const idVec3 origin, const idVec3 angles, idVec4 axis[4] );
 
 int Q_isprint( int c );
 int Q_islower( int c );
@@ -1340,11 +1345,11 @@ typedef struct entityState_s
     int time;
     int time2;
     
-    vec3_t origin;
-    vec3_t origin2;
+    idVec3 origin;
+    idVec3 origin2;
     
-    vec3_t angles;
-    vec3_t angles2;
+    idVec3 angles;
+    idVec3 angles2;
     
     int otherEntityNum;     // shotgun sources, etc
     int otherEntityNum2;

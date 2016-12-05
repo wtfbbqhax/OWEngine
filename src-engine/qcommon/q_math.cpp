@@ -472,6 +472,24 @@ void AnglesToAxis( const vec3_t angles, vec3_t axis[3] )
     VectorSubtract( vec3_origin, right, axis[1] );
 }
 
+/*
+=================
+TransformToMatrix
+=================
+*/
+void TransformToMatrix( const idVec3 origin, const idVec3 angles, idVec4 axis[4] )
+{
+    vec3_t right;
+    
+    // angle vectors returns "right" instead of "y axis"
+    AngleVectors( &angles.x, axis[0], right, axis[2] );
+    VectorSubtract( vec3_origin, right, axis[1] );
+    
+    axis[3][0] = origin.x;
+    axis[3][1] = origin.y;
+    axis[3][2] = origin.z;
+}
+
 void AxisClear( vec3_t axis[3] )
 {
     axis[0][0] = 1;

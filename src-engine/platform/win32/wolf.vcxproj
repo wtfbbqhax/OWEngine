@@ -126,18 +126,18 @@
       <ProgramDataBaseFileName>$(intDir)$(TargetName)\</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalIncludeDirectories>..\motioncontrollers\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\motioncontrollers\;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;wsock32.lib;xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;wsock32.lib;xinput.lib;MSVCRT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(intDir)$(TargetName).map</MapFileName>
@@ -171,6 +171,7 @@
     <ClCompile Include="..\..\client\cl_parse.cpp" />
     <ClCompile Include="..\..\client\cl_scrn.cpp" />
     <ClCompile Include="..\..\client\cl_ui.cpp" />
+    <ClCompile Include="..\..\cm\cm_model.cpp" />
     <ClCompile Include="..\..\sound\snd_adpcm.cpp" />
     <ClCompile Include="..\..\sound\snd_dma.cpp" />
     <ClCompile Include="..\..\sound\snd_mem.cpp" />
@@ -211,6 +212,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_local.h" />
+    <ClInclude Include="..\..\cm\cm_model.h" />
+    <ClInclude Include="..\..\cm\cm_traceModel.h" />
+    <ClInclude Include="..\..\shared\cm_header.h" />
     <ClInclude Include="..\motioncontrollers\motioncontrollers.h" />
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\botai\botai.h" />
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\cgame\cg_public.h" />
@@ -243,6 +247,9 @@
     </ProjectReference>
     <ProjectReference Include="motioncontrollers.vcxproj">
       <Project>{e53950ce-d36c-4ce7-a674-92070e9de94c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="physicslib.vcxproj">
+      <Project>{843640ae-37b0-4cbb-ba62-1becb23ceb1d}</Project>
     </ProjectReference>
     <ProjectReference Include="renderer.vcxproj">
       <Project>{f45a4f73-0ea1-4eb2-9829-154964adec6a}</Project>

@@ -436,7 +436,18 @@ int main( int argc, char** argv )
     /* ydnar: bsp conversion */
     else if( !strcmp( argv[ 1 ], "-convert" ) )
         r = ConvertBSPMain( argc - 1, argv + 1 );
-        
+    else if( !strcmp( argv[1], "-cm" ) )
+    {
+        if( BuildCollisionModelFromBSP( argv[2] ) )
+        {
+            r = 0;
+        }
+        else
+        {
+            r = 1;
+        }
+    }
+    
     /* ydnar: otherwise create a bsp */
     else
         r = BSPMain( argc, argv );

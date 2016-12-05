@@ -291,12 +291,12 @@ void G_RetrieveMoveSpeedsFromClient( int entnum, char* text );
 
 bool idGameLocal::AICastVisibleFromPos( vec3_t srcpos, int srcnum, vec3_t destpos, int destnum, bool updateVisPos )
 {
-    return AICastVisibleFromPos( srcpos, srcnum, destpos, destnum, updateVisPos );
+    return AICast_VisibleFromPos( srcpos, srcnum, destpos, destnum, updateVisPos );
 }
 
 bool idGameLocal::AICastCheckAttackAtPos( int entnum, int enemy, vec3_t pos, bool ducking, bool allowHitWorld )
 {
-    return AICastCheckAttackAtPos( entnum, enemy, pos, ducking, allowHitWorld );
+    return AICast_CheckAttackAtPos( entnum, enemy, pos, ducking, allowHitWorld );
 }
 
 
@@ -1153,6 +1153,19 @@ void G_UpdateCvars( void )
                 if( !Q_stricmp( cv->cvarName, "g_playerStart" ) )
                 {
                     gentity_t* player;
+                    
+                    // activate all the physics objects.
+                    for( int i = 0; i < MAX_GENTITIES; i++ )
+                    {
+                        if( level.gentities[i].r.traceModel )
+                        {
+                            level.gentities[i].r.traceModel->SetPhysicsActive();
+                        }
+                    }
+                    
+                    // Reset all the physics states/caches.
+                    //trap_ResetPhysics();
+                    
                     player = AICast_FindEntityForName( "player" );
                     if( player && cv->vmCvar->integer )
                     {
@@ -1308,6 +1321,57 @@ int G_SendMissionStats()
 
 /*
 ============
+idGameLocal::InitPhysicsForEntity
+============
+*/
+void idGameLocal::InitPhysicsForEntity( gentity_t* entity, const char* qpath )
+{
+    // Don't create a duplicate trace model.
+    if( entity->r.traceModel != NULL )
+    {
+        return;
+    }
+    
+    // Allocate the trace model.
+    entity->r.traceModel = trap_AllocTraceModel();
+    
+    // Init the trace model.
+    if( entity->mass == 0 )
+    {
+        entity->mass = 1;
+    }
+    
+    entity->r.traceModel->InitFromModel( qpath, entity->s.origin, entity->s.angles, entity->s.number, entity->mass );
+}
+
+/*
+============
+idGameLocal::InitPhysicsForEntity
+============
+*/
+void idGameLocal::InitPhysicsForEntity( gentity_t* entity, idVec3 mins, idVec3 maxs )
+{
+    // Don't create a duplicate trace model.
+    if( entity->r.traceModel != NULL )
+    {
+        return;
+    }
+    
+    // Allocate the trace model.
+    entity->r.traceModel = trap_AllocTraceModel();
+    
+    // Init the trace model.
+    if( entity->mass == 0 )
+    {
+        entity->mass = 1;
+    }
+    
+    entity->r.traceModel->Init( entity->s.number, entity->mass, entity->s.origin, entity->s.angles, mins, maxs );
+}
+
+
+/*
+============
 idGameLocal::Init
 ============
 */
@@ -1349,6 +1413,9 @@ void idGameLocal::Init( int levelTime, int randomSeed, int restart )
     //----(SA)	added sound caching
     level.knifeSound[0] = G_SoundIndex( "sound/weapons/knife/knife_hitwall1.wav" );
     //----(SA)	end
+    
+    idVec3 gravity( 0, 0, -g_gravity.value * 6 );
+    trap_PhysicsSetGravity( gravity );
     
     // RF, init the anim scripting
     level.animScriptData.soundIndex = G_SoundIndex;

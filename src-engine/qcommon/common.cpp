@@ -2316,7 +2316,7 @@ void Com_Init( char* commandLine )
     com_fixedtime = Cvar_Get( "fixedtime", "0", CVAR_CHEAT );
     com_showtrace = Cvar_Get( "com_showtrace", "0", CVAR_CHEAT );
     com_dropsim = Cvar_Get( "com_dropsim", "0", CVAR_CHEAT );
-    com_viewlog = Cvar_Get( "viewlog", "1", CVAR_CHEAT );
+    com_viewlog = Cvar_Get( "viewlog", "0", CVAR_CHEAT );
     com_speeds = Cvar_Get( "com_speeds", "0", 0 );
     com_timedemo = Cvar_Get( "timedemo", "0", CVAR_CHEAT );
     com_cameraMode = Cvar_Get( "com_cameraMode", "0", CVAR_CHEAT );
@@ -2717,6 +2717,13 @@ void Com_Frame( void )
         {
             timeAfter = Sys_Milliseconds();
         }
+    }
+    
+    // Update the physics system after everything gets ran for this frame,
+    // and only if we are in a game.
+    if( com_sv_running->integer || com_cl_running->integer )
+    {
+        physicsManager->Frame();
     }
     
     //

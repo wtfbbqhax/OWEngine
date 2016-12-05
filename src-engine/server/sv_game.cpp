@@ -445,6 +445,30 @@ void SV_BotGetUserCommand( int clientNum, usercmd_t* ucmd )
 }
 
 //
+// SV_PhysicsSetGravity
+//
+void SV_PhysicsSetGravity( const idVec3& gravity )
+{
+    physicsManager->SetGravity( gravity );
+}
+
+//
+// SV_AllocTraceModel
+//
+idTraceModel* SV_AllocTraceModel( void )
+{
+    return physicsManager->AllocTraceModel();
+}
+
+//
+// SV_ResetPhysics
+//
+void SV_ResetPhysics( void )
+{
+    physicsManager->Reset();
+}
+
+//
 // SV_InitExportTable
 //
 void SV_InitExportTable( void )
@@ -522,6 +546,9 @@ void SV_InitExportTable( void )
     exports.BotGetConsoleMessage = SV_BotGetConsoleMessage;
     
     exports.BotGetUserCommand = SV_BotGetUserCommand;
+    
+    exports.PhysicsSetGravity = SV_PhysicsSetGravity;
+    exports.AllocTraceModel = SV_AllocTraceModel;
     
     exports.botlib = botlib_export;
     exports.collisionModelManager = collisionModelManager;

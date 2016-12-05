@@ -1465,6 +1465,13 @@ void Bullet_Fire_Extended( gentity_t* source, gentity_t* attacker, vec3_t start,
     }
     tent->s.otherEntityNum = attacker->s.number;
     
+    if( traceEnt->r.traceModel )
+    {
+        vec3_t trDir;
+        AngleVectors( source->s.apos.trBase, trDir, NULL, NULL );
+        traceEnt->r.traceModel->SetVelocity( idVec3( trDir[0] * 50, trDir[1] * 50, trDir[2] * 50 ) );
+    }
+    
     if( traceEnt->takedamage )
     {
         bool reflectBool = false;

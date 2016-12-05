@@ -144,6 +144,7 @@ field_t fields[] =
     {"health",       FOFS( health ),       F_INT},
     {"light",        0,                  F_IGNORE},
     {"dmg",          FOFS( damage ),       F_INT},
+    { "mass",		 FOFS( mass ),		   F_INT },
     {"angles",       FOFS( s.angles ),     F_VECTOR},
     {"angle",        FOFS( s.angles ),     F_ANGLEHACK},
     // JOSEPH 9-27-99
@@ -446,6 +447,9 @@ void SP_trigger_deathCheck( gentity_t* ent );
 void SP_misc_spawner( gentity_t* ent );
 void SP_props_decor_Scale( gentity_t* ent );
 
+void SP_Physics_Ridgidbrush( gentity_t* ent );
+void SP_Physics_RidgidModel( gentity_t* ent );
+
 spawn_t spawns[] =
 {
     // info entities don't do anything at all, but provide positional
@@ -485,6 +489,9 @@ spawn_t spawns[] =
     {"func_invisible_user", func_invisible_user},
     
     {"func_bats", SP_func_bats},
+    
+    {"physics_ridgidbrush", SP_Physics_Ridgidbrush},
+    {"physics_ridgidmodel", SP_Physics_RidgidModel},
     
     // Triggers are brush objects that cause an effect when contacted
     // by a living player, usually involving firing targets.

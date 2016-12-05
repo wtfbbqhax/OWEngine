@@ -74,14 +74,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)\tools\quake3\common;$(SolutionDir)\include;$(SolutionDir)\libs;$(SolutionDir)\..\STLPort\stlport;$(SolutionDir)\..\gtk2\include;$(SolutionDir)\..\gtk2\include\glib-2.0;$(SolutionDir)\..\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\libxml2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;Q3MAP2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4996;4244;4267;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -97,9 +97,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src-engine\qcommon\q_math.cpp" />
+    <ClCompile Include="..\..\src-engine\qcommon\q_shared.cpp" />
     <ClCompile Include="bspfile_abstract.c" />
     <ClCompile Include="bspfile_ibsp.c" />
     <ClCompile Include="bspfile_rbsp.c" />
+    <ClCompile Include="cmfile.cpp" />
     <ClCompile Include="image.c" />
     <ClCompile Include="imagelib.c" />
     <ClCompile Include="libs\ddslib\ddslib.c" />
@@ -113,6 +116,8 @@
     <ClCompile Include="libs\picomodel\picointernal.c" />
     <ClCompile Include="libs\picomodel\picomodel.c" />
     <ClCompile Include="libs\picomodel\picomodules.c" />
+    <ClCompile Include="libs\picomodel\pm_md3.c" />
+    <ClCompile Include="libs\picomodel\pm_mdc.c" />
     <ClCompile Include="libs\picomodel\pm_obj.c" />
     <ClCompile Include="libs\polylib.c" />
     <ClCompile Include="main.c" />
@@ -156,6 +161,8 @@
     <ClCompile Include="convert_map.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\q3map2 C++\imagelib.h" />
+    <ClInclude Include="bspfile_abstract.h" />
     <ClInclude Include="game_ef.h" />
     <ClInclude Include="game_ja.h" />
     <ClInclude Include="game_jk2.h" />
@@ -170,6 +177,14 @@
     <ClInclude Include="libs\picomodel\picomodel.h" />
     <ClInclude Include="q3map2.h" />
     <ClInclude Include="vfs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src-engine\platform\win32\physicslib.vcxproj">
+      <Project>{843640ae-37b0-4cbb-ba62-1becb23ceb1d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src-engine\platform\win32\Splines.vcxproj">
+      <Project>{aa96579b-0f16-4614-8453-0b03c8b39a46}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

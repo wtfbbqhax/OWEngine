@@ -1741,9 +1741,32 @@ void Info_SetValueForKey_Big( char* s, const char* key, const char* value )
     strcat( s, newi );
 }
 
-
-
-
 //====================================================================
 
+#ifdef Q3MAP2
+void Com_Printf( const char* format, ... )
+{
+    va_list argptr;
+    static char string[4096];
+    
+    va_start( argptr, format );
+    vsprintf( string, format, argptr );
+    va_end( argptr );
+    
+    printf( string );
+}
+
+void Com_Error( int level, const char* format, ... )
+{
+    va_list argptr;
+    static char string[4096];
+    
+    va_start( argptr, format );
+    vsprintf( string, format, argptr );
+    va_end( argptr );
+    
+    printf( string );
+    exit( 0 );
+}
+#endif
 

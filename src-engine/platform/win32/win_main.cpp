@@ -270,6 +270,7 @@ Sys_Print
 void Sys_Print( const char* msg )
 {
     Conbuf_AppendText( msg );
+    OutputDebugString( msg );
 }
 
 
@@ -815,7 +816,7 @@ void Sys_MusicThread( void )
     }
 }
 
-#if 1
+#if 0
 
 void Sys_InitStreamThread( void )
 {
@@ -930,7 +931,7 @@ void Sys_InitStreamThread( void )
                               ( LPTHREAD_START_ROUTINE )Sys_StreamThread, // LPTHREAD_START_ROUTINE lpStartAddr,
                               0,      // LPVOID lpvThreadParm,
                               0,      //   DWORD fdwCreate,
-                              &stream.threadId );
+                              ( LPDWORD )&stream.threadId );
 
     for( i = 0; i < 64; i++ )
     {
@@ -943,7 +944,7 @@ void Sys_InitStreamThread( void )
                                    ( LPTHREAD_START_ROUTINE )Sys_MusicThread, // LPTHREAD_START_ROUTINE lpStartAddr,
                                    0,          // LPVOID lpvThreadParm,
                                    0,          //   DWORD fdwCreate,
-                                   &stream.musicThreadId );
+                                   ( LPDWORD )&stream.musicThreadId );
 }
 
 /*
@@ -968,7 +969,7 @@ void Sys_BeginStreamedFile( fileHandle_t f, int readAhead )
         Sys_EndStreamedFile( stream.sIO[f].file );
     }
 
-    stream.sIO[f].buffer = Z_Malloc( readAhead );
+    stream.sIO[f].buffer = ( byte* )Z_Malloc( readAhead );
     stream.sIO[f].bufferSize = readAhead;
     stream.sIO[f].streamPosition = 0;
     stream.sIO[f].threadPosition = 0;
@@ -1103,7 +1104,7 @@ void* Sys_InitializeCriticalSection()
 {
     LPCRITICAL_SECTION crit;
 
-    crit = malloc( sizeof( CRITICAL_SECTION ) );
+    crit = ( LPCRITICAL_SECTION )malloc( sizeof( CRITICAL_SECTION ) );
     InitializeCriticalSection( crit );
     return crit;
 }
@@ -1111,14 +1112,14 @@ void* Sys_InitializeCriticalSection()
 void Sys_EnterCriticalSection( void* ptr )
 {
     LPCRITICAL_SECTION crit;
-    crit = ptr;
+    crit = ( LPCRITICAL_SECTION )ptr;
     EnterCriticalSection( crit );
 }
 
 void Sys_LeaveCriticalSection( void* ptr )
 {
     LPCRITICAL_SECTION crit;
-    crit = ptr;
+    crit = ( LPCRITICAL_SECTION )ptr;
     LeaveCriticalSection( crit );
 }
 

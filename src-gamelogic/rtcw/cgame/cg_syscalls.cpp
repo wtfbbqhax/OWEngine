@@ -50,10 +50,13 @@
 #define PASSFLOAT(x) x
 
 cgameImports_t* imports;
+idCollisionModelManager* collisionModelManager;
+
 idCGame* dllEntry( cgameImports_t* cgimports )
 {
     imports = cgimports;
     
+    collisionModelManager = imports->collisionModelManager;
     return cgame;
 }
 
@@ -656,4 +659,9 @@ void trap_UI_ClosePopup( const char* arg0 )
 bool trap_GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo )
 {
     return imports->GetModelInfo( clientNum, modelName, modelInfo );
+}
+
+void trap_PhysicsDrawDebug( void )
+{
+    imports->PhysicsDrawDebug();
 }

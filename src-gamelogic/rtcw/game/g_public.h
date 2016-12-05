@@ -114,6 +114,7 @@ typedef struct
     // entity[ent->s.ownerNum].ownerNum = passEntityNum	(don't interact with other missiles from owner)
     int ownerNum;
     int eventTime;
+    idTraceModel* traceModel;
 } entityShared_t;
 
 // the server looks at a sharedEntity, which is the start of the game's gentity_t structure
@@ -203,6 +204,10 @@ struct gameImports_t
     int( *BotGetConsoleMessage )( int client, char* buf, int size );
     
     void( *BotGetUserCommand )( int clientNum, usercmd_t* ucmd );
+    
+    void( *PhysicsSetGravity )( const idVec3& gravity );
+    idTraceModel* ( *AllocTraceModel )( void );
+    void( *ResetPhysics )( void );
     
     botlib_export_t*	botlib;
     idCollisionModelManager* collisionModelManager;

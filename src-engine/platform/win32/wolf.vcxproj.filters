@@ -170,6 +170,9 @@
     <ClCompile Include="..\..\..\src-gamelogic\rtcw\game\bg_misc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\cm\cm_model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\client.h">
@@ -248,6 +251,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src-gamelogic\rtcw\ui\ui_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cm\cm_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cm\cm_traceModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\cm_header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

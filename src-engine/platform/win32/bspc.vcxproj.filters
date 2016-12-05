@@ -180,9 +180,6 @@
     <ClCompile Include="..\..\..\tools\bspc\aas_areamerging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tools\bspc\_files.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\cm\cm_load.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -193,6 +190,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\cm\cm_trace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cm\cm_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

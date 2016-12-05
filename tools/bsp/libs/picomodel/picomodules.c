@@ -46,13 +46,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* external modules */
 extern const picoModule_t picoModuleOBJ;
-
-
+extern const picoModule_t picoModuleMD3;
+extern const picoModule_t picoModuleMS3D;
+extern const picoModule_t picoModuleMDC;
 
 
 /* list of all supported file format modules */
 const picoModule_t* picoModules[] =
 {
+    &picoModuleMD3,     /* quake3 arena md3 */
+    &picoModuleMDC,     /* return to castle wolfenstein mdc */
     &picoModuleOBJ,		/* wavefront object */
     NULL				/* arnold */
 };

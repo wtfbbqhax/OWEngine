@@ -1,5 +1,21 @@
 Changelog
 
+12-05-2016 Dusan Jocic <dusanjocic@msn.com>
+	- First check-in of the Bullet Physics engine implementation.
+	- Added "physicslib" static library dependencies to engine and to BSP compiler
+	- Added "physics_ridgidbrush" and "physics_ridgidmodel"
+	- Added possibility that engine read collision model from brush model
+	- Added MDC and MD3 support for BSP compiler
+	- Added possibility to load map collision from brush model from BSP compiler
+	    NOTE: BSP compiler is compiling additional .cm file
+	- Added support for Bullet Physics into BSP compiler
+		NOTE: BSP compiler is compiling additional .bullet file 
+	- Fixed problems with AI 
+	- Added VS solution files for Tremulous gamelogics
+	- Cleaned library files
+	- Update binary files
+		NOTE: From this revision loading of maps without recompiling and adding additional .cm and .bullet files will not work
+
 12-01-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed VM
 	- Integrated UI into engine

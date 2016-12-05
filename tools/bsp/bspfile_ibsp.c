@@ -575,6 +575,7 @@ void WriteIBSPFile( const char* filename )
     /* advertisements */
     AddLump( file, ( bspHeader_t* ) header, LUMP_ADVERTISEMENTS, bspAds, numBSPAds * sizeof( bspAdvertisement_t ) );
     
+    
     /* emit bsp size */
     size = ftell( file );
     Sys_Printf( "Wrote %.1f MB (%d bytes)\n", ( float ) size / ( 1024 * 1024 ), size );

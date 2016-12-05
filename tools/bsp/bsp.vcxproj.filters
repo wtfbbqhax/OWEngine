@@ -172,6 +172,21 @@
     <ClCompile Include="libs\ddslib\ddslib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cmfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src-engine\qcommon\q_shared.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src-engine\qcommon\q_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\picomodel\pm_md3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\picomodel\pm_mdc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game_ef.h">
@@ -215,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="libs\ddslib\ddslib.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bspfile_abstract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\q3map2 C++\imagelib.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

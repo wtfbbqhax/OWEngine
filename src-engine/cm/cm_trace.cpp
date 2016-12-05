@@ -1577,6 +1577,18 @@ void CM_Trace( trace_t* results, const vec3_t start, const vec3_t end,
 
 /*
 ==================
+idCollisionModelManagerLocal::TraceModel
+==================
+*/
+void idCollisionModelManagerLocal::TraceModel( trace_t* results, idTraceModel* model, const idVec3& start, const idVec3& end, int mask )
+{
+#ifndef BSPC
+    physicsManager->TraceModel( results, model, start, end, mask );
+#endif
+}
+
+/*
+==================
 idCollisionModelManagerLocal::BoxTrace
 ==================
 */
@@ -1585,6 +1597,20 @@ void idCollisionModelManagerLocal::BoxTrace( trace_t* results, const vec3_t star
         clipHandle_t model, int brushmask, int capsule )
 {
     CM_Trace( results, start, end, mins, maxs, model, vec3_origin, brushmask, capsule, NULL );
+}
+
+/*
+==================
+CM_GetTraceModelForEntity
+==================
+*/
+idTraceModel* idCollisionModelManagerLocal::GetTraceModelForEntity( int entityNum )
+{
+#ifndef BSPC
+    return physicsManager->GetTraceModelForEntity( entityNum );
+#else
+    return 0;
+#endif
 }
 
 /*

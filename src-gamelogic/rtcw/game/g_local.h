@@ -420,6 +420,7 @@ struct gentity_s
     int emitPressure;           //----(SA)	added
     int emitTime;               //----(SA)	added
     
+    int mass;
     // -------------------------------------------------------------------------------------------
     // if working on a post release patch, new variables should ONLY be inserted after this point
 };
@@ -1191,6 +1192,10 @@ public:
     virtual void RetrieveMoveSpeedsFromClient( int entnum, char* text );
     virtual bool GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo );
     virtual int	BotAIStartFrame( int time );
+public:
+    void InitPhysicsForEntity( gentity_t* entity, idVec3 mins, idVec3 maxs );
+    void InitPhysicsForEntity( gentity_t* entity, const char* qpath );
+    
 };
 
 extern idGameLocal gameLocal;
@@ -1409,6 +1414,10 @@ int     trap_GeneticParentsAndChildSelection( int numranks, float* ranks, int* p
 
 void    trap_SnapVector( float* v );
 int     trap_RealTime( qtime_t* qtime ); //Dushan - was missing
+
+void trap_PhysicsSetGravity( const idVec3& gravity );
+idTraceModel* trap_AllocTraceModel( void );
+void trap_ResetPhysics( void );
 
 typedef enum
 {

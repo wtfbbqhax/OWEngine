@@ -71,7 +71,7 @@ public:
     float operator[]( int index ) const;
     float&           operator[]( int index );
     
-    void            set( float x, float y, float z, float w );
+    void            set( float _x, float _y, float _z, float _w );
     
     void operator=( quat_t a );
     
@@ -124,12 +124,12 @@ inline float& quat_t::operator[]( int index )
     return ( &x )[ index ];
 }
 
-inline void quat_t::set( float x, float y, float z, float w )
+inline void quat_t::set( float _x, float _y, float _z, float _w )
 {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    this->w = w;
+    this->x = _x;
+    this->y = _y;
+    this->z = _z;
+    this->w = _w;
 }
 
 inline void quat_t::operator=( quat_t a )

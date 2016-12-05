@@ -5536,3 +5536,76 @@ void G_Activate( gentity_t* ent, gentity_t* activator )
         }
     }
 }
+
+//
+// Physics_RidgidBrushThink
+//
+void Physics_RidgidBrushThink( gentity_t* ent )
+{
+    ent->nextthink = level.time + FRAMETIME;
+    ent->r.traceModel->GetTransform( ent->s.origin, ent->s.angles );
+    G_SetOrigin( ent, ent->s.origin );
+    ent->s.pos.trType = TR_INTERPOLATE;
+    ent->s.pos.trTime = level.time;
+    G_SetAngle( ent, ent->s.angles );
+    trap_LinkEntity( ent );
+}
+
+/*QUAKED physics_ridgidmodel (1 0 0) (-16 -16 -16) (16 16 16)
+"model2" arbitrary .mdv file to display
+*/
+void SP_Physics_RidgidModel( gentity_t* ent )
+{
+    if( !ent->model2 )
+    {
+        G_Error( "Ridgid Model with no model set. \n" );
+        return;
+    }
+    
+    ent->s.modelindex = G_ModelIndex( ent->model2 );
+    
+    G_SetOrigin( ent, ent->s.origin );
+    G_SetAngle( ent, ent->s.angles );
+    
+    trap_LinkEntity( ent );
+    
+    gameLocal.InitPhysicsForEntity( ent, ent->model2 );
+    
+    ent->think = Physics_RidgidBrushThink;
+    ent->nextthink = level.time + FRAMETIME;
+}
+
+/*QUAKED physics_ridgidbrush (0.5 0.25 1.0) ? TRIGGERSPAWN SOLID EXPLOSIVEDAMAGEONLY
+A brush that works with physics.
+
+"mass" mass for the ridgid body.
+*/
+
+void SP_Physics_Ridgidbrush( gentity_t* ent )
+{
+    if( ent->mass <= 0 )
+    {
+        Com_Printf( "Rigidbrush with no mass, defaulting to 25 \n" );
+        ent->mass = 25;
+    }
+    
+    ent->mass = 30;
+    
+    if( ent->s.origin[0] == 0 && ent->s.origin[1] == 0 && ent->s.origin[2] == 0 )
+    {
+        G_Error( "Physics_RidgidBrush without a origin brush. \n" );
+    }
+    
+    // first position at start
+    VectorCopy( ent->s.origin, ent->pos1 );
+    VectorCopy( ent->pos1, ent->pos2 ); // don't go anywhere just yet
+    
+    trap_SetBrushModel( ent, ent->model );
+    InitMover( ent );
+    
+    gameLocal.InitPhysicsForEntity( ent, ent->model );
+    
+    ent->think = Physics_RidgidBrushThink;
+    ent->nextthink = level.time + FRAMETIME;
+    
+}
