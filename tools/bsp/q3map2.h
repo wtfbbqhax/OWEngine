@@ -90,6 +90,12 @@ dependencies
 
 #include <stdlib.h>
 
+LARGE_INTEGER tps;
+LARGE_INTEGER tick;
+LARGE_INTEGER begin, stop, cputime;
+
+/* OpenCL header file - for data parallelism acceleration on the gpu and cpu */
+#include "q3map3_cl.h"
 
 
 /* -------------------------------------------------------------------------------
@@ -1440,6 +1446,7 @@ int							LightMain( int argc, char** argv );
 
 /* light_trace.c */
 void						SetupTraceNodes( void );
+void                        SetupTraceNodes_GPU( void );
 void						TraceLine( trace_t* trace );
 float						SetupTrace( trace_t* trace );
 
@@ -1609,6 +1616,7 @@ Q_EXTERN float				jitters[ MAX_JITTERS ];
 
 
 /* commandline arguments */
+Q_EXTERN qboolean           gpu Q_ASSIGN( qfalse ); /* using videocard? Use cpu by default.*/
 Q_EXTERN qboolean			verbose;
 Q_EXTERN qboolean			verboseEntities Q_ASSIGN( qfalse );
 Q_EXTERN qboolean			force Q_ASSIGN( qfalse );

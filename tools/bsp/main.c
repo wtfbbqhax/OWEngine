@@ -337,7 +337,7 @@ int main( int argc, char** argv )
         }
         
         /* verbose */
-        else if( !strcmp( argv[ i ], "-v" ) )
+        else if( !strcmp( argv[i], "-v" ) || !strcmp( argv[i], "-verbose" ) )
         {
             verbose = qtrue;
             argv[ i ] = NULL;
@@ -368,6 +368,13 @@ int main( int argc, char** argv )
             i++;
             numthreads = atoi( argv[ i ] );
             argv[ i ] = NULL;
+        }
+        //Dushan
+        else if( !strcmp( argv[i], "-gpu" ) )
+        {
+            gpu = qtrue;
+            
+            argv[i] = NULL;
         }
     }
     
@@ -401,6 +408,19 @@ int main( int argc, char** argv )
     if( argc < 2 )
         Error( "Usage: %s [general options] [options] mapfile", argv[ 0 ] );
         
+    /* Delayed warning message for enabling gpu usage so program information can be sent to console beforehand */
+    if( gpu )
+    {
+        Sys_Printf( "\nWARNING: GPU will now attempt to use your videocard to accelerate compilation. This is highly experimental and can break!\n\n" );
+        
+        /*Identify ocl platforms and devices then set up the context and command queue
+        for compilation and execution of the ocl kernels*/
+        if( !InitOpenCL() )
+        {
+            gpu = qfalse; /*fall back to cpu if opencl fails to start for some reason*/
+        }
+    }
+    
     /* info */
     if( !strcmp( argv[ 1 ], "-info" ) )
         r = BSPInfo( argc - 2, argv + 2 );
@@ -452,6 +472,12 @@ int main( int argc, char** argv )
     else
         r = BSPMain( argc, argv );
         
+    /*Clean up after OpenCL*/
+    if( gpu )
+    {
+        CleanOpenCL();
+    }
+    
     /* emit time */
     end = I_FloatTime();
     Sys_Printf( "%9.0f seconds elapsed\n", end - start );

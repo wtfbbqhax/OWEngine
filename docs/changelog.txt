@@ -15,6 +15,7 @@ Changelog
 	- Cleaned library files
 	- Update binary files
 		NOTE: From this revision loading of maps without recompiling and adding additional .cm and .bullet files will not work
+	- Added experimental OpenCL support for BSP compiler
 
 12-01-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed VM

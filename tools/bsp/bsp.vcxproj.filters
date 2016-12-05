@@ -187,6 +187,9 @@
     <ClCompile Include="libs\picomodel\pm_mdc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="q3map3_cl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game_ef.h">
@@ -234,8 +237,11 @@
     <ClInclude Include="bspfile_abstract.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="q3map3_cl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\q3map2 C++\imagelib.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
