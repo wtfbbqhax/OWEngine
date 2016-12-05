@@ -47,11 +47,14 @@
 #import <mach-o/dyld.h>
 
 
-// We will try to automatically fall back to using the original CGGetLastMouseDelta when we are on a system new enough to have the fix.  Any version of CoreGraphics past 1.93.0 will have the fixed version.
+// We will try to automatically fall back to using the original
+// CGGetLastMouseDelta when we are on a system new enough to have the fix.  Any
+// version of CoreGraphics past 1.93.0 will have the fixed version.
 
 
 static BOOL originalVersionShouldWork = YES;
-static CGMouseDelta CGFix_Mouse_DeltaX, CGFix_Mouse_DeltaY;
+static int32_t CGFix_Mouse_DeltaX;
+static int32_t CGFix_Mouse_DeltaY;
 
 static void CGFix_NotificationCallback( CGSNotificationType note, CGSNotificationData data, CGSByteCount dataLength, CGSNotificationArg arg );
 
@@ -122,7 +125,7 @@ done:
     [pool release];
 }
 
-void CGFix_GetLastMouseDelta( CGMouseDelta* dx, CGMouseDelta* dy )
+void CGFix_GetLastMouseDelta( int32_t* dx, int32_t* dy )
 {
     if( originalVersionShouldWork )
     {

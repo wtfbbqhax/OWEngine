@@ -44,5 +44,5 @@
 
 extern void CGFix_Initialize();
 
-extern void CGFix_GetLastMouseDelta( CGMouseDelta* dx, CGMouseDelta* dy );
+extern void CGFix_GetLastMouseDelta( int32_t* dx, int32_t* dy );
 
