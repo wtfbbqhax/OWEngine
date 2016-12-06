@@ -232,7 +232,6 @@ bool BuildCollisionModelFromBSP( const char* bspfile )
     physicsManager->CreateCollisionModelFromAbstractBSP( &bsp );
     
     printf( "Writing Bullet File...\n" );
-    // For right now we are only saving the BSP collision data to the bullet file, fixme?
     physicsManager->WriteBulletPhysicsFile( bulletfilepath );
     
     printf( "Writing CM File...\n" );

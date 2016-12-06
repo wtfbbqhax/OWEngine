@@ -44,7 +44,7 @@
 #define __PHYSICS_PUBLIC_H__
 
 #ifdef _PHYSICSLIB
-#include "../tools/bsp/bspfile_abstract.h"
+#include "../../tools/bsp/bspfile_abstract.h"
 
 #undef MAX_LIGHTMAPS // Breaks vertex struct!
 #endif
@@ -108,6 +108,8 @@ public:
     virtual void			Frame( void ) = 0;
     
     virtual void			WriteBulletPhysicsFile( const char* fullpath ) = 0;
+    
+    virtual void            LoadBulletPhysicsFile( const char* fullpath ) = 0;
     
     // Creates a trace model.
     virtual idTraceModel*	AllocTraceModel() = 0;

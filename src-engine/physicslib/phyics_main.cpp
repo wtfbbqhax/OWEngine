@@ -220,10 +220,40 @@ void owPhysicsManagerLocal::WriteBulletPhysicsFile( const char* fullpath )
 {
     int maxSerializeBufferSize = 1024 * 1024 * 5;
     
-    btDefaultSerializer*	serializer = new btDefaultSerializer( maxSerializeBufferSize );
+    //Serialize the entire world.
+    btDefaultSerializer* serializer = new btDefaultSerializer( maxSerializeBufferSize );
     dynamicsWorld->serialize( serializer );
     
     FILE* f2 = fopen( fullpath, "wb" );
     fwrite( serializer->getBufferPointer(), serializer->getCurrentBufferSize(), 1, f2 );
     fclose( f2 );
+}
+
+/*
+==============
+owPhysicsManagerLocal::LoadBulletPhysicsFile
+==============
+*/
+void owPhysicsManagerLocal::LoadBulletPhysicsFile( const char* fullpath )
+{
+    char cmpath[1024];
+    void* buffer;
+    
+    btBulletWorldImporter* fileLoader = new btBulletWorldImporter( dynamicsWorld );
+    
+    COM_StripExtension( fullpath, cmpath );
+    sprintf( cmpath, "%s.bullet", cmpath );
+    
+    int cmlen = FS_ReadFile( cmpath, &buffer );
+    if( cmlen <= 0 || buffer == NULL )
+    {
+        Com_Printf( "owPhysicsManagerLocal::LoadBulletPhysicsFile: Failed to load bullet - %s\n", cmpath );
+    }
+    else
+    {
+        Com_Printf( "owPhysicsManagerLocal::LoadBulletPhysicsFile: Loaded bullet file - %s\n", cmpath );
+        //Load .bullet file
+        fileLoader->loadFile( cmpath );
+        FS_FreeFile( buffer );
+    }
 }

@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////////////
 //
 //  This file is part of OWEngine source code.
 //  Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
@@ -676,12 +676,15 @@ void idCollisionModelManagerLocal::LoadCollisionModel( const char* qpath )
     int cmlen = FS_ReadFile( cmpath, &buffer );
     if( cmlen <= 0 || buffer == NULL )
     {
-        Com_Error( ERR_FATAL, "LoadCollisionModel: Failed to load cm %s\n", qpath );
+        Com_Printf( "idCollisionModelManagerLocal::LoadCollisionModel: Failed to load cm file - %s\n", cmpath );
     }
-    
-    worldcm.Init( ( cmHeader_t* )buffer );
-    
-    FS_FreeFile( buffer );
+    else
+    {
+        Com_Printf( "idCollisionModelManagerLocal::LoadCollisionModel: Loaded cm file - %s\n", cmpath );
+        worldcm.Init( ( cmHeader_t* )buffer );
+        
+        FS_FreeFile( buffer );
+    }
 }
 
 void* idCollisionModelManagerLocal::GetBrushModelVertexes( int bmodelNum )
@@ -803,6 +806,9 @@ void idCollisionModelManagerLocal::LoadMap( const char* name, bool clientload, i
     
     // Load the clipMap into the physics processor.
     physicsManager->CreateCollisionModelFromBSP( &cm );
+    
+    // Load the bullet collision file
+    physicsManager->LoadBulletPhysicsFile( name );
     
     // Load the world collision model.
     LoadCollisionModel( name );

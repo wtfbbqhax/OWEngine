@@ -1,5 +1,8 @@
 Changelog
 
+12-06-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added reading ".bullet" files into engine
+
 12-05-2016 Dusan Jocic <dusanjocic@msn.com>
 	- First check-in of the Bullet Physics engine implementation.
 	- Added "physicslib" static library dependencies to engine and to BSP compiler

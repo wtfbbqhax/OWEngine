@@ -52,6 +52,7 @@
 #include "btBulletDynamicsCommon.h"
 #include "LinearMath/btGeometryUtil.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include <btBulletWorldImporter.h>
 
 #include "physics_collision.h"
 
@@ -68,6 +69,7 @@ public:
     virtual void			CreateCollisionModelFromBSP( void* collisionModel );
     virtual void			CreateCollisionModelFromAbstractBSP( idPhysicsAbstractBSP* collisionModel );
     virtual void			WriteBulletPhysicsFile( const char* fullpath );
+    virtual void            LoadBulletPhysicsFile( const char* fullpath );
     virtual idTraceModel*	AllocTraceModel();
     virtual idTraceModel*	GetTraceModelForEntity( int entityNum );
     virtual void			DrawDebug();
