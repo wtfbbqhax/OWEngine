@@ -123,6 +123,15 @@ float VectorDistance( vec3_t v1, vec3_t v2 )
     return VectorLength( dir );
 }
 
+int FS_ReadFile( const char*, void** )
+{
+    return -1;
+};
+
+void COM_StripExtension( const char* in, char* out )
+{
+}
+
 /*
 //===========================================================================
 //
@@ -1226,5 +1235,3 @@ int main( int argc, char** argv )
     Log_Close();                        //close the log file
     return 0;
 } //end of the function main
-
-

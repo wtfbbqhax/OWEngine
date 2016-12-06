@@ -83,7 +83,7 @@
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(intDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <ProfileGuidedDatabase>$(intDir)$(TargetName).pgd</ProfileGuidedDatabase>
@@ -159,6 +159,7 @@
     <ClCompile Include="..\..\cm\cm_load.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
     </ClCompile>
+    <ClCompile Include="..\..\cm\cm_model.cpp" />
     <ClCompile Include="..\..\cm\cm_patch.cpp" />
     <ClCompile Include="..\..\cm\cm_test.cpp" />
     <ClCompile Include="..\..\cm\cm_trace.cpp" />
@@ -237,9 +238,6 @@
     <ClCompile Include="..\..\..\tools\bspc\textures.cpp" />
     <ClCompile Include="..\..\..\tools\bspc\tree.cpp" />
     <ClCompile Include="..\..\..\tools\bspc\writebsp.cpp" />
-    <ClCompile Include="..\..\..\tools\bspc\_files.cpp">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\botlib\aasfile.h" />

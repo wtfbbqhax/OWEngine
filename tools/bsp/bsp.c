@@ -925,6 +925,9 @@ int BSPMain( int argc, char** argv )
     if( strlen( tempSource ) > 0 )
         remove( tempSource );
         
+    //Dushan
+    BuildCollisionModelFromBSP( name );
+    
     /* return to sender */
     return 0;
 }

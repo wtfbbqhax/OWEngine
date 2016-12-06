@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////////////
 //
 //  This file is part of OWEngine source code.
 //  Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
@@ -661,6 +661,40 @@ unsigned CM_Checksum( dheader_t* header )
 
 /*
 ==================
+CM_LoadCollisionModel
+==================
+*/
+void idCollisionModelManagerLocal::LoadCollisionModel( const char* qpath )
+{
+    char cmpath[1024];
+    void* buffer;
+    
+    COM_StripExtension( qpath, cmpath );
+    sprintf( cmpath, "%s.cm", cmpath );
+    
+    
+    int cmlen = FS_ReadFile( cmpath, &buffer );
+    if( cmlen <= 0 || buffer == NULL )
+    {
+        Com_Printf( "idCollisionModelManagerLocal::LoadCollisionModel: Failed to load cm file - %s\n", cmpath );
+    }
+    else
+    {
+        Com_Printf( "idCollisionModelManagerLocal::LoadCollisionModel: Loaded cm file - %s\n", cmpath );
+        worldcm.Init( ( cmHeader_t* )buffer );
+        
+        FS_FreeFile( buffer );
+    }
+}
+
+void* idCollisionModelManagerLocal::GetBrushModelVertexes( int bmodelNum )
+{
+    return worldcm.GetBrushShape( bmodelNum );
+}
+
+
+/*
+==================
 idCollisionModelManagerLocal::LoadMap
 
 Loads in the map and all submodels
@@ -765,6 +799,44 @@ void idCollisionModelManagerLocal::LoadMap( const char* name, bool clientload, i
     {
         Q_strncpyz( cm.name, name, sizeof( cm.name ) );
     }
+    
+    // Init the physics manager.
+#ifndef BSPC
+    physicsManager->Init();
+    
+    // Load the clipMap into the physics processor.
+    physicsManager->CreateCollisionModelFromBSP( &cm );
+    
+    // Load the bullet collision file
+    physicsManager->LoadBulletPhysicsFile( name );
+    
+    // Load the world collision model.
+    LoadCollisionModel( name );
+#endif
+}
+
+/*
+=====================
+CM_DrawPhysicsDebug
+=====================
+*/
+#ifndef BSPC
+void CM_DrawPhysicsDebug()
+{
+    physicsManager->DrawDebug();
+}
+#endif
+
+/*
+==================
+CM_FreeMap
+==================
+*/
+void idCollisionModelManagerLocal::FreeMap( void )
+{
+#ifndef BSPC
+    physicsManager->Shutdown();
+#endif
 }
 
 /*

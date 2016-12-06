@@ -182,6 +182,7 @@ struct cgameImports_t
     void( *UI_LimboChat )( const char* arg0 );
     void( *UI_ClosePopup )( const char* arg0 );
     bool( *GetModelInfo )( int clientNum, char* modelName, animModelInfo_t** modelInfo );
+    void( *PhysicsDrawDebug )( void );
     
     idRenderSystem* renderSystem;
     idCollisionModelManager* collisionModelManager;

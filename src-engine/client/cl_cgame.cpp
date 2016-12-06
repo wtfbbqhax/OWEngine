@@ -667,6 +667,14 @@ void CL_UIPopup( const char* uiname )
     }
 }
 
+//
+// CL_PhysicsDrawDebug
+//
+void CL_PhysicsDrawDebug( void )
+{
+    physicsManager->DrawDebug();
+}
+
 /*
 ====================
 CL_CreateExportTable
@@ -759,6 +767,7 @@ void CL_CreateExportTable()
     exports.UI_LimboChat = CL_AddToLimboChat;
     exports.UI_ClosePopup = CL_UIClosePopup;
     exports.GetModelInfo = SV_GetModelInfo;
+    exports.PhysicsDrawDebug = CL_PhysicsDrawDebug;
     
     exports.renderSystem = renderSystem;
     exports.collisionModelManager = collisionModelManager;

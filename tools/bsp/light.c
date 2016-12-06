@@ -1734,6 +1734,9 @@ void LightWorld( void )
     }
 }
 
+void LightWorld_GPU( void )
+{
+}
 
 
 /*
@@ -1751,6 +1754,29 @@ int LightMain( int argc, char** argv )
     
     /* note it */
     Sys_Printf( "--- Light ---\n" );
+    
+    if( gpu == qtrue )
+    {
+        /*load the source code for the ocl kernels used in the lighting phase of compilation*/
+        LoadProgramSource( "radiosity_kernel.cl" );
+        LoadProgramSource( "trace_kernel.cl" );
+        //adProgramSource("vector_math.cl");
+        BuildAllProgramSource();
+        for( i = 0; i < 16384; i++ )
+        {
+            cl_float4 j = { i, i, i, i };
+            src_a_h[i] = src_b_h[i] = j;
+        }
+        if( gpu )
+        {
+            createCLVectorGPU();
+        }
+        else
+        {
+            Sys_Printf( "something failed along the way\n" );
+        }
+        
+    }
     
     /* process commandline arguments */
     for( i = 1; i < ( argc - 1 ); i++ )
@@ -2162,6 +2188,17 @@ int LightMain( int argc, char** argv )
     /* ydnar: set up optimization */
     SetupBrushes();
     SetupSurfaceLightmaps();
+    
+    if( gpu == qtrue )
+    {
+        SetupTraceNodes_GPU();  /* attempt to initialize surface facet tracing on the gpu */
+        LightWorld_GPU();       /* attempt to light the world with the gpu */
+    }
+    else
+    {
+        SetupTraceNodes();      /* Initialize surface facet tracing regularly (cpu) */
+        LightWorld();           /* attempt to light the world regularly (cpu) */
+    }
     
     /* initialize the surface facet tracing */
     SetupTraceNodes();

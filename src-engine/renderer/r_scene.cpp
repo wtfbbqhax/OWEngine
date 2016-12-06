@@ -165,7 +165,7 @@ void idRenderSystemLocal::AddPolyToScene( qhandle_t hShader, int numVerts, const
     
     if( !hShader )
     {
-        Com_Printf( "WARNING: idRenderSystemLocal::AddPolyToScene: NULL poly shader\n" );
+        Com_DPrintf( "WARNING: idRenderSystemLocal::AddPolyToScene: NULL poly shader\n" );
         return;
     }
     
@@ -250,7 +250,7 @@ void idRenderSystemLocal::AddPolysToScene( qhandle_t hShader, int numVerts, cons
     
     if( !hShader )
     {
-        Com_Printf( "WARNING: idRenderSystemLocal::AddPolysToScene: NULL poly shader\n" );
+        Com_DPrintf( "WARNING: idRenderSystemLocal::AddPolysToScene: NULL poly shader\n" );
         return;
     }
     

@@ -1830,6 +1830,8 @@ extern vmCvar_t mp_mapDesc;
 extern vmCvar_t mp_mapTitle;
 // -NERVE - SMF
 
+extern vmCvar_t cg_debugPhysics;
+
 //
 // cg_main.c
 //
@@ -2535,5 +2537,6 @@ void  CG_FreeCamera( int camNum );
 void CG_StartShakeCamera( float p, int duration, vec3_t src, float radius );
 
 bool trap_GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo );
+void trap_PhysicsDrawDebug( void );
 
 #endif // !__CG_LOCAL_H__

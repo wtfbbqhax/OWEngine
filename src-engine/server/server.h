@@ -45,7 +45,7 @@
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
-#include "../../../src-gamelogic/rtcw/game/bg_public.h"
+#include "../../src-gamelogic/rtcw/game/bg_public.h"
 #include "../../../src-engine/botlib/botlib.h"
 #define botlib_export_s botlib_export_t
 #include "../../../src-gamelogic/rtcw/game/g_public.h"

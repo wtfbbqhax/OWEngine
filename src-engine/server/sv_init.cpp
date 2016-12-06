@@ -806,6 +806,7 @@ void SV_SpawnServer( char* server, bool killBots )
     
     // clear collision map data		// (SA) NOTE: TODO: used in missionpack
     collisionModelManager->ClearMap();
+    collisionModelManager->FreeMap();
     
     // wipe the entire per-level structure
     SV_ClearServer();

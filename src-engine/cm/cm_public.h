@@ -44,6 +44,8 @@
 #define __CM_PUBLIC_H__
 
 #include "../qcommon/qfiles.h"
+#include "../shared/cm_header.h"
+#include "cm_tracemodel.h"
 
 // plane types are used to speed some tests
 // 0-2 are axial planes
@@ -86,6 +88,7 @@ typedef struct
     int surfaceFlags;           // surface hit
     int contents;           // contents on other side of surface hit
     int entityNum;          // entity the contacted sirface is a part of
+    idVec3 fractionreal;
 } trace_t;
 
 // markfragments are returned by CM_MarkFragments()
@@ -108,9 +111,10 @@ class idCollisionModelManager
 {
 public:
     virtual void        LoadMap( const char* name, bool clientload, int* checksum ) = 0;
+    virtual void		FreeMap( void ) = 0;
     virtual clipHandle_t InlineModel( int index ) = 0;       // 0 = world, 1 + are bmodels
     virtual clipHandle_t TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule ) = 0;
-    
+    virtual idTraceModel* GetTraceModelForEntity( int entityNum ) = 0;
     virtual void        ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) = 0;
     
     virtual int         NumClusters( void ) = 0;
@@ -120,7 +124,7 @@ public:
     // returns an ORed contents mask
     virtual int         PointContents( const vec3_t p, clipHandle_t model ) = 0;
     virtual int         TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles ) = 0;
-    
+    virtual void		TraceModel( trace_t* results, idTraceModel* model, const idVec3& start, const idVec3& end, int mask ) = 0;
     virtual void        BoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
                                   const vec3_t mins, const vec3_t maxs,
                                   clipHandle_t model, int brushmask, int capsule ) = 0;
@@ -146,7 +150,7 @@ public:
     virtual bool        AreasConnected( int area1, int area2 ) = 0;
     
     virtual int         WriteAreaBits( byte* buffer, int area ) = 0;
-    
+    virtual void* 		GetBrushModelVertexes( int bmodelNum ) = 0;
     virtual void        ClearMap( void ) = 0;
     
     // cm_patch.c

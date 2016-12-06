@@ -43,9 +43,12 @@
 #ifndef __CM_LOCAL_H__
 #define __CM_LOCAL_H__
 
+#ifndef _PHYSICSLIB
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
+#endif
 #include "cm_polylib.h"
+#include "cm_model.h"
 
 
 //	(SA) DM needs more than 256 since this includes func_static and func_explosives
@@ -96,6 +99,7 @@ typedef struct
     int numsides;
     cbrushside_t*    sides;
     int checkcount;             // to avoid repeated testings
+    bool physicsprocessed;
 } cbrush_t;
 
 
@@ -237,6 +241,7 @@ class idCollisionModelManagerLocal : public idCollisionModelManager
 {
 public:
     virtual void        LoadMap( const char* name, bool clientload, int* checksum );
+    virtual void		FreeMap( void );
     virtual clipHandle_t InlineModel( int index );       // 0 = world, 1 + are bmodels
     virtual clipHandle_t TempBoxModel( const vec3_t mins, const vec3_t maxs, int capsule );
     
@@ -249,7 +254,7 @@ public:
     // returns an ORed contents mask
     virtual int         PointContents( const vec3_t p, clipHandle_t model );
     virtual int         TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_t origin, const vec3_t angles );
-    
+    virtual void		TraceModel( trace_t* results, idTraceModel* model, const idVec3& start, const idVec3& end, int mask );
     virtual void        BoxTrace( trace_t* results, const vec3_t start, const vec3_t end,
                                   const vec3_t mins, const vec3_t maxs,
                                   clipHandle_t model, int brushmask, int capsule );
@@ -258,7 +263,7 @@ public:
             const vec3_t mins, const vec3_t maxs,
             clipHandle_t model, int brushmask,
             const vec3_t origin, const vec3_t angles, int capsule );
-            
+    virtual idTraceModel* GetTraceModelForEntity( int entityNum );
     virtual byte*        ClusterPVS( int cluster );
     
     virtual int         PointLeafnum( const vec3_t p );
@@ -275,11 +280,15 @@ public:
     virtual bool        AreasConnected( int area1, int area2 );
     
     virtual int         WriteAreaBits( byte* buffer, int area );
-    
+    virtual void* 		GetBrushModelVertexes( int bmodelNum );
     virtual void        ClearMap( void );
     
     // cm_patch.c
     virtual void DrawDebugSurface( void ( *drawPoly )( int color, int numPoints, float* points ) );
+private:
+    void LoadCollisionModel( const char* qpath );
+    
+    idCollisionModel		worldcm;
 };
 
 extern idCollisionModelManagerLocal collisionModelManagerLocal;

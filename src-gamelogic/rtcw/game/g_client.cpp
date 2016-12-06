@@ -45,8 +45,8 @@
 // Ridah, new bounding box
 //static vec3_t	playerMins = {-15, -15, -24};
 //static vec3_t	playerMaxs = {15, 15, 32};
-vec3_t playerMins = { -18, -18, -24};
-vec3_t playerMaxs = {18, 18, 48};
+idVec3 playerMins = { -18, -18, -24};
+idVec3 playerMaxs = {18, 18, 48};
 // done.
 
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 32) initial
@@ -2184,6 +2184,11 @@ void ClientSpawn( gentity_t* ent )
 
     }
     
+    ent->mass = 100;
+    gameLocal.InitPhysicsForEntity( ent, playerMins, playerMaxs );
+    ent->r.traceModel->SetTransform( idVec3( client->ps.origin[0], client->ps.origin[1], client->ps.origin[2] ),
+                                     idVec3( client->ps.viewangles[0], client->ps.viewangles[1], client->ps.viewangles[2] ) );
+                                     
     // don't allow full run speed for a bit
     client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
     client->ps.pm_time = 100;

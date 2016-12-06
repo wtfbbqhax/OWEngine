@@ -64,7 +64,7 @@ NODROP means dont drop it to the ground
 SP_ai_marker
 ============
 */
-extern vec3_t playerMins, playerMaxs;
+extern idVec3 playerMins, playerMaxs;
 void SP_ai_marker( gentity_t* ent )
 {
     vec3_t dest;
