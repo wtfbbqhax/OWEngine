@@ -730,14 +730,12 @@ int SV_BotGetConsoleMessage( int client, char* buf, int size )
     cl->reliableAcknowledge++;
     index = cl->reliableAcknowledge & ( MAX_RELIABLE_COMMANDS - 1 );
     
-    //if ( !cl->reliableCommands[index][0] ) {
-    if( !( msg = SV_GetReliableCommand( cl, index ) ) || !msg[0] )
+    if( !cl->reliableCommands[index][0] )
     {
         return false;
     }
     
-    //Q_strncpyz( buf, cl->reliableCommands[index], size );
-    Q_strncpyz( buf, msg, size );
+    Q_strncpyz( buf, cl->reliableCommands[index], size );
     return true;
 }
 

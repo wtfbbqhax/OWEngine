@@ -963,18 +963,7 @@ void ClientThink_real( gentity_t* ent )
     // mark the time, so the connection sprite can be removed
     ucmd = &ent->client->pers.cmd;
     
-    // NERVE - SMF - parse client damage command
-    if( ucmd->cld )
-    {
-        int id, enemynum;
-        
-        // NOTE: MAX_CLIENTS currently only needs 7 bits, the rest is for id tag
-        id = ( ucmd->cld >> 7 );
-        enemynum = ucmd->cld & 0x7F;
-        
-        ClientDamage( ent, ent->client->ps.clientNum, enemynum, id );
-    }
-    // -NERVE - SMF
+    ent->client->ps.identifyClient = ucmd->identClient;
     
     // sanity check the command time to prevent speedup cheating
     if( ucmd->serverTime > level.time + 200 )

@@ -500,9 +500,9 @@ bool    trap_GetUserCmd( int cmdNumber, usercmd_t* ucmd )
     return imports->GetUserCmd( cmdNumber, ucmd );
 }
 
-void        trap_SetUserCmdValue( int stateValue, int holdableValue, float sensitivityScale, int cld )    //----(SA)	// NERVE - SMF - added cld
+void        trap_SetUserCmdValue( int stateValue, int holdableValue, float sensitivityScale, int mpSetup, int mpIdentClient )   //----(SA)	// NERVE - SMF - added cld
 {
-    imports->SetUserCmdValue( stateValue, holdableValue, PASSFLOAT( sensitivityScale ), cld );
+    imports->SetUserCmdValue( stateValue, holdableValue, PASSFLOAT( sensitivityScale ), mpSetup, mpIdentClient );
 }
 
 int trap_MemoryRemaining( void )

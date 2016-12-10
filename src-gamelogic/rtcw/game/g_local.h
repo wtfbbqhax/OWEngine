@@ -617,6 +617,7 @@ struct gclient_s
     int PCSpecialPickedUpCount;         // JPW NERVE used to count # of times somebody's picked up this LTs ammo (or medic health) (for scoring)
     
     int saved_persistant[MAX_PERSISTANT];           // DHM - Nerve :: Save ps->persistant here during Limbo
+    pmoveExt_t pmext;
 };
 
 

@@ -245,6 +245,8 @@ typedef int clipHandle_t;
 #endif
 #endif
 
+#define PAD(x, y) (((x)+(y)-1) & ~((y)-1))
+
 //#define	SND_NORMAL			0x000	// (default) Allow sound to be cut off only by the same sound on this channel
 #define     SND_OKTOCUT         0x001   // Allow sound to be cut off by any following sounds on this channel
 #define     SND_REQUESTCUT      0x002   // Allow sound to be cut off by following sounds on this channel only for sounds who request cutoff
@@ -609,9 +611,10 @@ int BoxOnPlaneSide( vec3_t emins, vec3_t emaxs, struct cplane_s* plane );
 
 float   AngleMod( float a );
 float   LerpAngle( float from, float to, float frac );
+
 float   AngleSubtract( float a1, float a2 );
 void    AnglesSubtract( vec3_t v1, vec3_t v2, vec3_t v3 );
-
+void    LerpPosition( vec3_t start, vec3_t end, float frac, vec3_t out );
 float AngleNormalize360( float angle );
 float AngleNormalize180( float angle );
 float AngleDelta( float angle1, float angle2 );
@@ -643,6 +646,7 @@ float Com_Clamp( float min, float max, float value );
 char*    COM_SkipPath( char* pathname );
 void    COM_FixPath( char* pathname );
 void    COM_StripExtension( const char* in, char* out );
+void    COM_StripExtension2( const char* in, char* out, int destsize );
 void    COM_StripFilename( char* in, char* out );
 void    COM_DefaultExtension( char* path, int maxSize, const char* extension );
 
@@ -687,6 +691,7 @@ typedef struct pc_token_s
 void    COM_MatchToken( char** buf_p, char* match );
 
 void SkipBracedSection( char** program );
+void SkipBracedSection_Depth( char** program, int depth ); // start at given depth if already matching stuff
 void SkipRestOfLine( char** data );
 
 void Parse1DMatrix( char** buf_p, int x, float* m );
@@ -874,6 +879,7 @@ default values.
 #define CVAR_TEMP           256 // can be set even when cheats are disabled, but is not archived
 #define CVAR_CHEAT          512 // can not be changed if cheats are disabled
 #define CVAR_NORESTART      1024    // do not clear when a cvar_restart is issued
+#define CVAR_WOLFINFO       2048    // DHM - NERVE :: Like userinfo, but for wolf multiplayer info
 
 // nothing outside the Cvar_*() functions should modify these fields!
 typedef struct cvar_s
@@ -1014,6 +1020,8 @@ typedef struct
 //
 typedef enum
 {
+    // TTimo gcc: enums don't go <=0 unless you force a value
+    AISTATE_NULL = -1,
     AISTATE_RELAXED,
     AISTATE_QUERY,
     AISTATE_ALERT,
@@ -1221,7 +1229,7 @@ typedef struct playerState_s
 //----(SA)	end
 
     aistateEnum_t aiState;
-    
+    int identifyClient;                 // NERVE - SMF
     float footstepCount;
     
 } playerState_t;
@@ -1260,6 +1268,7 @@ typedef struct playerState_s
 #define WBUTTON_RELOAD      8
 #define WBUTTON_LEANLEFT    16
 #define WBUTTON_LEANRIGHT   32
+#define WBUTTON_DROP        64 // JPW NERVE
 
 // unused
 #define WBUTTON_EXTRA6      64
@@ -1268,7 +1277,17 @@ typedef struct playerState_s
 
 #define MOVE_RUN            120         // if forwardmove or rightmove are >= MOVE_RUN,
 // then BUTTON_WALKING should be set
+#define MP_TEAM_OFFSET      6
+#define MP_CLASS_OFFSET     4
+#define MP_WEAPON_OFFSET    0
 
+#define MP_TEAM_BITS        2
+#define MP_CLASS_BITS       2
+#define MP_WEAPON_BITS      4
+
+#define MP_TEAM_MASK        0xC0
+#define MP_CLASS_MASK       0x30
+#define MP_WEAPON_MASK      0x0F
 
 // usercmd_t is sent to the server each client frame
 typedef struct usercmd_s
@@ -1284,7 +1303,8 @@ typedef struct usercmd_s
     signed char forwardmove, rightmove, upmove;
     signed char wolfkick;       // RF, we should move this over to a wbutton, this is a huge waste of bandwidth
     
-    unsigned short cld;         // NERVE - SMF - send client damage in usercmd instead of as a server command
+    char mpSetup;               // NERVE - SMF
+    char identClient;           // NERVE - SMF
 } usercmd_t;
 
 //===================================================================
@@ -1487,5 +1507,28 @@ typedef enum
 } languages_t;
 
 #define SQR( a ) ( ( a ) * ( a ) )
+
+// NERVE - SMF - wolf server/game states
+typedef enum
+{
+    GS_INITIALIZE = -1,
+    GS_PLAYING,
+    GS_WARMUP_COUNTDOWN,
+    GS_WARMUP,
+    GS_INTERMISSION,
+    GS_WAITING_FOR_PLAYERS,
+    GS_RESET
+} gamestate_t;
+
+// TTimo - voting config flags
+#define VOTEFLAGS_RESTART           ( 1 << 0 )
+#define VOTEFLAGS_RESETMATCH    ( 1 << 1 )
+#define VOTEFLAGS_STARTMATCH    ( 1 << 2 )
+#define VOTEFLAGS_NEXTMAP           ( 1 << 3 )
+#define VOTEFLAGS_SWAP              ( 1 << 4 )
+#define VOTEFLAGS_TYPE              ( 1 << 5 )
+#define VOTEFLAGS_KICK              ( 1 << 6 )
+#define VOTEFLAGS_MAP                   ( 1 << 7 )
+
 
 #endif  //!__Q_SHARED_H__

@@ -918,6 +918,11 @@ typedef struct
     int crosshairPowerupNum;
     int crosshairPowerupTime;
     
+    int identifyClientNum;                  // NERVE - SMF
+    int identifyClientHealth;               // NERVE - SMF
+    int identifyNextTime;                   // NERVE - SMF
+    int identifyClientRequest;              // NERVE - SMF
+    
 //----(SA)	added
     // cursorhints
     int cursorHintIcon;
@@ -1823,6 +1828,7 @@ extern vmCvar_t cg_loadWeaponSelect;
 
 // NERVE - SMF - Wolf multiplayer configuration cvars
 extern vmCvar_t mp_playerType;
+extern vmCvar_t mp_team;
 extern vmCvar_t mp_weapon;
 extern vmCvar_t mp_item1;
 extern vmCvar_t mp_item2;
@@ -2486,7 +2492,7 @@ int         trap_GetCurrentCmdNumber( void );
 bool    trap_GetUserCmd( int cmdNumber, usercmd_t* ucmd );
 
 // used for the weapon/holdable select and zoom
-void        trap_SetUserCmdValue( int stateValue, int holdValue, float sensitivityScale, int cld );     // NERVE - SMF - added cld
+void        trap_SetUserCmdValue( int stateValue, int holdValue, float sensitivityScale, int mpSetup, int mpIdentClient );    // NERVE - SMF - added cld
 
 // aids for VM testing
 void        testPrintInt( char* string, int i );

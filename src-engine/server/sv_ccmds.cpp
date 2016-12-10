@@ -274,6 +274,9 @@ static void SV_Map_f( void )
         Com_Printf( "Can't find map %s\n", expanded );
         return;
     }
+    Cvar_Set( "gamestate", va( "%i", GS_INITIALIZE ) );   // reset gamestate on map/devmap
+    Cvar_Set( "g_currentRound", "0" );          // reset the current round
+    Cvar_Set( "g_nextTimeLimit", "0" );         // reset the next time limit
     
     Cvar_Set( "r_mapFogColor", "0" );       //----(SA)	added
     Cvar_Set( "r_waterFogColor", "0" );     //----(SA)	added
@@ -349,6 +352,79 @@ static void SV_Map_f( void )
 
 /*
 ================
+SV_CheckTransitionGameState
+================
+*/
+static bool SV_CheckTransitionGameState( gamestate_t new_gs, gamestate_t old_gs )
+{
+    if( old_gs == new_gs && new_gs != GS_PLAYING )
+    {
+        return false;
+    }
+    
+    //	if ( old_gs == GS_WARMUP && new_gs != GS_WARMUP_COUNTDOWN )
+    //		return false;
+    
+    //	if ( old_gs == GS_WARMUP_COUNTDOWN && new_gs != GS_PLAYING )
+    //		return false;
+    
+    if( old_gs == GS_WAITING_FOR_PLAYERS && new_gs != GS_WARMUP )
+    {
+        return false;
+    }
+    
+    if( old_gs == GS_INTERMISSION && new_gs != GS_WARMUP )
+    {
+        return false;
+    }
+    
+    if( old_gs == GS_RESET && ( new_gs != GS_WAITING_FOR_PLAYERS && new_gs != GS_WARMUP ) )
+    {
+        return false;
+    }
+    
+    return true;
+}
+
+/*
+================
+SV_TransitionGameState
+================
+*/
+static bool SV_TransitionGameState( gamestate_t new_gs, gamestate_t old_gs, int delay )
+{
+    // we always do a warmup before starting match
+    if( old_gs == GS_INTERMISSION && new_gs == GS_PLAYING )
+    {
+        new_gs = GS_WARMUP;
+    }
+    
+    // check if its a valid state transition
+    if( !SV_CheckTransitionGameState( new_gs, old_gs ) )
+    {
+        return false;
+    }
+    
+    if( new_gs == GS_RESET )
+    {
+        if( atoi( Cvar_VariableString( "g_noTeamSwitching" ) ) )
+        {
+            new_gs = GS_WAITING_FOR_PLAYERS;
+        }
+        else
+        {
+            new_gs = GS_WARMUP;
+        }
+    }
+    
+    Cvar_Set( "gamestate", va( "%i", new_gs ) );
+    
+    return true;
+}
+
+
+/*
+================
 SV_MapRestart_f
 
 Completely restarts a level, but doesn't send a new gamestate to the clients.
@@ -361,7 +437,8 @@ static void SV_MapRestart_f( void )
     client_t*    client;
     char*        denied;
     bool isBot;
-    int delay;
+    int delay = 0;
+    gamestate_t new_gs, old_gs;
     
     // make sure we aren't restarting twice in the same frame
     if( com_frameTime == sv.serverId )
@@ -396,10 +473,33 @@ static void SV_MapRestart_f( void )
             delay = 5;
         }
     }
-    if( delay && !Cvar_VariableValue( "g_doWarmup" ) )
+    
+    if( Cmd_Argc() > 1 )
+    {
+        delay = atoi( Cmd_Argv( 1 ) );
+    }
+    
+    if( delay )
     {
         sv.restartTime = svs.time + delay * 1000;
         SV_SetConfigstring( CS_WARMUP, va( "%i", sv.restartTime ) );
+        return;
+    }
+    
+    // read in gamestate or just default to GS_PLAYING
+    old_gs = ( gamestate_t )atoi( Cvar_VariableString( "gamestate" ) );
+    
+    if( Cmd_Argc() > 2 )
+    {
+        new_gs = ( gamestate_t )atoi( Cmd_Argv( 2 ) );
+    }
+    else
+    {
+        new_gs = GS_PLAYING;
+    }
+    
+    if( !SV_TransitionGameState( new_gs, old_gs, delay ) )
+    {
         return;
     }
     
@@ -461,6 +561,8 @@ static void SV_MapRestart_f( void )
     // had been changed from their default values will generate broadcast updates
     sv.state = SS_LOADING;
     sv.restarting = true;
+    
+    Cvar_Set( "sv_serverRestarting", "1" );
     
     SV_RestartGameProgs();
     
@@ -569,7 +671,7 @@ void    SV_LoadGame_f( void )
         return;
     }
     
-    //buffer = Hunk_AllocateTempMemory(size);
+    buffer = ( byte* )Hunk_AllocateTempMemory( size );
     FS_ReadFile( filename, ( void** )&buffer );
     
     // read the mapname, if it is the same as the current map, then do a fast load
@@ -1046,6 +1148,17 @@ static void SV_KillServer_f( void )
     SV_Shutdown( "killserver" );
 }
 
+/*
+=================
+SV_GameCompleteStatus_f
+=================
+*/
+void SV_GameCompleteStatus_f( void )
+{
+    SV_MasterGameCompleteStatus();
+}
+
+
 //===========================================================
 
 /*
@@ -1074,9 +1187,11 @@ void SV_AddOperatorCommands( void )
     Cmd_AddCommand( "dumpuser", SV_DumpUser_f );
     Cmd_AddCommand( "map_restart", SV_MapRestart_f );
     Cmd_AddCommand( "sectorlist", SV_SectorList_f );
-    Cmd_AddCommand( "spmap", SV_Map_f );
-#ifndef WOLF_SP_DEMO
+    Cmd_AddCommand( "gameCompleteStatus", SV_GameCompleteStatus_f );
+#ifndef PRE_RELEASE_DEMO
     Cmd_AddCommand( "map", SV_Map_f );
+    Cmd_AddCommand( "devmap", SV_Map_f );
+    Cmd_AddCommand( "spmap", SV_Map_f );
     Cmd_AddCommand( "devmap", SV_Map_f );
     Cmd_AddCommand( "spdevmap", SV_Map_f );
 #endif

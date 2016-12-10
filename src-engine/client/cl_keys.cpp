@@ -1894,6 +1894,46 @@ void CL_KeyEvent( int key, bool down, unsigned time )
         }
     }
     
+    // are we waiting to clear stats and move to briefing screen
+    if( down && cl_waitForFire && cl_waitForFire->integer )
+    {
+        if( cls.keyCatchers & KEYCATCH_CONSOLE )
+        {
+            Con_ToggleConsole_f();
+        }
+        // clear all input controls
+        CL_ClearKeys();
+        // allow only attack command input
+        kb = keys[key].binding;
+        if( !Q_stricmp( kb, "+attack" ) )
+        {
+            // clear the stats out, ignore the keypress
+            Cvar_Set( "g_missionStats", "xx" );     // just remove the stats, but still wait until we're done loading, and player has hit fire to begin playing
+            Cvar_Set( "cl_waitForFire", "0" );
+        }
+        return;     // no buttons while waiting
+    }
+    
+    // are we waiting to begin the level
+    if( down && cl_missionStats && cl_missionStats->string[0] && cl_missionStats->string[1] )   //DAJ BUG in dedicated cl_missionStats don't exist
+    {
+        if( cls.keyCatchers & KEYCATCH_CONSOLE )    // get rid of the consol
+        {
+            Con_ToggleConsole_f();
+        }
+        // clear all input controls
+        CL_ClearKeys();
+        // allow only attack command input
+        kb = keys[key].binding;
+        if( !Q_stricmp( kb, "+attack" ) )
+        {
+            // clear the stats out, ignore the keypress
+            Cvar_Set( "com_expectedhunkusage", "-1" );
+            Cvar_Set( "g_missionStats", "0" );
+        }
+        return; // no buttons while waiting
+    }
+    
     // console key is hardcoded, so the user can never unbind it
     if( key == '`' || key == '~' )
     {
@@ -2077,10 +2117,13 @@ void CL_KeyEvent( int key, bool down, unsigned time )
                     }
                 }
                 
-//				if(!Q_stricmp("help", kb)) {
-//					if(VM_Call( uivm, UI_GET_ACTIVE_MENU) == UIMENU_HELP)
-//						key = K_ESCAPE;
-///				}
+                if( !Q_stricmp( "help", kb ) )
+                {
+                    if( uiManager->GetActiveMenu() == UIMENU_HELP )
+                    {
+                        key = K_ESCAPE;
+                    }
+                }
             }
         }
         uiManager->KeyEvent( key, down );

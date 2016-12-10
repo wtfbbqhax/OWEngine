@@ -176,6 +176,7 @@ typedef enum
 #define CS_SKYBOXORG        30      // this is where we should view the skybox from
 #define CS_TARGETEFFECT     31  //----(SA)
 #define CS_MODELS           32
+#define CS_WOLFINFO         33      // NERVE - SMF
 #define CS_SOUNDS           ( CS_MODELS + MAX_MODELS )
 #define CS_PLAYERS          ( CS_SOUNDS + MAX_SOUNDS )
 #define CS_LOCATIONS        ( CS_PLAYERS + MAX_CLIENTS )
@@ -205,15 +206,15 @@ typedef enum
 
 typedef enum
 {
+    GT_SINGLE_PLAYER,   // single player tournament
+    GT_WOLF,            // DHM - Nerve :: Wolfenstein Multiplayer
     GT_FFA,             // free for all
     GT_TOURNAMENT,      // one on one tournament
-    GT_SINGLE_PLAYER,   // single player tournament
     
     //-- team games go after this --
     
     GT_TEAM,            // team deathmatch
     GT_CTF,             // capture the flag
-    GT_WOLF,            // DHM - Nerve :: Wolfenstein Multiplayer
     
     GT_MAX_GAME_TYPE
 } gametype_t;
@@ -221,9 +222,11 @@ typedef enum
 // Rafael gameskill
 typedef enum
 {
-    GSKILL_EASY,
+    GSKILL_EASY = 1,
     GSKILL_MEDIUM,
+    GSKILL_MEDIUMHARD, // normal default level
     GSKILL_HARD,
+    GSKILL_VERYHARD,
     GSKILL_MAX      // must always be last
 } gameskill_t;
 
@@ -288,11 +291,21 @@ typedef enum
 
 #define PMF_ALL_TIMES ( PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_KNOCKBACK | PMF_TIME_LOAD | PMF_TIME_LOCKPLAYER )
 
+typedef struct
+{
+    bool bAutoReload; // do we predict autoreload of weapons
+    int blockCenterViewTime; // don't let centerview happen for a little while
+    
+} pmoveExt_t;   // data used both in client and server - store it here
+// generally useful for data you want to manipulate in bg_* and cgame, or bg_* and game
+// instead of playerstate to prevent different engine versions of playerstate between XP and MP
+
 #define MAXTOUCH    32
 typedef struct
 {
     // state (in / out)
     playerState_t*   ps;
+    pmoveExt_t*      pmext;
     
     // command (in)
     usercmd_t cmd, oldcmd;
@@ -301,6 +314,14 @@ typedef struct
     bool noFootsteps;           // if the game is setup for no footsteps by the server
     bool noWeapClips;               // if the game is setup for no weapon clips by the server
     bool gauntletHit;           // true if a gauntlet attack would actually hit something
+    
+    // NERVE - SMF (in)
+    int gametype;
+    int ltChargeTime;
+    int soldierChargeTime;
+    int engineerChargeTime;
+    int medicChargeTime;
+    // -NERVE - SMF
     
     // results (out)
     int numtouch;

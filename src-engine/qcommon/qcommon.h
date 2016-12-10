@@ -61,6 +61,7 @@ typedef struct
     byte*    data;
     int maxsize;
     int cursize;
+    int uncompsize;             // net debugging
     int readcount;
     int bit;                    // for bitwise reads and writes
 } msg_t;
@@ -71,7 +72,10 @@ void MSG_Clear( msg_t* buf );
 void* MSG_GetSpace( msg_t* buf, int length );
 void MSG_WriteData( msg_t* buf, const void* data, int length );
 void MSG_Bitstream( msg_t* buf );
-
+// copy a msg_t in case we need to store it as is for a bit
+// (as I needed this to keep an msg_t from a static var for later use)
+// sets data buffer as MSG_Init does prior to do the copy
+void MSG_Copy( msg_t* buf, byte* data, int length, msg_t* src );
 
 struct usercmd_s;
 struct entityState_s;
@@ -140,11 +144,6 @@ NET
 ==============================================================
 */
 
-// TTimo: set to 1 to perform net encoding, 0 to drop
-// single player game with no networking doesn't need encoding
-// show_bug.cgi?id=404
-#define DO_NET_ENCODE 0
-
 #define PACKET_BACKUP   32  // number of old messages that must be kept on client and
 // server for delta comrpession and ping estimation
 #define PACKET_MASK     ( PACKET_BACKUP - 1 )
@@ -177,6 +176,8 @@ typedef enum
     NS_SERVER
 } netsrc_t;
 
+#define NET_ADDRSTRMAXLEN 22 // maximum length of an IPv6 address string including trailing '\0'
+
 typedef struct
 {
     netadrtype_t type;
@@ -194,11 +195,12 @@ void NET_Config( bool enableNetworking );
 
 void NET_SendPacket( netsrc_t sock, int length, const void* data, netadr_t to );
 void NET_OutOfBandPrint( netsrc_t net_socket, netadr_t adr, const char* format, ... );
-
+void NET_OutOfBandData( netsrc_t sock, netadr_t adr, byte* format, int len );
 bool NET_CompareAdr( netadr_t a, netadr_t b );
 bool NET_CompareBaseAdr( netadr_t a, netadr_t b );
 bool NET_IsLocalAddress( netadr_t adr );
-const char*  NET_AdrToString( netadr_t a );
+const char* NET_AdrToString( netadr_t a );
+const char* NET_AdrToStringwPort( netadr_t a );
 bool NET_StringToAdr( const char* s, netadr_t* a );
 bool NET_GetLoopPacket( netsrc_t sock, netadr_t* net_from, msg_t* net_message );
 void NET_Sleep( int msec );
@@ -248,9 +250,6 @@ void Netchan_TransmitNextFragment( netchan_t* chan );
 
 bool Netchan_Process( netchan_t* chan, msg_t* msg );
 
-
-
-
 /*
 ==============================================================
 
@@ -259,18 +258,24 @@ PROTOCOL
 ==============================================================
 */
 
-#define PROTOCOL_VERSION    49  // TA value
-//#define	PROTOCOL_VERSION	43	// (SA) bump this up
+// sent by the server, printed on connection screen, works for all clients
+// (restrictions: does not handle \n, no more than 256 chars)
+#define PROTOCOL_MISMATCH_ERROR "ERROR: Protocol Mismatch Between Client and Server.\
+The server you are attempting to join is running an incompatible version of the game."
 
+// long version used by the client in diagnostic window
+#define PROTOCOL_MISMATCH_ERROR_LONG "ERROR: Protocol Mismatch Between Client and Server.\n\n\
+The server you attempted to join is running an incompatible version of the game.\n\
+You or the server may be running older versions of the game. Press the auto-update\
+ button if it appears on the Main Menu screen."
 
-//----(SA)	heh, whoops.  we've been talking to id servers since we got a connection...
-//#define	UPDATE_SERVER_NAME	"update.quake3arena.com"
-//#define MASTER_SERVER_NAME	"master.quake3arena.com"
-//#define	AUTHORIZE_SERVER_NAME	"authorize.quake3arena.com"
-//----(SA)	yes, these are bogus addresses.  I'm guessing these will be set to a machine at Activision or id eventually
-#define UPDATE_SERVER_NAME      "update.gmistudios.com"
-#define MASTER_SERVER_NAME      "master.gmistudios.com"
-#define AUTHORIZE_SERVER_NAME   "authorize.gmistudios.com"
+#define PROTOCOL_VERSION 60
+#define GAMENAME_STRING     "wolf"
+
+// NERVE - SMF - wolf multiplayer master servers
+#define UPDATE_SERVER_NAME      "wolfmotd.idsoftware.com"            // 192.246.40.65
+#define MASTER_SERVER_NAME      "wolfmaster.idsoftware.com"
+#define AUTHORIZE_SERVER_NAME   "wolfauthorize.idsoftware.com"
 
 #define PORT_MASTER         27950
 #define PORT_UPDATE         27951
@@ -378,6 +383,7 @@ void    Cmd_ArgvBuffer( int arg, char* buffer, int bufferLength );
 char*    Cmd_Args( void );
 char*    Cmd_ArgsFrom( int arg );
 void    Cmd_ArgsBuffer( char* buffer, int bufferLength );
+char*    Cmd_Cmd( void );
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are allways safe.
@@ -451,6 +457,7 @@ void Cvar_CommandCompletion( void ( *callback )( const char* s ) );
 // callback with each valid string
 
 void    Cvar_Reset( const char* var_name );
+void    Cvar_ForceReset( const char* var_name );
 
 void    Cvar_SetCheatState( void );
 // reset all testing vars to a safe value
@@ -533,11 +540,22 @@ fileHandle_t FS_SV_FOpenFileWrite( const char* filename );
 int     FS_SV_FOpenFileRead( const char* filename, fileHandle_t* fp );
 void    FS_SV_Rename( const char* from, const char* to );
 int     FS_FOpenFileRead( const char* qpath, fileHandle_t* file, bool uniqueFILE );
-// if uniqueFILE is true, then a new FILE will be fopened even if the file
-// is found in an already open pak file.  If uniqueFILE is false, you must call
-// FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
-// It is generally safe to always set uniqueFILE to true, because the majority of
-// file IO goes through FS_ReadFile, which Does The Right Thing already.
+/*
+if uniqueFILE is true, then a new FILE will be fopened even if the file
+is found in an already open pak file.  If uniqueFILE is false, you must call
+FS_FCloseFile instead of fclose, otherwise the pak FILE would be improperly closed
+It is generally safe to always set uniqueFILE to true, because the majority of
+file IO goes through FS_ReadFile, which Does The Right Thing already.
+*/
+/* TTimo
+show_bug.cgi?id=506
+added exclude flag to filter out regular dirs or pack files on demand
+would rather have used FS_FOpenFileRead(..., int filter_flag = 0)
+but that's a C++ construct ..
+*/
+#define FS_EXCLUDE_DIR 0x1
+#define FS_EXCLUDE_PK3 0x2
+int FS_FOpenFileRead_Filtered( const char* qpath, fileHandle_t* file, bool uniqueFILE, int filter_flag );
 
 int     FS_FileIsInPAK( const char* filename, int* pChecksum );
 // returns 1 if a file is in the PAK file, otherwise -1
@@ -545,7 +563,7 @@ int     FS_FileIsInPAK( const char* filename, int* pChecksum );
 int     FS_Delete( char* filename );    // only works inside the 'save' directory (for deleting savegames/images)
 
 int     FS_Write( const void* buffer, int len, fileHandle_t f );
-
+int     FS_Read2( void* buffer, int len, fileHandle_t f );
 int     FS_Read( void* buffer, int len, fileHandle_t f );
 // properly handles partial reads and reads from other dlls
 
@@ -620,6 +638,22 @@ bool FS_ComparePaks( char* neededpaks, int len, bool dlstring );
 void FS_Rename( const char* from, const char* to );
 
 void    FS_CopyFileOS( char* from, char* to );  //DAJ
+char* FS_BuildOSPath( const char* base, const char* game, const char* qpath );
+extern int cl_connectedToPureServer;
+bool FS_CL_ExtractFromPakFile( const char* path, const char* gamedir, const char* filename, const char* cvar_lastVersion );
+char* FS_ShiftedStrStr( const char* string, const char* substring, int shift );
+char* FS_ShiftStr( const char* string, int shift );
+void FS_CopyFile( char* fromOSPath, char* toOSPath );
+int FS_CreatePath( const char* OSPath );
+bool FS_VerifyPak( const char* pak );
+
+/*
+==============================================================
+DOWNLOAD
+==============================================================
+*/
+
+#include "dl_public.h"
 
 /*
 ==============================================================
@@ -649,6 +683,12 @@ MISC
 ==============================================================
 */
 
+// centralizing the declarations for cl_cdkey
+// (old code causing buffer overflows)
+extern char cl_cdkey[34];
+void Com_AppendCDKey( const char* filename );
+void Com_ReadCDKey( const char* filename );
+
 // returnbed by Sys_GetProcessorId
 #define CPUID_GENERIC           0           // any unrecognized processor
 
@@ -660,6 +700,9 @@ MISC
 #define CPUID_INTEL_KATMAI      0x23            // Intel Katmai
 
 #define CPUID_AMD_3DNOW         0x30            // AMD K6 3DNOW!
+
+// centralized and cleaned, that's the max string you can send to a Com_Printf / Com_DPrintf (above gets truncated)
+#define MAXPRINTMSG 4096
 
 char* CopyString( const char* in );
 void Info_Print( const char* s );
@@ -910,7 +953,7 @@ void    Sys_Init( void );
 void* Sys_InitializeCriticalSection();
 void Sys_EnterCriticalSection( void* ptr );
 void Sys_LeaveCriticalSection( void* ptr );
-
+char* Sys_GetDLLName( const char* name );
 // general development dll loading for virtual machine testing
 void*	Sys_LoadDll( const char* name );
 void*	Sys_GetProcAddress( void* dllhandle, const char* name );
@@ -993,11 +1036,11 @@ void    Sys_EndProfiling( void );
 bool Sys_LowPhysicalMemory();
 unsigned int Sys_ProcessorCount();
 
-void Sys_StartProcess( char* exeName, bool doexit );            // NERVE - SMF
+void Sys_StartProcess( const char* exeName, bool doexit );            // NERVE - SMF
 // TTimo
 // show_bug.cgi?id=447
 //int Sys_ShellExecute(char *op, char *file, bool doexit, char *params, char *dir);	//----(SA) added
-void Sys_OpenURL( char* url, bool doexit );                     // NERVE - SMF
+void Sys_OpenURL( const char* url, bool doexit );                     // NERVE - SMF
 int Sys_GetHighQualityCPU();
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data
@@ -1056,5 +1099,55 @@ extern huffman_t clientHuffTables;
 #define SV_DECODE_START     12
 #define CL_ENCODE_START     12
 #define CL_DECODE_START     4
+
+// TTimo
+// dll checksuming stuff, centralizing OS-dependent parts
+// *_SHIFT is the shifting we applied to the reference string
+
+#if defined( _WIN32 )
+
+// qagame_mp_x86.dll
+#define SYS_DLLNAME_QAGAME_SHIFT 6
+#define SYS_DLLNAME_QAGAME "wgmgskesve~><4jrr"
+
+// cgame_mp_x86.dll
+#define SYS_DLLNAME_CGAME_SHIFT 2
+#define SYS_DLLNAME_CGAME "eicogaoraz:80fnn"
+
+#elif defined( __linux__ )
+
+// qagame.mp.i386.so
+#define SYS_DLLNAME_QAGAME_SHIFT 6
+#define SYS_DLLNAME_QAGAME "wgmgsk4sv4o9><4yu"
+
+// cgame.mp.i386.so
+#define SYS_DLLNAME_CGAME_SHIFT 2
+#define SYS_DLLNAME_CGAME "eicog0or0k5:80uq"
+
+#elif defined( __MACOS__ )
+
+#if 1 //DAJ
+// qagame.mp.i386.so
+#define SYS_DLLNAME_QAGAME_SHIFT 6
+#define SYS_DLLNAME_QAGAME "wgmgsk4sv4o9><4yu"
+
+// cgame.mp.i386.so
+#define SYS_DLLNAME_CGAME_SHIFT 2
+#define SYS_DLLNAME_CGAME "eicog0or0k5:80uq"
+
+#else   //DAJ
+// qagame.mp.i386.so
+#define SYS_DLLNAME_QAGAME_SHIFT 0
+#define SYS_DLLNAME_QAGAME "qgame_MP.dll"
+
+// cgame.mp.i386.so
+#define SYS_DLLNAME_CGAME_SHIFT 0
+#define SYS_DLLNAME_CGAME "cgame_MP.dll"
+
+#endif  //DAJ
+
+#else
+#error unknown OS
+#endif
 
 #endif // !__QCOMMON_H__

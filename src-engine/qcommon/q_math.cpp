@@ -1604,3 +1604,26 @@ float DistanceFromLineSquared( vec3_t p, vec3_t lp1, vec3_t lp2 )
     VectorSubtract( p, proj, t );
     return VectorLengthSquared( t );
 }
+
+
+/*
+================
+Q_isnan
+
+Don't pass doubles to this
+================
+*/
+int Q_isnan( float x )
+{
+    union
+    {
+        float f;
+        unsigned int i;
+    } t;
+    
+    t.f = x;
+    t.i &= 0x7FFFFFFF;
+    t.i = 0x7F800000 - t.i;
+    
+    return ( int )( ( unsigned int )t.i >> 31 );
+}

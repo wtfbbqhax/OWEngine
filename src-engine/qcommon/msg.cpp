@@ -47,6 +47,7 @@ static huffman_t msgHuff;
 static bool msgInit = false;
 
 int oldsize = 0;
+int pcount[256];
 
 void MSG_initHuffman();
 
@@ -100,6 +101,16 @@ void MSG_BeginReadingOOB( msg_t* msg )
     msg->oob = true;
 }
 
+void MSG_Copy( msg_t* buf, byte* data, int length, msg_t* src )
+{
+    if( length < src->cursize )
+    {
+        Com_Error( ERR_DROP, "MSG_Copy: can't copy into a smaller msg_t buffer" );
+    }
+    Com_Memcpy( buf, src, sizeof( msg_t ) );
+    buf->data = data;
+    Com_Memcpy( buf->data, src->data, src->cursize );
+}
 
 /*
 =============================================================================
@@ -118,6 +129,8 @@ void MSG_WriteBits( msg_t* msg, int value, int bits )
 //	FILE*	fp;
 
     oldsize += bits;
+    
+    msg->uncompsize += bits;            // NERVE - SMF - net debugging
     
     // this isn't an exact overflow check, but close enough
     if( msg->maxsize - msg->cursize < 4 )
@@ -795,9 +808,9 @@ void MSG_WriteDeltaUsercmd( msg_t* msg, usercmd_t* from, usercmd_t* to )
     MSG_WriteDelta( msg, from->weapon, to->weapon, 8 );
     MSG_WriteDelta( msg, from->holdable, to->holdable, 8 );         //----(SA)	modified
     MSG_WriteDelta( msg, from->wolfkick, to->wolfkick, 8 );
-    MSG_WriteDelta( msg, from->cld, to->cld, 16 );          // NERVE - SMF
+    MSG_WriteDelta( msg, from->mpSetup, to->mpSetup, 8 );                 // NERVE - SMF
+    MSG_WriteDelta( msg, from->identClient, to->identClient, 8 );         // NERVE - SMF
 }
-
 
 /*
 =====================
@@ -835,7 +848,8 @@ void MSG_ReadDeltaUsercmd( msg_t* msg, usercmd_t* from, usercmd_t* to )
     to->weapon = MSG_ReadDelta( msg, from->weapon, 8 );
     to->holdable = MSG_ReadDelta( msg, from->holdable, 8 );  //----(SA)	modified
     to->wolfkick = MSG_ReadDelta( msg, from->wolfkick, 8 );
-    to->cld = MSG_ReadDelta( msg, from->cld, 16 );       // NERVE - SMF
+    to->mpSetup = MSG_ReadDelta( msg, from->mpSetup, 8 );          // NERVE - SMF
+    to->identClient = MSG_ReadDelta( msg, from->identClient, 8 );  // NERVE - SMF
 }
 
 /*
@@ -869,9 +883,10 @@ void MSG_WriteDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* 
             from->weapon == to->weapon &&
             from->holdable == to->holdable &&
             from->wolfkick == to->wolfkick &&
-            from->cld == to->cld )                     // NERVE - SMF
+            from->mpSetup == to->mpSetup &&            // NERVE - SMF
+            from->identClient == to->identClient )    // NERVE - SMF
     {
-        MSG_WriteBits( msg, 0, 1 );                 // no change
+        MSG_WriteBits( msg, 0, 1 );               // no change
         oldsize += 7;
         return;
     }
@@ -892,10 +907,9 @@ void MSG_WriteDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* 
     MSG_WriteDeltaKey( msg, key, from->weapon, to->weapon, 8 );
     MSG_WriteDeltaKey( msg, key, from->holdable, to->holdable, 8 );
     MSG_WriteDeltaKey( msg, key, from->wolfkick, to->wolfkick, 8 );
-    
-    MSG_WriteDeltaKey( msg, key, from->cld, to->cld, 16 );      // NERVE - SMF - for multiplayer clientDamage
+    MSG_WriteDeltaKey( msg, key, from->mpSetup, to->mpSetup, 8 );             // NERVE - SMF
+    MSG_WriteDeltaKey( msg, key, from->identClient, to->identClient, 8 );     // NERVE - SMF
 }
-
 
 /*
 =====================
@@ -936,8 +950,8 @@ void MSG_ReadDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* t
         to->weapon = MSG_ReadDeltaKey( msg, key, from->weapon, 8 );
         to->holdable = MSG_ReadDeltaKey( msg, key, from->holdable, 8 );
         to->wolfkick = MSG_ReadDeltaKey( msg, key, from->wolfkick, 8 );
-        
-        to->cld = MSG_ReadDeltaKey( msg, key, from->cld, 16 );           // NERVE - SMF - for multiplayer clientDamage
+        to->mpSetup = MSG_ReadDeltaKey( msg, key, from->mpSetup, 8 );                  // NERVE - SMF
+        to->identClient = MSG_ReadDeltaKey( msg, key, from->identClient, 8 );          // NERVE - SMF
     }
     else
     {
@@ -956,8 +970,8 @@ void MSG_ReadDeltaUsercmdKey( msg_t* msg, int key, usercmd_t* from, usercmd_t* t
         to->weapon = from->weapon;
         to->holdable = from->holdable;
         to->wolfkick = from->wolfkick;
-        
-        to->cld = from->cld;                    // NERVE - SMF
+        to->mpSetup = from->mpSetup;                    // NERVE - SMF
+        to->identClient = from->identClient;            // NERVE - SMF
     }
 }
 
@@ -970,109 +984,6 @@ entityState_t communication
 =============================================================================
 */
 
-#define CHANGE_VECTOR_BYTES     10
-
-#define MAX_CHANGE_VECTOR_LOGS  1024
-
-#define SMALL_VECTOR_BITS       5       // 32 compressed vectors
-
-// uncomment this define to enable the collection of new network statistics
-//#define	FIND_NEW_CHANGE_VECTORS
-
-typedef struct
-{
-    int count;
-    byte vector[CHANGE_VECTOR_BYTES];
-} changeVectorLog_t;
-
-int c_compressedVectors;
-int c_uncompressedVectors;
-
-#ifndef FIND_NEW_CHANGE_VECTORS
-int numChangeVectorLogs = ( 1 << SMALL_VECTOR_BITS ) - 1;
-#else
-int numChangeVectorLogs = 0;
-#endif
-changeVectorLog_t changeVectorLog[ MAX_CHANGE_VECTOR_LOGS ] =
-{
-    { 0, { 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } }, // 723 uses in test
-    { 0, { 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00 } }, // 285 uses in test
-    { 0, { 0xe1, 0x00, 0xc0, 0x01, 0x80, 0x00, 0x00, 0x10, 0x00, 0x00 } }, // 235 uses in test
-    { 0, { 0xe1, 0x00, 0xc0, 0x01, 0x20, 0x40, 0x00, 0x00, 0x00, 0x00 } }, // 162 uses in test
-    { 0, { 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } }, // 161 uses in test
-    { 0, { 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0x00 } }, // 139 uses in test
-    { 0, { 0x01, 0x00, 0x00, 0x00, 0x80, 0x11, 0x00, 0x00, 0x00, 0x00 } }, // 92 uses in test
-    { 0, { 0x03, 0x00, 0x00, 0x00, 0x80, 0x11, 0x00, 0x00, 0x00, 0x00 } }, // 78 uses in test
-    { 0, { 0xe3, 0x00, 0xf0, 0x8f, 0x03, 0x00, 0x00, 0x10, 0x00, 0x00 } }, // 54 uses in test
-    { 0, { 0xe1, 0x00, 0xf0, 0x89, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 } }, // 49 uses in test
-    { 0, { 0xe1, 0x80, 0xc0, 0x21, 0x00, 0x11, 0x00, 0x20, 0x00, 0x00 } }, // 40 uses in test
-    { 0, { 0x03, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0x00 } }, // 37 uses in test
-    { 0, { 0xe9, 0x30, 0xc0, 0x01, 0x00, 0x11, 0x00, 0x20, 0x00, 0x00 } }, // 35 uses in test
-    { 0, { 0xe1, 0x80, 0xc0, 0x21, 0x10, 0x01, 0x00, 0x00, 0x00, 0x00 } }, // 30 uses in test
-    { 0, { 0xe1, 0x00, 0xc0, 0x01, 0x10, 0x01, 0x00, 0x00, 0x00, 0x00 } }, // 29 uses in test
-    { 0, { 0xe3, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00 } }, // 26 uses in test
-    { 0, { 0xe1, 0x00, 0xc0, 0x01, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00 } }, // 20 uses in test
-    { 0, { 0xe0, 0x00, 0xc0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } }, // 19 uses in test
-    { 0, { 0xe1, 0x80, 0xc0, 0xa1, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00 } }, // 19 uses in test
-    { 0, { 0x11, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00, 0x00 } }, // 17 uses in test
-    { 0, { 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00 } }, // 16 uses in test
-    { 0, { 0xe0, 0x00, 0xc0, 0x01, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00 } }, // 15 uses in test
-    { 0, { 0x28, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00 } }, // 14 uses in test
-    { 0, { 0xe3, 0x00, 0xc0, 0xc1, 0x03, 0x04, 0x00, 0x10, 0x00, 0x00 } }, // 14 uses in test
-    { 0, { 0xe1, 0x80, 0xc0, 0x21, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00 } }, // 12 uses in test
-    { 0, { 0x19, 0x10, 0x00, 0x00, 0x00, 0x11, 0x00, 0x20, 0x00, 0x00 } }, // 12 uses in test
-    { 0, { 0x68, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } }, // 11 uses in test
-    { 0, { 0xe1, 0x00, 0xc0, 0xc1, 0x03, 0x04, 0x00, 0x10, 0x00, 0x00 } }, // 10 uses in test
-    { 0, { 0xe1, 0x80, 0xc0, 0x21, 0x10, 0x05, 0x00, 0x00, 0x00, 0x00 } }, // 9 uses in test
-    { 0, { 0xe1, 0x00, 0xc0, 0x01, 0x20, 0x40, 0x00, 0x10, 0x00, 0x00 } }, // 9 uses in test
-    { 0, { 0xe1, 0x80, 0xc0, 0x21, 0x00, 0x11, 0x00, 0x00, 0x00, 0x00 } }, // 9 uses in test
-    { 0, { 0x28, 0x00, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0x00 } }, // 8 uses in test
-};
-
-/*
-=================
-LookupChangeVector
-
-Returns a compressedVector index, or -1 if not found
-=================
-*/
-
-int LookupChangeVector( byte* vector )
-{
-    int i;
-    
-    for( i = 0 ; i < numChangeVectorLogs ; i++ )
-    {
-        if( ( ( int* )vector )[0] == ( ( int* )changeVectorLog[i].vector )[0]
-                && ( ( int* )vector )[1] == ( ( int* )changeVectorLog[i].vector )[1]
-                && ( ( short* )vector )[4] == ( ( short* )changeVectorLog[i].vector )[4] )
-        {
-            changeVectorLog[i].count++;
-#ifdef FIND_NEW_CHANGE_VECTORS
-            return -1;
-#else
-            return i;
-#endif
-        }
-    }
-#ifndef FIND_NEW_CHANGE_VECTORS
-    return -1;      // not found
-#else
-    if( numChangeVectorLogs == MAX_CHANGE_VECTOR_LOGS )
-    {
-        return -1;
-    }
-    ( ( int* )changeVectorLog[i].vector )[0] = ( ( int* )vector )[0];
-    ( ( int* )changeVectorLog[i].vector )[1] = ( ( int* )vector )[1];
-    ( ( short* )changeVectorLog[i].vector )[4] = ( ( short* )vector )[4];
-    changeVectorLog[i].count = 1;
-    numChangeVectorLogs++;
-    
-    return -1;
-#endif
-}
-
-
 /*
 =================
 MSG_ReportChangeVectors_f
@@ -1080,57 +991,17 @@ MSG_ReportChangeVectors_f
 Prints out a table from the current statistics for copying to code
 =================
 */
-#ifdef FIND_NEW_CHANGE_VECTORS
-static int CompareCV( const void* a, const void* b )
-{
-    changeVectorLog_t*   cva, *cvb;
-    
-    cva = ( changeVectorLog_t* )a;
-    cvb = ( changeVectorLog_t* )b;
-    
-    if( cva->count > cvb->count )
-    {
-        return -1;
-    }
-    if( cva->count < cvb->count )
-    {
-        return 1;
-    }
-    return 0;
-}
-#endif
 void MSG_ReportChangeVectors_f( void )
 {
-#ifndef FIND_NEW_CHANGE_VECTORS
-    Com_Printf( "FIND_NEW_CHANGE_VECTORS not defined.\n" );
-    Com_Printf( "%i%% of vectors compressed\n", 100 * c_compressedVectors / ( c_compressedVectors + c_uncompressedVectors ) );
-#else
-    int i, j;
-    int total;
-    changeVectorLog_t*   cv;
-    
-    qsort( changeVectorLog, numChangeVectorLogs, sizeof( changeVectorLog_t ), CompareCV );
-    total = 0;
-    for( i = 0 ; i < ( 1 << SMALL_VECTOR_BITS ) ; i++ )
+    int i;
+    for( i = 0; i < 256; i++ )
     {
-        Com_Printf( "{ 0, { " );
-        cv = &changeVectorLog[i];
-        total += cv->count;
-        for( j = 0 ; j < CHANGE_VECTOR_BYTES ; j++ )
+        if( pcount[i] )
         {
-            Com_Printf( "0x%x%x", cv->vector[j] >> 4, cv->vector[j] & 15 );
-            if( j != CHANGE_VECTOR_BYTES - 1 )
-            {
-                Com_Printf( "," );
-            }
+            Com_Printf( "%d used %d\n", i, pcount[i] );
         }
-        Com_Printf( " } }, // %i uses in test\n", cv->count );
     }
-    
-    Com_Printf( "%i%% of vectors compressed\n", 100 * total / c_uncompressedVectors );
-#endif
 }
-
 
 typedef struct
 {
@@ -1145,7 +1016,7 @@ typedef struct
 netField_t entityStateFields[] =
 {
     { NETF( eType ), 8 },
-    { NETF( eFlags ), 32 },
+    { NETF( eFlags ), 24 },
     { NETF( pos.trType ), 8 },
     { NETF( pos.trTime ), 32 },
     { NETF( pos.trDuration ), 32 },
@@ -1239,28 +1110,14 @@ If force is not set, then nothing at all will be generated if the entity is
 identical, under the assumption that the in-order delta code will catch it.
 ==================
 */
-void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entityState_s* to,
-                           bool force )
+void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entityState_s* to, bool force )
 {
-    int i, c;
+    int i, lc;
     int numFields;
     netField_t*  field;
     int trunc;
     float fullFloat;
     int*         fromF, *toF;
-    byte changeVector[CHANGE_VECTOR_BYTES];
-    int compressedVector;
-    bool changed;
-    int print, endBit, startBit;
-    
-    if( msg->bit == 0 )
-    {
-        startBit = msg->cursize * 8 - GENTITYNUM_BITS;
-    }
-    else
-    {
-        startBit = ( msg->cursize - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
-    }
     
     numFields = sizeof( entityStateFields ) / sizeof( entityStateFields[0] );
     
@@ -1269,8 +1126,6 @@ void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entity
     // if this assert fails, someone added a field to the entityState_t
     // struct without updating the message fields
     assert( numFields + 1 == sizeof( *from ) / 4 );
-    
-    c = msg->cursize;
     
     // a NULL to is a delta remove message
     if( to == NULL )
@@ -1293,17 +1148,7 @@ void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entity
         Com_Error( ERR_FATAL, "MSG_WriteDeltaEntity: Bad entity number: %i", to->number );
     }
     
-    // build the change vector
-    if( numFields > 8 * CHANGE_VECTOR_BYTES )
-    {
-        Com_Error( ERR_FATAL, "numFields > 8 * CHANGE_VECTOR_BYTES" );
-    }
-    
-    for( i = 0 ; i < CHANGE_VECTOR_BYTES ; i++ )
-    {
-        changeVector[i] = 0;
-    }
-    changed = false;
+    lc = 0;
     // build the change vector as bytes so it is endien independent
     for( i = 0, field = entityStateFields ; i < numFields ; i++, field++ )
     {
@@ -1311,12 +1156,11 @@ void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entity
         toF = ( int* )( ( byte* )to + field->offset );
         if( *fromF != *toF )
         {
-            changeVector[ i >> 3 ] |= 1 << ( i & 7 );
-            changed = true;
+            lc = i + 1;
         }
     }
     
-    if( !changed )
+    if( lc == 0 )
     {
         // nothing at all changed
         if( !force )
@@ -1330,63 +1174,26 @@ void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entity
         return;
     }
     
-    // shownet 2/3 will interleave with other printed info, -1 will
-    // just print the delta records`
-    if( cl_shownet && ( cl_shownet->integer >= 2 || cl_shownet->integer == -1 ) )
-    {
-        print = 1;
-        Com_Printf( "W|%3i: #%-3i ", msg->cursize, to->number );
-    }
-    else
-    {
-        print = 0;
-    }
-    
-    // check for a compressed change vector
-    compressedVector = LookupChangeVector( changeVector );
-    
     MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
     MSG_WriteBits( msg, 0, 1 );         // not removed
     MSG_WriteBits( msg, 1, 1 );         // we have a delta
     
-//	MSG_WriteBits( msg, compressedVector, SMALL_VECTOR_BITS );
-    if( compressedVector == -1 )
-    {
-        oldsize += 4;
-        MSG_WriteBits( msg, 1, 1 );          // complete change
-        // we didn't find a fast match so we need to write the entire delta
-        for( i = 0 ; i + 8 <= numFields ; i += 8 )
-        {
-            MSG_WriteByte( msg, changeVector[i >> 3] );
-        }
-        if( numFields & 7 )
-        {
-            MSG_WriteBits( msg, changeVector[i >> 3], numFields & 7 );
-        }
-        if( print )
-        {
-            Com_Printf( "<uc> " );
-        }
-    }
-    else
-    {
-        MSG_WriteBits( msg, 0, 1 );          // compressed vector
-        MSG_WriteBits( msg, compressedVector, SMALL_VECTOR_BITS );
-        if( print )
-        {
-            Com_Printf( "<%2i> ", compressedVector );
-        }
-    }
+    MSG_WriteByte( msg, lc );   // # of changes
     
-    for( i = 0, field = entityStateFields ; i < numFields ; i++, field++ )
+    oldsize += numFields;
+    
+    for( i = 0, field = entityStateFields ; i < lc ; i++, field++ )
     {
         fromF = ( int* )( ( byte* )from + field->offset );
         toF = ( int* )( ( byte* )to + field->offset );
         
         if( *fromF == *toF )
         {
+            MSG_WriteBits( msg, 0, 1 ); // no change
             continue;
         }
+        
+        MSG_WriteBits( msg, 1, 1 ); // changed
         
         if( field->bits == 0 )
         {
@@ -1408,20 +1215,18 @@ void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entity
                     // send as small integer
                     MSG_WriteBits( msg, 0, 1 );
                     MSG_WriteBits( msg, trunc + FLOAT_INT_BIAS, FLOAT_INT_BITS );
-                    if( print )
-                    {
-                        Com_Printf( "%s:%i ", field->name, trunc );
-                    }
+                    /*					if ( print ) {
+                    						Com_Printf( "%s:%i ", field->name, trunc );
+                    					}*/
                 }
                 else
                 {
                     // send as full floating point value
                     MSG_WriteBits( msg, 1, 1 );
                     MSG_WriteBits( msg, *toF, 32 );
-                    if( print )
-                    {
-                        Com_Printf( "%s:%f ", field->name, *( float* )toF );
-                    }
+                    /*					if ( print ) {
+                    						Com_Printf( "%s:%f ", field->name, *(float *)toF );
+                    					}*/
                 }
             }
         }
@@ -1436,27 +1241,25 @@ void MSG_WriteDeltaEntity( msg_t* msg, struct entityState_s* from, struct entity
                 MSG_WriteBits( msg, 1, 1 );
                 // integer
                 MSG_WriteBits( msg, *toF, field->bits );
-                if( print )
-                {
-                    Com_Printf( "%s:%i ", field->name, *toF );
-                }
+                /*				if ( print ) {
+                					Com_Printf( "%s:%i ", field->name, *toF );
+                				}*/
             }
         }
     }
-    c = msg->cursize - c;
     
-    if( print )
-    {
-        if( msg->bit == 0 )
-        {
-            endBit = msg->cursize * 8 - GENTITYNUM_BITS;
-        }
-        else
-        {
-            endBit = ( msg->cursize - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
-        }
-        Com_Printf( " (%i bits)\n", endBit - startBit );
-    }
+    /*
+    	c = msg->cursize - c;
+    
+    	if ( print ) {
+    		if ( msg->bit == 0 ) {
+    			endBit = msg->cursize * 8 - GENTITYNUM_BITS;
+    		} else {
+    			endBit = ( msg->cursize - 1 ) * 8 + msg->bit - GENTITYNUM_BITS;
+    		}
+    		Com_Printf( " (%i bits)\n", endBit - startBit  );
+    	}
+    */
 }
 
 /*
@@ -1476,16 +1279,13 @@ extern cvar_t*  cl_shownet;
 void MSG_ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to,
                           int number )
 {
-    int i;
+    int i, lc;
     int numFields;
     netField_t*  field;
     int*         fromF, *toF;
     int print;
     int trunc;
     int startBit, endBit;
-    int compressedVector;
-    byte expandedVector[CHANGE_VECTOR_BYTES];
-    byte*        changeVector;
     
     if( number < 0 || number >= MAX_GENTITIES )
     {
@@ -1522,6 +1322,12 @@ void MSG_ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to,
     }
     
     numFields = sizeof( entityStateFields ) / sizeof( entityStateFields[0] );
+    lc = MSG_ReadByte( msg );
+    
+    if( lc > numFields )    //DAJ FIXME have gotten lc = 76 which is bigger than numFields!
+    {
+        lc = numFields;
+    }
     
     // shownet 2/3 will interleave with other printed info, -1 will
     // just print the delta records`
@@ -1535,47 +1341,14 @@ void MSG_ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to,
         print = 0;
     }
     
-    // get the entire change vector, either compressed or uncompressed
-    
-    if( MSG_ReadBits( msg, 1 ) )
-    {
-        // not a compressed vector, so read the entire thing
-        c_uncompressedVectors++;
-        // we didn't find a fast match so we need to write the entire delta
-        for( i = 0 ; i + 8 <= numFields ; i += 8 )
-        {
-            expandedVector[i >> 3] = MSG_ReadByte( msg );
-        }
-        if( numFields & 7 )
-        {
-            expandedVector[i >> 3] = MSG_ReadBits( msg, numFields & 7 );
-        }
-        changeVector = expandedVector;
-        if( print )
-        {
-            Com_Printf( "<uc> " );
-        }
-    }
-    else
-    {
-        compressedVector = MSG_ReadBits( msg, SMALL_VECTOR_BITS );
-        c_compressedVectors++;
-        changeVector = changeVectorLog[ compressedVector ].vector;
-        if( print )
-        {
-            Com_Printf( "<%2i> ", compressedVector );
-        }
-    }
-    
-    
     to->number = number;
     
-    for( i = 0, field = entityStateFields ; i < numFields ; i++, field++ )
+    for( i = 0, field = entityStateFields ; i < lc ; i++, field++ )
     {
         fromF = ( int* )( ( byte* )from + field->offset );
         toF = ( int* )( ( byte* )to + field->offset );
         
-        if( !( changeVector[ i >> 3 ] & ( 1 << ( i & 7 ) ) ) )      // MSG_ReadBits( msg, 1 ) == 0 ) {
+        if( !MSG_ReadBits( msg, 1 ) )
         {
             // no change
             *toF = *fromF;
@@ -1630,7 +1403,15 @@ void MSG_ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to,
                     }
                 }
             }
+//			pcount[i]++;
         }
+    }
+    for( i = lc, field = &entityStateFields[lc] ; i < numFields ; i++, field++ )
+    {
+        fromF = ( int* )( ( byte* )from + field->offset );
+        toF = ( int* )( ( byte* )to + field->offset );
+        // no change
+        *toF = *fromF;
     }
     
     if( print )
@@ -1651,7 +1432,7 @@ void MSG_ReadDeltaEntity( msg_t* msg, entityState_t* from, entityState_t* to,
 /*
 ============================================================================
 
-plyer_state_t communication
+player_state_t communication
 
 ============================================================================
 */
@@ -1687,7 +1468,7 @@ netField_t playerStateFields[] =
     { PSF( legsAnim ), ANIM_BITS },
     { PSF( torsoAnim ), ANIM_BITS },
     { PSF( movementDir ), 8 },
-    { PSF( eFlags ), 16 },
+    { PSF( eFlags ), 24 },
     { PSF( eventSequence ), 8 },
     { PSF( events[0] ), 8 },
     { PSF( events[1] ), 8 },
@@ -1702,6 +1483,7 @@ netField_t playerStateFields[] =
     { PSF( weapons[1] ), 32 },
     { PSF( weapon ), 7 }, // (SA) yup, even more
     { PSF( weaponstate ), 4 },
+    { PSF( weapAnim ), 10 },
     { PSF( viewangles[0] ), 0 },
     { PSF( viewangles[1] ), 0 },
     { PSF( viewangles[2] ), 0 },
@@ -1737,19 +1519,18 @@ netField_t playerStateFields[] =
     { PSF( serverCursorHint ), 8}, //----(SA)	added
     { PSF( serverCursorHintVal ), 8}, //----(SA)	added
 // RF not needed anymore
-//{ PSF(classWeaponTime), 32}, // JPW NERVE
+    { PSF( classWeaponTime ), 32 }, // JPW NERVE
     { PSF( footstepCount ), 0},
 };
 
 /*
 =============
 MSG_WriteDeltaPlayerstate
-
 =============
 */
 void MSG_WriteDeltaPlayerstate( msg_t* msg, struct playerState_s* from, struct playerState_s* to )
 {
-    int i, j;
+    int i, j, lc;
     playerState_t dummy;
     int statsbits;
     int persistantbits;
@@ -1796,7 +1577,23 @@ void MSG_WriteDeltaPlayerstate( msg_t* msg, struct playerState_s* from, struct p
     c = msg->cursize;
     
     numFields = sizeof( playerStateFields ) / sizeof( playerStateFields[0] );
+    
+    lc = 0;
     for( i = 0, field = playerStateFields ; i < numFields ; i++, field++ )
+    {
+        fromF = ( int* )( ( byte* )from + field->offset );
+        toF = ( int* )( ( byte* )to + field->offset );
+        if( *fromF != *toF )
+        {
+            lc = i + 1;
+        }
+    }
+    
+    MSG_WriteByte( msg, lc );   // # of changes
+    
+    oldsize += numFields - lc;
+    
+    for( i = 0, field = playerStateFields ; i < lc ; i++, field++ )
     {
         fromF = ( int* )( ( byte* )from + field->offset );
         toF = ( int* )( ( byte* )to + field->offset );
@@ -1808,7 +1605,8 @@ void MSG_WriteDeltaPlayerstate( msg_t* msg, struct playerState_s* from, struct p
         }
         
         MSG_WriteBits( msg, 1, 1 ); // changed
-        
+//		pcount[i]++;
+
         if( field->bits == 0 )
         {
             // float
@@ -1960,6 +1758,7 @@ void MSG_WriteDeltaPlayerstate( msg_t* msg, struct playerState_s* from, struct p
     else
     {
         MSG_WriteBits( msg, 0, 1 ); // no change to any
+        oldsize += 4;
     }
     
     
@@ -2156,7 +1955,6 @@ void MSG_WriteDeltaPlayerstate( msg_t* msg, struct playerState_s* from, struct p
     
 }
 
-
 /*
 ===================
 MSG_ReadDeltaPlayerstate
@@ -2164,7 +1962,7 @@ MSG_ReadDeltaPlayerstate
 */
 void MSG_ReadDeltaPlayerstate( msg_t* msg, playerState_t* from, playerState_t* to )
 {
-    int i, j;
+    int i, j, lc;
     int bits;
     netField_t*  field;
     int numFields;
@@ -2203,7 +2001,9 @@ void MSG_ReadDeltaPlayerstate( msg_t* msg, playerState_t* from, playerState_t* t
     }
     
     numFields = sizeof( playerStateFields ) / sizeof( playerStateFields[0] );
-    for( i = 0, field = playerStateFields ; i < numFields ; i++, field++ )
+    lc = MSG_ReadByte( msg );
+    
+    for( i = 0, field = playerStateFields ; i < lc ; i++, field++ )
     {
         fromF = ( int* )( ( byte* )from + field->offset );
         toF = ( int* )( ( byte* )to + field->offset );
@@ -2251,6 +2051,14 @@ void MSG_ReadDeltaPlayerstate( msg_t* msg, playerState_t* from, playerState_t* t
             }
         }
     }
+    for( i = lc, field = &playerStateFields[lc]; i < numFields; i++, field++ )
+    {
+        fromF = ( int* )( ( byte* )from + field->offset );
+        toF = ( int* )( ( byte* )to + field->offset );
+        // no change
+        *toF = *fromF;
+    }
+    
     
     // read the arrays
     if( MSG_ReadBits( msg, 1 ) )     // one general bit tells if any of this infrequently changing stuff has changed

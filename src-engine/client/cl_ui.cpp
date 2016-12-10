@@ -73,29 +73,29 @@ LAN_LoadCachedServers
 */
 void LAN_LoadCachedServers()
 {
-    // TTimo: stub, this is only relevant to MP, SP kills the servercache.dat (and favorites)
-    // show_bug.cgi?id=445
-    /*
-      int size;
-      fileHandle_t fileIn;
-      cls.numglobalservers = cls.nummplayerservers = cls.numfavoriteservers = 0;
-      cls.numGlobalServerAddresses = 0;
-      if (FS_SV_FOpenFileRead("servercache.dat", &fileIn)) {
-    	  FS_Read(&cls.numglobalservers, sizeof(int), fileIn);
-    	  FS_Read(&cls.nummplayerservers, sizeof(int), fileIn);
-    	  FS_Read(&cls.numfavoriteservers, sizeof(int), fileIn);
-    	  FS_Read(&size, sizeof(int), fileIn);
-    	  if (size == sizeof(cls.globalServers) + sizeof(cls.favoriteServers) + sizeof(cls.mplayerServers)) {
-    		  FS_Read(&cls.globalServers, sizeof(cls.globalServers), fileIn);
-    		  FS_Read(&cls.mplayerServers, sizeof(cls.mplayerServers), fileIn);
-    		  FS_Read(&cls.favoriteServers, sizeof(cls.favoriteServers), fileIn);
-    	  } else {
-    		  cls.numglobalservers = cls.nummplayerservers = cls.numfavoriteservers = 0;
-    		  cls.numGlobalServerAddresses = 0;
-    	  }
-    	  FS_FCloseFile(fileIn);
-      }
-    */
+    int size;
+    fileHandle_t fileIn;
+    cls.numglobalservers = cls.nummplayerservers = cls.numfavoriteservers = 0;
+    cls.numGlobalServerAddresses = 0;
+    if( FS_SV_FOpenFileRead( "servercache.dat", &fileIn ) )
+    {
+        FS_Read( &cls.numglobalservers, sizeof( int ), fileIn );
+        FS_Read( &cls.nummplayerservers, sizeof( int ), fileIn );
+        FS_Read( &cls.numfavoriteservers, sizeof( int ), fileIn );
+        FS_Read( &size, sizeof( int ), fileIn );
+        if( size == sizeof( cls.globalServers ) + sizeof( cls.favoriteServers ) + sizeof( cls.mplayerServers ) )
+        {
+            FS_Read( &cls.globalServers, sizeof( cls.globalServers ), fileIn );
+            FS_Read( &cls.mplayerServers, sizeof( cls.mplayerServers ), fileIn );
+            FS_Read( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileIn );
+        }
+        else
+        {
+            cls.numglobalservers = cls.nummplayerservers = cls.numfavoriteservers = 0;
+            cls.numGlobalServerAddresses = 0;
+        }
+        FS_FCloseFile( fileIn );
+    }
 }
 
 /*
@@ -105,31 +105,19 @@ LAN_SaveServersToCache
 */
 void LAN_SaveServersToCache()
 {
-    // TTimo: stub, this is only relevant to MP, SP kills the servercache.dat (and favorites)
-    // show_bug.cgi?id=445
-    /*
-      int size;
-      fileHandle_t fileOut;
-    #ifdef __MACOS__	//DAJ MacOS file typing
-      {
-    	  extern _MSL_IMP_EXP_C long _fcreator, _ftype;
-    	  _ftype = 'WlfB';
-    	  _fcreator = 'WlfS';
-      }
-    #endif
-      fileOut = FS_SV_FOpenFileWrite("servercache.dat");
-      FS_Write(&cls.numglobalservers, sizeof(int), fileOut);
-      FS_Write(&cls.nummplayerservers, sizeof(int), fileOut);
-      FS_Write(&cls.numfavoriteservers, sizeof(int), fileOut);
-      size = sizeof(cls.globalServers) + sizeof(cls.favoriteServers) + sizeof(cls.mplayerServers);
-      FS_Write(&size, sizeof(int), fileOut);
-      FS_Write(&cls.globalServers, sizeof(cls.globalServers), fileOut);
-      FS_Write(&cls.mplayerServers, sizeof(cls.mplayerServers), fileOut);
-      FS_Write(&cls.favoriteServers, sizeof(cls.favoriteServers), fileOut);
-      FS_FCloseFile(fileOut);
-    */
+    int size;
+    fileHandle_t fileOut;
+    fileOut = FS_SV_FOpenFileWrite( "servercache.dat" );
+    FS_Write( &cls.numglobalservers, sizeof( int ), fileOut );
+    FS_Write( &cls.nummplayerservers, sizeof( int ), fileOut );
+    FS_Write( &cls.numfavoriteservers, sizeof( int ), fileOut );
+    size = sizeof( cls.globalServers ) + sizeof( cls.favoriteServers ) + sizeof( cls.mplayerServers );
+    FS_Write( &size, sizeof( int ), fileOut );
+    FS_Write( &cls.globalServers, sizeof( cls.globalServers ), fileOut );
+    FS_Write( &cls.mplayerServers, sizeof( cls.mplayerServers ), fileOut );
+    FS_Write( &cls.favoriteServers, sizeof( cls.favoriteServers ), fileOut );
+    FS_FCloseFile( fileOut );
 }
-
 
 /*
 ====================
@@ -395,6 +383,11 @@ static void LAN_GetServerInfo( int source, int n, char* buf, int buflen )
         Info_SetValueForKey( info, "nettype", va( "%i", server->netType ) );
         Info_SetValueForKey( info, "addr", NET_AdrToString( server->adr ) );
         Info_SetValueForKey( info, "sv_allowAnonymous", va( "%i", server->allowAnonymous ) );
+        Info_SetValueForKey( info, "friendlyFire", va( "%i", server->friendlyFire ) );
+        Info_SetValueForKey( info, "maxlives", va( "%i", server->maxlives ) );
+        Info_SetValueForKey( info, "tourney", va( "%i", server->tourney ) );
+        Info_SetValueForKey( info, "gamename", server->gameName );
+        Info_SetValueForKey( info, "g_antilag", va( "%i", server->antilag ) );
         Q_strncpyz( buf, info, buflen );
     }
     else
@@ -774,7 +767,7 @@ static void GetClipboardData( char* buf, int buflen )
 Key_KeynumToStringBuf
 ====================
 */
-static void Key_KeynumToStringBuf( int keynum, char* buf, int buflen )
+void Key_KeynumToStringBuf( int keynum, char* buf, int buflen )
 {
     Q_strncpyz( buf, Key_KeynumToString( keynum, true ), buflen );
 }
@@ -784,7 +777,7 @@ static void Key_KeynumToStringBuf( int keynum, char* buf, int buflen )
 Key_GetBindingBuf
 ====================
 */
-static void Key_GetBindingBuf( int keynum, char* buf, int buflen )
+void Key_GetBindingBuf( int keynum, char* buf, int buflen )
 {
     char*    value;
     
@@ -816,7 +809,15 @@ Ket_SetCatcher
 */
 void Key_SetCatcher( int catcher )
 {
-    cls.keyCatchers = catcher;
+    // console overrides everything
+    if( cls.keyCatchers & KEYCATCH_CONSOLE )
+    {
+        cls.keyCatchers = catcher | KEYCATCH_CONSOLE;
+    }
+    else
+    {
+        cls.keyCatchers = catcher;
+    }
 }
 
 

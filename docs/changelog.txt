@@ -1,5 +1,10 @@
 Changelog
 
+12-10-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Added multiplayer engine source code
+	- Integrated cURL 
+	- Updated binary files
+
 12-06-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added reading ".bullet" files into engine
 

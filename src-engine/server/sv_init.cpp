@@ -94,7 +94,7 @@ void SV_SetConfigstring( int index, const char* val )
             }
             
             // RF, don't send to bot/AI
-            if( client->gentity && ( client->gentity->r.svFlags & SVF_CASTAI ) )
+            if( sv_gametype->integer == GT_SINGLE_PLAYER && client->gentity && ( client->gentity->r.svFlags & SVF_CASTAI ) )
             {
                 continue;
             }
@@ -246,7 +246,6 @@ void SV_CreateBaseline( void )
 /*
 ===============
 SV_BoundMaxClients
-
 ===============
 */
 void SV_BoundMaxClients( int minimum )
@@ -268,213 +267,6 @@ void SV_BoundMaxClients( int minimum )
 
 /*
 ===============
-SV_InitReliableCommandsForClient
-===============
-*/
-void SV_InitReliableCommandsForClient( client_t* cl, int commands )
-{
-    if( !commands )
-    {
-        Com_Memset( &cl->reliableCommands, 0, sizeof( cl->reliableCommands ) );
-    }
-    //
-    cl->reliableCommands.bufSize = commands * RELIABLE_COMMANDS_CHARS;
-    cl->reliableCommands.buf = ( char* )Z_Malloc( cl->reliableCommands.bufSize );
-    cl->reliableCommands.commandLengths = ( int* )Z_Malloc( commands * sizeof( *cl->reliableCommands.commandLengths ) );
-    cl->reliableCommands.commands = ( char** )Z_Malloc( commands * sizeof( *cl->reliableCommands.commands ) );
-    //
-    cl->reliableCommands.rover = cl->reliableCommands.buf;
-}
-
-/*
-===============
-SV_InitReliableCommands
-===============
-*/
-void SV_InitReliableCommands( client_t* clients )
-{
-    int i;
-    client_t* cl;
-    
-    if( sv_gametype->integer == GT_SINGLE_PLAYER )
-    {
-        // single player
-        // init the actual player
-        SV_InitReliableCommandsForClient( clients, MAX_RELIABLE_COMMANDS );
-        // all others can only be bots, so are not required
-        for( i = 1, cl = &clients[1]; i < sv_maxclients->integer; i++, cl++ )
-        {
-            SV_InitReliableCommandsForClient( cl, MAX_RELIABLE_COMMANDS );  // TODO, make 0's
-        }
-    }
-    else
-    {
-        // multiplayer
-        for( i = 0, cl = clients; i < sv_maxclients->integer; i++, cl++ )
-        {
-            SV_InitReliableCommandsForClient( clients, MAX_RELIABLE_COMMANDS );
-        }
-    }
-}
-
-/*
-===============
-SV_FreeReliableCommandsForClient
-===============
-*/
-void SV_FreeReliableCommandsForClient( client_t* cl )
-{
-    if( !cl->reliableCommands.bufSize )
-    {
-        return;
-    }
-    Z_Free( cl->reliableCommands.buf );
-    Z_Free( cl->reliableCommands.commandLengths );
-    Z_Free( cl->reliableCommands.commands );
-    //
-    Com_Memset( &cl->reliableCommands, 0, sizeof( cl->reliableCommands.bufSize ) );
-}
-
-/*
-===============
-SV_GetReliableCommand
-===============
-*/
-char* SV_GetReliableCommand( client_t* cl, int index )
-{
-    static char* nullStr = "";
-    if( !cl->reliableCommands.bufSize )
-    {
-        return nullStr;
-    }
-    //
-    if( !cl->reliableCommands.commandLengths[index] )
-    {
-        return nullStr;
-    }
-    //
-    return cl->reliableCommands.commands[index];
-}
-
-/*
-===============
-SV_AddReliableCommand
-===============
-*/
-bool SV_AddReliableCommand( client_t* cl, int index, const char* cmd )
-{
-    int length, i, j;
-    char*    ch, *ch2;
-    //
-    if( !cl->reliableCommands.bufSize )
-    {
-        return false;
-    }
-    //
-    length = strlen( cmd );
-    //
-    if( ( cl->reliableCommands.rover - cl->reliableCommands.buf ) + length + 1 >= cl->reliableCommands.bufSize )
-    {
-        // go back to the start
-        cl->reliableCommands.rover = cl->reliableCommands.buf;
-    }
-    //
-    // make sure this position won't overwrite another command
-    for( i = length, ch = cl->reliableCommands.rover; i && !*ch; i--, ch++ )
-    {
-        // keep going until we find a bad character, or enough space is found
-    }
-    // if the test failed
-    if( i )
-    {
-        // find a valid spot to place the new string
-        // start at the beginning (keep it simple)
-        for( i = 0, ch = cl->reliableCommands.buf; i < cl->reliableCommands.bufSize; i++, ch++ )
-        {
-            if( !*ch && ( !i || !*( ch - 1 ) ) )    // make sure we dont start at the terminator of another string
-            {
-                // see if this is the start of a valid segment
-                for( ch2 = ch, j = 0; i < cl->reliableCommands.bufSize - 1 && j < length + 1 && !*ch2; i++, ch2++, j++ )
-                {
-                    // loop
-                }
-                //
-                if( j == length + 1 )
-                {
-                    // valid segment found
-                    cl->reliableCommands.rover = ch;
-                    break;
-                }
-                //
-                if( i == cl->reliableCommands.bufSize - 1 )
-                {
-                    // ran out of room, not enough space for string
-                    return false;
-                }
-                //
-                ch = &cl->reliableCommands.buf[i];  // continue where ch2 left off
-            }
-        }
-    }
-    //
-    // insert the command at the rover
-    cl->reliableCommands.commands[index] = cl->reliableCommands.rover;
-    Q_strncpyz( cl->reliableCommands.commands[index], cmd, length + 1 );
-    cl->reliableCommands.commandLengths[index] = length;
-    //
-    // move the rover along
-    cl->reliableCommands.rover += length + 1;
-    //
-    return true;
-}
-
-/*
-===============
-SV_FreeAcknowledgedReliableCommands
-===============
-*/
-void SV_FreeAcknowledgedReliableCommands( client_t* cl )
-{
-    int ack, realAck;
-    //
-    if( !cl->reliableCommands.bufSize )
-    {
-        return;
-    }
-    //
-    realAck = ( cl->reliableAcknowledge ) & ( MAX_RELIABLE_COMMANDS - 1 );
-    // move backwards one command, since we need the most recently acknowledged
-    // command for netchan decoding
-    ack = ( cl->reliableAcknowledge - 1 ) & ( MAX_RELIABLE_COMMANDS - 1 );
-    //
-    if( !cl->reliableCommands.commands[ack] )
-    {
-        return; // no new commands acknowledged
-    }
-    //
-    while( cl->reliableCommands.commands[ack] )
-    {
-        // clear the string
-        memset( cl->reliableCommands.commands[ack], 0, cl->reliableCommands.commandLengths[ack] );
-        // clear the pointer
-        cl->reliableCommands.commands[ack] = NULL;
-        cl->reliableCommands.commandLengths[ack] = 0;
-        // move the the previous command
-        ack--;
-        if( ack < 0 )
-        {
-            ack = ( MAX_RELIABLE_COMMANDS - 1 );
-        }
-        if( ack == realAck )
-        {
-            // never free the actual most recently acknowledged command
-            break;
-        }
-    }
-}
-
-/*
-===============
 SV_Startup
 
 Called when a host starts a map when it wasn't running
@@ -491,18 +283,12 @@ void SV_Startup( void )
     }
     SV_BoundMaxClients( 1 );
     
-#ifdef ZONECLIENTS
-    svs.clients = Z_Malloc( sizeof( client_t ) * sv_maxclients->integer );
-#else
     // RF, avoid trying to allocate large chunk on a fragmented zone
     svs.clients = ( client_t* )calloc( sizeof( client_t ) * sv_maxclients->integer, 1 );
     if( !svs.clients )
     {
         Com_Error( ERR_FATAL, "SV_Startup: unable to allocate svs.clients" );
     }
-#endif
-//	SV_InitReliableCommands( svs.clients );	// RF
-
     if( com_dedicated->integer )
     {
         svs.numSnapshotEntities = sv_maxclients->integer * PACKET_BACKUP * 64;
@@ -553,15 +339,6 @@ void SV_ChangeMaxClients( void )
         return;
     }
     
-    // RF, free reliable commands for clients outside the NEW maxclients limit
-    if( oldMaxClients > sv_maxclients->integer )
-    {
-        for( i = sv_maxclients->integer ; i < oldMaxClients ; i++ )
-        {
-            SV_FreeReliableCommandsForClient( &svs.clients[i] );
-        }
-    }
-    
     oldClients = ( client_t* )Hunk_AllocateTempMemory( count * sizeof( client_t ) );
     // copy the clients to hunk memory
     for( i = 0 ; i < count ; i++ )
@@ -577,23 +354,15 @@ void SV_ChangeMaxClients( void )
     }
     
     // free old clients arrays
-#ifdef ZONECLIENTS
-    Z_Free( svs.clients );
-#else
     free( svs.clients );    // RF, avoid trying to allocate large chunk on a fragmented zone
-#endif
     
     // allocate new clients
-#ifdef ZONECLIENTS
-    svs.clients = Z_Malloc( sv_maxclients->integer * sizeof( client_t ) );
-#else
     // RF, avoid trying to allocate large chunk on a fragmented zone
     svs.clients = ( client_t* )calloc( sizeof( client_t ) * sv_maxclients->integer, 1 );
     if( !svs.clients )
     {
         Com_Error( ERR_FATAL, "SV_Startup: unable to allocate svs.clients" );
     }
-#endif
     
     Com_Memset( svs.clients, 0, sv_maxclients->integer * sizeof( client_t ) );
     
@@ -618,26 +387,6 @@ void SV_ChangeMaxClients( void )
     {
         // we don't need nearly as many when playing locally
         svs.numSnapshotEntities = sv_maxclients->integer * 4 * 64;
-    }
-    
-    // RF, allocate reliable commands for newly created client slots
-    if( oldMaxClients < sv_maxclients->integer )
-    {
-        if( sv_gametype->integer == GT_SINGLE_PLAYER )
-        {
-            for( i = oldMaxClients ; i < sv_maxclients->integer ; i++ )
-            {
-                // must be an AI slot
-                SV_InitReliableCommandsForClient( &svs.clients[i], 0 );
-            }
-        }
-        else
-        {
-            for( i = oldMaxClients ; i < sv_maxclients->integer ; i++ )
-            {
-                SV_InitReliableCommandsForClient( &svs.clients[i], MAX_RELIABLE_COMMANDS );
-            }
-        }
     }
 }
 
@@ -730,6 +479,26 @@ void SV_TouchCGame( void )
         FS_FCloseFile( f );
     }
 }
+
+/*
+================
+SV_TouchCGameDLL
+touch the cgame DLL so that a pure client (with DLL sv_pure support) can load do the correct checks
+================
+*/
+void SV_TouchCGameDLL( void )
+{
+    fileHandle_t f;
+    char* filename;
+    
+    filename = Sys_GetDLLName( "cgame" );
+    FS_FOpenFileRead_Filtered( filename, &f, false, FS_EXCLUDE_DIR );
+    if( f )
+    {
+        FS_FCloseFile( f );
+    }
+}
+
 
 /*
 ================
@@ -848,7 +617,8 @@ void SV_SpawnServer( char* server, bool killBots )
 //	Cvar_Set( "nextmap", va("map %s", server) );
 
     // Ridah
-    if( sv_gametype->integer == GT_SINGLE_PLAYER )
+    // We want to use the completion bar in multiplayer as well
+    if( sv_gametype->integer == GT_SINGLE_PLAYER || sv_gametype->integer >= GT_WOLF )
     {
         SV_SetExpectedHunkUsage( va( "maps/%s.bsp", server ) );
     }
@@ -876,6 +646,7 @@ void SV_SpawnServer( char* server, bool killBots )
     // serverid should be different each time
     sv.serverId = com_frameTime;
     sv.restartedServerId = sv.serverId;
+    sv.checksumFeedServerId = sv.serverId;
     Cvar_Set( "sv_serverid", va( "%i", sv.serverId ) );
     
     // clear physics interaction links
@@ -885,6 +656,8 @@ void SV_SpawnServer( char* server, bool killBots )
     // the loading stage, so connected clients don't have
     // to load during actual gameplay
     sv.state = SS_LOADING;
+    
+    Cvar_Set( "sv_serverRestarting", "1" );
     
     // load and spawn all other entities
     SV_InitGameProgs();
@@ -925,7 +698,7 @@ void SV_SpawnServer( char* server, bool killBots )
             }
             
             // connect the client again
-            denied = ( char* )game->ClientConnect( i, false, isBot ); // firstTime = qfalse
+            denied = ( char* )game->ClientConnect( i, false, isBot ); // firstTime = false
             if( denied )
             {
                 // this generally shouldn't happen, because the client
@@ -977,13 +750,6 @@ void SV_SpawnServer( char* server, bool killBots )
         }
         p = FS_LoadedPakNames();
         Cvar_Set( "sv_pakNames", p );
-        
-        // if a dedicated pure server we need to touch the cgame because it could be in a
-        // seperate pk3 file and the client will need to load the latest cgame.qvm
-        if( com_dedicated->integer )
-        {
-            SV_TouchCGame();
-        }
     }
     else
     {
@@ -992,6 +758,11 @@ void SV_SpawnServer( char* server, bool killBots )
     }
     // the server sends these to the clients so they can figure
     // out which pk3s should be auto-downloaded
+    // NOTE: we consider the referencedPaks as 'required for operation'
+    
+    // we want the server to reference the mp_bin pk3 that the client is expected to load from
+    SV_TouchCGameDLL();
+    
     p = FS_ReferencedPakChecksums();
     Cvar_Set( "sv_referencedPaks", p );
     p = FS_ReferencedPakNames();
@@ -1005,6 +776,9 @@ void SV_SpawnServer( char* server, bool killBots )
     SV_SetConfigstring( CS_SERVERINFO, Cvar_InfoString( CVAR_SERVERINFO ) );
     cvar_modifiedFlags &= ~CVAR_SERVERINFO;
     
+    SV_SetConfigstring( CS_WOLFINFO, Cvar_InfoString( CVAR_WOLFINFO ) );
+    cvar_modifiedFlags &= ~CVAR_WOLFINFO;
+    
     // any media configstring setting now should issue a warning
     // and any configstring changes should be reliably transmitted
     // to all clients
@@ -1015,17 +789,10 @@ void SV_SpawnServer( char* server, bool killBots )
     
     Hunk_SetMark();
     
-    Com_Printf( "-----------------------------------\n" );
+    Cvar_Set( "sv_serverRestarting", "0" );
     
-    /* MrE: 2000-09-13: now called in CL_DownloadsComplete
-    // don't call when running dedicated
-    if ( !com_dedicated->integer ) {
-    	// note that this is called after setting the hunk mark with Hunk_SetMark
-    	CL_StartHunkUsers();
-    }
-    */
+    Com_Printf( "-----------------------------------\n" );
 }
-
 
 /*
 ===============
@@ -1041,8 +808,8 @@ void SV_Init( void )
     SV_AddOperatorCommands();
     
     // serverinfo vars
-    Cvar_Get( "dmflags", "0", CVAR_SERVERINFO );
-    Cvar_Get( "fraglimit", "20", CVAR_SERVERINFO );
+    Cvar_Get( "dmflags", "0", /*CVAR_SERVERINFO*/ 0 );
+    Cvar_Get( "fraglimit", "0", /*CVAR_SERVERINFO*/ 0 );
     Cvar_Get( "timelimit", "0", CVAR_SERVERINFO );
     Cvar_Get( "g_fastres", "0", CVAR_ARCHIVE );
     Cvar_Get( "g_fastResMsec", "1000", CVAR_ARCHIVE );
@@ -1056,16 +823,20 @@ void SV_Init( void )
     Cvar_Get( "protocol", va( "%i", PROTOCOL_VERSION ), CVAR_SERVERINFO | CVAR_ROM );
     sv_mapname = Cvar_Get( "mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM );
     sv_privateClients = Cvar_Get( "sv_privateClients", "0", CVAR_SERVERINFO );
-    sv_hostname = Cvar_Get( "sv_hostname", "noname", CVAR_SERVERINFO | CVAR_ARCHIVE );
+    sv_hostname = Cvar_Get( "sv_hostname", "WolfHost", CVAR_SERVERINFO | CVAR_ARCHIVE );
     sv_maxclients = Cvar_Get( "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH );
     sv_maxRate = Cvar_Get( "sv_maxRate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
     sv_minPing = Cvar_Get( "sv_minPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
     sv_maxPing = Cvar_Get( "sv_maxPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
     sv_floodProtect = Cvar_Get( "sv_floodProtect", "1", CVAR_ARCHIVE | CVAR_SERVERINFO );
     sv_allowAnonymous = Cvar_Get( "sv_allowAnonymous", "0", CVAR_SERVERINFO );
+    sv_friendlyFire = Cvar_Get( "g_friendlyFire", "1", CVAR_SERVERINFO | CVAR_ARCHIVE );         // NERVE - SMF
+    sv_maxlives = Cvar_Get( "g_maxlives", "0", CVAR_ARCHIVE | CVAR_LATCH | CVAR_SERVERINFO );    // NERVE - SMF
+    sv_tourney = Cvar_Get( "g_noTeamSwitching", "0", CVAR_ARCHIVE );                             // NERVE - SMF
     
     // systeminfo
-    Cvar_Get( "sv_cheats", "0", CVAR_SYSTEMINFO | CVAR_ROM );
+    //added cvar_t for sv_cheats so server engine can reference it
+    sv_cheats = Cvar_Get( "sv_cheats", "1", CVAR_SYSTEMINFO | CVAR_ROM );
     sv_serverid = Cvar_Get( "sv_serverid", "0", CVAR_SYSTEMINFO | CVAR_ROM );
 //----(SA) VERY VERY TEMPORARY!!!!!!!!!!!
 //----(SA) this is so Activision can test milestones with
@@ -1081,14 +852,13 @@ void SV_Init( void )
     sv_rconPassword = Cvar_Get( "rconPassword", "", CVAR_TEMP );
     sv_privatePassword = Cvar_Get( "sv_privatePassword", "", CVAR_TEMP );
     sv_fps = Cvar_Get( "sv_fps", "20", CVAR_TEMP );
+    sv_timeout = Cvar_Get( "sv_timeout", "240", CVAR_TEMP );
     sv_timeout = Cvar_Get( "sv_timeout", "120", CVAR_TEMP );
     sv_zombietime = Cvar_Get( "sv_zombietime", "2", CVAR_TEMP );
     Cvar_Get( "nextmap", "", CVAR_TEMP );
     
-    sv_allowDownload = Cvar_Get( "sv_allowDownload", "1", 0 );
-//----(SA)	heh, whoops.  we've been talking to id masters since we got a connection...
-//	sv_master[0] = Cvar_Get ("sv_master1", "master3.idsoftware.com", 0 );
-    sv_master[0] = Cvar_Get( "sv_master1", "master.gmistudios.com", 0 );
+    sv_allowDownload = Cvar_Get( "sv_allowDownload", "1", CVAR_ARCHIVE );
+    sv_master[0] = Cvar_Get( "sv_master1", "wolfmaster.idsoftware.com", 0 );    // NERVE - SMF - wolfMP master server
     sv_master[1] = Cvar_Get( "sv_master2", "", CVAR_ARCHIVE );
     sv_master[2] = Cvar_Get( "sv_master3", "", CVAR_ARCHIVE );
     sv_master[3] = Cvar_Get( "sv_master4", "", CVAR_ARCHIVE );
@@ -1100,6 +870,41 @@ void SV_Init( void )
     sv_mapChecksum = Cvar_Get( "sv_mapChecksum", "", CVAR_ROM );
     
     sv_reloading = Cvar_Get( "g_reloading", "0", CVAR_ROM );   //----(SA)	added
+    sv_lanForceRate = Cvar_Get( "sv_lanForceRate", "1", CVAR_ARCHIVE );
+    
+    sv_onlyVisibleClients = Cvar_Get( "sv_onlyVisibleClients", "0", 0 );       // DHM - Nerve
+    
+    sv_showAverageBPS = Cvar_Get( "sv_showAverageBPS", "0", 0 );           // NERVE - SMF - net debugging
+    
+    // create user set cvars
+    Cvar_Get( "g_userTimeLimit", "0", 0 );
+    Cvar_Get( "g_userAlliedRespawnTime", "0", 0 );
+    Cvar_Get( "g_userAxisRespawnTime", "0", 0 );
+    Cvar_Get( "g_maxlives", "0", 0 );
+    Cvar_Get( "g_noTeamSwitching", "0", CVAR_ARCHIVE );
+    Cvar_Get( "g_altStopwatchMode", "0", CVAR_ARCHIVE );
+    Cvar_Get( "g_minGameClients", "8", CVAR_SERVERINFO );
+    Cvar_Get( "g_complaintlimit", "3", CVAR_ARCHIVE );
+    Cvar_Get( "gamestate", "-1", CVAR_WOLFINFO | CVAR_ROM );
+    Cvar_Get( "g_currentRound", "0", CVAR_WOLFINFO );
+    Cvar_Get( "g_nextTimeLimit", "0", CVAR_WOLFINFO );
+    
+    // UI additions
+    // NOTE: sucks to have this hardcoded really, I suppose this should be in UI
+    Cvar_Get( "g_axismaxlives", "0", 0 );
+    Cvar_Get( "g_alliedmaxlives", "0", 0 );
+    Cvar_Get( "g_fastres", "0", CVAR_ARCHIVE );
+    Cvar_Get( "g_fastResMsec", "1000", CVAR_ARCHIVE );
+    Cvar_Get( "g_voteFlags", "255", CVAR_ARCHIVE | CVAR_SERVERINFO );
+    Cvar_Get( "g_antilag", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
+    
+    // autodownload speed tweaks
+    // the download netcode tops at 18/20 kb/s, no need to make you think you can go above
+    sv_dl_maxRate = Cvar_Get( "sv_dl_maxRate", "42000", CVAR_ARCHIVE );
+    sv_wwwDownload = Cvar_Get( "sv_wwwDownload", "0", CVAR_ARCHIVE );
+    sv_wwwBaseURL = Cvar_Get( "sv_wwwBaseURL", "", CVAR_ARCHIVE );
+    sv_wwwDlDisconnected = Cvar_Get( "sv_wwwDlDisconnected", "0", CVAR_ARCHIVE );
+    sv_wwwFallbackURL = Cvar_Get( "sv_wwwFallbackURL", "", CVAR_ARCHIVE );
     
     // initialize bot cvars so they are listed and can be set before loading the botlib
     SV_BotInitCvars();

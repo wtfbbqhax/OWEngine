@@ -45,7 +45,7 @@
 #endif
 
 // always use bbox vs. bbox collision and never capsule vs. bbox or vice versa
-#define ALWAYS_BBOX_VS_BBOX
+//#define ALWAYS_BBOX_VS_BBOX
 // always use capsule vs. capsule collision and never capsule vs. bbox or vice versa
 //#define ALWAYS_CAPSULE_VS_CAPSULE
 
@@ -64,9 +64,7 @@ BASIC MATH
 RotatePoint
 ================
 */
-// TTimo: const vec_t ** would require explicit casts for ANSI C conformance
-// see unix/const-arg.c in Wolf MP source
-void RotatePoint( vec3_t point, /*const*/ vec3_t matrix[3] )
+void RotatePoint( vec3_t point, const vec3_t matrix[3] )
 {
     vec3_t tvec;
     
@@ -81,9 +79,7 @@ void RotatePoint( vec3_t point, /*const*/ vec3_t matrix[3] )
 TransposeMatrix
 ================
 */
-// TTimo: const vec_t ** would require explicit casts for ANSI C conformance
-// see unix/const-arg.c in Wolf MP source
-void TransposeMatrix( /*const*/ vec3_t matrix[3], vec3_t transpose[3] )
+void TransposeMatrix( const vec3_t matrix[3], vec3_t transpose[3] )
 {
     int i, j;
     for( i = 0; i < 3; i++ )
@@ -1476,23 +1472,22 @@ void CM_Trace( trace_t* results, const vec3_t start, const vec3_t end,
                 CM_TestCapsuleInCapsule( &tw, model );
             }
             else
-#else
-            if( model == CAPSULE_MODEL_HANDLE )
-            {
-                if( tw.sphere.use )
+#endif
+                if( model == CAPSULE_MODEL_HANDLE )
                 {
-                    CM_TestCapsuleInCapsule( &tw, model );
+                    if( tw.sphere.use )
+                    {
+                        CM_TestCapsuleInCapsule( &tw, model );
+                    }
+                    else
+                    {
+                        CM_TestBoundingBoxInCapsule( &tw, model );
+                    }
                 }
                 else
                 {
-                    CM_TestBoundingBoxInCapsule( &tw, model );
+                    CM_TestInLeaf( &tw, &cmod->leaf );
                 }
-            }
-            else
-#endif
-            {
-                CM_TestInLeaf( &tw, &cmod->leaf );
-            }
         }
         else
         {
@@ -1535,23 +1530,22 @@ void CM_Trace( trace_t* results, const vec3_t start, const vec3_t end,
                 CM_TraceCapsuleThroughCapsule( &tw, model );
             }
             else
-#else
-            if( model == CAPSULE_MODEL_HANDLE )
-            {
-                if( tw.sphere.use )
+#endif
+                if( model == CAPSULE_MODEL_HANDLE )
                 {
-                    CM_TraceCapsuleThroughCapsule( &tw, model );
+                    if( tw.sphere.use )
+                    {
+                        CM_TraceCapsuleThroughCapsule( &tw, model );
+                    }
+                    else
+                    {
+                        CM_TraceBoundingBoxThroughCapsule( &tw, model );
+                    }
                 }
                 else
                 {
-                    CM_TraceBoundingBoxThroughCapsule( &tw, model );
+                    CM_TraceThroughLeaf( &tw, &cmod->leaf );
                 }
-            }
-            else
-#endif
-            {
-                CM_TraceThroughLeaf( &tw, &cmod->leaf );
-            }
         }
         else
         {
@@ -1691,8 +1685,9 @@ void idCollisionModelManagerLocal::TransformedBoxTrace( trace_t* results, const 
         //		 bevels invalid.
         //		 However this is correct for capsules since a capsule itself is rotated too.
         CreateRotationMatrix( angles, matrix );
-        RotatePoint( start_l, matrix );
-        RotatePoint( end_l, matrix );
+        // NOTE TTimo gcc doesn't like the vec3_t m[3] to const vec3_t m[3] casting
+        RotatePoint( start_l, ( const vec3_t* )matrix );
+        RotatePoint( end_l, ( const vec3_t* )matrix );
         // rotated sphere offset for capsule
         sphere.offset[0] = matrix[0][ 2 ] * t;
         sphere.offset[1] = -matrix[1][ 2 ] * t;
@@ -1710,8 +1705,8 @@ void idCollisionModelManagerLocal::TransformedBoxTrace( trace_t* results, const 
     if( rotated && trace.fraction != 1.0 )
     {
         // rotation of bmodel collision plane
-        TransposeMatrix( matrix, transpose );
-        RotatePoint( trace.plane.normal, transpose );
+        TransposeMatrix( ( const vec3_t* )matrix, transpose );
+        RotatePoint( trace.plane.normal, ( const vec3_t* )transpose );
     }
     
     // re-calculate the end position of the trace because the trace.endpos

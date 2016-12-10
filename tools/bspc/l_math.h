@@ -109,7 +109,7 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs );
 
 void AngleVectors( const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up );
 void R_ConcatRotations( float in1[3][3], float in2[3][3], float out[3][3] );
-void RotatePoint( vec3_t point, /*const*/ vec3_t matrix[3] );
+void RotatePoint( vec3_t point, const vec3_t matrix[3] );
 void CreateRotationMatrix( const vec3_t angles, vec3_t matrix[3] );
 vec_t VectorLengthSquared( const vec3_t v );
 

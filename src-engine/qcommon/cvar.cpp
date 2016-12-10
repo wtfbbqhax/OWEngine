@@ -222,6 +222,31 @@ void    Cvar_CommandCompletion( void ( *callback )( const char* s ) )
     }
 }
 
+/*
+============
+Cvar_ClearForeignCharacters
+some cvar values need to be safe from foreign characters
+============
+*/
+char* Cvar_ClearForeignCharacters( const char* value )
+{
+    static char clean[MAX_CVAR_VALUE_STRING];
+    int i, j;
+    
+    j = 0;
+    for( i = 0; value[i] != '\0'; i++ )
+    {
+        if( !( value[i] & 128 ) )
+        {
+            clean[j] = value[i];
+            j++;
+        }
+    }
+    clean[j] = '\0';
+    
+    return clean;
+}
+
 
 /*
 ============
@@ -296,6 +321,19 @@ cvar_t* Cvar_Get( const char* var_name, const char* var_value, int flags )
             Z_Free( s );
         }
         
+        // TTimo
+        // if CVAR_USERINFO was toggled on for an existing cvar, check wether the value needs to be cleaned from foreigh characters
+        // (for instance, seta name "name-with-foreign-chars" in the config file, and toggle to CVAR_USERINFO happens later in CL_Init)
+        if( flags & CVAR_USERINFO )
+        {
+            char* cleaned = Cvar_ClearForeignCharacters( var->string ); // NOTE: it is probably harmless to call Cvar_Set2 in all cases, but I don't want to risk it
+            if( strcmp( var->string, cleaned ) )
+            {
+                Cvar_Set2( var->name, var->string, false ); // call Cvar_Set2 with the value to be cleaned up for verbosity
+            }
+        }
+        
+        
 // use a CVAR_SET for rom sets, get won't override
 #if 0
         // CVAR_ROM always overrides
@@ -354,14 +392,6 @@ cvar_t* Cvar_Set2( const char* var_name, const char* value, bool force )
         var_name = "BADNAME";
     }
     
-#if 0   // FIXME
-    if( value && !Cvar_ValidateString( value ) )
-    {
-        Com_Printf( "invalid cvar value string: %s\n", value );
-        var_value = "BADVALUE";
-    }
-#endif
-    
     var = Cvar_FindVar( var_name );
     if( !var )
     {
@@ -385,6 +415,16 @@ cvar_t* Cvar_Set2( const char* var_name, const char* value, bool force )
         value = var->resetString;
     }
     
+    if( var->flags & CVAR_USERINFO )
+    {
+        char* cleaned = Cvar_ClearForeignCharacters( value );
+        if( strcmp( value, cleaned ) )
+        {
+            Com_Printf( "Using %s instead of %s\n", cleaned, value );
+            return Cvar_Set2( var_name, cleaned, force );
+        }
+    }
+    
     if( !strcmp( value, var->string ) )
     {
         return var;
@@ -403,6 +443,12 @@ cvar_t* Cvar_Set2( const char* var_name, const char* value, bool force )
         if( var->flags & CVAR_INIT )
         {
             Com_Printf( "%s is write protected.\n", var_name );
+            return var;
+        }
+        
+        if( ( var->flags & CVAR_CHEAT ) && !cvar_cheats->integer )
+        {
+            Com_Printf( "%s is cheat protected.\n", var_name );
             return var;
         }
         
@@ -430,13 +476,6 @@ cvar_t* Cvar_Set2( const char* var_name, const char* value, bool force )
             var->modificationCount++;
             return var;
         }
-        
-        if( ( var->flags & CVAR_CHEAT ) && !cvar_cheats->integer )
-        {
-            Com_Printf( "%s is cheat protected.\n", var_name );
-            return var;
-        }
-        
     }
     else
     {
@@ -513,6 +552,16 @@ Cvar_Reset
 void Cvar_Reset( const char* var_name )
 {
     Cvar_Set2( var_name, NULL, false );
+}
+
+/*
+============
+Cvar_ForceReset
+============
+*/
+void Cvar_ForceReset( const char* var_name )
+{
+    Cvar_Set2( var_name, NULL, true );
 }
 
 

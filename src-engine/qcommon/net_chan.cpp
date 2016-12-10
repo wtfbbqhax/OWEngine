@@ -42,7 +42,9 @@
 
 #include "../qcommon/q_shared.h"
 #include "qcommon.h"
-
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
 /*
 
 packet header
@@ -116,7 +118,6 @@ void Netchan_Setup( netsrc_t sock, netchan_t* chan, netadr_t adr, int _qport )
     chan->outgoingSequence = 1;
 }
 
-#if DO_NET_ENCODE
 /*
 ==============
 Netchan_ScramblePacket
@@ -213,7 +214,6 @@ static void Netchan_UnScramblePacket( msg_t* buf )
         buf->data[i] = temp;
     }
 }
-#endif // DO_NET_ENCODE
 
 /*
 =================
@@ -336,7 +336,7 @@ void Netchan_Transmit( netchan_t* chan, int length, const byte* data )
         Com_Printf( "%s send %4i : s=%i ack=%i\n"
                     , netsrcString[ chan->sock ]
                     , send.cursize
-                    , chan->outgoingSequence - 1
+                    , chan->outgoingSequence
                     , chan->incomingSequence );
     }
 }
@@ -452,7 +452,11 @@ bool Netchan_Process( netchan_t* chan, msg_t* msg )
     //
     if( fragmented )
     {
-        // make sure we
+        // TTimo
+        // make sure we add the fragments in correct order
+        // either a packet was dropped, or we received this one too soon
+        // we don't reconstruct the fragments. we will wait till this fragment gets to us again
+        // (NOTE: we could probably try to rebuild by out of order chunks if needed)
         if( sequence != chan->fragmentSequence )
         {
             chan->fragmentSequence = sequence;
@@ -514,6 +518,10 @@ bool Netchan_Process( netchan_t* chan, msg_t* msg )
         chan->fragmentLength = 0;
         msg->readcount = 4; // past the sequence number
         msg->bit = 32;  // past the sequence number
+        
+        // TTimo
+        // clients were not acking fragmented messages
+        chan->incomingSequence = sequence;
         
         return true;
     }
@@ -585,12 +593,12 @@ const char*  NET_AdrToString( netadr_t a )
     }
     else if( a.type == NA_IP )
     {
-        Com_sprintf( s, sizeof( s ), "%i.%i.%i.%i:%i",
+        Com_sprintf( s, sizeof( s ), "%i.%i.%i.%i:%hu",
                      a.ip[0], a.ip[1], a.ip[2], a.ip[3], BigShort( a.port ) );
     }
     else
     {
-        Com_sprintf( s, sizeof( s ), "%02x%02x%02x%02x.%02x%02x%02x%02x%02x%02x:%i",
+        Com_sprintf( s, sizeof( s ), "%02x%02x%02x%02x.%02x%02x%02x%02x%02x%02x:%hu",
                      a.ipx[0], a.ipx[1], a.ipx[2], a.ipx[3], a.ipx[4], a.ipx[5], a.ipx[6], a.ipx[7], a.ipx[8], a.ipx[9],
                      BigShort( a.port ) );
     }
@@ -598,8 +606,58 @@ const char*  NET_AdrToString( netadr_t a )
     return s;
 }
 
+/*
+===============
+NET_OutOfBandPrint
 
-bool    NET_CompareAdr( netadr_t a, netadr_t b )
+Sends a data message in an out-of-band datagram (only used for "connect")
+================
+*/
+void NET_OutOfBandData( netsrc_t sock, netadr_t adr, byte* format, int len )
+{
+    byte string[MAX_MSGLEN * 2];
+    int i;
+    msg_t mbuf;
+    
+    // set the header
+    string[0] = 0xff;
+    string[1] = 0xff;
+    string[2] = 0xff;
+    string[3] = 0xff;
+    
+    for( i = 0; i < len; i++ )
+    {
+        string[i + 4] = format[i];
+    }
+    
+    mbuf.data = string;
+    mbuf.cursize = len + 4;
+    Huff_Compress( &mbuf, 12 );
+    // send the datagram
+    NET_SendPacket( sock, mbuf.cursize, mbuf.data, adr );
+}
+
+const char* NET_AdrToStringwPort( netadr_t a )
+{
+    static char s[NET_ADDRSTRMAXLEN];
+    
+    if( a.type == NA_LOOPBACK )
+    {
+        Com_sprintf( s, sizeof( s ), "loopback" );
+    }
+    else if( a.type == NA_BOT )
+    {
+        Com_sprintf( s, sizeof( s ), "bot" );
+    }
+    else if( a.type == NA_IP )
+    {
+        Com_sprintf( s, sizeof( s ), "%s:%hu", NET_AdrToString( a ), ntohs( a.port ) );
+    }
+    
+    return s;
+}
+
+bool NET_CompareAdr( netadr_t a, netadr_t b )
 {
     if( a.type != b.type )
     {

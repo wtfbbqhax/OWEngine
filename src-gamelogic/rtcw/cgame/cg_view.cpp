@@ -1864,6 +1864,27 @@ removed CG_DrawNotebook
 =========================
 */
 
+/*
+=========================
+CG_GetMPSetupValue
+
+Pack multiplayer options into a bitfield.
+
+This is necessary for all options in the limbo menu
+as this is the only way to maintain accurate sync with the game.
+=========================
+*/
+int CG_GetMPSetupValue()
+{
+    int value = 0;
+    
+    value |= 1 << MP_TEAM_OFFSET;
+    value |= mp_playerType.integer << MP_CLASS_OFFSET;
+    value |= mp_team.integer << MP_TEAM_OFFSET;
+    value |= mp_weapon.integer << MP_WEAPON_OFFSET;
+    
+    return value;
+}
 
 //=========================================================================
 
@@ -1887,6 +1908,7 @@ Generates and draws a game scene and status information at the given time.
 void idCGameLocal::DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bool demoPlayback )
 {
     int inwater;
+    int mpSetup;                // NERVE - SMF
     
     cg.cld = 0;         // NERVE - SMF - reset clientDamage
     
@@ -2087,8 +2109,18 @@ void idCGameLocal::DrawActiveFrame( int serverTime, stereoFrame_t stereoView, bo
     
     DEBUGTIME
     
+    //Dushan
+    if( cg_gameType.integer == GT_SINGLE_PLAYER )
+    {
+        mpSetup = 0;
+    }
+    else
+    {
+        mpSetup = CG_GetMPSetupValue();     // NERVE - SMF - setup mpSetup values
+    }
+    
     // let the client system know what our weapon, holdable item and zoom settings are
-    trap_SetUserCmdValue( cg.weaponSelect, cg.holdableSelect, cg.zoomSensitivity, cg.cld );
+    trap_SetUserCmdValue( cg.weaponSelect, cg.holdableSelect, cg.zoomSensitivity, mpSetup, cg.identifyClientRequest );
     
     // actually issue the rendering calls
     CG_DrawActive( stereoView );

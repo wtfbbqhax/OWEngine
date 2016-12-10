@@ -363,7 +363,7 @@ typedef struct cmd_function_s
 static int cmd_argc;
 static char*        cmd_argv[MAX_STRING_TOKENS];        // points into cmd_tokenized
 static char cmd_tokenized[BIG_INFO_STRING + MAX_STRING_TOKENS];         // will have 0 bytes inserted
-
+static char cmd_cmd[BIG_INFO_STRING];         // the original command we received (no token processing)
 static cmd_function_t*  cmd_functions;      // possible commands to execute
 
 /*
@@ -471,6 +471,19 @@ void    Cmd_ArgsBuffer( char* buffer, int bufferLength )
     Q_strncpyz( buffer, Cmd_Args(), bufferLength );
 }
 
+/*
+============
+Cmd_Cmd
+
+Retrieve the unmodified command string
+For rcon use when you want to transmit without altering quoting
+ATVI Wolfenstein Misc #284
+============
+*/
+char* Cmd_Cmd()
+{
+    return cmd_cmd;
+}
 
 /*
 ============
@@ -494,6 +507,8 @@ void Cmd_TokenizeString( const char* text_in )
     {
         return;
     }
+    
+    Q_strncpyz( cmd_cmd, text_in, sizeof( cmd_cmd ) );
     
     text = text_in;
     textOut = cmd_tokenized;

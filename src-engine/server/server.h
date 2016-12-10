@@ -56,6 +56,7 @@
 // GAME BOTH REFERENCE !!!
 
 #define MAX_ENT_CLUSTERS    16
+#define MAX_BPS_WINDOW      20          // net debugging
 
 typedef struct svEntity_s
 {
@@ -80,10 +81,11 @@ typedef enum
 typedef struct
 {
     serverState_t state;
-    bool restarting;                // if true, send configstring changes during SS_LOADING
+    bool restarting;                    // if true, send configstring changes during SS_LOADING
     int serverId;                       // changes each server start
     int restartedServerId;              // serverId before a map_restart
-    int checksumFeed;                   //
+    int checksumFeed;                   // the feed key that we use to compute the pure checksum strings
+    int checksumFeedServerId;           // the serverId associated with the current checksumFeed (always <= serverId)
     int snapshotCounter;                // incremented for each snapshot built
     int timeResidual;                   // <= 1000 / sv_frame->value
     int nextFrameTime;                  // when time > nextFrameTime, process world
@@ -102,11 +104,20 @@ typedef struct
     int gameClientSize;                 // will be > sizeof(playerState_t) due to game private data
     
     int restartTime;
+    // net debugging
+    int bpsWindow[MAX_BPS_WINDOW];
+    int bpsWindowSteps;
+    int bpsTotalBytes;
+    int bpsMaxBytes;
+    
+    int ubpsWindow[MAX_BPS_WINDOW];
+    int ubpsTotalBytes;
+    int ubpsMaxBytes;
+    
+    float ucompAve;
+    int ucompNum;
+    // -NERVE - SMF
 } server_t;
-
-
-
-
 
 typedef struct
 {
@@ -132,29 +143,22 @@ typedef enum
     CS_ACTIVE       // client is fully in game
 } clientState_t;
 
-// RF, now using a global string buffer to hold all reliable commands
-//#define	RELIABLE_COMMANDS_MULTI		128
-//#define	RELIABLE_COMMANDS_SINGLE	256		// need more for loadgame situations
+typedef struct netchan_buffer_s
+{
+    msg_t msg;
+    byte msgBuffer[MAX_MSGLEN];
+    struct netchan_buffer_s* next;
+} netchan_buffer_t;
 
 #define RELIABLE_COMMANDS_CHARS     384     // we can scale this down from the max of 1024, since not all commands are going to use that many chars
 
-typedef struct
-{
-    int bufSize;
-    char*    buf;               // actual strings
-    char**    commands;         // pointers to actual strings
-    int*     commandLengths;    // lengths of actual strings
-    //
-    char*    rover;
-} reliableCommands_t;
 
 typedef struct client_s
 {
     clientState_t state;
     char userinfo[MAX_INFO_STRING];                 // name, etc
     
-    //char			reliableCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
-    reliableCommands_t reliableCommands;
+    char reliableCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
     int reliableSequence;                   // last added reliable message, not necesarily sent or acknowledged yet
     int reliableAcknowledge;                // last acknowledged reliable message
     int reliableSent;                       // last sent reliable message, not necesarily acknowledged yet
@@ -175,27 +179,43 @@ typedef struct client_s
     fileHandle_t download;              // file being downloaded
     int downloadSize;                   // total bytes (can't use EOF because of paks)
     int downloadCount;                  // bytes sent
-    int downloadClientBlock;                // last block we sent to the client, awaiting ack
-    int downloadCurrentBlock;               // current block number
+    int downloadClientBlock;            // last block we sent to the client, awaiting ack
+    int downloadCurrentBlock;           // current block number
     int downloadXmitBlock;              // last block we xmited
     unsigned char*   downloadBlocks[MAX_DOWNLOAD_WINDOW];   // the buffers for the download blocks
     int downloadBlockSize[MAX_DOWNLOAD_WINDOW];
-    bool downloadEOF;               // We have sent the EOF block
+    bool downloadEOF;                   // We have sent the EOF block
     int downloadSendTime;               // time we last got an ack from the client
+    
+    // www downloading
+    bool bDlOK;                         // passed from cl_wwwDownload CVAR_USERINFO, wether this client supports www dl
+    char downloadURL[MAX_OSPATH];       // the URL we redirected the client to
+    bool bWWWDl;                        // we have a www download going
+    bool bWWWing;                       // the client is doing an ftp/http download
+    bool bFallback;                     // last www download attempt failed, fallback to regular download
+    // note: this is one-shot, multiple downloads would cause a www download to be attempted again
     
     int deltaMessage;                   // frame last client usercmd message
     int nextReliableTime;               // svs.time when another reliable command will be allowed
     int lastPacketTime;                 // svs.time when packet was last received
     int lastConnectTime;                // svs.time when connection started
     int nextSnapshotTime;               // send another snapshot when svs.time >= nextSnapshotTime
-    bool rateDelayed;               // true if nextSnapshotTime was set based on rate instead of snapshotMsec
+    bool rateDelayed;                   // true if nextSnapshotTime was set based on rate instead of snapshotMsec
     int timeoutCount;                   // must timeout a few frames in a row so debugging doesn't break
     clientSnapshot_t frames[PACKET_BACKUP];     // updates can be delta'd from here
     int ping;
     int rate;                           // bytes / second
     int snapshotMsec;                   // requests a snapshot every snapshotMsec unless rate choked
     int pureAuthentic;
+    bool gotCP;                         //  additional flag to distinguish between a bad pure checksum, and no cp command at all
     netchan_t netchan;
+    // queuing outgoing fragmented messages to send them properly, without udp packet bursts
+    // in case large fragmented messages are stacking up
+    // buffer them into this queue, and hand them out to netchan as needed
+    netchan_buffer_t* netchan_start_queue;
+    netchan_buffer_t** netchan_end_queue;
+    
+    int downloadnotify;
 } client_t;
 
 //=============================================================================
@@ -215,6 +235,8 @@ typedef struct
     int time;                       // time the last packet was sent to the autherize server
     int pingTime;                   // time the challenge response was sent to client
     int firstTime;                  // time the adr was first used, for authorize timeout checks
+    int firstPing;                  // Used for min and max ping checks
+    bool connected;
 } challenge_t;
 
 
@@ -256,6 +278,9 @@ extern cvar_t*  sv_zombietime;
 extern cvar_t*  sv_rconPassword;
 extern cvar_t*  sv_privatePassword;
 extern cvar_t*  sv_allowDownload;
+extern cvar_t*  sv_friendlyFire;
+extern cvar_t*  sv_maxlives;
+extern cvar_t*  sv_tourney;
 extern cvar_t*  sv_maxclients;
 extern cvar_t*  sv_privateClients;
 extern cvar_t*  sv_hostname;
@@ -274,12 +299,24 @@ extern cvar_t*  sv_gametype;
 extern cvar_t*  sv_pure;
 extern cvar_t*  sv_floodProtect;
 extern cvar_t*  sv_allowAnonymous;
+extern cvar_t*  sv_lanForceRate;
+extern cvar_t*  sv_onlyVisibleClients;
+
+extern cvar_t*  sv_showAverageBPS;          // net debugging
 
 // Rafael gameskill
 extern cvar_t*  sv_gameskill;
 // done
 
 extern cvar_t*  sv_reloading;   //----(SA)	added
+extern cvar_t* sv_dl_maxRate;   // autodl
+extern cvar_t* sv_wwwDownload; // general flag to enable/disable www download redirects
+extern cvar_t* sv_wwwBaseURL; // the base URL of all the files
+// tell clients to perform their downloads while disconnected from the server
+// this gets you a better throughput, but you loose the ability to control the download usage
+extern cvar_t* sv_wwwDlDisconnected;
+extern cvar_t* sv_wwwFallbackURL;
+extern cvar_t* sv_cheats;
 
 //===========================================================
 
@@ -289,16 +326,13 @@ extern cvar_t*  sv_reloading;   //----(SA)	added
 void SV_FinalMessage( char* message );
 void SV_SendServerCommand( client_t* cl, const char* fmt, ... );
 
-
 void SV_AddOperatorCommands( void );
 void SV_RemoveOperatorCommands( void );
 
-
-void SV_MasterHeartbeat( void );
+void SV_MasterHeartbeat( const char* hbname );
 void SV_MasterShutdown( void );
 
-
-
+void SV_MasterGameCompleteStatus();
 
 //
 // sv_init.c
@@ -311,14 +345,6 @@ void SV_GetUserinfo( int index, char* buffer, int bufferSize );
 
 void SV_ChangeMaxClients( void );
 void SV_SpawnServer( char* server, bool killBots );
-
-//RF, reliable commands
-char* SV_GetReliableCommand( client_t* cl, int index );
-void SV_FreeAcknowledgedReliableCommands( client_t* cl );
-bool SV_AddReliableCommand( client_t* cl, int index, const char* cmd );
-void SV_InitReliableCommandsForClient( client_t* cl, int commands );
-void SV_FreeReliableCommandsForClient( client_t* cl );
-
 
 //
 // sv_client.c
@@ -442,8 +468,14 @@ void SV_ClipToEntity( trace_t* trace, const vec3_t start, const vec3_t mins, con
 //
 // sv_net_chan.c
 //
-void SV_Netchan_Transmit( client_t* client, msg_t* msg );    //int length, const byte *data );
-void SV_Netchan_TransmitNextFragment( netchan_t* chan );
+void SV_Netchan_Transmit( client_t* client, msg_t* msg );
+void SV_Netchan_TransmitNextFragment( client_t* client );
 bool SV_Netchan_Process( client_t* client, msg_t* msg );
+
+//cl->downloadnotify
+#define DLNOTIFY_REDIRECT   0x00000001  // "Redirecting client ..."
+#define DLNOTIFY_BEGIN      0x00000002  // "clientDownload: 4 : beginning ..."
+#define DLNOTIFY_ALL        ( DLNOTIFY_REDIRECT | DLNOTIFY_BEGIN )
+
 
 #endif // !__SERVER_H__

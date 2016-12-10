@@ -104,6 +104,8 @@ typedef struct {
 #define	WRAP_POINT_EPSILON	0.1
 */
 
+#define ADDBEVELS
+
 int c_totalPatchBlocks;
 int c_totalPatchSurfaces;
 int c_totalPatchEdges;
@@ -940,6 +942,10 @@ void CM_AddFacetBevels( facet_t* facet )
     winding_t* w, *w2;
     vec3_t mins, maxs, vec, vec2;
     
+#ifndef ADDBEVELS
+    return;
+#endif
+    
     Vector4Copy( planes[ facet->surfacePlane ].plane, plane );
     
     w = BaseWindingForPlane( plane,  plane[3] );
@@ -1107,7 +1113,7 @@ void CM_AddFacetBevels( facet_t* facet )
                     ChopWindingInPlace( &w2, newplane, newplane[3], 0.1f );
                     if( !w2 )
                     {
-                        Com_DPrintf( "WARNING: CM_AddFacetBevels... invalid bevel\n" );
+                        //Com_DPrintf( "WARNING: CM_AddFacetBevels... invalid bevel\n" );
                         continue;
                     }
                     else
@@ -1455,9 +1461,9 @@ void CM_TracePointThroughPatchCollide( traceWork_t* tw, const struct patchCollid
 #endif //BSPC
     
 #ifndef BSPC
-    if( !cm_playerCurveClip->integer || !tw->isPoint )
+    if( !cm_playerCurveClip->integer && !tw->isPoint )
     {
-        return;
+        return;     // FIXME: until I get player sized clipping working right
     }
 #endif
     
@@ -1639,6 +1645,11 @@ void CM_TraceThroughPatchCollide( traceWork_t* tw, const struct patchCollide_s* 
         return;
     }
     
+#ifndef ADDBEVELS
+    CM_TracePointThroughPatchCollide( tw, pc );
+    return;
+#endif
+    //
     facet = pc->facets;
     for( i = 0 ; i < pc->numFacets ; i++, facet++ )
     {
@@ -1776,113 +1787,94 @@ void CM_TraceThroughPatchCollide( traceWork_t* tw, const struct patchCollide_s* 
 /*
 =======================================================================
 
-POSITION TEST
+POSITION DETECTION
 
 =======================================================================
 */
 
+#define BOX_FRONT   0
+#define BOX_BACK    1
+#define BOX_CROSS   2
+
 /*
 ====================
 CM_PositionTestInPatchCollide
+
+Modifies tr->tr if any of the facets effect the trace
 ====================
 */
 bool CM_PositionTestInPatchCollide( traceWork_t* tw, const struct patchCollide_s* pc )
 {
-    int i, j;
-    float offset, t;
-    patchPlane_t* _planes;
-    facet_t* facet;
-    float plane[4];
-    vec3_t startp;
+    int cross[MAX_PATCH_PLANES];
+    const patchPlane_t*  planes;
+    const facet_t*   facet;
+    int i, j, k;
+    float offset;
+    float d;
     
-    if( tw->isPoint )
+    //return false;
+    
+#ifndef CULL_BBOX
+    for( i = 0; i < 3; i++ )
     {
-        return false;
-    }
-    //
-    facet = pc->facets;
-    for( i = 0 ; i < pc->numFacets ; i++, facet++ )
-    {
-        _planes = &pc->planes[ facet->surfacePlane ];
-        VectorCopy( _planes->plane, plane );
-        plane[3] = _planes->plane[3];
-        if( tw->sphere.use )
+        if( tw->bounds[0][i] > pc->bounds[1][i]
+                || tw->bounds[1][i] < pc->bounds[0][i] )
         {
-            // adjust the plane distance apropriately for radius
-            plane[3] += tw->sphere.radius;
-            
-            // find the closest point on the capsule to the plane
-            t = DotProduct( plane, tw->sphere.offset );
-            if( t > 0 )
-            {
-                VectorSubtract( tw->start, tw->sphere.offset, startp );
-            }
-            else
-            {
-                VectorAdd( tw->start, tw->sphere.offset, startp );
-            }
+            return false;
+        }
+    }
+#endif
+    
+    // determine if the box is in front, behind, or crossing each plane
+    planes = pc->planes;
+    for( i = 0; i < pc->numPlanes; i++, planes++ )
+    {
+        d = DotProduct( tw->start, planes->plane ) - planes->plane[3];
+        offset = fabs( DotProduct( tw->offsets[planes->signbits], planes->plane ) );
+        if( d < -offset )
+        {
+            cross[i] = BOX_FRONT;
+        }
+        else if( d > offset )
+        {
+            cross[i] = BOX_BACK;
         }
         else
         {
-            offset = DotProduct( tw->offsets[_planes->signbits ], plane );
-            plane[3] -= offset;
-            VectorCopy( tw->start, startp );
+            cross[i] = BOX_CROSS;
         }
-        
-        if( DotProduct( plane, startp ) - plane[3] > 0.0f )
+    }
+    
+    
+    // see if any of the surface planes are intersected
+    facet = pc->facets;
+    for( i = 0; i < pc->numFacets; i++, facet++ )
+    {
+        // the facet plane must be in a cross state
+        if( cross[facet->surfacePlane] != BOX_CROSS )
         {
             continue;
         }
-        
+        // all of the boundaries must be either cross or back
         for( j = 0; j < facet->numBorders; j++ )
         {
-            _planes = &pc->planes[ facet->borderPlanes[j] ];
-            if( facet->borderInward[j] )
+            k = facet->borderPlanes[j];
+            if( cross[k] == BOX_CROSS )
             {
-                VectorNegate( _planes->plane, plane );
-                plane[3] = -_planes->plane[3];
+                continue;
             }
-            else
-            {
-                VectorCopy( _planes->plane, plane );
-                plane[3] = _planes->plane[3];
-            }
-            if( tw->sphere.use )
-            {
-                // adjust the plane distance apropriately for radius
-                plane[3] += tw->sphere.radius;
-                
-                // find the closest point on the capsule to the plane
-                t = DotProduct( plane, tw->sphere.offset );
-                if( t > 0.0f )
-                {
-                    VectorSubtract( tw->start, tw->sphere.offset, startp );
-                }
-                else
-                {
-                    VectorAdd( tw->start, tw->sphere.offset, startp );
-                }
-            }
-            else
-            {
-                // NOTE: this works even though the plane might be flipped because the bbox is centered
-                offset = DotProduct( tw->offsets[_planes->signbits ], plane );
-                plane[3] += fabs( offset );
-                VectorCopy( tw->start, startp );
-            }
-            
-            if( DotProduct( plane, startp ) - plane[3] > 0.0f )
+            if( cross[k] ^ facet->borderInward[j] )
             {
                 break;
             }
         }
-        if( j < facet->numBorders )
+        // if we passed all borders, we are definately in this facet
+        if( j == facet->numBorders )
         {
-            continue;
+            return true;
         }
-        // inside this patch facet
-        return true;
     }
+    
     return false;
 }
 

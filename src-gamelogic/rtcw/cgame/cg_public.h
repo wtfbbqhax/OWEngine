@@ -120,6 +120,8 @@ struct cgameImports_t
     
     void( *GetGlconfig )( glconfig_t* glconfig );
     
+    void( *SetClientLerpOrigin )( float x, float y, float z );
+    
     void( *GetGameState )( gameState_t* gamestate );
     
     void( *GetCurrentSnapshotNumber )( int* snapshotNumber, int* serverTime );
@@ -132,7 +134,7 @@ struct cgameImports_t
     
     bool( *GetUserCmd )( int cmdNumber, usercmd_t* ucmd );
     
-    void( *SetUserCmdValue )( int stateValue, int holdableValue, float sensitivityScale, int cld );
+    void( *SetUserCmdValue )( int stateValue, int holdableValue, float sensitivityScale, int mpSetup, int mpIdentClient );
     int( *MemoryRemaining )( void );
     
     bool( *loadCamera )( int camNum, const char* name );

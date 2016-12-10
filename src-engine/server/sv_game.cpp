@@ -644,12 +644,16 @@ extern bool CL_GetTag( int clientNum, char* tagname, orientation_t* or );
 
 bool SV_GetTag( int clientNum, char* tagname, orientation_t* or )
 {
+#ifndef DEDICATED
     if( com_dedicated->integer )
     {
         return false;
     }
     
     return CL_GetTag( clientNum, tagname, or );
+#else
+    return false;
+#endif
 }
 
 /*

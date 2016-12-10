@@ -2754,6 +2754,10 @@ static void CG_ScanForCrosshairEntity( void )
     // update the fade timer
     cg.crosshairClientNum = trace.entityNum;
     cg.crosshairClientTime = cg.time;
+    if( cg.crosshairClientNum != cg.identifyClientNum && cg.crosshairClientNum != ENTITYNUM_WORLD )
+    {
+        cg.identifyClientRequest = cg.crosshairClientNum;
+    }
 }
 
 

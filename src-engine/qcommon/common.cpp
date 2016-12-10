@@ -1358,6 +1358,7 @@ void Hunk_Clear( void )
     
     Cvar_Set( "com_hunkused", va( "%i", hunk_low.permanent + hunk_high.permanent ) );
     Com_Printf( "Hunk_Clear: reset the hunk ok\n" );
+    
 #ifdef HUNK_DEBUG
     hunkblocks = NULL;
 #endif
@@ -2287,13 +2288,22 @@ void Com_Init( char* commandLine )
     
     Cbuf_AddText( "exec autoexec.cfg\n" );
     
+    // skip the q3config.cfg if "safe" is on the command line
+    if( !Com_SafeMode() )
+    {
+        Cbuf_AddText( "exec wolfconfig.cfg\n" );
+    }
+    
+    Cbuf_AddText( "exec autoexec.cfg\n" );
+    
     Cbuf_Execute();
     // override anything from the config files with command line args
     Com_StartupVariable( NULL );
     
     // get dedicated here for proper hunk megs initialization
+    // default to internet dedicated, not LAN dedicated
 #ifdef DEDICATED
-    com_dedicated = Cvar_Get( "dedicated", "1", CVAR_ROM );
+    com_dedicated = Cvar_Get( "dedicated", "2", CVAR_ROM );
 #else
     com_dedicated = Cvar_Get( "dedicated", "0", CVAR_LATCH );
 #endif
@@ -2540,7 +2550,7 @@ int Com_ModifyMsec( int msec )
         // dedicated servers don't want to clamp for a much longer
         // period, because it would mess up all the client's views
         // of time.
-        if( msec > 500 )
+        if( msec > 500 && msec < 500000 )
         {
             Com_Printf( "Hitch warning: %i msec frame time\n", msec );
         }
@@ -2607,6 +2617,7 @@ void Com_Frame( void )
     // old net chan encryption key
     key = 0x87243987;
     
+    // DHM - Nerve :: Don't write config on Update Server
     // write config file if anything changed
     Com_WriteConfiguration();
     

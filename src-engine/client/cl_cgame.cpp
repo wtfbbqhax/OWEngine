@@ -54,6 +54,9 @@ bool getCameraInfo( int camNum, int time, float* origin, float* angles, float* f
 extern void SV_SendMoveSpeedsToGame( int entnum, char* text );
 extern bool SV_GetModelInfo( int clientNum, char* modelName, animModelInfo_t** modelInfo );
 
+void Key_GetBindingBuf( int keynum, char* buf, int buflen );
+void Key_KeynumToStringBuf( int keynum, char* buf, int buflen );
+
 idCGame* cgame;
 
 idCGame* ( *cgdllEntry )( cgameImports_t* cgimports );
@@ -237,12 +240,25 @@ bool    CL_GetSnapshot( int snapshotNumber, snapshot_t* snapshot )
 CL_SetUserCmdValue
 ==============
 */
-void CL_SetUserCmdValue( int userCmdValue, int holdableValue, float sensitivityScale, int cld )
+void CL_SetUserCmdValue( int userCmdValue, int holdableValue, float sensitivityScale, int mpSetup, int mpIdentClient )
 {
     cl.cgameUserCmdValue        = userCmdValue;
     cl.cgameUserHoldableValue   = holdableValue;
     cl.cgameSensitivity         = sensitivityScale;
-    cl.cgameCld                 = cld;
+    cl.cgameMpSetup             = mpSetup;
+    cl.cgameMpIdentClient       = mpIdentClient;
+}
+
+/*
+==================
+CL_SetClientLerpOrigin
+==================
+*/
+void CL_SetClientLerpOrigin( float x, float y, float z )
+{
+    cl.cgameClientLerpOrigin[0] = x;
+    cl.cgameClientLerpOrigin[1] = y;
+    cl.cgameClientLerpOrigin[2] = z;
 }
 
 /*
@@ -351,6 +367,7 @@ bool CL_GetServerCommand( int serverCommandNumber )
     char*    s;
     char*    cmd;
     static char bigConfigString[BIG_INFO_STRING];
+    int argc;
     
     // if we have irretrievably lost a reliable command, drop the connection
     if( serverCommandNumber <= clc.serverCommandSequence - MAX_RELIABLE_COMMANDS )
@@ -374,15 +391,27 @@ bool CL_GetServerCommand( int serverCommandNumber )
     s = clc.serverCommands[ serverCommandNumber & ( MAX_RELIABLE_COMMANDS - 1 ) ];
     clc.lastExecutedServerCommand = serverCommandNumber;
     
-    Com_DPrintf( "serverCommand: %i : %s\n", serverCommandNumber, s );
+    if( cl_showServerCommands->integer )
+    {
+        Com_DPrintf( "serverCommand: %i : %s\n", serverCommandNumber, s );
+    }
     
 rescan:
     Cmd_TokenizeString( s );
     cmd = Cmd_Argv( 0 );
+    argc = Cmd_Argc();
     
     if( !strcmp( cmd, "disconnect" ) )
     {
-        Com_Error( ERR_SERVERDISCONNECT, "Server disconnected\n" );
+        // NERVE - SMF - allow server to indicate why they were disconnected
+        if( argc >= 2 )
+        {
+            Com_Error( ERR_SERVERDISCONNECT, va( "Server Disconnected - %s", Cmd_Argv( 1 ) ) );
+        }
+        else
+        {
+            Com_Error( ERR_SERVERDISCONNECT, "Server disconnected\n" );
+        }
     }
     
     if( !strcmp( cmd, "bcs0" ) )
@@ -468,6 +497,56 @@ rescan:
     
     // cgame can now act on the command
     return true;
+}
+
+/*
+====================
+CL_SetExpectedHunkUsage
+
+Sets com_expectedhunkusage, so the client knows how to draw the percentage bar
+====================
+*/
+void CL_SetExpectedHunkUsage( const char* mapname )
+{
+    int handle;
+    char* memlistfile = "hunkusage.dat";
+    char* buf;
+    char* buftrav;
+    char* token;
+    int len;
+    
+    len = FS_FOpenFileByMode( memlistfile, &handle, FS_READ );
+    if( len >= 0 )  // the file exists, so read it in, strip out the current entry for this map, and save it out, so we can append the new value
+    {
+    
+        buf = ( char* )Z_Malloc( len + 1 );
+        memset( buf, 0, len + 1 );
+        
+        FS_Read( ( void* )buf, len, handle );
+        FS_FCloseFile( handle );
+        
+        // now parse the file, filtering out the current map
+        buftrav = buf;
+        while( ( token = COM_Parse( &buftrav ) ) && token[0] )
+        {
+            if( !Q_strcasecmp( token, ( char* )mapname ) )
+            {
+                // found a match
+                token = COM_Parse( &buftrav ); // read the size
+                if( token && token[0] )
+                {
+                    // this is the usage
+                    Cvar_Set( "com_expectedhunkusage", token );
+                    Z_Free( buf );
+                    return;
+                }
+            }
+        }
+        
+        Z_Free( buf );
+    }
+    // just set it to a negative number,so the cgame knows not to draw the percent bar
+    Cvar_Set( "com_expectedhunkusage", "-1" );
 }
 
 /*
@@ -710,7 +789,7 @@ void CL_CreateExportTable()
     exports.UpdateScreen = SCR_UpdateScreen;
     
     exports.GetGlconfig = CL_GetGlconfig;
-    
+    exports.SetClientLerpOrigin = CL_SetClientLerpOrigin;
     exports.GetGameState = CL_GetGameState;
     
     exports.GetCurrentSnapshotNumber = CL_GetCurrentSnapshotNumber;
@@ -746,7 +825,7 @@ void CL_CreateExportTable()
     
     exports.SendMoveSpeedsToGame = SV_SendMoveSpeedsToGame;
     
-    // this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to qfalse (do not alter gamestate)
+    // this returns a handle.  arg0 is the name in the format "idlogo.roq", set arg1 to NULL, alteredstates to false (do not alter gamestate)
     exports.CIN_PlayCinematic = CIN_PlayCinematic;
     
     // stops playing the cinematic and ends it.  should always return FMV_EOF

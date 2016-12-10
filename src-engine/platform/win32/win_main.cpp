@@ -155,7 +155,7 @@ int Sys_ShellExecute( char* op, char* file, bool doexit, char* params, char* dir
 Sys_StartProcess
 ==================
 */
-void Sys_StartProcess( char* exeName, bool doexit )             // NERVE - SMF
+void Sys_StartProcess( const char* exeName, bool doexit )             // NERVE - SMF
 {
     TCHAR szPathOrig[_MAX_PATH];
     STARTUPINFO si;
@@ -184,7 +184,7 @@ void Sys_StartProcess( char* exeName, bool doexit )             // NERVE - SMF
 Sys_OpenURL
 ==================
 */
-void Sys_OpenURL( char* url, bool doexit )                  // NERVE - SMF
+void Sys_OpenURL( const char* url, bool doexit )                  // NERVE - SMF
 {
     HWND wnd;
     
@@ -204,7 +204,7 @@ void Sys_OpenURL( char* url, bool doexit )                  // NERVE - SMF
     
     if( doexit )
     {
-        Cbuf_ExecuteText( EXEC_APPEND, "quit" );
+        Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
     }
 }
 //----(SA)	end
@@ -684,6 +684,12 @@ void Sys_UnloadDll( void* dllHandle )
     }
 }
 
+
+char* Sys_GetDLLName( const char* name )
+{
+    return va( "%sx86.dll", name );
+}
+
 /*
 =================
 Sys_LoadDll
@@ -703,12 +709,7 @@ void* Sys_LoadDll( const char* name )
     char*    fn;
     char filename[MAX_QPATH];
     
-#ifdef WOLF_SP_DEMO
-    Com_sprintf( filename, sizeof( filename ), "%sx86_demo.dll", name );
-#else
-    Com_sprintf( filename, sizeof( filename ), "%sx86.dll", name );
-#endif
-    
+    Q_strncpyz( filename, Sys_GetDLLName( name ), sizeof( filename ) );
     
     // check current folder only if we are a developer
     if( 1 )  //----(SA)	always dll
@@ -726,13 +727,30 @@ void* Sys_LoadDll( const char* name )
     gamedir = Cvar_VariableString( "fs_game" );
     
     fn = FS_BuildOSPath( basepath, gamedir, filename );
+    
+    // this is only relevant for full client
+    // if a full client runs a dedicated server, it's not affected by this
+#if !defined( DEDICATED )
+    // extract dlls from pak file for security
+    // we have to handle the game dll a little differently
+    // passing the exact path to check against
+    //   (compatibility with other OSes loading procedure)
+    if( cl_connectedToPureServer && Q_strncmp( name, "qagame", 6 ) )
+    {
+        if( !FS_CL_ExtractFromPakFile( fn, gamedir, filename, NULL ) )
+        {
+            Com_Error( ERR_DROP, "Game code(%s) failed Pure Server check", filename );
+        }
+    }
+#endif
+    
     libHandle = LoadLibrary( fn );
     
     if( !libHandle )
     {
         if( cdpath[0] )
         {
-            fn = FS_BuildOSPath( cdpath, gamedir, filename );
+            fn = FS_BuildOSPath( basepath, gamedir, filename );
             libHandle = LoadLibrary( fn );
         }
         

@@ -59,7 +59,7 @@ void SHOWNET( msg_t* msg, char* s )
 {
     if( cl_shownet->integer >= 2 )
     {
-        Com_Printf( "%3i %3i:%s\n", msg->readcount - 1, msg->cursize, s );
+        Com_Printf( "%3i:%s\n", msg->readcount - 1, s );
     }
 }
 
@@ -71,6 +71,132 @@ MESSAGE PARSING
 
 =========================================================================
 */
+
+#if 1
+
+int entLastVisible[MAX_CLIENTS];
+
+bool isEntVisible( entityState_t* ent )
+{
+    trace_t tr;
+    vec3_t start, end, temp;
+    vec3_t forward, up, right, right2;
+    float view_height;
+    
+    VectorCopy( cl.cgameClientLerpOrigin, start );
+    start[2] += ( cl.snap.ps.viewheight - 1 );
+    if( cl.snap.ps.leanf != 0 )
+    {
+        vec3_t lright, v3ViewAngles;
+        VectorCopy( cl.snap.ps.viewangles, v3ViewAngles );
+        v3ViewAngles[2] += cl.snap.ps.leanf / 2.0f;
+        AngleVectors( v3ViewAngles, NULL, lright, NULL );
+        VectorMA( start, cl.snap.ps.leanf, lright, start );
+    }
+    
+    VectorCopy( ent->pos.trBase, end );
+    
+    // Compute vector perpindicular to view to ent
+    VectorSubtract( end, start, forward );
+    VectorNormalizeFast( forward );
+    VectorSet( up, 0, 0, 1 );
+    CrossProduct( forward, up, right );
+    VectorNormalizeFast( right );
+    VectorScale( right, 10, right2 );
+    VectorScale( right, 18, right );
+    
+    // Set viewheight
+    if( ent->animMovetype )
+    {
+        view_height = 16;
+    }
+    else
+    {
+        view_height = 40;
+    }
+    
+    // First, viewpoint to viewpoint
+    end[2] += view_height;
+    collisionModelManager->BoxTrace( &tr, start, end, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    
+    // First-b, viewpoint to top of head
+    end[2] += 16;
+    collisionModelManager->BoxTrace( &tr, start, end, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    end[2] -= 16;
+    
+    // Second, viewpoint to ent's origin
+    end[2] -= view_height;
+    collisionModelManager->BoxTrace( &tr, start, end, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    
+    // Third, to ent's right knee
+    VectorAdd( end, right, temp );
+    temp[2] += 8;
+    collisionModelManager->BoxTrace( &tr, start, temp, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    
+    // Fourth, to ent's right shoulder
+    VectorAdd( end, right2, temp );
+    if( ent->animMovetype )
+    {
+        temp[2] += 28;
+    }
+    else
+    {
+        temp[2] += 52;
+    }
+    collisionModelManager->BoxTrace( &tr, start, temp, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    
+    // Fifth, to ent's left knee
+    VectorScale( right, -1, right );
+    VectorScale( right2, -1, right2 );
+    VectorAdd( end, right2, temp );
+    temp[2] += 2;
+    collisionModelManager->BoxTrace( &tr, start, temp, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    
+    // Sixth, to ent's left shoulder
+    VectorAdd( end, right, temp );
+    if( ent->animMovetype )
+    {
+        temp[2] += 16;
+    }
+    else
+    {
+        temp[2] += 36;
+    }
+    collisionModelManager->BoxTrace( &tr, start, temp, NULL, NULL, 0, CONTENTS_SOLID, false );
+    if( tr.fraction == 1.f )
+    {
+        return true;
+    }
+    
+    return false;
+}
+
+#endif
+
 
 /*
 ==================
@@ -102,6 +228,29 @@ void CL_DeltaEntity( msg_t* msg, clSnapshot_t* frame, int newnum, entityState_t*
     {
         return;     // entity was delta removed
     }
+#if 1
+    // Only draw clients if visible
+    if( clc.onlyVisibleClients )
+    {
+        if( state->number < MAX_CLIENTS )
+        {
+            if( isEntVisible( state ) )
+            {
+                entLastVisible[state->number] = frame->serverTime;
+                state->eFlags &= ~EF_NODRAW;
+            }
+            else
+            {
+                if( entLastVisible[state->number] < ( frame->serverTime - 600 ) )
+                {
+                    state->eFlags |= EF_NODRAW;
+                }
+            }
+        }
+    }
+#endif
+    
+    
     cl.parseEntitiesNum++;
     frame->numEntities++;
 }
@@ -239,6 +388,11 @@ void CL_ParsePacketEntities( msg_t* msg, clSnapshot_t* oldframe, clSnapshot_t* n
             oldnum = oldstate->number;
         }
     }
+    
+    if( cl_shownuments->integer )
+    {
+        Com_Printf( "Entities in packet: %i\n", newframe->numEntities );
+    }
 }
 
 
@@ -309,11 +463,11 @@ void CL_ParseSnapshot( msg_t* msg )
         {
             // The frame that the server did the delta from
             // is too old, so we can't reconstruct it properly.
-            Com_Printf( "Delta frame too old.\n" );
+            Com_DPrintf( "Delta frame too old.\n" );
         }
         else if( cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES - 128 )
         {
-            Com_Printf( "Delta parseEntitiesNum too old.\n" );
+            Com_DPrintf( "Delta parseEntitiesNum too old.\n" );
         }
         else
         {
@@ -323,6 +477,13 @@ void CL_ParseSnapshot( msg_t* msg )
     
     // read areamask
     len = MSG_ReadByte( msg );
+    
+    if( len > sizeof( newSnap.areamask ) )
+    {
+        Com_Error( ERR_DROP, "CL_ParseSnapshot: Invalid size %d for areamask.", len );
+        return;
+    }
+    
     MSG_ReadData( msg, &newSnap.areamask, len );
     
     // read playerinfo
@@ -401,6 +562,7 @@ new information out of it.  This will happen at every
 gamestate, and possibly during gameplay.
 ==================
 */
+void CL_PurgeCache( void );
 void CL_SystemInfoChanged( void )
 {
     char*            systemInfo;
@@ -409,8 +571,11 @@ void CL_SystemInfoChanged( void )
     char value[BIG_INFO_VALUE];
     
     systemInfo = cl.gameState.stringData + cl.gameState.stringOffsets[ CS_SYSTEMINFO ];
+    // when the serverId changes, any further messages we send to the server will use this new serverId
+    // in some cases, outdated cp commands might get sent with this news serverId
     cl.serverId = atoi( Info_ValueForKey( systemInfo, "sv_serverid" ) );
     
+    memset( &entLastVisible, 0, sizeof( entLastVisible ) );
     // don't set any vars when playing a demo
     if( clc.demoplaying )
     {
@@ -418,6 +583,7 @@ void CL_SystemInfoChanged( void )
     }
     
     s = Info_ValueForKey( systemInfo, "sv_cheats" );
+    sv_cheats = ( cvar_t* )atoi( s );
     if( atoi( s ) == 0 )
     {
         Cvar_SetCheatState();
@@ -445,7 +611,24 @@ void CL_SystemInfoChanged( void )
         
         Cvar_Set( key, value );
     }
-    cl_connectedToPureServer = Cvar_VariableValue( "sv_pure" );
+    // big hack to clear the image cache on a pure change
+    //cl_connectedToPureServer = Cvar_VariableValue( "sv_pure" );
+    if( Cvar_VariableValue( "sv_pure" ) )
+    {
+        if( !cl_connectedToPureServer && cls.state <= CA_CONNECTED )
+        {
+            CL_PurgeCache();
+        }
+        cl_connectedToPureServer = true;
+    }
+    else
+    {
+        if( cl_connectedToPureServer && cls.state <= CA_CONNECTED )
+        {
+            CL_PurgeCache();
+        }
+        cl_connectedToPureServer = false;
+    }
 }
 
 /*
@@ -562,8 +745,78 @@ void CL_ParseDownload( msg_t* msg )
     unsigned char data[MAX_MSGLEN];
     int block;
     
+    if( !*cls.downloadTempName )
+    {
+        Com_Printf( "Server sending download, but no download was requested\n" );
+        CL_AddReliableCommand( "stopdl" );
+        return;
+    }
+    
     // read the data
     block = MSG_ReadShort( msg );
+    
+    // if we haven't acked the download redirect yet
+    if( block == -1 )
+    {
+        if( !clc.bWWWDl )
+        {
+            // server is sending us a www download
+            Q_strncpyz( cls.originalDownloadName, cls.downloadName, sizeof( cls.originalDownloadName ) );
+            Q_strncpyz( cls.downloadName, MSG_ReadString( msg ), sizeof( cls.downloadName ) );
+            clc.downloadSize = MSG_ReadLong( msg );
+            clc.downloadFlags = MSG_ReadLong( msg );
+            if( clc.downloadFlags & ( 1 << DL_FLAG_URL ) )
+            {
+                Sys_OpenURL( cls.downloadName, true );
+                Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
+                CL_AddReliableCommand( "wwwdl bbl8r" ); // not sure if that's the right msg
+                clc.bWWWDlAborting = true;
+                return;
+            }
+            Cvar_SetValue( "cl_downloadSize", clc.downloadSize );
+            Com_DPrintf( "Server redirected download: %s\n", cls.downloadName );
+            clc.bWWWDl = true; // activate wwwdl client loop
+            CL_AddReliableCommand( "wwwdl ack" );
+            // make sure the server is not trying to redirect us again on a bad checksum
+            if( strstr( clc.badChecksumList, va( "@%s", cls.originalDownloadName ) ) )
+            {
+                Com_Printf( "refusing redirect to %s by server (bad checksum)\n", cls.downloadName );
+                CL_AddReliableCommand( "wwwdl fail" );
+                clc.bWWWDlAborting = true;
+                return;
+            }
+            // make downloadTempName an OS path
+            Q_strncpyz( cls.downloadTempName, FS_BuildOSPath( Cvar_VariableString( "fs_homepath" ), cls.downloadTempName, "" ), sizeof( cls.downloadTempName ) );
+            cls.downloadTempName[strlen( cls.downloadTempName ) - 1] = '\0';
+            if( !DL_BeginDownload( cls.downloadTempName, cls.downloadName, com_developer->integer ) )
+            {
+                // setting bWWWDl to false after sending the wwwdl fail doesn't work
+                // not sure why, but I suspect we have to eat all remaining block -1 that the server has sent us
+                // still leave a flag so that CL_WWWDownload is inactive
+                // we count on server sending us a gamestate to start up clean again
+                CL_AddReliableCommand( "wwwdl fail" );
+                clc.bWWWDlAborting = true;
+                Com_Printf( "Failed to initialize download for '%s'\n", cls.downloadName );
+            }
+            // Check for a disconnected download
+            // we'll let the server disconnect us when it gets the bbl8r message
+            if( clc.downloadFlags & ( 1 << DL_FLAG_DISCON ) )
+            {
+                CL_AddReliableCommand( "wwwdl bbl8r" );
+                cls.bWWWDlDisconnected = true;
+            }
+            return;
+        }
+        else
+        {
+            // server keeps sending that message till we ack it, eat and ignore
+            //MSG_ReadLong( msg );
+            MSG_ReadString( msg );
+            MSG_ReadLong( msg );
+            MSG_ReadLong( msg );
+            return;
+        }
+    }
     
     if( !block )
     {
@@ -580,10 +833,13 @@ void CL_ParseDownload( msg_t* msg )
     }
     
     size = MSG_ReadShort( msg );
-    if( size > 0 )
+    if( size < 0 || size > sizeof( data ) )
     {
-        MSG_ReadData( msg, data, size );
+        Com_Error( ERR_DROP, "CL_ParseDownload: Invalid size %d for download chunk.", size );
+        return;
     }
+    
+    MSG_ReadData( msg, data, size );
     
     if( clc.downloadBlock != block )
     {
@@ -594,18 +850,11 @@ void CL_ParseDownload( msg_t* msg )
     // open the file if not opened yet
     if( !clc.download )
     {
-        if( !*clc.downloadTempName )
-        {
-            Com_Printf( "Server sending download, but no download was requested\n" );
-            CL_AddReliableCommand( "stopdl" );
-            return;
-        }
-        
-        clc.download = FS_SV_FOpenFileWrite( clc.downloadTempName );
+        clc.download = FS_SV_FOpenFileWrite( cls.downloadTempName );
         
         if( !clc.download )
         {
-            Com_Printf( "Could not create %s\n", clc.downloadTempName );
+            Com_Printf( "Could not create %s\n", cls.downloadTempName );
             CL_AddReliableCommand( "stopdl" );
             CL_NextDownload();
             return;
@@ -633,9 +882,9 @@ void CL_ParseDownload( msg_t* msg )
             clc.download = 0;
             
             // rename the file
-            FS_SV_Rename( clc.downloadTempName, clc.downloadName );
+            FS_SV_Rename( cls.downloadTempName, cls.downloadName );
         }
-        *clc.downloadTempName = *clc.downloadName = 0;
+        *cls.downloadTempName = *cls.downloadName = 0;
         Cvar_Set( "cl_downloadName", "" );
         
         // send intentions now
@@ -746,7 +995,7 @@ void CL_ParseServerMessage( msg_t* msg )
         switch( cmd )
         {
             default:
-                Com_Error( ERR_DROP, "CL_ParseServerMessage: Illegible server message\n" );
+                Com_Error( ERR_DROP, "CL_ParseServerMessage: Illegible server message %d\n", cmd );
                 break;
             case svc_nop:
                 break;

@@ -114,6 +114,24 @@ void COM_StripExtension( const char* in, char* out )
 
 /*
 ============
+COM_StripExtension2
+a safer version
+============
+*/
+void COM_StripExtension2( const char* in, char* out, int destsize )
+{
+    int len = 0;
+    while( len < destsize - 1 && *in && *in != '.' )
+    {
+        *out++ = *in++;
+        len++;
+    }
+    *out = 0;
+}
+
+
+/*
+============
 COM_StripFilename
 ============
 */
@@ -428,6 +446,18 @@ void COM_BeginParseSession( const char* name )
 
 /*
 ================
+COM_BackupParseSession
+================
+*/
+void COM_BackupParseSession( char** data_p )
+{
+    backup_lines = com_lines;
+    backup_text = *data_p;
+}
+
+
+/*
+================
 COM_RestoreParseSession
 ================
 */
@@ -513,20 +543,20 @@ string will be returned if the next token is
 a newline.
 ==============
 */
-char* SkipWhitespace( char* data, bool* hasNewLines )
+static char* SkipWhitespace( char* data, bool* hasNewLines )
 {
     int c;
     
     while( ( c = *data ) <= ' ' )
     {
+        if( !c )
+        {
+            return NULL;
+        }
         if( c == '\n' )
         {
             com_lines++;
             *hasNewLines = true;
-        }
-        else if( !c )
-        {
-            return NULL;
         }
         data++;
     }
@@ -626,8 +656,7 @@ char* COM_ParseExt( char** data_p, bool allowLineBreaks )
     }
     
     // RF, backup the session data so we can unget easily
-    backup_lines = com_lines;
-    backup_text = *data_p;
+    COM_BackupParseSession( data_p );
     
     while( 1 )
     {
@@ -710,14 +739,14 @@ char* COM_ParseExt( char** data_p, bool allowLineBreaks )
             com_lines++;
         }
     }
-    while( c > ' ' );
+    while( c > 32 );
     
     if( len == MAX_TOKEN_CHARS )
     {
 //		Com_Printf ("Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
         len = 0;
     }
-    com_token[len] = '\0';
+    com_token[len] = 0;
     
     *data_p = ( char* ) data;
     return com_token;
@@ -741,19 +770,14 @@ void COM_MatchToken( char** buf_p, char* match )
 
 /*
 =================
-SkipBracedSection
+SkipBracedSection_Depth
 
-The next token should be an open brace.
-Skips until a matching close brace is found.
-Internal brace depths are properly skipped.
 =================
 */
-void SkipBracedSection( char** program )
+void SkipBracedSection_Depth( char** program, int depth )
 {
     char*            token;
-    int depth;
     
-    depth = 0;
     do
     {
         token = COM_ParseExt( program, true );
@@ -770,6 +794,20 @@ void SkipBracedSection( char** program )
         }
     }
     while( depth && *program );
+}
+
+/*
+=================
+SkipBracedSection
+
+The next token should be an open brace.
+Skips until a matching close brace is found.
+Internal brace depths are properly skipped.
+=================
+*/
+void SkipBracedSection( char** program )
+{
+    SkipBracedSection_Depth( program, 0 );
 }
 
 /*

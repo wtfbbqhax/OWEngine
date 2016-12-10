@@ -370,10 +370,10 @@ void RB_SurfaceTriangles( srfTriangles_t* srf )
     bool	needsBinormal;
     bool    needsNormal;
     
+    RB_CHECKOVERFLOW( srf->numVerts, srf->numIndexes );
+    
     dlightBits = srf->dlightBits[backEnd.smpFrame];
     tess.dlightBits |= dlightBits;
-    
-    RB_CHECKOVERFLOW( srf->numVerts, srf->numIndexes );
     
     for( i = 0 ; i < srf->numIndexes ; i += 3 )
     {
@@ -394,40 +394,44 @@ void RB_SurfaceTriangles( srfTriangles_t* srf )
     needsBinormal = tess.shader->needsBinormal;
     needsNormal = tess.shader->needsNormal;
     
-    for( i = 0; i < srf->numVerts; i++, dv++, xyz += 4, tangent += 4, binormal += 4, normal += 4, texCoords += 4, color += 4 )
+    if( needsNormal )
     {
-        xyz[0] = dv->xyz[0];
-        xyz[1] = dv->xyz[1];
-        xyz[2] = dv->xyz[2];
-        
-        if( needsTangent )
+        for( i = 0; i < srf->numVerts; i++, dv++, xyz += 4, normal += 4, texCoords += 4, color += 4 )
         {
-            tangent[0] = dv->tangent[0];
-            tangent[1] = dv->tangent[1];
-            tangent[2] = dv->tangent[2];
-        }
-        
-        if( needsBinormal )
-        {
-            binormal[0] = dv->binormal[0];
-            binormal[1] = dv->binormal[1];
-            binormal[2] = dv->binormal[2];
-        }
-        
-        if( needsNormal )
-        {
+            xyz[0] = dv->xyz[0];
+            xyz[1] = dv->xyz[1];
+            xyz[2] = dv->xyz[2];
+            
             normal[0] = dv->normal[0];
             normal[1] = dv->normal[1];
             normal[2] = dv->normal[2];
+            
+            
+            texCoords[0] = dv->st[0];
+            texCoords[1] = dv->st[1];
+            
+            texCoords[2] = dv->lightmap[0];
+            texCoords[3] = dv->lightmap[1];
+            
+            *( int* )color = *( int* )dv->color;
         }
-        
-        texCoords[0] = dv->st[0];
-        texCoords[1] = dv->st[1];
-        
-        texCoords[2] = dv->lightmap[0];
-        texCoords[3] = dv->lightmap[1];
-        
-        *( int* )color = *( int* )dv->color;
+    }
+    else
+    {
+        for( i = 0; i < srf->numVerts; i++, dv++, xyz += 4, normal += 4, texCoords += 4, color += 4 )
+        {
+            xyz[0] = dv->xyz[0];
+            xyz[1] = dv->xyz[1];
+            xyz[2] = dv->xyz[2];
+            
+            texCoords[0] = dv->st[0];
+            texCoords[1] = dv->st[1];
+            
+            texCoords[2] = dv->lightmap[0];
+            texCoords[3] = dv->lightmap[1];
+            
+            *( int* )color = *( int* )dv->color;
+        }
     }
     
     for( i = 0 ; i < srf->numVerts ; i++ )

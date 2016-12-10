@@ -464,15 +464,16 @@ void IN_LeanRightUp( void )
     IN_KeyUp( &kb[KB_WBUTTONS5] );
 }
 
-// unused
-void IN_Wbutton6Down( void )
+void IN_MP_DropWeaponDown( void )
 {
     IN_KeyDown( &kb[KB_WBUTTONS6] );
 }
-void IN_Wbutton6Up( void )
+void IN_MP_DropWeaponUp( void )
 {
     IN_KeyUp( &kb[KB_WBUTTONS6] );
 }
+
+// unused
 void IN_Wbutton7Down( void )
 {
     IN_KeyDown( &kb[KB_WBUTTONS7] );
@@ -481,9 +482,6 @@ void IN_Wbutton7Up( void )
 {
     IN_KeyUp( &kb[KB_WBUTTONS7] );
 }
-
-
-
 
 void IN_ButtonDown( void )
 {
@@ -1032,6 +1030,8 @@ void CL_FinishMove( usercmd_t* cmd )
     cmd->weapon = cl.cgameUserCmdValue;
     
     cmd->holdable = cl.cgameUserHoldableValue;  //----(SA)	modified
+    cmd->mpSetup = cl.cgameMpSetup;
+    cmd->identClient = cl.cgameMpIdentClient;
     
     // send the current server time so the amount of movement
     // can be determined without allowing cheating
@@ -1124,8 +1124,6 @@ usercmd_t CL_CreateCmd( void )
             SCR_DebugGraph( fabs( cl.viewangles[PITCH] - oldAngles[PITCH] ), 0 );
         }
     }
-    
-    cmd.cld = cl.cgameCld;          // NERVE - SMF
     
     return cmd;
 }
@@ -1379,7 +1377,10 @@ void CL_WritePacket( void )
     // at once
     while( clc.netchan.unsentFragments )
     {
-        CL_Netchan_TransmitNextFragment( &clc.netchan );
+        if( cl_showSend->integer )
+        {
+            Com_Printf( "WARNING: unsent fragments (not supposed to happen!)\n" );
+        }
     }
 }
 
@@ -1505,8 +1506,8 @@ void CL_InitInput( void )
     Cmd_AddCommand( "-leanleft", IN_LeanLeftUp );
     Cmd_AddCommand( "+leanright",    IN_LeanRightDown );
     Cmd_AddCommand( "-leanright",    IN_LeanRightUp );
-    Cmd_AddCommand( "+wbutton6", IN_Wbutton6Down );   //
-    Cmd_AddCommand( "-wbutton6", IN_Wbutton6Up );
+    Cmd_AddCommand( "+dropweapon", IN_MP_DropWeaponDown );
+    Cmd_AddCommand( "-dropweapon", IN_MP_DropWeaponUp );
     Cmd_AddCommand( "+wbutton7", IN_Wbutton7Down );   //
     Cmd_AddCommand( "-wbutton7", IN_Wbutton7Up );
 //----(SA) end
@@ -1515,8 +1516,8 @@ void CL_InitInput( void )
     Cmd_AddCommand( "-mlook", IN_MLookUp );
     
     Cmd_AddCommand( "notebook", IN_Notebook );
-//	Cmd_AddCommand ("help",IN_Help);
-
+    Cmd_AddCommand( "help", IN_Help );
+    
     cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );
     cl_debugMove = Cvar_Get( "cl_debugMove", "0", 0 );
 }

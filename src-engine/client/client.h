@@ -133,7 +133,9 @@ typedef struct
     int cgameUserCmdValue;              // current weapon to add to usercmd_t
     int cgameUserHoldableValue;         // current holdable item to add to usercmd_t	//----(SA)	added
     float cgameSensitivity;
-    int cgameCld;                       // NERVE - SMF
+    int cgameMpSetup;                   // NERVE - SMF
+    int cgameMpIdentClient;             // NERVE - SMF
+    vec3_t cgameClientLerpOrigin;       // DHM - Nerve
     
     // cmds[cmdNumber] is the predicted command, [cmdNumber-1] is the last
     // properly generated command
@@ -163,7 +165,9 @@ typedef struct
     // NERVE - SMF
     char limboChatMsgs[LIMBOCHAT_HEIGHT][LIMBOCHAT_WIDTH * 3 + 1];
     int limboChatPos;
-    // -NERVE - SMF
+    
+    bool corruptedTranslationFile;
+    char translationVersion[MAX_STRING_TOKENS];
     
     bool cameraMode;    //----(SA)	added for control of input while watching cinematics
     
@@ -199,6 +203,8 @@ typedef struct
     int challenge;                          // from the server to use for connecting
     int checksumFeed;                       // from the server for checksum calculations
     
+    int onlyVisibleClients;
+    
     // these are our reliable messages that go to the server
     int reliableSequence;
     int reliableAcknowledge;                // the last one the server has executed
@@ -225,8 +231,14 @@ typedef struct
     int downloadBlock;          // block we are waiting for
     int downloadCount;          // how many bytes we got
     int downloadSize;           // how many bytes we got
+    int downloadFlags;         // misc download behaviour flags sent by the server
     char downloadList[MAX_INFO_STRING];        // list of paks we need to download
     bool downloadRestart;       // if true, we need to do another FS_Restart because we downloaded a pak
+    // www downloading
+    bool bWWWDl;    // we have a www download going
+    bool bWWWDlAborting;    // disable the CL_WWWDownload until server gets us a gamestate (used for aborts)
+    char redirectedList[MAX_INFO_STRING];        // list of files that we downloaded through a redirect since last FS_ComparePaks
+    char badChecksumList[MAX_INFO_STRING];        // list of files for which wwwdl redirect is broken (wrong checksum)
     
     // demo information
     char demoName[MAX_QPATH];
@@ -235,6 +247,10 @@ typedef struct
     bool demowaiting;       // don't record until a non-delta message is received
     bool firstDemoFrameSkipped;
     fileHandle_t demofile;
+    
+    bool waverecording;
+    fileHandle_t wavefile;
+    int wavetime;
     
     int timeDemoFrames;             // counter of rendered frames
     int timeDemoStart;              // cls.realtime before first frame
@@ -278,6 +294,11 @@ typedef struct
     int ping;
     bool visible;
     int allowAnonymous;
+    int friendlyFire;
+    int maxlives;
+    int tourney;
+    int antilag;
+    char gameName[MAX_NAME_LENGTH];
 } serverInfo_t;
 
 typedef struct
@@ -293,6 +314,7 @@ typedef struct
     
     bool cddialog;              // bring up the cd needed dialog next frame
     bool endgamemenu;           // bring up the end game credits menu next frame
+    bool doCachePurge;          // empty the renderer cache as soon as possible
     
     char servername[MAX_OSPATH];            // name of server from original connect (used by reconnect)
     
@@ -341,7 +363,14 @@ typedef struct
     qhandle_t whiteShader;
     qhandle_t consoleShader;
     qhandle_t consoleShader2;   //----(SA)	added
-    
+    // www downloading
+    // in the static stuff since this may have to survive server disconnects
+    // if new stuff gets added, CL_ClearStaticDownload code needs to be updated for clear up
+    bool bWWWDlDisconnected; // keep going with the download after server disconnect
+    char downloadName[MAX_OSPATH];
+    char downloadTempName[MAX_OSPATH];    // in wwwdl mode, this is OS path (it's a qpath otherwise)
+    char originalDownloadName[MAX_QPATH];    // if we get a redirect, keep a copy of the original file path
+    bool downloadRestart; // if true, we need to do another FS_Restart because we downloaded a pak
 } clientStatic_t;
 
 extern clientStatic_t cls;
@@ -361,7 +390,10 @@ extern cvar_t*  cl_timegraph;
 extern cvar_t*  cl_maxpackets;
 extern cvar_t*  cl_packetdup;
 extern cvar_t*  cl_shownet;
+extern cvar_t*  cl_shownuments;
+extern cvar_t*  cl_visibleClients;
 extern cvar_t*  cl_showSend;
+extern cvar_t*  cl_showServerCommands;
 extern cvar_t*  cl_timeNudge;
 extern cvar_t*  cl_showTimeDelta;
 extern cvar_t*  cl_freezeDemo;
@@ -370,7 +402,7 @@ extern cvar_t*  cl_yawspeed;
 extern cvar_t*  cl_pitchspeed;
 extern cvar_t*  cl_run;
 extern cvar_t*  cl_anglespeedkey;
-
+extern cvar_t*  cl_bypassMouseInput;
 extern cvar_t*  cl_recoilPitch;     // RF
 
 extern cvar_t*  cl_sensitivity;
@@ -401,6 +433,7 @@ extern cvar_t*  cl_language;
 // -NERVE - SMF
 
 extern cvar_t*  cl_razerhydra;
+extern cvar_t*  sv_cheats;
 
 //=================================================
 
@@ -438,6 +471,7 @@ int CL_ServerStatus( char* serverAddress, char* serverStatusString, int maxLen )
 
 void CL_AddToLimboChat( const char* str );                  // NERVE - SMF
 bool CL_GetLimboString( int index, char* buf );         // NERVE - SMF
+
 
 //
 // cl_input
@@ -519,6 +553,7 @@ void CL_ParseServerMessage( msg_t* msg );
 
 //====================================================================
 
+void    CL_UpdateInfoPacket( netadr_t from );
 void    CL_ServerInfoPacket( netadr_t from, msg_t* msg );
 void    CL_LocalServers_f( void );
 void    CL_GlobalServers_f( void );

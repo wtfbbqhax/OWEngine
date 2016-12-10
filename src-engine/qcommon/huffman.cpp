@@ -352,7 +352,8 @@ int Huff_Receive( node_t* node, int* ch, byte* fin )
     }
     if( !node )
     {
-        Com_Error( ERR_DROP, "Illegal tree!\n" );
+        return 0;
+        //		Com_Error(ERR_DROP, "Illegal tree!\n");
     }
     return ( *ch = node->symbol );
 }
@@ -374,7 +375,9 @@ void Huff_offsetReceive( node_t* node, int* ch, byte* fin, int* offset )
     }
     if( !node )
     {
-        Com_Error( ERR_DROP, "Illegal tree!\n" );
+        *ch = 0;
+        return;
+        //		Com_Error(ERR_DROP, "Illegal tree!\n");
     }
     *ch = node->symbol;
     *offset = bloc;
@@ -433,9 +436,8 @@ void Huff_Decompress( msg_t* mbuf, int offset )
     byte*       buffer;
     huff_t huff;
     
-    offset += mbuf->readcount;
     size = mbuf->cursize - offset;
-    buffer = mbuf->data + + offset;
+    buffer = mbuf->data + offset;
     
     if( size <= 0 )
     {
@@ -451,12 +453,25 @@ void Huff_Decompress( msg_t* mbuf, int offset )
     huff.tree->parent = huff.tree->left = huff.tree->right = NULL;
     
     cch = buffer[0] * 256 + buffer[1];
+    // don't overflow with bad messages
+    if( cch > mbuf->maxsize - offset )
+    {
+        cch = mbuf->maxsize - offset;
+    }
     bloc = 16;
     
     for( j = 0; j < cch; j++ )
     {
-        Huff_Receive( huff.tree, &ch, buffer );               /* Get a character */
-        if( ch == NYT )                                   /* We got a NYT, get the symbol associated with it */
+        ch = 0;
+        // don't overflow reading from the messages
+        // FIXME: would it be better to have a overflow check in get_bit ?
+        if( ( bloc >> 3 ) > size )
+        {
+            seq[j] = 0;
+            break;
+        }
+        Huff_Receive( huff.tree, &ch, buffer );             /* Get a character */
+        if( ch == NYT )                               /* We got a NYT, get the symbol associated with it */
         {
             ch = 0;
             for( i = 0; i < 8; i++ )
@@ -467,9 +482,8 @@ void Huff_Decompress( msg_t* mbuf, int offset )
         
         seq[j] = ch;                                    /* Write symbol */
         
-        Huff_addRef( &huff, ( byte )ch );                             /* Increment node */
+        Huff_addRef( &huff, ( byte )ch );                           /* Increment node */
     }
-    
     mbuf->cursize = cch + offset;
     Com_Memcpy( mbuf->data + offset, seq, cch );
 }

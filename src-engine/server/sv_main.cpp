@@ -71,12 +71,28 @@ cvar_t*  sv_gametype;
 cvar_t*  sv_pure;
 cvar_t*  sv_floodProtect;
 cvar_t*  sv_allowAnonymous;
+cvar_t*  sv_lanForceRate; // dedicated 1 (LAN) server forces local client rates to 99999 (bug #491)
+cvar_t*  sv_onlyVisibleClients;
+cvar_t*  sv_friendlyFire;
+cvar_t*  sv_maxlives;
+cvar_t*  sv_tourney;
 
+cvar_t* sv_dl_maxRate;
 // Rafael gameskill
 cvar_t*  sv_gameskill;
 // done
 
 cvar_t*  sv_reloading;  //----(SA)	added
+cvar_t*  sv_showAverageBPS;
+cvar_t*  sv_wwwDownload; // server does a www dl redirect
+cvar_t*  sv_wwwBaseURL; // base URL for redirect
+// tell clients to perform their downloads while disconnected from the server
+// this gets you a better throughput, but you loose the ability to control the download usage
+cvar_t* sv_wwwDlDisconnected;
+cvar_t* sv_wwwFallbackURL; // URL to send to if an http/ftp fails or is refused client side
+cvar_t*  sv_cheats;
+
+void SVC_GameCompleteStatus( netadr_t from );
 
 /*
 =============================================================================
@@ -108,6 +124,12 @@ char*    SV_ExpandNewlines( char* in )
         }
         else
         {
+            // HACK - strip out localization tokens before string command is displayed in syscon window
+            if( !Q_strncmp( in, "[lon]", 5 ) || !Q_strncmp( in, "[lof]", 5 ) )
+            {
+                in += 5;
+                continue;
+            }
             string[l++] = *in;
         }
         in++;
@@ -116,45 +138,6 @@ char*    SV_ExpandNewlines( char* in )
     
     return string;
 }
-
-/*
-======================
-SV_ReplacePendingServerCommands
-
-  This is ugly
-======================
-*/
-#if 0   // RF, not used anymore
-int SV_ReplacePendingServerCommands( client_t* client, const char* cmd )
-{
-    int i, index, csnum1, csnum2;
-    
-    for( i = client->reliableSent + 1; i <= client->reliableSequence; i++ )
-    {
-        index = i & ( MAX_RELIABLE_COMMANDS - 1 );
-        //
-        //if ( !Q_strncmp(cmd, client->reliableCommands[ index ], strlen("cs")) ) {
-        if( !Q_strncmp( cmd, SV_GetReliableCommand( client, index ), strlen( "cs" ) ) )
-        {
-            sscanf( cmd, "cs %i", &csnum1 );
-            //sscanf(client->reliableCommands[ index ], "cs %i", &csnum2);
-            sscanf( SV_GetReliableCommand( client, index ), "cs %i", &csnum2 );
-            if( csnum1 == csnum2 )
-            {
-                //Q_strncpyz( client->reliableCommands[ index ], cmd, sizeof( client->reliableCommands[ index ] ) );
-                
-                /*
-                if ( client->netchan.remoteAddress.type != NA_BOT ) {
-                	Com_Printf( "WARNING: client %i removed double pending config string %i: %s\n", client-svs.clients, csnum1, cmd );
-                }
-                */
-                return true;
-            }
-        }
-    }
-    return false;
-}
-#endif
 
 /*
 ======================
@@ -168,12 +151,6 @@ void SV_AddServerCommand( client_t* client, const char* cmd )
 {
     int index, i;
     
-    
-    
-    
-    
-    
-    
     client->reliableSequence++;
     // if we would be losing an old command that hasn't been acknowledged,
     // we must drop the connection
@@ -184,16 +161,14 @@ void SV_AddServerCommand( client_t* client, const char* cmd )
         Com_Printf( "===== pending server commands =====\n" );
         for( i = client->reliableAcknowledge + 1 ; i <= client->reliableSequence ; i++ )
         {
-            //Com_Printf( "cmd %5d: %s\n", i, client->reliableCommands[ i & (MAX_RELIABLE_COMMANDS-1) ] );
-            Com_Printf( "cmd %5d: %s\n", i, SV_GetReliableCommand( client, i & ( MAX_RELIABLE_COMMANDS - 1 ) ) );
+            Com_Printf( "cmd %5d: %s\n", i, client->reliableCommands[ i & ( MAX_RELIABLE_COMMANDS - 1 ) ] );
         }
         Com_Printf( "cmd %5d: %s\n", i, cmd );
         SV_DropClient( client, "Server command overflow" );
         return;
     }
     index = client->reliableSequence & ( MAX_RELIABLE_COMMANDS - 1 );
-    //Q_strncpyz( client->reliableCommands[ index ], cmd, sizeof( client->reliableCommands[ index ] ) );
-    SV_AddReliableCommand( client, index, cmd );
+    Q_strncpyz( client->reliableCommands[ index ], cmd, sizeof( client->reliableCommands[ index ] ) );
 }
 
 
@@ -216,6 +191,13 @@ void SV_SendServerCommand( client_t* cl, const char* fmt, ... )
     va_start( argptr, fmt );
     vsprintf( ( char* )message, fmt, argptr );
     va_end( argptr );
+    
+    // do not forward server command messages that would be too big to clients
+    // ( q3infoboom / q3msgboom stuff )
+    if( strlen( ( char* )message ) > 1022 )
+    {
+        return;
+    }
     
     if( cl != NULL )
     {
@@ -268,7 +250,9 @@ but not on every player enter or exit.
 */
 #define HEARTBEAT_MSEC  300 * 1000
 #define HEARTBEAT_GAME  "Wolfenstein-1"
-void SV_MasterHeartbeat( void )
+#define HEARTBEAT_DEAD  "WolfFlatline-1"         // NERVE - SMF
+
+void SV_MasterHeartbeat( const char* hbname )
 {
     static netadr_t adr[MAX_MASTER_SERVERS];
     int i;
@@ -325,7 +309,66 @@ void SV_MasterHeartbeat( void )
         Com_Printf( "Sending heartbeat to %s\n", sv_master[i]->string );
         // this command should be changed if the server info / status format
         // ever incompatably changes
-        NET_OutOfBandPrint( NS_SERVER, adr[i], "heartbeat %s\n", HEARTBEAT_GAME );
+        NET_OutOfBandPrint( NS_SERVER, adr[i], "heartbeat %s\n", hbname );
+    }
+}
+
+/*
+=================
+SV_MasterGameCompleteStatus
+
+Sends gameCompleteStatus messages to all master servers
+=================
+*/
+void SV_MasterGameCompleteStatus()
+{
+    static netadr_t adr[MAX_MASTER_SERVERS];
+    int i;
+    
+    // "dedicated 1" is for lan play, "dedicated 2" is for inet public play
+    if( !com_dedicated || com_dedicated->integer != 2 )
+    {
+        return;     // only dedicated servers send master game status
+    }
+    
+    // send to group masters
+    for( i = 0; i < MAX_MASTER_SERVERS; i++ )
+    {
+        if( !sv_master[i]->string[0] )
+        {
+            continue;
+        }
+        
+        // see if we haven't already resolved the name
+        // resolving usually causes hitches on win95, so only
+        // do it when needed
+        if( sv_master[i]->modified )
+        {
+            sv_master[i]->modified = false;
+            
+            Com_Printf( "Resolving %s\n", sv_master[i]->string );
+            if( !NET_StringToAdr( sv_master[i]->string, &adr[i] ) )
+            {
+                // if the address failed to resolve, clear it
+                // so we don't take repeated dns hits
+                Com_Printf( "Couldn't resolve address: %s\n", sv_master[i]->string );
+                Cvar_Set( sv_master[i]->name, "" );
+                sv_master[i]->modified = false;
+                continue;
+            }
+            if( !strstr( ":", sv_master[i]->string ) )
+            {
+                adr[i].port = BigShort( PORT_MASTER );
+            }
+            Com_Printf( "%s resolved to %i.%i.%i.%i:%i\n", sv_master[i]->string,
+                        adr[i].ip[0], adr[i].ip[1], adr[i].ip[2], adr[i].ip[3],
+                        BigShort( adr[i].port ) );
+        }
+        
+        Com_Printf( "Sending gameCompleteStatus to %s\n", sv_master[i]->string );
+        // this command should be changed if the server info / status format
+        // ever incompatably changes
+        SVC_GameCompleteStatus( adr[i] );
     }
 }
 
@@ -340,16 +383,15 @@ void SV_MasterShutdown( void )
 {
     // send a hearbeat right now
     svs.nextHeartbeatTime = -9999;
-    SV_MasterHeartbeat();
+    SV_MasterHeartbeat( HEARTBEAT_DEAD );
     
     // send it again to minimize chance of drops
-    svs.nextHeartbeatTime = -9999;
-    SV_MasterHeartbeat();
-    
+//  svs.nextHeartbeatTime = -9999;
+//  SV_MasterHeartbeat( HEARTBEAT_DEAD );
+
     // when the master tries to poll the server, it won't respond, so
     // it will be removed from the list
 }
-
 
 /*
 ==============================================================================
@@ -426,6 +468,71 @@ void SVC_Status( netadr_t from )
 }
 
 /*
+=================
+SVC_GameCompleteStatus
+
+Send serverinfo cvars, etc to master servers when
+game complete. Useful for tracking global player stats.
+=================
+*/
+void SVC_GameCompleteStatus( netadr_t from )
+{
+    char player[1024];
+    char status[MAX_MSGLEN];
+    int i;
+    client_t*    cl;
+    playerState_t*   ps;
+    int statusLength;
+    int playerLength;
+    char infostring[MAX_INFO_STRING];
+    
+    // ignore if we are in single player
+    if( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER )
+    {
+        return;
+    }
+    
+    strcpy( infostring, Cvar_InfoString( CVAR_SERVERINFO ) );
+    
+    // echo back the parameter to status. so master servers can use it as a challenge
+    // to prevent timed spoofed reply packets that add ghost servers
+    Info_SetValueForKey( infostring, "challenge", Cmd_Argv( 1 ) );
+    
+    // add "demo" to the sv_keywords if restricted
+    if( Cvar_VariableValue( "fs_restrict" ) )
+    {
+        char keywords[MAX_INFO_STRING];
+        
+        Com_sprintf( keywords, sizeof( keywords ), "demo %s",
+                     Info_ValueForKey( infostring, "sv_keywords" ) );
+        Info_SetValueForKey( infostring, "sv_keywords", keywords );
+    }
+    
+    status[0] = 0;
+    statusLength = 0;
+    
+    for( i = 0; i < sv_maxclients->integer; i++ )
+    {
+        cl = &svs.clients[i];
+        if( cl->state >= CS_CONNECTED )
+        {
+            ps = SV_GameClientNum( i );
+            Com_sprintf( player, sizeof( player ), "%i %i \"%s\"\n",
+                         ps->persistant[PERS_SCORE], cl->ping, cl->name );
+            playerLength = strlen( player );
+            if( statusLength + playerLength >= sizeof( status ) )
+            {
+                break;      // can't hold any more
+            }
+            strcpy( status + statusLength, player );
+            statusLength += playerLength;
+        }
+    }
+    
+    NET_OutOfBandPrint( NS_SERVER, from, "gameCompleteStatus\n%s\n%s", infostring, status );
+}
+
+/*
 ================
 SVC_Info
 
@@ -438,9 +545,16 @@ void SVC_Info( netadr_t from )
     int i, count;
     char*    gamedir;
     char infostring[MAX_INFO_STRING];
+    char*    antilag;
     
     // ignore if we are in single player
     if( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER )
+    {
+        return;
+    }
+    
+    // A maximum challenge length of 128 should be more than plenty.
+    if( strlen( Cmd_Argv( 1 ) ) > 128 )
     {
         return;
     }
@@ -489,13 +603,23 @@ void SVC_Info( netadr_t from )
     Info_SetValueForKey( infostring, "gameskill", va( "%i", sv_gameskill->integer ) );
     // done
     
+    Info_SetValueForKey( infostring, "friendlyFire", va( "%i", sv_friendlyFire->integer ) );        // NERVE - SMF
+    Info_SetValueForKey( infostring, "maxlives", va( "%i", sv_maxlives->integer ? 1 : 0 ) );        // NERVE - SMF
+    Info_SetValueForKey( infostring, "tourney", va( "%i", sv_tourney->integer ) );              // NERVE - SMF
+    Info_SetValueForKey( infostring, "gamename", GAMENAME_STRING );                               // Arnout: to be able to filter out Quake servers
+    
+    antilag = Cvar_VariableString( "g_antilag" );
+    if( antilag )
+    {
+        Info_SetValueForKey( infostring, "g_antilag", antilag );
+    }
+    
     NET_OutOfBandPrint( NS_SERVER, from, "infoResponse\n%s", infostring );
 }
 
 /*
 ==============
 SV_FlushRedirect
-
 ==============
 */
 void SV_FlushRedirect( char* outputbuf )
@@ -515,30 +639,50 @@ Redirect all printfs
 void SVC_RemoteCommand( netadr_t from, msg_t* msg )
 {
     bool valid;
-    int i;
+    unsigned int time;
     char remaining[1024];
-#define SV_OUTPUTBUF_LENGTH ( MAX_MSGLEN - 16 )
+    // if we send an OOB print message this size, 1.31 clients die in a Com_Printf buffer overflow
+    // the buffer overflow will be fixed in > 1.31 clients
+    // but we want a server side fix
+    // we must NEVER send an OOB message that will be > 1.31 MAXPRINTMSG (4096)
+#define SV_OUTPUTBUF_LENGTH ( 256 - 16 )
     char sv_outputbuf[SV_OUTPUTBUF_LENGTH];
+    static unsigned int lasttime = 0;
+    char* cmd_aux;
+    
+    // TTimo - show_bug.cgi?id=534
+    time = Com_Milliseconds();
+    if( time < ( lasttime + 500 ) )
+    {
+        return;
+    }
+    lasttime = time;
     
     if( !strlen( sv_rconPassword->string ) ||
             strcmp( Cmd_Argv( 1 ), sv_rconPassword->string ) )
     {
         valid = false;
-        Com_DPrintf( "Bad rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );
+        Com_Printf( "Bad rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );
     }
     else
     {
         valid = true;
-        Com_DPrintf( "Rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );
+        Com_Printf( "Rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );
     }
     
     // start redirecting all print outputs to the packet
     svs.redirectAddress = from;
+    // our rcon redirection could be improved
+    //   big rcon commands such as status lead to sending
+    //   out of band packets on every single call to Com_Printf
+    //   which leads to client overflows
+    //   see show_bug.cgi?id=51
+    //     (also a Q3 issue)
     Com_BeginRedirect( sv_outputbuf, SV_OUTPUTBUF_LENGTH, SV_FlushRedirect );
     
     if( !strlen( sv_rconPassword->string ) )
     {
-        Com_Printf( "No rconpassword set.\n" );
+        Com_Printf( "No rconpassword set on the server.\n" );
     }
     else if( !valid )
     {
@@ -548,13 +692,22 @@ void SVC_RemoteCommand( netadr_t from, msg_t* msg )
     {
         remaining[0] = 0;
         
-        for( i = 2 ; i < Cmd_Argc() ; i++ )
-        {
-            strcat( remaining, Cmd_Argv( i ) );
-            strcat( remaining, " " );
-        }
+        // get the command directly, "rcon <pass> <command>" to avoid quoting issues
+        // extract the command by walking
+        // since the cmd formatting can fuckup (amount of spaces), using a dumb step by step parsing
+        cmd_aux = Cmd_Cmd();
+        cmd_aux += 4;
+        while( cmd_aux[0] == ' ' )
+            cmd_aux++;
+        while( cmd_aux[0] && cmd_aux[0] != ' ' ) // password
+            cmd_aux++;
+        while( cmd_aux[0] == ' ' )
+            cmd_aux++;
+            
+        Q_strcat( remaining, sizeof( remaining ), cmd_aux );
         
         Cmd_ExecuteString( remaining );
+        
     }
     
     Com_EndRedirect();
@@ -577,6 +730,11 @@ void SV_ConnectionlessPacket( netadr_t from, msg_t* msg )
     
     MSG_BeginReadingOOB( msg );
     MSG_ReadLong( msg );        // skip the -1 marker
+    
+    if( !Q_strncmp( "connect", ( const char* )&msg->data[4], 7 ) )
+    {
+        Huff_Decompress( msg, 12 );
+    }
     
     s = MSG_ReadStringLine( msg );
     
@@ -672,7 +830,7 @@ void SV_PacketEvent( netadr_t from, msg_t* msg )
         // port assignments
         if( cl->netchan.remoteAddress.port != from.port )
         {
-            Com_Printf( "SV_ReadPackets: fixing up a translated port\n" );
+            Com_Printf( "SV_PacketEvent: fixing up a translated port\n" );
             cl->netchan.remoteAddress.port = from.port;
         }
         
@@ -785,7 +943,7 @@ void SV_CheckTimeouts( void )
     droppoint = svs.time - 1000 * sv_timeout->integer;
     zombiepoint = svs.time - 1000 * sv_zombietime->integer;
     
-    for( i = 0, cl = svs.clients ; i < sv_maxclients->integer ; i++, cl++ )
+    for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
     {
         // message times may be wrong across a changelevel
         if( cl->lastPacketTime > svs.time )
@@ -796,27 +954,24 @@ void SV_CheckTimeouts( void )
         if( cl->state == CS_ZOMBIE
                 && cl->lastPacketTime < zombiepoint )
         {
-            Com_DPrintf( "Going from CS_ZOMBIE to CS_FREE for %s\n", cl->name );
+            // using the client id cause the cl->name is empty at this point
+            Com_DPrintf( "Going from CS_ZOMBIE to CS_FREE for client %d\n", i );
             cl->state = CS_FREE;    // can now be reused
             continue;
         }
-        // Ridah, AI's don't time out
-        if( cl->gentity && !( cl->gentity->r.svFlags & SVF_CASTAI ) )
+        if( cl->state >= CS_CONNECTED && cl->lastPacketTime < droppoint )
         {
-            if( cl->state >= CS_CONNECTED && cl->lastPacketTime < droppoint )
+            // wait several frames so a debugger session doesn't
+            // cause a timeout
+            if( ++cl->timeoutCount > 5 )
             {
-                // wait several frames so a debugger session doesn't
-                // cause a timeout
-                if( ++cl->timeoutCount > 5 )
-                {
-                    SV_DropClient( cl, "timed out" );
-                    cl->state = CS_FREE;    // don't bother with zombie state
-                }
+                SV_DropClient( cl, "timed out" );
+                cl->state = CS_FREE;    // don't bother with zombie state
             }
-            else
-            {
-                cl->timeoutCount = 0;
-            }
+        }
+        else
+        {
+            cl->timeoutCount = 0;
         }
     }
 }
@@ -851,11 +1006,17 @@ bool SV_CheckPaused( void )
     if( count > 1 )
     {
         // don't pause
-        sv_paused->integer = 0;
+        if( sv_paused->integer )
+        {
+            Cvar_Set( "sv_paused", "0" );
+        }
         return false;
     }
     
-    sv_paused->integer = 1;
+    if( !sv_paused->integer )
+    {
+        Cvar_Set( "sv_paused", "1" );
+    }
     return true;
 }
 
@@ -871,6 +1032,7 @@ void SV_Frame( int msec )
 {
     int frameMsec;
     int startTime;
+    char mapname[MAX_QPATH];
     
     // the menu kills the server with this cvar
     if( sv_killserver->integer )
@@ -919,18 +1081,23 @@ void SV_Frame( int msec )
     // 2giga-milliseconds = 23 days, so it won't be too often
     if( svs.time > 0x70000000 )
     {
+        Q_strncpyz( mapname, sv_mapname->string, MAX_QPATH );
         SV_Shutdown( "Restarting server due to time wrapping" );
-        Cbuf_AddText( "vstr nextmap\n" );
+        // there won't be a map_restart if you have shut down the server
+        // since it doesn't restart a non-running server
+        // instead, re-run the current map
+        Cbuf_AddText( va( "map %s\n", mapname ) );
         return;
     }
     // this can happen considerably earlier when lots of clients play and the map doesn't change
     if( svs.nextSnapshotEntities >= 0x7FFFFFFE - svs.numSnapshotEntities )
     {
+        Q_strncpyz( mapname, sv_mapname->string, MAX_QPATH );
         SV_Shutdown( "Restarting server due to numSnapshotEntities wrapping" );
-        Cbuf_AddText( "vstr nextmap\n" );
+        // TTimo see above
+        Cbuf_AddText( va( "map %s\n", mapname ) );
         return;
     }
-    
     if( sv.restartTime && svs.time >= sv.restartTime )
     {
         sv.restartTime = 0;
@@ -948,6 +1115,11 @@ void SV_Frame( int msec )
     {
         SV_SetConfigstring( CS_SYSTEMINFO, Cvar_InfoString_Big( CVAR_SYSTEMINFO ) );
         cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
+    }
+    if( cvar_modifiedFlags & CVAR_WOLFINFO )
+    {
+        SV_SetConfigstring( CS_WOLFINFO, Cvar_InfoString( CVAR_WOLFINFO ) );
+        cvar_modifiedFlags &= ~CVAR_WOLFINFO;
     }
     
     if( com_speeds->integer )
@@ -989,7 +1161,7 @@ void SV_Frame( int msec )
     SV_SendClientMessages();
     
     // send a heartbeat to the master if needed
-    SV_MasterHeartbeat();
+    SV_MasterHeartbeat( HEARTBEAT_GAME );
 }
 
 //============================================================================
