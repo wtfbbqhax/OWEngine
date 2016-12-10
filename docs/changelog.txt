@@ -5,6 +5,7 @@ Changelog
 	- Integrated cURL 
 	- Updated binary files
 	- Fixed engine crash with loading AAS cache (.rcd) files
+	- Do not generate debug info in release build
 
 12-06-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added reading ".bullet" files into engine
