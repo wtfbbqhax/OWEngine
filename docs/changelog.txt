@@ -1,5 +1,8 @@
 Changelog
 
+12-17-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Fixed problems with clients and single player game-mode 
+
 12-10-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Added multiplayer engine source code
 	- Integrated cURL 

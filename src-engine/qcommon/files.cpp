@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////////////
 //
 //  This file is part of OWEngine source code.
 //  Copyright (C) 1999-2010 id Software LLC, a ZeniMax Media company.
@@ -1886,7 +1886,6 @@ void FS_Printf( fileHandle_t h, const char* fmt, ... )
     FS_Write( msg, strlen( msg ), h );
 }
 
-#define PK3_SEEK_BUFFER_SIZE 65536
 /*
 =================
 FS_Seek
@@ -1895,6 +1894,7 @@ FS_Seek
 int FS_Seek( fileHandle_t f, int offset, int origin )
 {
     int _origin;
+    char foo[65536];
     
     if( !fs_searchpaths )
     {
@@ -1911,39 +1911,23 @@ int FS_Seek( fileHandle_t f, int offset, int origin )
     
     if( fsh[f].zipFile == true )
     {
-        //FIXME: this is incomplete and really, really
-        //crappy (but better than what was here before)
-        byte	buffer[PK3_SEEK_BUFFER_SIZE];
-        int		remainder = offset;
-        
-        if( offset < 0 || origin == FS_SEEK_END )
+        if( offset == 0 && origin == FS_SEEK_SET )
         {
-            Com_Error( ERR_FATAL, "Negative offsets and FS_SEEK_END not implemented "
-                       "for FS_Seek on pk3 file contents\n" );
-            return -1;
+            // set the file position in the zip file (also sets the current file info)
+            unzSetCurrentFileInfoPosition( fsh[f].handleFiles.file.z, fsh[f].zipFilePos );
+            return unzOpenCurrentFile( fsh[f].handleFiles.file.z );
         }
-        
-        switch( origin )
+        else if( offset < 65536 )
         {
-            case FS_SEEK_SET:
-                unzSetCurrentFileInfoPosition( fsh[f].handleFiles.file.z, fsh[f].zipFilePos );
-                unzOpenCurrentFile( fsh[f].handleFiles.file.z );
-                //fallthrough
-                
-            case FS_SEEK_CUR:
-                while( remainder > PK3_SEEK_BUFFER_SIZE )
-                {
-                    FS_Read( buffer, PK3_SEEK_BUFFER_SIZE, f );
-                    remainder -= PK3_SEEK_BUFFER_SIZE;
-                }
-                FS_Read( buffer, remainder, f );
-                return offset;
-                break;
-                
-            default:
-                Com_Error( ERR_FATAL, "Bad origin in FS_Seek\n" );
-                return -1;
-                break;
+            // set the file position in the zip file (also sets the current file info)
+            unzSetCurrentFileInfoPosition( fsh[f].handleFiles.file.z, fsh[f].zipFilePos );
+            unzOpenCurrentFile( fsh[f].handleFiles.file.z );
+            return FS_Read( foo, offset, f );
+        }
+        else
+        {
+            Com_Error( ERR_FATAL, "ZIP FILE FSEEK NOT YET IMPLEMENTED\n" );
+            return -1;
         }
     }
     else
@@ -1970,7 +1954,6 @@ int FS_Seek( fileHandle_t f, int offset, int origin )
         return fseek( file, offset, _origin );
     }
 }
-
 
 /*
 ======================================================================================
@@ -3866,7 +3849,7 @@ const char* FS_ReferencedPakNames( void )
     
     // we want to return ALL pk3's from the fs_game path
     // and referenced one's from baseq3
-    for( search = fs_searchpaths ; search ; search = search->next )
+    for( search = fs_searchpaths; search; search = search->next )
     {
         // is the element a pak file?
         if( search->pack )
@@ -3875,15 +3858,11 @@ const char* FS_ReferencedPakNames( void )
             {
                 Q_strcat( info, sizeof( info ), " " );
             }
-            if( search->pack->referenced )
+            if( search->pack->referenced || Q_stricmpn( search->pack->pakGamename, BASEGAME, strlen( BASEGAME ) ) )
             {
-                if( strcmp( search->pack->pakBasename, "pak0" ) )
-                {
-                    // this is not the light pk3
-                    Q_strcat( info, sizeof( info ), search->pack->pakGamename );
-                    Q_strcat( info, sizeof( info ), "/" );
-                    Q_strcat( info, sizeof( info ), search->pack->pakBasename );
-                }
+                Q_strcat( info, sizeof( info ), search->pack->pakGamename );
+                Q_strcat( info, sizeof( info ), "/" );
+                Q_strcat( info, sizeof( info ), search->pack->pakBasename );
             }
         }
     }

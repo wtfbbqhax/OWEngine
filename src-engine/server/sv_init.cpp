@@ -251,7 +251,7 @@ SV_BoundMaxClients
 void SV_BoundMaxClients( int minimum )
 {
     // get the current maxclients value
-    Cvar_Get( "sv_maxclients", "8", 0 );
+    Cvar_Get( "sv_maxclients", "64", 0 );
     
     sv_maxclients->modified = false;
     
@@ -543,7 +543,7 @@ void SV_SpawnServer( char* server, bool killBots )
             if( sv_maxclients->latchedString )
             {
                 // it's been modified, so grab the new value
-                Cvar_Get( "sv_maxclients", "8", 0 );
+                Cvar_Get( "sv_maxclients", "64", 0 );
             }
             if( sv_maxclients->integer < MAX_CLIENTS )
             {
@@ -824,7 +824,7 @@ void SV_Init( void )
     sv_mapname = Cvar_Get( "mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM );
     sv_privateClients = Cvar_Get( "sv_privateClients", "0", CVAR_SERVERINFO );
     sv_hostname = Cvar_Get( "sv_hostname", "WolfHost", CVAR_SERVERINFO | CVAR_ARCHIVE );
-    sv_maxclients = Cvar_Get( "sv_maxclients", "8", CVAR_SERVERINFO | CVAR_LATCH );
+    sv_maxclients = Cvar_Get( "sv_maxclients", "64", CVAR_SERVERINFO | CVAR_LATCH );
     sv_maxRate = Cvar_Get( "sv_maxRate", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
     sv_minPing = Cvar_Get( "sv_minPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
     sv_maxPing = Cvar_Get( "sv_maxPing", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );

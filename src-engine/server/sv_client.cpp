@@ -586,13 +586,26 @@ void SV_DropClient( client_t* drop, const char* reason )
 {
     int i;
     challenge_t* challenge;
+    bool isBot = false;
     
     if( drop->state == CS_ZOMBIE )
     {
         return;     // already dropped
     }
     
-    if( !drop->gentity || !( drop->gentity->r.svFlags & SVF_BOT ) )
+    if( drop->gentity && ( drop->gentity->r.svFlags & SVF_BOT ) )
+    {
+        isBot = true;
+    }
+    else
+    {
+        if( drop->netchan.remoteAddress.type == NA_BOT )
+        {
+            isBot = true;
+        }
+    }
+    
+    if( !isBot )
     {
         // see if we already have a challenge for this ip
         challenge = &svs.challenges[0];
@@ -605,10 +618,10 @@ void SV_DropClient( client_t* drop, const char* reason )
                 break;
             }
         }
+        
+        // Kill any download
+        SV_CloseDownload( drop );
     }
-    
-    // Kill any download
-    SV_CloseDownload( drop );
     
     // Ridah, no need to tell the player if an AI drops
     if( !( drop->gentity && drop->gentity->r.svFlags & SVF_CASTAI ) )
@@ -631,11 +644,13 @@ void SV_DropClient( client_t* drop, const char* reason )
     game->ClientDisconnect( drop - svs.clients );
     
     // Ridah, no need to tell the player if an AI drops
-    if( !( drop->gentity && drop->gentity->r.svFlags & SVF_CASTAI ) )
-    {
-        // add the disconnect command
-        SV_SendServerCommand( drop, "disconnect" );
-    }
+    //if( !( drop->gentity && drop->gentity->r.svFlags & SVF_CASTAI ) )
+    //{
+    //    // add the disconnect command
+    //    SV_SendServerCommand( drop, "disconnect" );
+    //}
+    // add the disconnect command
+    SV_SendServerCommand( drop, "disconnect \"%s\"\n", reason );
     // done.
     
     if( drop->netchan.remoteAddress.type == NA_BOT )

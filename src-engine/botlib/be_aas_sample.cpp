@@ -469,6 +469,7 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
                 {
                     trace.startsolid = true;
                     trace.fraction = 0.0;
+                    VectorClear( v1 );
                 } //end if
                 else
                 {
@@ -524,6 +525,7 @@ aas_trace_t AAS_TraceClientBBox( vec3_t start, vec3_t end, int presencetype,
             {
                 trace.startsolid = true;
                 trace.fraction = 0.0;
+                VectorClear( v1 );
             } //end if
             else
             {
