@@ -778,6 +778,8 @@ void SV_SpawnServer( char* server, bool killBots )
     
     SV_SetConfigstring( CS_WOLFINFO, Cvar_InfoString( CVAR_WOLFINFO ) );
     cvar_modifiedFlags &= ~CVAR_WOLFINFO;
+    //SV_SetConfigstring( CS_WOLFINFO, Cvar_InfoString( CVAR_WOLFINFO ) );
+    //cvar_modifiedFlags &= ~CVAR_WOLFINFO;
     
     // any media configstring setting now should issue a warning
     // and any configstring changes should be reliably transmitted
@@ -875,28 +877,6 @@ void SV_Init( void )
     sv_onlyVisibleClients = Cvar_Get( "sv_onlyVisibleClients", "0", 0 );       // DHM - Nerve
     
     sv_showAverageBPS = Cvar_Get( "sv_showAverageBPS", "0", 0 );           // NERVE - SMF - net debugging
-    
-    // create user set cvars
-    Cvar_Get( "g_userTimeLimit", "0", 0 );
-    Cvar_Get( "g_userAlliedRespawnTime", "0", 0 );
-    Cvar_Get( "g_userAxisRespawnTime", "0", 0 );
-    Cvar_Get( "g_maxlives", "0", 0 );
-    Cvar_Get( "g_noTeamSwitching", "0", CVAR_ARCHIVE );
-    Cvar_Get( "g_altStopwatchMode", "0", CVAR_ARCHIVE );
-    Cvar_Get( "g_minGameClients", "8", CVAR_SERVERINFO );
-    Cvar_Get( "g_complaintlimit", "3", CVAR_ARCHIVE );
-    Cvar_Get( "gamestate", "-1", CVAR_WOLFINFO | CVAR_ROM );
-    Cvar_Get( "g_currentRound", "0", CVAR_WOLFINFO );
-    Cvar_Get( "g_nextTimeLimit", "0", CVAR_WOLFINFO );
-    
-    // UI additions
-    // NOTE: sucks to have this hardcoded really, I suppose this should be in UI
-    Cvar_Get( "g_axismaxlives", "0", 0 );
-    Cvar_Get( "g_alliedmaxlives", "0", 0 );
-    Cvar_Get( "g_fastres", "0", CVAR_ARCHIVE );
-    Cvar_Get( "g_fastResMsec", "1000", CVAR_ARCHIVE );
-    Cvar_Get( "g_voteFlags", "255", CVAR_ARCHIVE | CVAR_SERVERINFO );
-    Cvar_Get( "g_antilag", "0", CVAR_ARCHIVE | CVAR_SERVERINFO );
     
     // autodownload speed tweaks
     // the download netcode tops at 18/20 kb/s, no need to make you think you can go above

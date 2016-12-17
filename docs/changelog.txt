@@ -1,5 +1,9 @@
 Changelog
 
+12-18-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Removed user set cvars on server initialization 
+	- Updated binary files
+
 12-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed problems with clients and single player game-mode 
 
