@@ -145,14 +145,85 @@ static void R_ColorShiftLightingBytes( byte in[4], byte out[4] )
 
 /*
 ===============
-R_LoadLightmaps
+R_ProcessLightmap
 
+returns maxIntensity
+===============
+*/
+float R_ProcessLightmap( byte** pic, int in_padding, int width, int height, byte** pic_out )
+{
+    int j;
+    float maxIntensity = 0;
+    double sumIntensity = 0;
+    
+    if( r_lightmap->integer > 1 )  // color code by intensity as development tool	(FIXME: check range)
+    {
+        for( j = 0; j < width * height; j++ )
+        {
+            float r = ( *pic )[j * in_padding + 0];
+            float g = ( *pic )[j * in_padding + 1];
+            float b = ( *pic )[j * in_padding + 2];
+            float intensity;
+            float out[3];
+            
+            intensity = 0.33f * r + 0.685f * g + 0.063f * b;
+            
+            if( intensity > 255 )
+            {
+                intensity = 1.0f;
+            }
+            else
+            {
+                intensity /= 255.0f;
+            }
+            
+            if( intensity > maxIntensity )
+            {
+                maxIntensity = intensity;
+            }
+            
+            HSVtoRGB( intensity, 1.00, 0.50, out );
+            
+            if( r_lightmap->integer == 3 )
+            {
+                // Arnout: artists wanted the colours to be inversed
+                ( *pic_out )[j * 4 + 0] = out[2] * 255;
+                ( *pic_out )[j * 4 + 1] = out[1] * 255;
+                ( *pic_out )[j * 4 + 2] = out[0] * 255;
+            }
+            else
+            {
+                ( *pic_out )[j * 4 + 0] = out[0] * 255;
+                ( *pic_out )[j * 4 + 1] = out[1] * 255;
+                ( *pic_out )[j * 4 + 2] = out[2] * 255;
+            }
+            ( *pic_out )[j * 4 + 3] = 255;
+            
+            sumIntensity += intensity;
+        }
+    }
+    else
+    {
+        for( j = 0; j < width * height; j++ )
+        {
+            R_ColorShiftLightingBytes( &( *pic )[j * in_padding], &( *pic_out )[j * 4] );
+            ( *pic_out )[j * 4 + 3] = 255;
+        }
+    }
+    
+    return maxIntensity;
+}
+
+
+/*
+===============
+R_LoadLightmaps
 ===============
 */
 #define LIGHTMAP_SIZE   128
 static void R_LoadLightmaps( lump_t* l )
 {
-    byte*        buf, *buf_p;
+    byte* buf, *buf_p, *image_p;
     int len;
     MAC_STATIC byte image[LIGHTMAP_SIZE * LIGHTMAP_SIZE * 4];
     int i, j;
@@ -188,51 +259,14 @@ static void R_LoadLightmaps( lump_t* l )
     {
         // expand the 24 bit on-disk to 32 bit
         buf_p = buf + i * LIGHTMAP_SIZE * LIGHTMAP_SIZE * 3;
+        image_p = image;
         
-        if( r_lightmap->integer == 2 )    // color code by intensity as development tool	(FIXME: check range)
+        sumIntensity = R_ProcessLightmap( &buf_p, 3, LIGHTMAP_SIZE, LIGHTMAP_SIZE, &image_p );
+        if( sumIntensity > maxIntensity )
         {
-            for( j = 0; j < LIGHTMAP_SIZE * LIGHTMAP_SIZE; j++ )
-            {
-                float r = buf_p[j * 3 + 0];
-                float g = buf_p[j * 3 + 1];
-                float b = buf_p[j * 3 + 2];
-                float intensity;
-                float out[3] = {0};
-                
-                intensity = 0.33f * r + 0.685f * g + 0.063f * b;
-                
-                if( intensity > 255 )
-                {
-                    intensity = 1.0f;
-                }
-                else
-                {
-                    intensity /= 255.0f;
-                }
-                
-                if( intensity > maxIntensity )
-                {
-                    maxIntensity = intensity;
-                }
-                
-                HSVtoRGB( intensity, 1.00, 0.50, out );
-                
-                image[j * 4 + 0] = out[0] * 255;
-                image[j * 4 + 1] = out[1] * 255;
-                image[j * 4 + 2] = out[2] * 255;
-                image[j * 4 + 3] = 255;
-                
-                sumIntensity += intensity;
-            }
+            maxIntensity = sumIntensity;
         }
-        else
-        {
-            for( j = 0 ; j < LIGHTMAP_SIZE * LIGHTMAP_SIZE; j++ )
-            {
-                R_ColorShiftLightingBytes( &buf_p[j * 3], &image[j * 4] );
-                image[j * 4 + 3] = 255;
-            }
-        }
+        
         tr.lightmaps[i] = R_CreateImage( va( "*lightmap%d", i ), image,
                                          LIGHTMAP_SIZE, LIGHTMAP_SIZE, false, false, GL_CLAMP_TO_EDGE );
     }

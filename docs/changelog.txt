@@ -4,6 +4,8 @@ Changelog
 	- Removed user set cvars on server initialization 
 	- Updated binary files
 	- Removed CVAR_WOLFINFO
+	- Added support for lightmaps
+	- Fixed problems with lerp tag index
 
 12-17-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Fixed problems with clients and single player game-mode 

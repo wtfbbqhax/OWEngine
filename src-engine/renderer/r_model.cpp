@@ -1949,54 +1949,64 @@ int idRenderSystemLocal::LerpTag( orientation_t* tag, const refEntity_t* refent,
     frontLerp = frac;
     backLerp = 1.0 - frac;
     
-    switch( model->type )
+    if( model->type == MOD_MESH )
     {
-        case MOD_MDV:
-            VectorClear( tag->origin );
-        case MOD_MD4MESH:
-            return R_FindBone( model, model->md4Anims[0], tag, refent->frame, tagNameIn );
-        case MOD_MESH:
-            retval = R_GetTag( ( byte* )model->md3[0], startFrame, tagName, startIndex, &start );
-            retval = R_GetTag( ( byte* )model->md3[0], endFrame, tagName, startIndex, &end );
-        case MOD_MDS:
-            retval = R_GetBoneTag( tag, model->mds, startIndex, refent, tagNameIn );
-            
-            if( retval >= 0 )
+        // old MD3 style
+        retval = R_GetTag( ( byte* )model->md3[0], startFrame, tagName, startIndex, &start );
+        retval = R_GetTag( ( byte* )model->md3[0], endFrame, tagName, startIndex, &end );
+        
+    }
+    else if( model->type == MOD_MDS )         // use bone lerping
+    {
+        retval = R_GetBoneTag( tag, model->mds, startIndex, refent, tagNameIn );
+        
+        if( retval >= 0 )
+        {
+            return retval;
+        }
+        
+        // failed
+        return -1;
+    }
+    else if( model->type == MOD_MDV )
+    {
+        VectorClear( tag->origin );
+    }
+    else if( model->type == MOD_MD4MESH )
+    {
+        return R_FindBone( model, model->md4Anims[0], tag, refent->frame, tagNameIn );
+    }
+    else
+    {
+        // psuedo-compressed MDC tags
+        mdcTag_t*    cstart, *cend;
+        
+        retval = R_GetMDCTag( ( byte* )model->mdc[0], startFrame, tagName, startIndex, &cstart );
+        retval = R_GetMDCTag( ( byte* )model->mdc[0], endFrame, tagName, startIndex, &cend );
+        
+        // uncompress the MDC tags into MD3 style tags
+        if( cstart && cend )
+        {
+            for( i = 0; i < 3; i++ )
             {
-                return retval;
+                ustart.origin[i] = ( float )cstart->xyz[i] * MD3_XYZ_SCALE;
+                uend.origin[i] = ( float )cend->xyz[i] * MD3_XYZ_SCALE;
+                sangles[i] = ( float )cstart->angles[i] * MDC_TAG_ANGLE_SCALE;
+                eangles[i] = ( float )cend->angles[i] * MDC_TAG_ANGLE_SCALE;
             }
             
-            // failed
-            return -1;
-        case MOD_MDC:
-            // psuedo-compressed MDC tags
-            mdcTag_t*    cstart, *cend;
+            AnglesToAxis( sangles, ustart.axis );
+            AnglesToAxis( eangles, uend.axis );
             
-            retval = R_GetMDCTag( ( byte* )model->mdc[0], startFrame, tagName, startIndex, &cstart );
-            retval = R_GetMDCTag( ( byte* )model->mdc[0], endFrame, tagName, startIndex, &cend );
-            
-            // uncompress the MDC tags into MD3 style tags
-            if( cstart && cend )
-            {
-                for( i = 0; i < 3; i++ )
-                {
-                    ustart.origin[i] = ( float )cstart->xyz[i] * MD3_XYZ_SCALE;
-                    uend.origin[i] = ( float )cend->xyz[i] * MD3_XYZ_SCALE;
-                    sangles[i] = ( float )cstart->angles[i] * MDC_TAG_ANGLE_SCALE;
-                    eangles[i] = ( float )cend->angles[i] * MDC_TAG_ANGLE_SCALE;
-                }
-                
-                AnglesToAxis( sangles, ustart.axis );
-                AnglesToAxis( eangles, uend.axis );
-                
-                start = &ustart;
-                end = &uend;
-            }
-            else
-            {
-                start = NULL;
-                end = NULL;
-            }
+            start = &ustart;
+            end = &uend;
+        }
+        else
+        {
+            start = NULL;
+            end = NULL;
+        }
+        
     }
     
     if( !start || !end )

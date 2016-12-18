@@ -1435,11 +1435,11 @@ void    GL_Cull( int cullType );
 void R_SetupProjection();
 
 model_t*     R_AllocModel( void );
-
+float        R_ProcessLightmap( byte** pic, int in_padding, int width, int height, byte** pic_out );
 void        R_Init( void );
 
-image_t*     R_FindImageFile( const char* name, bool mipmap, bool allowPicmip, int glWrapClampMode );
-image_t*     R_FindImageFileExt( const char* name, bool mipmap, bool allowPicmip, bool characterMip, int glWrapClampMode ); //----(SA)	added
+image_t*     R_FindImageFile( const char* name, bool mipmap, bool allowPicmip, int glWrapClampMode, bool lightmap );
+image_t*     R_FindImageFileExt( const char* name, bool mipmap, bool allowPicmip, bool characterMip, int glWrapClampMode, bool lightmap ); //----(SA)	added
 
 image_t*     R_CreateImage( const char* name, const byte* pic, int width, int height, bool mipmap
                             , bool allowPicmip, int wrapClampMode );

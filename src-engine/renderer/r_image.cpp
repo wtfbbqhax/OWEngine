@@ -2209,13 +2209,13 @@ Returns NULL if it fails, not a default image.
 ==============
 */
 
-
-image_t* R_FindImageFileExt( const char* name, bool mipmap, bool allowPicmip, bool characterMIP, int glWrapClampMode )
+image_t* R_FindImageFileExt( const char* name, bool mipmap, bool allowPicmip, bool characterMIP, int glWrapClampMode, bool lightmap )
 {
     image_t* image;
     int width, height;
     byte*    pic;
     int hash;
+    bool allowCompress = false;
     
     if( !name )
     {
@@ -2263,9 +2263,13 @@ image_t* R_FindImageFileExt( const char* name, bool mipmap, bool allowPicmip, bo
     
     // Ridah, check the cache
     // TTimo: suggests () around assignment used as truth value
-    if( ( image = R_FindCachedImage( name, hash ) ) )
+    if( !lightmap )
     {
-        return image;
+        image = R_FindCachedImage( name, hash );
+        if( image != NULL )
+        {
+            return image;
+        }
     }
     // done.
     
@@ -2301,15 +2305,35 @@ image_t* R_FindImageFileExt( const char* name, bool mipmap, bool allowPicmip, bo
 #endif
     }
     
+    // Arnout: apply lightmap colouring
+    if( lightmap )
+    {
+        R_ProcessLightmap( &pic, 4, width, height, &pic );
+        
+        // ydnar: no texture compression
+        if( lightmap )
+        {
+            allowCompress = tr.allowCompress;
+        }
+        tr.allowCompress = -1;
+    }
+    
     image = R_CreateImageExt( ( char* ) name, pic, width, height, mipmap, allowPicmip, characterMIP, glWrapClampMode );
     //Free( pic );
+    
+    // ydnar: no texture compression
+    if( lightmap )
+    {
+        tr.allowCompress = allowCompress;
+    }
+    
     return image;
 }
 
 
-image_t* R_FindImageFile( const char* name, bool mipmap, bool allowPicmip, int glWrapClampMode )
+image_t* R_FindImageFile( const char* name, bool mipmap, bool allowPicmip, int glWrapClampMode, bool lightmap )
 {
-    return R_FindImageFileExt( name, mipmap, allowPicmip, false, glWrapClampMode );
+    return R_FindImageFileExt( name, mipmap, allowPicmip, false, glWrapClampMode, false );
 }
 
 //----(SA)	end
@@ -4139,7 +4163,7 @@ void R_LoadCacheImages( void )
             token = COM_ParseExt( &pString, false );
             parms[i] = atoi( token );
         }
-        R_FindImageFileExt( name, parms[0], parms[1], parms[2], parms[3] );
+        R_FindImageFileExt( name, parms[0], parms[1], parms[2], parms[3], parms[4] );
     }
     
     Hunk_FreeTempMemory( buf );
