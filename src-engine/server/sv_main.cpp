@@ -1116,11 +1116,6 @@ void SV_Frame( int msec )
         SV_SetConfigstring( CS_SYSTEMINFO, Cvar_InfoString_Big( CVAR_SYSTEMINFO ) );
         cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
     }
-    if( cvar_modifiedFlags & CVAR_WOLFINFO )
-    {
-        SV_SetConfigstring( CS_WOLFINFO, Cvar_InfoString( CVAR_WOLFINFO ) );
-        cvar_modifiedFlags &= ~CVAR_WOLFINFO;
-    }
     
     if( com_speeds->integer )
     {

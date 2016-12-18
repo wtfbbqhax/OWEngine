@@ -879,7 +879,6 @@ default values.
 #define CVAR_TEMP           256 // can be set even when cheats are disabled, but is not archived
 #define CVAR_CHEAT          512 // can not be changed if cheats are disabled
 #define CVAR_NORESTART      1024    // do not clear when a cvar_restart is issued
-#define CVAR_WOLFINFO       2048    // DHM - NERVE :: Like userinfo, but for wolf multiplayer info
 
 // nothing outside the Cvar_*() functions should modify these fields!
 typedef struct cvar_s

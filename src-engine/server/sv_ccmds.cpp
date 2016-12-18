@@ -274,9 +274,9 @@ static void SV_Map_f( void )
         Com_Printf( "Can't find map %s\n", expanded );
         return;
     }
-    Cvar_Set( "gamestate", va( "%i", GS_INITIALIZE ) );   // reset gamestate on map/devmap
-    Cvar_Set( "g_currentRound", "0" );          // reset the current round
-    Cvar_Set( "g_nextTimeLimit", "0" );         // reset the next time limit
+    //Cvar_Set( "gamestate", va( "%i", GS_INITIALIZE ) );   // reset gamestate on map/devmap
+    //Cvar_Set( "g_currentRound", "0" );          // reset the current round
+    //Cvar_Set( "g_nextTimeLimit", "0" );         // reset the next time limit
     
     Cvar_Set( "r_mapFogColor", "0" );       //----(SA)	added
     Cvar_Set( "r_waterFogColor", "0" );     //----(SA)	added
