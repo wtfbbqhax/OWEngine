@@ -1,5 +1,8 @@
 Changelog
 
+12-19-2016 Dusan Jocic <dusanjocic@msn.com>
+	- More work on UI part of the multiplayer
+
 12-18-2016 Dusan Jocic <dusanjocic@msn.com>
 	- Removed user set cvars on server initialization 
 	- Updated binary files

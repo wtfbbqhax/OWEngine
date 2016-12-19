@@ -343,6 +343,9 @@
 #define UI_SAVEGAMENAME             262
 #define UI_SAVEGAMEINFO             263
 
+//Dushan
+#define UI_STARTPREGAMECINEMATIC    264
+
 #define VOICECHAT_GETFLAG           "getflag"                // command someone to get the flag
 #define VOICECHAT_OFFENSE           "offense"                // command someone to go on offense
 #define VOICECHAT_DEFEND            "defend"             // command someone to go on defense

@@ -77,8 +77,10 @@ itemDef_t* g_editItem = NULL;
 menuDef_t Menus[MAX_MENUS];      // defined menus
 int menuCount = 0;               // how many
 
-menuDef_t* menuStack[MAX_OPEN_MENUS];
-int openMenuCount = 0;
+// a stack for modal menus only, stores the menus to come back to
+// (an item can be NULL, goes back to main menu / no action required)
+menuDef_t* modalMenuStack[MAX_MODAL_MENUS];
+int modalMenuCount = 0;
 
 static bool debugMode = false;
 
@@ -356,7 +358,7 @@ void String_Init()
     strHandleCount = 0;
     strPoolIndex = 0;
     menuCount = 0;
-    openMenuCount = 0;
+    modalMenuCount = 0;
     UI_InitMemory();
     Item_SetupKeywordHash();
     Menu_SetupKeywordHash();
@@ -739,7 +741,7 @@ bool PC_Script_Parse( int handle, const char** out )
         }
         Q_strcat( script, 1024, " " );
     }
-    //return false;
+    return false;
 }
 
 // display, window, menu, item code
@@ -1390,7 +1392,7 @@ void Menus_ShowByName( const char* p )
 
 void Menus_OpenByName( const char* p )
 {
-    Menus_ActivateByName( p );
+    Menus_ActivateByName( p, true );
 }
 
 static void Menu_RunCloseScript( menuDef_t* menu )
@@ -1410,6 +1412,22 @@ void Menus_CloseByName( const char* p )
     {
         Menu_RunCloseScript( menu );
         menu->window.flags &= ~( WINDOW_VISIBLE | WINDOW_HASFOCUS );
+        if( menu->window.flags & WINDOW_MODAL )
+        {
+            if( modalMenuCount <= 0 )
+            {
+                Com_Printf( S_COLOR_YELLOW "WARNING: tried closing a modal window with an empty modal stack!\n" );
+            }
+            else
+            {
+                modalMenuCount--;
+                // if modal doesn't have a parent, the stack item may be NULL .. just go back to the main menu then
+                if( modalMenuStack[modalMenuCount] )
+                {
+                    Menus_ActivateByName( modalMenuStack[modalMenuCount]->window.name, false ); // don't try to push the one we are opening to the stack
+                }
+            }
+        }
     }
 }
 
@@ -1460,14 +1478,33 @@ void Script_FadeOut( itemDef_t* item, char** args )
     }
 }
 
-
-
 void Script_Open( itemDef_t* item, char** args )
 {
     const char* name;
     if( String_Parse( args, &name ) )
     {
         Menus_OpenByName( name );
+    }
+}
+
+void Script_ConditionalOpen( itemDef_t* item, char** args )
+{
+    const char* cvar;
+    const char* name1;
+    const char* name2;
+    float val;
+    
+    if( String_Parse( args, &cvar ) && String_Parse( args, &name1 ) && String_Parse( args, &name2 ) )
+    {
+        val = DC->getCVarValue( cvar );
+        if( val == 0.f )
+        {
+            Menus_OpenByName( name2 );
+        }
+        else
+        {
+            Menus_OpenByName( name1 );
+        }
     }
 }
 
@@ -1754,6 +1791,15 @@ void Script_SetPlayerHead( itemDef_t* item, char** args )
     }
 }
 
+void Script_ClearCvar( itemDef_t* item, char** args )
+{
+    const char* cvar;
+    if( String_Parse( args, &cvar ) )
+    {
+        DC->setCVar( cvar, "" );
+    }
+}
+
 void Script_SetCvar( itemDef_t* item, char** args )
 {
     const char* cvar, *val;
@@ -1788,7 +1834,7 @@ void Script_playLooped( itemDef_t* item, char** args )
     if( String_Parse( args, &val ) )
     {
         // (SA) don't think this should happen...
-//		DC->stopBackgroundTrack();
+        DC->stopBackgroundTrack();
         DC->startBackgroundTrack( val, val, 0 );
     }
 }
@@ -1818,6 +1864,8 @@ commandDef_t commandList[] =
     {"hide", &Script_Hide},                      // group/name
     {"setcolor", &Script_SetColor},              // works on this
     {"open", &Script_Open},                      // menu
+    {"conditionalopen", &Script_ConditionalOpen},// cvar menu menu
+    // opens first menu if cvar is true[non-zero], second if false
     {"close", &Script_Close},                    // menu
     {"clipboard", &Script_Clipboard},            // show the current clipboard group by name
     {"showpage", &Script_NotebookShowpage},          //
@@ -1830,6 +1878,7 @@ commandDef_t commandList[] =
     {"setplayerhead", &Script_SetPlayerHead},    // sets this background color to team color
     {"transition", &Script_Transition},          // group/name
     {"setcvar", &Script_SetCvar},                // group/name
+    {"clearcvar", &Script_ClearCvar},
     {"exec", &Script_Exec},                      // group/name
     {"play", &Script_Play},                      // group/name
     {"playlooped", &Script_playLooped},          // group/name
@@ -1940,7 +1989,7 @@ bool Item_SetFocus( itemDef_t* item, float x, float y )
     itemDef_t* oldFocus;
     sfxHandle_t* sfx = &DC->Assets.itemFocusSound;
     bool playSound = false;
-    menuDef_t* parent = NULL;
+    menuDef_t* parent;
     // sanity check, non-null, not a decoration and does not already have the focus
     if( item == NULL || item->window.flags & WINDOW_DECORATION || item->window.flags & WINDOW_HASFOCUS || !( item->window.flags & WINDOW_VISIBLE ) )
     {
@@ -2603,10 +2652,10 @@ bool Item_ListBox_HandleKey( itemDef_t* item, int key, bool down, bool force )
                 lastListBoxClickTime = DC->realTime + DOUBLE_CLICK_DELAY;
                 if( item->cursorPos != listPtr->cursorPos )
                 {
-                    if( listPtr->cursorPos < DC->feederCount( item->special ) )
-                    {
-                        item->cursorPos = listPtr->cursorPos;   // only set if it's valid
-                    }
+                    //if( listPtr->cursorPos < DC->feederCount( item->special ) )
+                    //{
+                    item->cursorPos = listPtr->cursorPos;   // only set if it's valid
+                    //}
                     DC->feederSelection( item->special, item->cursorPos );
                 }
             }
@@ -3364,6 +3413,12 @@ itemDef_t* Menu_SetPrevCursorItem( menuDef_t* menu )
             menu->cursorItem = menu->itemCount - 1;
         }
         
+        if( menu->cursorItem < 0 )
+        {
+            menu->cursorItem = oldCursor;
+            return NULL;
+        }
+        
         if( Item_SetFocus( menu->items[menu->cursorItem], DC->cursorx, DC->cursory ) )
         {
             Menu_HandleMouseMove( menu, menu->items[menu->cursorItem]->window.rect.x + 1, menu->items[menu->cursorItem]->window.rect.y + 1 );
@@ -3545,6 +3600,9 @@ void Menu_HandleKey( menuDef_t* menu, int key, bool down )
     itemDef_t* item = NULL;
     bool inHandler = false;
     
+    // fix for focus not resetting on unhidden buttons
+    Menu_HandleMouseMove( menu, DC->cursorx, DC->cursory );
+    
     if( inHandler )
     {
         return;
@@ -3572,9 +3630,8 @@ void Menu_HandleKey( menuDef_t* menu, int key, bool down )
             g_editingField = false;
             g_editItem = NULL;
             Display_MouseMove( NULL, DC->cursorx, DC->cursory );
-//		} else if (key == K_TAB || key == K_UPARROW || key == K_DOWNARROW) {
         }
-        else
+        else if( key == K_TAB || key == K_UPARROW || key == K_DOWNARROW )
         {
             return;
         }
@@ -3697,6 +3754,14 @@ void Menu_HandleKey( menuDef_t* menu, int key, bool down )
                 {
                     if( Rect_ContainsPoint( &item->window.rect, DC->cursorx, DC->cursory ) )
                     {
+                        editFieldDef_t* editPtr = ( editFieldDef_t* )item->typeData;
+                        
+                        // reset scroll offset so we can see what we're editing
+                        if( editPtr )
+                        {
+                            editPtr->paintOffset = 0;
+                        }
+                        
                         item->cursorPos = 0;
                         g_editingField = true;
                         g_editItem = item;
@@ -4262,6 +4327,44 @@ static bind_t g_bindings[] =
     {"weaponbank 8", '8',         -1, -1, -1},
     {"weaponbank 9", '9',         -1, -1, -1},
     {"weaponbank 10",    '0',         -1, -1, -1},
+    {"+attack",      K_CTRL,         -1, -1, -1},
+    {"weapprev",     K_MWHEELDOWN,   -1, -1, -1},
+    {"weapnext",     K_MWHEELUP,     -1, -1, -1},
+    {"weapalt",          -1,             -1, -1, -1},
+    {"weaplastused", -1,             -1, -1, -1}, //----(SA)	added
+    {"weapnextinbank",   -1,             -1, -1, -1}, //----(SA)	added
+    {"weapprevinbank",   -1,             -1, -1, -1}, //----(SA)	added
+    {"+useitem",     K_ENTER,        -1, -1, -1},
+    {"itemprev",     '[',         -1, -1, -1},
+    {"itemnext",     ']',         -1, -1, -1},
+    {"+button3",     K_MOUSE3,       -1, -1, -1},
+    {"scoresUp",     -1,             -1, -1, -1},
+    {"scoresDown",       -1,             -1, -1, -1},
+    {"messagemode",  -1,             -1, -1, -1},
+    {"messagemode2", -1,             -1, -1, -1},
+    {"messagemode3", -1,             -1, -1, -1},
+    {"messagemode4", -1,             -1, -1, -1},
+    
+    {"+activate",        -1,             -1, -1, -1},
+    {"zoomin",           -1,             -1, -1, -1},
+    {"zoomout",          -1,             -1, -1, -1},
+    {"+kick",            -1,             -1, -1, -1},
+    {"+reload",      -1,             -1, -1, -1},
+    {"+sprint",      -1,             -1, -1, -1},
+    {"notebook",     K_TAB,          -1, -1, -1},
+    {"help",         K_F1,           -1, -1, -1},
+    {"+leanleft",        -1,             -1, -1, -1},
+    {"+leanright",       -1,             -1, -1, -1},
+    
+    // DHM - Nerve
+    {"vote yes",     -1,             -1, -1, -1},
+    {"vote no",          -1,             -1, -1, -1},
+    // dhm
+    // NERVE - SMF
+    {"OpenLimboMenu",    -1,             -1, -1, -1},
+    {"mp_QuickMessage",  -1,             -1, -1, -1},
+    {"+dropweapon",  -1,             -1, -1, -1},
+    // -NERVE - SMF
     {"weapon 1",     -1,             -1, -1, -1},
     {"weapon 2",     -1,             -1, -1, -1},
     {"weapon 3",     -1,             -1, -1, -1},
@@ -4294,17 +4397,6 @@ static bind_t g_bindings[] =
     {"weapon 30",        -1,             -1, -1, -1},
     {"weapon 31",        -1,             -1, -1, -1},
     {"weapon 32",        -1,             -1, -1, -1},
-    {"+attack",      K_CTRL,         -1, -1, -1},
-    {"weapprev",     K_MWHEELDOWN,   -1, -1, -1},
-    {"weapnext",     K_MWHEELUP,     -1, -1, -1},
-    {"weapalt",          -1,             -1, -1, -1},
-    {"weaplastused", -1,             -1, -1, -1},    //----(SA)	added
-    {"weapnextinbank",   -1,             -1, -1, -1},    //----(SA)	added
-    {"weapprevinbank",   -1,             -1, -1, -1},    //----(SA)	added
-    {"+useitem",     K_ENTER,        -1, -1, -1},
-    {"itemprev",     '[',         -1, -1, -1},
-    {"itemnext",     ']',         -1, -1, -1},
-    {"+button3",     K_MOUSE3,       -1, -1, -1},
     {"prevTeamMember",   -1,             -1, -1, -1},
     {"nextTeamMember",   -1,             -1, -1, -1},
     {"nextOrder",        -1,             -1, -1, -1},
@@ -4324,29 +4416,9 @@ static bind_t g_bindings[] =
     {"tauntTaunt",       -1,             -1, -1, -1},
     {"tauntDeathInsult", -1,              -1, -1, -1},
     {"tauntGauntlet",    -1,             -1, -1, -1},
-    {"scoresUp",     -1,             -1, -1, -1},
-    {"scoresDown",       -1,             -1, -1, -1},
-    {"messagemode",  -1,             -1, -1, -1},
-    {"messagemode2", -1,             -1, -1, -1},
-    {"messagemode3", -1,             -1, -1, -1},
-    {"messagemode4", -1,             -1, -1, -1},
-    
     {"savegame quicksave",   -1,         -1, -1, -1},    //----(SA)	added
     {"loadgame quicksave",   -1,         -1, -1, -1},    //----(SA)	added
-    
-    {"+activate",        -1,             -1, -1, -1},
-    {"zoomin",           -1,             -1, -1, -1},
-    {"zoomout",          -1,             -1, -1, -1},
-    {"+kick",            -1,             -1, -1, -1},
-    {"+reload",      -1,             -1, -1, -1},
-    {"+sprint",      -1,             -1, -1, -1},
-    {"notebook",     K_TAB,          -1, -1, -1},
-//	{"help",			K_F1,           -1, -1, -1},
-    {"+leanleft",        -1,             -1, -1, -1},
-    {"+leanright",       -1,             -1, -1, -1},
-    {"kill",         -1,             -1, -1, -1}
 };
-
 
 static const int g_bindCount = sizeof( g_bindings ) / sizeof( bind_t );
 
@@ -4357,7 +4429,7 @@ static const int g_bindCount = sizeof( g_bindings ) / sizeof( bind_t );
 Controls_GetKeyAssignment
 =================
 */
-static void Controls_GetKeyAssignment( char* command, int* twokeys )
+void Controls_GetKeyAssignment( char* command, int* twokeys )
 {
     int count;
     int j;
@@ -4648,21 +4720,13 @@ bool Item_Bind_HandleKey( itemDef_t* item, int key, bool down )
                 id = BindingIDFromName( item->cvar );
                 if( id != -1 )
                 {
-                    key = -1;       // null out the key, but let it pass down so it can get 'unbound'
-                    // if it just returns here, the old bindings don't get cleared out.
-                    // so if user has both 'r' and 'g' bound to '+attack' and they only want the 'r',
-                    // they click to bind the key, <backsp> to kill the bindings (which appears to the user to work)
-                    // then they click to bind and hit 'r'.  now the menu looks right to them, but if you drop the menu
-                    // and come back, the 'g' is magically re-bound since it didn't get bound to "" on the <backsp>.  <phew>
-                    // does this seem reasonable to anybody reading this? (SA)
-//					g_bindings[id].bind1 = -1;
-//					g_bindings[id].bind2 = -1;
+                    g_bindings[id].bind1 = -1;
+                    g_bindings[id].bind2 = -1;
                 }
-//				Controls_SetConfig(true);
-//				g_waitingForKey = false;
-//				g_bindItem = NULL;
-//				return true;
-                break;
+                Controls_SetConfig( true );
+                g_waitingForKey = false;
+                g_bindItem = NULL;
+                return true;
                 
             case '`':
                 return true;
@@ -5501,7 +5565,7 @@ bool Menus_AnyFullScreenVisible()
     return false;
 }
 
-menuDef_t* Menus_ActivateByName( const char* p )
+menuDef_t* Menus_ActivateByName( const char* p, bool modalStack )
 {
     int i;
     menuDef_t* m = NULL;
@@ -5512,9 +5576,13 @@ menuDef_t* Menus_ActivateByName( const char* p )
         {
             m = &Menus[i];
             Menus_Activate( m );
-            if( openMenuCount < MAX_OPEN_MENUS && focus != NULL )
+            if( modalStack && m->window.flags & WINDOW_MODAL )
             {
-                menuStack[openMenuCount++] = focus;
+                if( modalMenuCount >= MAX_MODAL_MENUS )
+                {
+                    Com_Error( ERR_DROP, "MAX_MODAL_MENUS exceeded\n" );
+                }
+                modalMenuStack[modalMenuCount++] = focus;
             }
         }
         else
@@ -5552,7 +5620,18 @@ void Menu_HandleMouseMove( menuDef_t* menu, float x, float y )
     
     if( itemCapture )
     {
-        //Item_MouseMove(itemCapture, x, y);
+        if( itemCapture->type == ITEM_TYPE_LISTBOX )
+        {
+            // NERVE - SMF - lose capture if out of client rect
+            if( !Rect_ContainsPoint( &itemCapture->window.rect, x, y ) )
+            {
+                Item_StopCapture( itemCapture );
+                itemCapture = NULL;
+                captureFunc = NULL;
+                captureData = NULL;
+            }
+            
+        }
         return;
     }
     
@@ -6022,6 +6101,26 @@ bool ItemParse_rect( itemDef_t* item, int handle )
     {
         return false;
     }
+    return true;
+}
+
+// origin <integer, integer>
+bool ItemParse_origin( itemDef_t* item, int handle )
+{
+    int x, y;
+    
+    if( !PC_Int_Parse( handle, &x ) )
+    {
+        return false;
+    }
+    if( !PC_Int_Parse( handle, &y ) )
+    {
+        return false;
+    }
+    
+    item->window.rectClient.x += x;
+    item->window.rectClient.y += y;
+    
     return true;
 }
 
@@ -6629,7 +6728,7 @@ bool ItemParse_cvarStrList( itemDef_t* item, int handle )
         
     }
     
-    //return false;
+    return false;
 }
 
 bool ItemParse_cvarFloatList( itemDef_t* item, int handle )
@@ -6796,6 +6895,7 @@ keywordHash_t itemParseKeywords[] =
     {"model_rotation", ItemParse_model_rotation, NULL},
     {"model_angle", ItemParse_model_angle, NULL},
     {"model_animplay", ItemParse_model_animplay, NULL},
+    {"origin", ItemParse_origin, NULL},
     {"rect", ItemParse_rect, NULL},
     {"style", ItemParse_style, NULL},
     {"decoration", ItemParse_decoration, NULL},
@@ -6916,6 +7016,7 @@ bool Item_Parse( int handle, itemDef_t* item )
             return false;
         }
     }
+    return false;
 }
 
 
@@ -7351,6 +7452,14 @@ bool MenuParse_execKeyInt( itemDef_t* item, int handle )
 }
 // -NERVE - SMF
 
+// TTimo
+bool MenuParse_modal( itemDef_t* item, int handle )
+{
+    menuDef_t* menu = ( menuDef_t* )item;
+    menu->window.flags |= WINDOW_MODAL;
+    return true;
+}
+
 keywordHash_t menuParseKeywords[] =
 {
     {"font", MenuParse_font, NULL},
@@ -7384,6 +7493,7 @@ keywordHash_t menuParseKeywords[] =
     {"fadeAmount", MenuParse_fadeAmount, NULL},
     {"execKey", MenuParse_execKey, NULL},                // NERVE - SMF
     {"execKeyInt", MenuParse_execKeyInt, NULL},          // NERVE - SMF
+    {"modal", MenuParse_modal, NULL },
     {NULL, NULL, NULL}
 };
 
@@ -7451,6 +7561,7 @@ bool Menu_Parse( int handle, menuDef_t* menu )
             return false;
         }
     }
+    return false;
 }
 
 /*

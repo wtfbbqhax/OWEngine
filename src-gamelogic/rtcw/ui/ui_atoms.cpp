@@ -100,11 +100,14 @@ char* UI_Argv( int arg )
 
 char* UI_Cvar_VariableString( const char* var_name )
 {
-    static char buffer[MAX_STRING_CHARS];
+    static char buffer[2][MAX_STRING_CHARS];
+    static int toggle;
     
-    trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
+    toggle ^= 1;        // flip-flop to allow two returns without clash
     
-    return buffer;
+    trap_Cvar_VariableStringBuffer( var_name, buffer[toggle], sizeof( buffer[0] ) );
+    
+    return buffer[toggle];
 }
 
 

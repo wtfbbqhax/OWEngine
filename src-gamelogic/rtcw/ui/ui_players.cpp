@@ -86,6 +86,17 @@ tryagain:
         return;
     }
     
+    // multiplayer only hack to show correct panzerfaust and venom barrel
+    if( weaponNum == WP_PANZERFAUST )
+    {
+        pi->weaponModel = trap_R_RegisterModel( "models/multiplayer/panzerfaust/multi_pf.md3" );
+        return;
+    }
+    else if( weaponNum == WP_VENOM )
+    {
+        pi->barrelModel = trap_R_RegisterModel( "models/weapons2/venom/venom_barrel.md3" );
+    }
+    
     for( item = bg_itemlist + 1; item->classname ; item++ )
     {
         if( item->giType != IT_WEAPON )
@@ -828,7 +839,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t* pi, int ti
     refEntity_t gun;
     refEntity_t backpack;
     refEntity_t helmet;
-//	refEntity_t		barrel;
+    refEntity_t	barrel;
     refEntity_t flash;
     vec3_t origin;
     int renderfx;
@@ -966,6 +977,19 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t* pi, int ti
     }
     
     //
+    // add the gun barrel
+    //
+    if( pi->currentWeapon != WP_NONE && pi->barrelModel )
+    {
+        memset( &barrel, 0, sizeof( barrel ) );
+        barrel.hModel = pi->barrelModel;
+        VectorCopy( origin, barrel.lightingOrigin );
+        UI_PositionEntityOnTag( &barrel, &gun, pi->weaponModel, "tag_barrel" );
+        barrel.renderfx = renderfx;
+        trap_R_AddRefEntityToScene( &barrel );
+    }
+    
+    //
     // add muzzle flash
     //
     if( dp_realtime <= pi->muzzleFlashTime )
@@ -1025,15 +1049,15 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t* pi, int ti
     //
     // add an accent light
     //
-//	origin[0] -= 100;	// + = behind, - = in front
-//	origin[1] += 100;	// + = left, - = right
-//	origin[2] += 100;	// + = above, - = below
-    trap_R_AddLightToScene( origin, 500, 1.0, 1.0, 1.0, 0 );
+    origin[0] -= 100;   // + = behind, - = in front
+    origin[1] += 100;   // + = left, - = right
+    origin[2] += 100;   // + = above, - = below
+    trap_R_AddLightToScene( origin, 1000, 1.0, 1.0, 1.0, 0 );
     
     origin[0] -= 100;
     origin[1] -= 100;
     origin[2] -= 100;
-    trap_R_AddLightToScene( origin, 500, 1.0, 0.0, 0.0, 0 );
+    trap_R_AddLightToScene( origin, 1000, 1.0, 1.0, 1.0, 0 );
     
     trap_R_RenderScene( &refdef );
 }
@@ -1610,14 +1634,16 @@ bool UI_RegisterClientModelname( playerInfo_t* pi, const char* modelSkinName )
         const char* playerClass;
         int var, teamval;
         
-        teamval = trap_Cvar_VariableValue( "mp_team" );
-        
-        if( teamval == 1 )
+        // Don't rely on cvar for team, use modelname instead
+        //teamval = trap_Cvar_VariableValue( "mp_team" );
+        if( !strcmp( modelSkinName, "multi" ) )
         {
+            teamval = 1;
             team = "blue";
         }
         else
         {
+            teamval = 0;
             team = "red";
         }
         

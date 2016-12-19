@@ -57,7 +57,7 @@
 #define MAX_MENUS 64
 #define MAX_MENUITEMS 256
 #define MAX_COLOR_RANGES 10
-#define MAX_OPEN_MENUS 16
+#define MAX_MODAL_MENUS 16
 
 #define WINDOW_MOUSEOVER        0x00000001  // mouse is over it, non exclusive
 #define WINDOW_HASFOCUS         0x00000002  // has cursor focus, exclusive
@@ -84,6 +84,7 @@
 #define WINDOW_BACKCOLORSET     0x00400000  // backcolor was explicitly set
 #define WINDOW_TIMEDVISIBLE     0x00800000  // visibility timing ( NOT implemented )
 #define WINDOW_IGNORE_HUDALPHA  0x01000000  // window will apply cg_hudAlpha value to colors unless this flag is set
+#define WINDOW_MODAL            0x02000000  // window is modal, the window to go back to is stored in a stack
 
 // CGAME cursor type bits
 #define CURSOR_NONE             0x00000001
@@ -493,7 +494,7 @@ bool PC_Char_Parse( int handle, char* out );              // NERVE - SMF
 int Menu_Count();
 void Menu_New( int handle );
 void Menu_PaintAll();
-menuDef_t* Menus_ActivateByName( const char* p );
+menuDef_t* Menus_ActivateByName( const char* p, bool modalStack );
 void Menu_Reset();
 bool Menus_AnyFullScreenVisible();
 void  Menus_Activate( menuDef_t* menu );
@@ -513,6 +514,8 @@ void        Menus_CloseAll();
 void        Menu_Paint( menuDef_t* menu, bool forcePaint );
 void        Menu_SetFeederSelection( menuDef_t* menu, int feeder, int index, const char* name );
 void        Display_CacheAll();
+
+void		Menu_ShowItemByName( menuDef_t* menu, const char* p, bool bShow );
 
 void*        UI_Alloc( int size );
 void        UI_InitMemory( void );

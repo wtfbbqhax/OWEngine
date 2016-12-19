@@ -141,8 +141,16 @@ extern vmCvar_t ui_browserGameType;
 extern vmCvar_t ui_browserSortKey;
 extern vmCvar_t ui_browserShowFull;
 extern vmCvar_t ui_browserShowEmpty;
+extern vmCvar_t ui_browserShowFriendlyFire;
+extern vmCvar_t ui_browserShowMaxlives;
+extern vmCvar_t ui_browserShowTourney;
+extern vmCvar_t ui_browserShowPunkBuster;
+extern vmCvar_t ui_browserShowAntilag;
 
 extern vmCvar_t ui_serverStatusTimeOut;
+extern vmCvar_t ui_limboOptions;
+
+extern vmCvar_t ui_isSpectator;
 // -NERVE - SMF
 
 extern vmCvar_t ui_limboOptions;
@@ -395,7 +403,7 @@ void            UI_LoadMenus( const char* menuFile, bool reset );
 int             UI_AdjustTimeByGame( int time );
 void            UI_ShowPostGame( bool newHigh );
 void            UI_ClearScores();
-//void            UI_LoadArenas( void );
+void            UI_LoadArenas( void );
 
 //
 // ui_menu.c
@@ -748,6 +756,9 @@ typedef struct
     int timeToBeat[MAX_GAMETYPES];
     qhandle_t levelShot;
     bool active;
+    int Timelimit;
+    int AxisRespawnTime;
+    int AlliedRespawnTime;
 } mapInfo;
 
 typedef struct
