@@ -3166,7 +3166,7 @@ static void UI_OwnerDraw( float x, float y, float w, float h, float text_x, floa
         case UI_CLANCINEMATIC:
             UI_DrawClanCinematic( &rect, scale, color );
             break;
-        case UI_STARTPREGAMECINEMATIC:
+        case UI_STARTMAPCINEMATIC:
             UI_DrawPregameCinematic( &rect, scale, color );
             break;
         case UI_PREVIEWCINEMATIC:
@@ -3204,9 +3204,6 @@ static void UI_OwnerDraw( float x, float y, float w, float h, float text_x, floa
             break;
         case UI_MAPCINEMATIC:
             UI_DrawMapCinematic( &rect, scale, color, false );
-            break;
-        case UI_STARTMAPCINEMATIC:
-            UI_DrawMapCinematic( &rect, scale, color, true );
             break;
         case UI_SKILL:
             UI_DrawSkill( &rect, font, scale, color, textStyle );

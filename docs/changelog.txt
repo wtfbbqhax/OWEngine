@@ -1,5 +1,8 @@
 Changelog
 
+12-20-2016 Dusan Jocic <dusanjocic@msn.com>
+	- Removed UI_STARTPREGAMECINEMATIC
+
 12-19-2016 Dusan Jocic <dusanjocic@msn.com>
 	- More work on UI part of the multiplayer
 
